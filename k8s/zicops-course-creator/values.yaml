@@ -17,3 +17,7 @@ image:
 maxBodySizeMb: 100
 # TODO add more routes for frontend etc..
 
+service:
+  type: ClusterIP
+  port: 80
+
