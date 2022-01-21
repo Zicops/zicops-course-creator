@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "zicops-course-creator.name" . }}
+  labels:
+    app: {{ template "zicops-course-creator.name" . }}
+    chart: {{ template "zicops-course-creator.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: http-server-cc
+      protocol: TCP
+      name: http-server-cc
+  selector:
+    app: {{ template "zicops-course-creator.name" . }}
+    release: {{ .Release.Name }}

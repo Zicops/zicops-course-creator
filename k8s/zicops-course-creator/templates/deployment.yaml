@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "zicops-course-creator.fullname" . }}
+  labels:
+    app: {{ template "zicops-course-creator.name" . }}
+    chart: {{ template "zicops-course-creator.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  strategy:
+    rollingUpdate:
+      maxSurge: {{ .Values.maxSurge }}
+  selector:
+    matchLabels:
+      app: {{ template "zicops-course-creator.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "zicops-course-creator.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        {{ $zcbcred := printf "%s/%s" .Values.zcServiceAccount.credential.dir .Values.zcServiceAccount.credential.file }}
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http-server-cc
+              containerPort: {{ .Values.image.port }}
+              protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: {{ .Values.image.health }}
+              port: {{ .Values.image.port }}
+            initialDelaySeconds: 5
+            timeoutSeconds: 1  
+          volumeMounts:
+          - name: zicops-cc
+            mountPath: {{ .Values.zcServiceAccount.credential.dir | quote }}
+            readOnly: true    
+          env:
+          - name: PORT
+            value: {{ .Values.image.port | quote }}
+          - name: GOOGLE_APPLICATION_CREDENTIALS
+            value: {{ $zcbcred }}
+      volumes:
+      - name: zicops-cc
+        secret:
+          secretName: {{ .Values.zcServiceAccount.secret }}

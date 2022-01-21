@@ -26,7 +26,7 @@ func CCRouter() (*gin.Engine, error) {
 	restRouter.Use(cors.New(configCors))
 	restRouter.GET("/healthz", HealthCheckHandler)
 	restRouter.POST("/query", graphqlHandler())
-	restRouter.GET("/", playgroundHandler())
+	restRouter.GET("/playql", playgroundHandler())
 	return restRouter, nil
 }
 

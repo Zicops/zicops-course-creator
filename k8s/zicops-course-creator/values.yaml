@@ -1,0 +1,19 @@
+# Default values for zicops-course-creator.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+maxSurge: 1
+
+#Backend image details
+
+image:
+  repository: gcr.io/zicops-one/zicops-course-creator
+  tag: latest
+  pullPolicy: Always
+  health: /healthz
+  port: 8090
+
+maxBodySizeMb: 100
+# TODO add more routes for frontend etc..
+
