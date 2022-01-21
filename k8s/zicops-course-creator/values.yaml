@@ -21,3 +21,9 @@ service:
   type: ClusterIP
   port: 80
 
+zcServiceAccount:
+  name: zicops-cc
+  secret: zicops-cc
+  credential:
+    dir: /var/run/secrets/zicops-cc
+    file: zicops-cc.json
