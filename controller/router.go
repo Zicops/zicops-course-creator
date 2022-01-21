@@ -25,8 +25,10 @@ func CCRouter() (*gin.Engine, error) {
 	configCors.AllowHeaders = []string{"Origin", "Content-Length", "Content-Type", "Authorization"}
 	restRouter.Use(cors.New(configCors))
 	restRouter.GET("/healthz", HealthCheckHandler)
-	restRouter.POST("/query", graphqlHandler())
-	restRouter.GET("/playql", playgroundHandler())
+	// create group for restRouter
+	version1:= restRouter.Group("/api/v1")	
+	version1.POST("/query", graphqlHandler())
+	version1.GET("/playql", playgroundHandler())
 	return restRouter, nil
 }
 
