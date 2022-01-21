@@ -2,17 +2,17 @@ package main
 
 import (
 	"context"
+	"fmt"
+	"os/signal"
+	"strconv"
+	"syscall"
 
-	"net/http"
 	"os"
 
-	"github.com/99designs/gqlgen/graphql/handler"
-	"github.com/99designs/gqlgen/graphql/playground"
 	log "github.com/sirupsen/logrus"
 	"github.com/zicops/zicops-course-creator/config"
+	"github.com/zicops/zicops-course-creator/controller"
 	"github.com/zicops/zicops-course-creator/global"
-	"github.com/zicops/zicops-course-creator/graph"
-	"github.com/zicops/zicops-course-creator/graph/generated"
 	"github.com/zicops/zicops-course-creator/lib/db/cassandra"
 )
 
@@ -21,12 +21,8 @@ const defaultPort = "8080"
 func main() {
 	log.Infof("Starting zicops course creator service")
 	ctx, cancel := context.WithCancel(context.Background())
-	cassConfig := config.NewCassandraConfig()
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = defaultPort
-	}
 
+	cassConfig := config.NewCassandraConfig()
 	cassSession, err := cassandra.New(cassConfig)
 	if err != nil {
 		log.Errorf("Error connecting to cassandra: %s", err)
@@ -37,11 +33,30 @@ func main() {
 	global.CassSession = cassSession
 	global.Cancel = cancel
 	log.Infof("zicops course creator intialization complete")
-	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &graph.Resolver{}}))
+	portFromEnv := os.Getenv("PORT")
+	port, err := strconv.Atoi(portFromEnv)
 
-	http.Handle("/", playground.Handler("GraphQL playground", "/query"))
-	http.Handle("/query", srv)
+	if err != nil {
+		port = 8090
+	}
+	bootUPErrors := make(chan error, 1)
+	go monitorSystem(cancel, bootUPErrors)
+	controller.CCBackendController(ctx, port, bootUPErrors)
+	err = <-bootUPErrors
+	if err != nil {
+		log.Errorf("There is an issue starting backend server for course creator: %v", err.Error())
+		global.WaitGroupServer.Wait()
+		os.Exit(1)
+	}
+	log.Infof("course creator server started successfully.")
+}
 
-	log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)
-	log.Fatal(http.ListenAndServe(":"+port, nil))
+func monitorSystem(cancel context.CancelFunc, errorChannel chan error) {
+	holdSignal := make(chan os.Signal, 1)
+	signal.Notify(holdSignal, syscall.SIGHUP, syscall.SIGINT, syscall.SIGTERM)
+	// if system throw any termination stuff let channel handle it and cancel
+	<-holdSignal
+	cancel()
+	// send error to channel
+	errorChannel <- fmt.Errorf("System termination signal received")
 }
