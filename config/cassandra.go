@@ -18,7 +18,7 @@ func NewCassandraConfig() *Cassandra {
 		Port:     getEnv("CASSANDRA_PORT", "9042"),
 		Username: getEnv("CASSANDRA_USERNAME", ""),
 		Password: getEnv("CASSANDRA_PASSWORD", ""),
-		Keyspace: getEnv("CASSANDRA_KEYSPACE", "zicops"),
+		Keyspace: getEnv("CASSANDRA_KEYSPACE", "coursez"),
 	}
 }
 
