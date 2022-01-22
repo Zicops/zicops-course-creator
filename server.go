@@ -28,7 +28,7 @@ func main() {
 		log.Errorf("Error connecting to cassandra: %s", err)
 		log.Infof("zicops course creator intialization failed")
 	}
-
+	log.Info("Connected to cassandra")
 	global.CTX = ctx
 	global.CassSession = cassSession
 	global.Cancel = cancel
