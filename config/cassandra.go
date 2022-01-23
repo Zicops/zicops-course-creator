@@ -14,10 +14,10 @@ type Cassandra struct {
 // initialize cassandra config struct using env variables
 func NewCassandraConfig() *Cassandra {
 	return &Cassandra{
-		Host:     getEnv("CASSANDRA_HOST", "localhost"),
+		Host:     getEnv("CASSANDRA_HOST", "127.0.0.1"),
 		Port:     getEnv("CASSANDRA_PORT", "9042"),
-		Username: getEnv("CASSANDRA_USERNAME", ""),
-		Password: getEnv("CASSANDRA_PASSWORD", ""),
+		Username: getEnv("CASSANDRA_USERNAME", "cassandra"),
+		Password: getEnv("CASSANDRA_PASSWORD", "cassandra"),
 		Keyspace: getEnv("CASSANDRA_KEYSPACE", "coursez"),
 	}
 }

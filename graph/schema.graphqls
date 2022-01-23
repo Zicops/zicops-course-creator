@@ -1,28 +1,52 @@
-# GraphQL schema example
-#
-# https://gqlgen.com/getting-started/
+# GraphQL schema for course creator
 
-type Todo {
-  id: ID!
-  text: String!
-  done: Boolean!
-  user: User!
+# define course type
+type Course{
+    id: ID
+    name: String!
+    description: String!
+    instructor: String
+    image: String
+    previewVideo: String
+    owner: String
+    duration: Int
+    level: String
+    language: [String]
+    takeaways: [String]
+    createdAt: String
+    updatedAt: String
+    type: String
+    prequisites: [String]
+    goodFor: [String]
+    mustFor: [String]
+    createdBy: String
+    updatedBy: String
+    status: String
+}
+input CourseInput{
+    id: ID    
+    name: String!
+    description: String!
+    instructor: String
+    image: String
+    previewVideo: String
+    owner: String
+    duration: Int
+    level: String
+    language: [String]
+    takeaways: [String]
+    createdAt: String
+    updatedAt: String
+    type: String
+    prequisites: [String]
+    goodFor: [String]
+    mustFor: [String]
+    createdBy: String
+    updatedBy: String
+    status: String
 }
 
-type User {
-  id: ID!
-  name: String!
-}
-
-type Query {
-  todos: [Todo!]!
-}
-
-input NewTodo {
-  text: String!
-  userId: String!
-}
-
-type Mutation {
-  createTodo(input: NewTodo!): Todo!
+# define type mutations to add a course  using courseInput
+type Mutation{
+    addCourse(course: CourseInput): Course
 }

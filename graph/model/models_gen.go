@@ -2,19 +2,48 @@
 
 package model
 
-type NewTodo struct {
-	Text   string `json:"text"`
-	UserID string `json:"userId"`
+type Course struct {
+	ID           *string   `json:"id"`
+	Name         string    `json:"name"`
+	Description  string    `json:"description"`
+	Instructor   *string   `json:"instructor"`
+	Image        *string   `json:"image"`
+	PreviewVideo *string   `json:"previewVideo"`
+	Owner        *string   `json:"owner"`
+	Duration     *int      `json:"duration"`
+	Level        *string   `json:"level"`
+	Language     []*string `json:"language"`
+	Takeaways    []*string `json:"takeaways"`
+	CreatedAt    *string   `json:"createdAt"`
+	UpdatedAt    *string   `json:"updatedAt"`
+	Type         *string   `json:"type"`
+	Prequisites  []*string `json:"prequisites"`
+	GoodFor      []*string `json:"goodFor"`
+	MustFor      []*string `json:"mustFor"`
+	CreatedBy    *string   `json:"createdBy"`
+	UpdatedBy    *string   `json:"updatedBy"`
+	Status       *string   `json:"status"`
 }
 
-type Todo struct {
-	ID   string `json:"id"`
-	Text string `json:"text"`
-	Done bool   `json:"done"`
-	User *User  `json:"user"`
-}
-
-type User struct {
-	ID   string `json:"id"`
-	Name string `json:"name"`
+type CourseInput struct {
+	ID           *string   `json:"id"`
+	Name         string    `json:"name"`
+	Description  string    `json:"description"`
+	Instructor   *string   `json:"instructor"`
+	Image        *string   `json:"image"`
+	PreviewVideo *string   `json:"previewVideo"`
+	Owner        *string   `json:"owner"`
+	Duration     *int      `json:"duration"`
+	Level        *string   `json:"level"`
+	Language     []*string `json:"language"`
+	Takeaways    []*string `json:"takeaways"`
+	CreatedAt    *string   `json:"createdAt"`
+	UpdatedAt    *string   `json:"updatedAt"`
+	Type         *string   `json:"type"`
+	Prequisites  []*string `json:"prequisites"`
+	GoodFor      []*string `json:"goodFor"`
+	MustFor      []*string `json:"mustFor"`
+	CreatedBy    *string   `json:"createdBy"`
+	UpdatedBy    *string   `json:"updatedBy"`
+	Status       *string   `json:"status"`
 }
