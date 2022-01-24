@@ -8,12 +8,19 @@ import (
 	"fmt"
 
 	"github.com/99designs/gqlgen/graphql"
+	log "github.com/sirupsen/logrus"
 	"github.com/zicops/zicops-course-creator/graph/generated"
 	"github.com/zicops/zicops-course-creator/graph/model"
+	"github.com/zicops/zicops-course-creator/handlers"
 )
 
 func (r *mutationResolver) AddCourse(ctx context.Context, course *model.CourseInput) (*model.Course, error) {
-	panic(fmt.Errorf("not implemented"))
+	resp, err := handlers.CourseCreator(ctx, course)
+	if err != nil {
+		log.Errorf("error creating course: %v", err)
+		return nil, err
+	}
+	return resp, nil
 }
 
 func (r *mutationResolver) UploadCourseImage(ctx context.Context, file graphql.Upload) (*bool, error) {

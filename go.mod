@@ -8,9 +8,11 @@ require (
 	github.com/gin-contrib/cors v1.3.1
 	github.com/gin-gonic/gin v1.7.7
 	github.com/gocql/gocql v0.0.0-20211222173705-d73e6b1002a7
+	github.com/rs/xid v1.3.0
 	github.com/scylladb/gocqlx/v2 v2.6.0
 	github.com/sirupsen/logrus v1.8.1
 	github.com/vektah/gqlparser/v2 v2.2.0
+	github.com/zicops/contracts v0.0.0-20220124030356-9f41f8167116
 	golang.org/x/oauth2 v0.0.0-20211104180415-d3ed0bb246c8
 	google.golang.org/api v0.65.0
 	gopkg.in/tylerb/graceful.v1 v1.2.15
