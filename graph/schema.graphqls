@@ -1,4 +1,5 @@
 # GraphQL schema for course creator
+scalar Upload
 
 # define course type
 type Course{
@@ -49,4 +50,6 @@ input CourseInput{
 # define type mutations to add a course  using courseInput
 type Mutation{
     addCourse(course: CourseInput): Course
+    uploadCourseImage(file: Upload!): Boolean
+    uploadCoursePreviewVideo(file: Upload!): Boolean
 }

@@ -39,7 +39,7 @@ func HealthCheckHandler(c *gin.Context) {
 	case http.MethodGet:
 		GetHealthStatus(c.Writer)
 	default:
-		err := errors.New("Method not supported")
+		err := errors.New("method not supported")
 		ResponseError(c.Writer, http.StatusBadRequest, err)
 	}
 }
@@ -80,7 +80,7 @@ func graphqlHandler() gin.HandlerFunc {
 }
 
 func playgroundHandler() gin.HandlerFunc {
-	h := playground.Handler("GraphQL", "/query")
+	h := playground.Handler("GraphQL", "/api/v1/query")
 
 	return func(c *gin.Context) {
 		h.ServeHTTP(c.Writer, c.Request)

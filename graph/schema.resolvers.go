@@ -7,11 +7,20 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/99designs/gqlgen/graphql"
 	"github.com/zicops/zicops-course-creator/graph/generated"
 	"github.com/zicops/zicops-course-creator/graph/model"
 )
 
 func (r *mutationResolver) AddCourse(ctx context.Context, course *model.CourseInput) (*model.Course, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
+func (r *mutationResolver) UploadCourseImage(ctx context.Context, file graphql.Upload) (*bool, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
+func (r *mutationResolver) UploadCoursePreviewVideo(ctx context.Context, file graphql.Upload) (*bool, error) {
 	panic(fmt.Errorf("not implemented"))
 }
 
