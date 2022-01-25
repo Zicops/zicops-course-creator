@@ -66,8 +66,8 @@ type ComplexityRoot struct {
 
 	Mutation struct {
 		AddCourse                func(childComplexity int, course *model.CourseInput) int
-		UploadCourseImage        func(childComplexity int, file graphql.Upload) int
-		UploadCoursePreviewVideo func(childComplexity int, file graphql.Upload) int
+		UploadCourseImage        func(childComplexity int, file model.CourseFile) int
+		UploadCoursePreviewVideo func(childComplexity int, file model.CourseFile) int
 	}
 
 	Query struct {
@@ -76,8 +76,8 @@ type ComplexityRoot struct {
 
 type MutationResolver interface {
 	AddCourse(ctx context.Context, course *model.CourseInput) (*model.Course, error)
-	UploadCourseImage(ctx context.Context, file graphql.Upload) (*bool, error)
-	UploadCoursePreviewVideo(ctx context.Context, file graphql.Upload) (*bool, error)
+	UploadCourseImage(ctx context.Context, file model.CourseFile) (*bool, error)
+	UploadCoursePreviewVideo(ctx context.Context, file model.CourseFile) (*bool, error)
 }
 
 type executableSchema struct {
@@ -257,7 +257,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.UploadCourseImage(childComplexity, args["file"].(graphql.Upload)), true
+		return e.complexity.Mutation.UploadCourseImage(childComplexity, args["file"].(model.CourseFile)), true
 
 	case "Mutation.uploadCoursePreviewVideo":
 		if e.complexity.Mutation.UploadCoursePreviewVideo == nil {
@@ -269,7 +269,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.UploadCoursePreviewVideo(childComplexity, args["file"].(graphql.Upload)), true
+		return e.complexity.Mutation.UploadCoursePreviewVideo(childComplexity, args["file"].(model.CourseFile)), true
 
 	}
 	return 0, false
@@ -384,11 +384,16 @@ input CourseInput{
     status: String
 }
 
+input CourseFile{
+    file: Upload!
+    courseId: String!
+}
+
 # define type mutations to add a course  using courseInput
 type Mutation{
     addCourse(course: CourseInput): Course
-    uploadCourseImage(file: Upload!): Boolean
-    uploadCoursePreviewVideo(file: Upload!): Boolean
+    uploadCourseImage(file: CourseFile!): Boolean
+    uploadCoursePreviewVideo(file: CourseFile!): Boolean
 }
 `, BuiltIn: false},
 }
@@ -416,10 +421,10 @@ func (ec *executionContext) field_Mutation_addCourse_args(ctx context.Context, r
 func (ec *executionContext) field_Mutation_uploadCourseImage_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 graphql.Upload
+	var arg0 model.CourseFile
 	if tmp, ok := rawArgs["file"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("file"))
-		arg0, err = ec.unmarshalNUpload2githubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚐUpload(ctx, tmp)
+		arg0, err = ec.unmarshalNCourseFile2githubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐCourseFile(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -431,10 +436,10 @@ func (ec *executionContext) field_Mutation_uploadCourseImage_args(ctx context.Co
 func (ec *executionContext) field_Mutation_uploadCoursePreviewVideo_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 graphql.Upload
+	var arg0 model.CourseFile
 	if tmp, ok := rawArgs["file"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("file"))
-		arg0, err = ec.unmarshalNUpload2githubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚐUpload(ctx, tmp)
+		arg0, err = ec.unmarshalNCourseFile2githubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐCourseFile(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1206,7 +1211,7 @@ func (ec *executionContext) _Mutation_uploadCourseImage(ctx context.Context, fie
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().UploadCourseImage(rctx, args["file"].(graphql.Upload))
+		return ec.resolvers.Mutation().UploadCourseImage(rctx, args["file"].(model.CourseFile))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -1245,7 +1250,7 @@ func (ec *executionContext) _Mutation_uploadCoursePreviewVideo(ctx context.Conte
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().UploadCoursePreviewVideo(rctx, args["file"].(graphql.Upload))
+		return ec.resolvers.Mutation().UploadCoursePreviewVideo(rctx, args["file"].(model.CourseFile))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2452,6 +2457,37 @@ func (ec *executionContext) ___Type_ofType(ctx context.Context, field graphql.Co
 
 // region    **************************** input.gotpl *****************************
 
+func (ec *executionContext) unmarshalInputCourseFile(ctx context.Context, obj interface{}) (model.CourseFile, error) {
+	var it model.CourseFile
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	for k, v := range asMap {
+		switch k {
+		case "file":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("file"))
+			it.File, err = ec.unmarshalNUpload2githubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚐUpload(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "courseId":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("courseId"))
+			it.CourseID, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputCourseInput(ctx context.Context, obj interface{}) (model.CourseInput, error) {
 	var it model.CourseInput
 	asMap := map[string]interface{}{}
@@ -3319,6 +3355,11 @@ func (ec *executionContext) marshalNBoolean2bool(ctx context.Context, sel ast.Se
 		}
 	}
 	return res
+}
+
+func (ec *executionContext) unmarshalNCourseFile2githubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐCourseFile(ctx context.Context, v interface{}) (model.CourseFile, error) {
+	res, err := ec.unmarshalInputCourseFile(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) unmarshalNString2string(ctx context.Context, v interface{}) (string, error) {

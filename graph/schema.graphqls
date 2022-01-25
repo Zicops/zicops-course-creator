@@ -47,9 +47,14 @@ input CourseInput{
     status: String
 }
 
+input CourseFile{
+    file: Upload!
+    courseId: String!
+}
+
 # define type mutations to add a course  using courseInput
 type Mutation{
     addCourse(course: CourseInput): Course
-    uploadCourseImage(file: Upload!): Boolean
-    uploadCoursePreviewVideo(file: Upload!): Boolean
+    uploadCourseImage(file: CourseFile!): Boolean
+    uploadCoursePreviewVideo(file: CourseFile!): Boolean
 }

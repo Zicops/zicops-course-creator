@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"time"
 
 	"cloud.google.com/go/storage"
 	"github.com/zicops/zicops-course-creator/constants"
@@ -15,6 +16,7 @@ import (
 type Client struct {
 	projectID string
 	client    *storage.Client
+	bucket   *storage.BucketHandle
 }
 
 // NewStorageHandler return new database action
@@ -42,7 +44,7 @@ func (sc *Client) InitializeStorageClient(ctx context.Context, projectID string)
 	}
 	sc.client = client
 	sc.projectID = projectID
-	sc.CreateBucket(ctx, constants.COURSES_BUCKET)
+	sc.bucket, _= sc.CreateBucket(ctx, constants.COURSES_BUCKET)
 	return nil
 }
 
@@ -60,10 +62,19 @@ func (sc *Client) CreateBucket(ctx context.Context, bucketName string) (*storage
 
 // UploadToGCS ....
 func (sc *Client) UploadToGCS(ctx context.Context, fileName string) (*storage.Writer, error) {
-	currentBucket, err := sc.CreateBucket(ctx, constants.COURSES_BUCKET)
-	if err != nil {
-		return nil, err
-	}
-	bucketWriter := currentBucket.Object(fileName).NewWriter(ctx)
+	bucketWriter := sc.bucket.Object(fileName).NewWriter(ctx)
 	return bucketWriter, nil
+}
+
+func (sc *Client) GetSignedURLForObject(object string) string {
+	opts := &storage.SignedURLOptions{
+		Scheme:  storage.SigningSchemeV4,
+		Method:  "GET",
+		Expires: time.Now().Add(24 * time.Hour),
+	}
+	url, err := sc.bucket.SignedURL(object, opts)
+	if err != nil {
+		return ""
+	}
+	return url
 }

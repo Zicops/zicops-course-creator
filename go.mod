@@ -3,6 +3,7 @@ module github.com/zicops/zicops-course-creator
 go 1.17
 
 require (
+	cloud.google.com/go/compute v0.1.0
 	cloud.google.com/go/storage v1.18.2
 	github.com/99designs/gqlgen v0.15.1
 	github.com/gin-contrib/cors v1.3.1
@@ -12,7 +13,7 @@ require (
 	github.com/scylladb/gocqlx/v2 v2.6.0
 	github.com/sirupsen/logrus v1.8.1
 	github.com/vektah/gqlparser/v2 v2.2.0
-	github.com/zicops/contracts v0.0.0-20220124030356-9f41f8167116
+	github.com/zicops/contracts v0.0.0-20220125080452-760d61f5284c
 	golang.org/x/oauth2 v0.0.0-20211104180415-d3ed0bb246c8
 	google.golang.org/api v0.65.0
 	gopkg.in/tylerb/graceful.v1 v1.2.15
@@ -20,7 +21,6 @@ require (
 
 require (
 	cloud.google.com/go v0.100.2 // indirect
-	cloud.google.com/go/compute v0.1.0 // indirect
 	cloud.google.com/go/iam v0.1.1 // indirect
 	github.com/agnivade/levenshtein v1.1.1 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.1 // indirect

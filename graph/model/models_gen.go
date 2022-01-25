@@ -2,6 +2,10 @@
 
 package model
 
+import (
+	"github.com/99designs/gqlgen/graphql"
+)
+
 type Course struct {
 	ID           *string   `json:"id"`
 	Name         string    `json:"name"`
@@ -23,6 +27,11 @@ type Course struct {
 	CreatedBy    *string   `json:"createdBy"`
 	UpdatedBy    *string   `json:"updatedBy"`
 	Status       *string   `json:"status"`
+}
+
+type CourseFile struct {
+	File     graphql.Upload `json:"file"`
+	CourseID string         `json:"courseId"`
 }
 
 type CourseInput struct {
