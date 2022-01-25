@@ -14,14 +14,14 @@ type Course{
     level: String
     language: [String]
     takeaways: [String]
-    createdAt: String
-    updatedAt: String
+    created_at: String
+    updated_at: String
     type: String
     prequisites: [String]
     goodFor: [String]
     mustFor: [String]
-    createdBy: String
-    updatedBy: String
+    created_by: String
+    updated_by: String
     status: String
 }
 input CourseInput{
@@ -36,14 +36,14 @@ input CourseInput{
     level: String
     language: [String]
     takeaways: [String]
-    createdAt: String
-    updatedAt: String
+    created_at: String
+    updated_at: String
     type: String
     prequisites: [String]
     goodFor: [String]
     mustFor: [String]
-    createdBy: String
-    updatedBy: String
+    created_by: String
+    updated_by: String
     status: String
 }
 

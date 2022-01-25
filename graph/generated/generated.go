@@ -95,14 +95,14 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 	_ = ec
 	switch typeName + "." + field {
 
-	case "Course.createdAt":
+	case "Course.created_at":
 		if e.complexity.Course.CreatedAt == nil {
 			break
 		}
 
 		return e.complexity.Course.CreatedAt(childComplexity), true
 
-	case "Course.createdBy":
+	case "Course.created_by":
 		if e.complexity.Course.CreatedBy == nil {
 			break
 		}
@@ -221,14 +221,14 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Course.Type(childComplexity), true
 
-	case "Course.updatedAt":
+	case "Course.updated_at":
 		if e.complexity.Course.UpdatedAt == nil {
 			break
 		}
 
 		return e.complexity.Course.UpdatedAt(childComplexity), true
 
-	case "Course.updatedBy":
+	case "Course.updated_by":
 		if e.complexity.Course.UpdatedBy == nil {
 			break
 		}
@@ -351,14 +351,14 @@ type Course{
     level: String
     language: [String]
     takeaways: [String]
-    createdAt: String
-    updatedAt: String
+    created_at: String
+    updated_at: String
     type: String
     prequisites: [String]
     goodFor: [String]
     mustFor: [String]
-    createdBy: String
-    updatedBy: String
+    created_by: String
+    updated_by: String
     status: String
 }
 input CourseInput{
@@ -373,14 +373,14 @@ input CourseInput{
     level: String
     language: [String]
     takeaways: [String]
-    createdAt: String
-    updatedAt: String
+    created_at: String
+    updated_at: String
     type: String
     prequisites: [String]
     goodFor: [String]
     mustFor: [String]
-    createdBy: String
-    updatedBy: String
+    created_by: String
+    updated_by: String
     status: String
 }
 
@@ -859,7 +859,7 @@ func (ec *executionContext) _Course_takeaways(ctx context.Context, field graphql
 	return ec.marshalOString2ᚕᚖstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Course_createdAt(ctx context.Context, field graphql.CollectedField, obj *model.Course) (ret graphql.Marshaler) {
+func (ec *executionContext) _Course_created_at(ctx context.Context, field graphql.CollectedField, obj *model.Course) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -891,7 +891,7 @@ func (ec *executionContext) _Course_createdAt(ctx context.Context, field graphql
 	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Course_updatedAt(ctx context.Context, field graphql.CollectedField, obj *model.Course) (ret graphql.Marshaler) {
+func (ec *executionContext) _Course_updated_at(ctx context.Context, field graphql.CollectedField, obj *model.Course) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -1051,7 +1051,7 @@ func (ec *executionContext) _Course_mustFor(ctx context.Context, field graphql.C
 	return ec.marshalOString2ᚕᚖstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Course_createdBy(ctx context.Context, field graphql.CollectedField, obj *model.Course) (ret graphql.Marshaler) {
+func (ec *executionContext) _Course_created_by(ctx context.Context, field graphql.CollectedField, obj *model.Course) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -1083,7 +1083,7 @@ func (ec *executionContext) _Course_createdBy(ctx context.Context, field graphql
 	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Course_updatedBy(ctx context.Context, field graphql.CollectedField, obj *model.Course) (ret graphql.Marshaler) {
+func (ec *executionContext) _Course_updated_by(ctx context.Context, field graphql.CollectedField, obj *model.Course) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -2585,18 +2585,18 @@ func (ec *executionContext) unmarshalInputCourseInput(ctx context.Context, obj i
 			if err != nil {
 				return it, err
 			}
-		case "createdAt":
+		case "created_at":
 			var err error
 
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAt"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("created_at"))
 			it.CreatedAt, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
-		case "updatedAt":
+		case "updated_at":
 			var err error
 
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAt"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updated_at"))
 			it.UpdatedAt, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -2633,18 +2633,18 @@ func (ec *executionContext) unmarshalInputCourseInput(ctx context.Context, obj i
 			if err != nil {
 				return it, err
 			}
-		case "createdBy":
+		case "created_by":
 			var err error
 
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdBy"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("created_by"))
 			it.CreatedBy, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
-		case "updatedBy":
+		case "updated_by":
 			var err error
 
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedBy"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updated_by"))
 			it.UpdatedBy, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -2764,16 +2764,16 @@ func (ec *executionContext) _Course(ctx context.Context, sel ast.SelectionSet, o
 
 			out.Values[i] = innerFunc(ctx)
 
-		case "createdAt":
+		case "created_at":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Course_createdAt(ctx, field, obj)
+				return ec._Course_created_at(ctx, field, obj)
 			}
 
 			out.Values[i] = innerFunc(ctx)
 
-		case "updatedAt":
+		case "updated_at":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Course_updatedAt(ctx, field, obj)
+				return ec._Course_updated_at(ctx, field, obj)
 			}
 
 			out.Values[i] = innerFunc(ctx)
@@ -2806,16 +2806,16 @@ func (ec *executionContext) _Course(ctx context.Context, sel ast.SelectionSet, o
 
 			out.Values[i] = innerFunc(ctx)
 
-		case "createdBy":
+		case "created_by":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Course_createdBy(ctx, field, obj)
+				return ec._Course_created_by(ctx, field, obj)
 			}
 
 			out.Values[i] = innerFunc(ctx)
 
-		case "updatedBy":
+		case "updated_by":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Course_updatedBy(ctx, field, obj)
+				return ec._Course_updated_by(ctx, field, obj)
 			}
 
 			out.Values[i] = innerFunc(ctx)

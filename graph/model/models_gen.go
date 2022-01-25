@@ -18,14 +18,14 @@ type Course struct {
 	Level        *string   `json:"level"`
 	Language     []*string `json:"language"`
 	Takeaways    []*string `json:"takeaways"`
-	CreatedAt    *string   `json:"createdAt"`
-	UpdatedAt    *string   `json:"updatedAt"`
+	CreatedAt    *string   `json:"created_at"`
+	UpdatedAt    *string   `json:"updated_at"`
 	Type         *string   `json:"type"`
 	Prequisites  []*string `json:"prequisites"`
 	GoodFor      []*string `json:"goodFor"`
 	MustFor      []*string `json:"mustFor"`
-	CreatedBy    *string   `json:"createdBy"`
-	UpdatedBy    *string   `json:"updatedBy"`
+	CreatedBy    *string   `json:"created_by"`
+	UpdatedBy    *string   `json:"updated_by"`
 	Status       *string   `json:"status"`
 }
 
@@ -46,13 +46,13 @@ type CourseInput struct {
 	Level        *string   `json:"level"`
 	Language     []*string `json:"language"`
 	Takeaways    []*string `json:"takeaways"`
-	CreatedAt    *string   `json:"createdAt"`
-	UpdatedAt    *string   `json:"updatedAt"`
+	CreatedAt    *string   `json:"created_at"`
+	UpdatedAt    *string   `json:"updated_at"`
 	Type         *string   `json:"type"`
 	Prequisites  []*string `json:"prequisites"`
 	GoodFor      []*string `json:"goodFor"`
 	MustFor      []*string `json:"mustFor"`
-	CreatedBy    *string   `json:"createdBy"`
-	UpdatedBy    *string   `json:"updatedBy"`
+	CreatedBy    *string   `json:"created_by"`
+	UpdatedBy    *string   `json:"updated_by"`
 	Status       *string   `json:"status"`
 }
