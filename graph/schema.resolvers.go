@@ -53,6 +53,10 @@ func (r *mutationResolver) AddCourseChapter(ctx context.Context, courseID string
 	panic(fmt.Errorf("not implemented"))
 }
 
+func (r *mutationResolver) AddCourseTopic(ctx context.Context, courseID string, topic *model.TopicInput) (*model.Topic, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
 // Mutation returns generated.MutationResolver implementation.
 func (r *Resolver) Mutation() generated.MutationResolver { return &mutationResolver{r} }
 
