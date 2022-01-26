@@ -123,6 +123,29 @@ type Topic {
     created_by: String
     updated_by: String
 }
+
+input TopicContentInput {
+    language: String!
+    topicId: String!
+    startTime: Int
+    duration: Int
+    skipIntro: Boolean
+    nextShowTime: Int
+    fromEndTime: Int
+}
+
+type TopicContent {
+    id: ID
+    language: String!
+    topicId: String!
+    startTime: Int
+    duration: Int
+    skipIntro: Boolean
+    nextShowTime: Int
+    fromEndTime: Int
+    created_at: String
+    updated_at: String
+}
 # define type mutations to add a course  using courseInput
 type Mutation{
     addCourse(course: CourseInput): Course
@@ -131,4 +154,5 @@ type Mutation{
     addCourseModule(courseId: String!, module: ModuleInput): Module
     addCourseChapter(courseId: String!, chapter: ChapterInput): Chapter
     addCourseTopic(courseId: String!, topic: TopicInput): Topic
+    addTopicContent(topicId: String!, topicConent: TopicContentInput): TopicContent
 }

@@ -116,6 +116,29 @@ type Topic struct {
 	UpdatedBy   *string `json:"updated_by"`
 }
 
+type TopicContent struct {
+	ID           *string `json:"id"`
+	Language     string  `json:"language"`
+	TopicID      string  `json:"topicId"`
+	StartTime    *int    `json:"startTime"`
+	Duration     *int    `json:"duration"`
+	SkipIntro    *bool   `json:"skipIntro"`
+	NextShowTime *int    `json:"nextShowTime"`
+	FromEndTime  *int    `json:"fromEndTime"`
+	CreatedAt    *string `json:"created_at"`
+	UpdatedAt    *string `json:"updated_at"`
+}
+
+type TopicContentInput struct {
+	Language     string `json:"language"`
+	TopicID      string `json:"topicId"`
+	StartTime    *int   `json:"startTime"`
+	Duration     *int   `json:"duration"`
+	SkipIntro    *bool  `json:"skipIntro"`
+	NextShowTime *int   `json:"nextShowTime"`
+	FromEndTime  *int   `json:"fromEndTime"`
+}
+
 type TopicInput struct {
 	ID          *string `json:"id"`
 	Name        string  `json:"name"`
