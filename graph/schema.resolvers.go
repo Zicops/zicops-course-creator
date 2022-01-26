@@ -5,7 +5,6 @@ package graph
 
 import (
 	"context"
-	"fmt"
 
 	log "github.com/sirupsen/logrus"
 	"github.com/zicops/zicops-course-creator/graph/generated"
@@ -43,18 +42,28 @@ func (r *mutationResolver) UploadCoursePreviewVideo(ctx context.Context, file mo
 func (r *mutationResolver) AddCourseModule(ctx context.Context, courseID string, module *model.ModuleInput) (*model.Module, error) {
 	resp, err := handlers.ModuleCreate(ctx, courseID, module)
 	if err != nil {
-		log.Errorf("error upload course video: %v", err)
+		log.Errorf("error creating module: %v", err)
 		return nil, err
 	}
 	return resp, nil
 }
 
 func (r *mutationResolver) AddCourseChapter(ctx context.Context, courseID string, chapter *model.ChapterInput) (*model.Chapter, error) {
-	panic(fmt.Errorf("not implemented"))
+	resp, err := handlers.ChapterCreate(ctx, courseID, chapter)
+	if err != nil {
+		log.Errorf("error creating chapter: %v", err)
+		return nil, err
+	}
+	return resp, nil
 }
 
 func (r *mutationResolver) AddCourseTopic(ctx context.Context, courseID string, topic *model.TopicInput) (*model.Topic, error) {
-	panic(fmt.Errorf("not implemented"))
+	resp, err := handlers.TopicCreate(ctx, courseID, topic)
+	if err != nil {
+		log.Errorf("error creating topic: %v", err)
+		return nil, err
+	}
+	return resp, nil
 }
 
 // Mutation returns generated.MutationResolver implementation.
