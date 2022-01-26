@@ -39,6 +39,15 @@ func (r *mutationResolver) UploadCoursePreviewVideo(ctx context.Context, file mo
 	return resp, nil
 }
 
+func (r *mutationResolver) AddCourseModule(ctx context.Context, courseID string, module *model.ModuleInput) (*model.Module, error) {
+	resp, err := handlers.ModuleCreate(ctx, courseID, module)
+	if err != nil {
+		log.Errorf("error upload course video: %v", err)
+		return nil, err
+	}
+	return resp, nil
+}
+
 // Mutation returns generated.MutationResolver implementation.
 func (r *Resolver) Mutation() generated.MutationResolver { return &mutationResolver{r} }
 

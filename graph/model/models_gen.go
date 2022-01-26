@@ -56,3 +56,31 @@ type CourseInput struct {
 	UpdatedBy    *string   `json:"updated_by"`
 	Status       *string   `json:"status"`
 }
+
+type Module struct {
+	ID          *string `json:"id"`
+	Name        string  `json:"name"`
+	IsChapter   bool    `json:"isChapter"`
+	Description string  `json:"description"`
+	CourseID    string  `json:"courseId"`
+	Owner       *string `json:"owner"`
+	CreatedAt   *string `json:"created_at"`
+	UpdatedAt   *string `json:"updated_at"`
+	Level       *string `json:"level"`
+	Sequence    *int    `json:"sequence"`
+	SetGlobal   *bool   `json:"setGlobal"`
+}
+
+type ModuleInput struct {
+	ID          *string `json:"id"`
+	Name        string  `json:"name"`
+	IsChapter   bool    `json:"isChapter"`
+	Description string  `json:"description"`
+	CourseID    string  `json:"courseId"`
+	Owner       *string `json:"owner"`
+	CreatedAt   *string `json:"created_at"`
+	UpdatedAt   *string `json:"updated_at"`
+	Level       *string `json:"level"`
+	Sequence    *int    `json:"sequence"`
+	SetGlobal   *bool   `json:"setGlobal"`
+}

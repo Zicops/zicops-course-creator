@@ -24,6 +24,7 @@ type Course{
     updated_by: String
     status: String
 }
+
 input CourseInput{
     id: ID    
     name: String!
@@ -51,10 +52,37 @@ input CourseFile{
     file: Upload!
     courseId: String!
 }
+input ModuleInput{
+    id: ID
+    name: String!
+    isChapter: Boolean!
+    description: String!
+    courseId: String!
+    owner: String
+    created_at: String
+    updated_at: String
+    level : String
+    sequence: Int
+    setGlobal: Boolean
+}
 
+type Module{
+    id: ID
+    name: String!
+    isChapter: Boolean!
+    description: String!
+    courseId: String!
+    owner: String
+    created_at: String
+    updated_at: String
+    level : String
+    sequence: Int
+    setGlobal: Boolean
+}
 # define type mutations to add a course  using courseInput
 type Mutation{
     addCourse(course: CourseInput): Course
     uploadCourseImage(file: CourseFile!): Boolean
     uploadCoursePreviewVideo(file: CourseFile!): Boolean
+    addCourseModule(courseId: String!, module: ModuleInput): Module
 }
