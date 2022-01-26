@@ -6,6 +6,28 @@ import (
 	"github.com/99designs/gqlgen/graphql"
 )
 
+type Chapter struct {
+	ID          *string `json:"id"`
+	Name        string  `json:"name"`
+	Description string  `json:"description"`
+	ModuleID    *string `json:"moduleId"`
+	CourseID    string  `json:"courseId"`
+	CreatedAt   *string `json:"created_at"`
+	UpdatedAt   *string `json:"updated_at"`
+	Sequence    *int    `json:"sequence"`
+}
+
+type ChapterInput struct {
+	ID          *string `json:"id"`
+	Name        string  `json:"name"`
+	Description string  `json:"description"`
+	ModuleID    *string `json:"moduleId"`
+	CourseID    string  `json:"courseId"`
+	CreatedAt   *string `json:"created_at"`
+	UpdatedAt   *string `json:"updated_at"`
+	Sequence    *int    `json:"sequence"`
+}
+
 type Course struct {
 	ID           *string   `json:"id"`
 	Name         string    `json:"name"`

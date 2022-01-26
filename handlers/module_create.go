@@ -13,7 +13,7 @@ import (
 )
 
 func ModuleCreate(ctx context.Context, courseID string, module *model.ModuleInput) (*model.Module, error) {
-	log.Info("TopicCreate called")
+	log.Info("ModuleCreate called")
 	guid := xid.New()
 	cassandraModule := coursez.Module{
 		ID:          guid.String(),

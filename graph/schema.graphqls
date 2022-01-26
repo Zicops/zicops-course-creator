@@ -79,10 +79,33 @@ type Module{
     sequence: Int
     setGlobal: Boolean
 }
+
+input ChapterInput {
+    id: ID
+    name: String!
+    description: String!
+    moduleId: String
+    courseId: String!
+    created_at: String
+    updated_at: String
+    sequence: Int
+}
+
+type Chapter {
+    id: ID
+    name: String!
+    description: String!
+    moduleId: String
+    courseId: String!
+    created_at: String
+    updated_at: String
+    sequence: Int
+}
 # define type mutations to add a course  using courseInput
 type Mutation{
     addCourse(course: CourseInput): Course
     uploadCourseImage(file: CourseFile!): Boolean
     uploadCoursePreviewVideo(file: CourseFile!): Boolean
     addCourseModule(courseId: String!, module: ModuleInput): Module
+    addCourseChapter(courseId: String!, chapter: ChapterInput): Chapter
 }
