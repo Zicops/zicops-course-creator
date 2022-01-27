@@ -50,7 +50,7 @@ type Course struct {
 	MustFor      []*string `json:"mustFor"`
 	CreatedBy    *string   `json:"created_by"`
 	UpdatedBy    *string   `json:"updated_by"`
-	Status       *string   `json:"status"`
+	Status       Status    `json:"status"`
 }
 
 type CourseFile struct {
@@ -76,7 +76,7 @@ type CourseInput struct {
 	MustFor      []*string `json:"mustFor"`
 	CreatedBy    *string   `json:"created_by"`
 	UpdatedBy    *string   `json:"updated_by"`
-	Status       *string   `json:"status"`
+	Status       Status    `json:"status"`
 }
 
 type Module struct {
@@ -166,6 +166,55 @@ type TopicVideo struct {
 	File     graphql.Upload `json:"file"`
 	CourseID string         `json:"courseId"`
 	TopicID  string         `json:"topicId"`
+}
+
+type Status string
+
+const (
+	StatusSaved           Status = "SAVED"
+	StatusApprovalPending Status = "APPROVAL_PENDING"
+	StatusOnHold          Status = "ON_HOLD"
+	StatusApproved        Status = "APPROVED"
+	StatusPublsihed       Status = "PUBLSIHED"
+	StatusRejected        Status = "REJECTED"
+)
+
+var AllStatus = []Status{
+	StatusSaved,
+	StatusApprovalPending,
+	StatusOnHold,
+	StatusApproved,
+	StatusPublsihed,
+	StatusRejected,
+}
+
+func (e Status) IsValid() bool {
+	switch e {
+	case StatusSaved, StatusApprovalPending, StatusOnHold, StatusApproved, StatusPublsihed, StatusRejected:
+		return true
+	}
+	return false
+}
+
+func (e Status) String() string {
+	return string(e)
+}
+
+func (e *Status) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = Status(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid Status", str)
+	}
+	return nil
+}
+
+func (e Status) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(e.String()))
 }
 
 type Type string

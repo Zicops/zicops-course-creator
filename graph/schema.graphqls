@@ -22,7 +22,16 @@ type Course{
     mustFor: [String]
     created_by: String
     updated_by: String
-    status: String
+    status: Status!
+}
+
+enum Status {
+    SAVED
+    APPROVAL_PENDING
+    ON_HOLD
+    APPROVED
+    PUBLSIHED
+    REJECTED
 }
 
 input CourseInput{
@@ -43,7 +52,7 @@ input CourseInput{
     mustFor: [String]
     created_by: String
     updated_by: String
-    status: String
+    status: Status!
 }
 
 input CourseFile{

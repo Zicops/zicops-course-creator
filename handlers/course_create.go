@@ -76,9 +76,8 @@ func CourseCreator(ctx context.Context, courseInput *model.CourseInput) (*model.
 	if courseInput.UpdatedBy != nil {
 		cassandraCourse.UpdatedBy = *courseInput.UpdatedBy
 	}
-	if courseInput.Status != nil {
-		cassandraCourse.Status = *courseInput.Status
-	}
+
+	cassandraCourse.Status = courseInput.Status.String()
 
 	// set course in cassandra
 	insertQuery := global.CassSession.Session.Query(coursez.CourseTable.Insert()).BindStruct(cassandraCourse)
