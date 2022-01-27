@@ -121,7 +121,6 @@ type ComplexityRoot struct {
 		CreatedAt    func(childComplexity int) int
 		Duration     func(childComplexity int) int
 		FromEndTime  func(childComplexity int) int
-		ID           func(childComplexity int) int
 		Language     func(childComplexity int) int
 		NextShowTime func(childComplexity int) int
 		SkipIntro    func(childComplexity int) int
@@ -618,13 +617,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.TopicContent.FromEndTime(childComplexity), true
 
-	case "TopicContent.id":
-		if e.complexity.TopicContent.ID == nil {
-			break
-		}
-
-		return e.complexity.TopicContent.ID(childComplexity), true
-
 	case "TopicContent.language":
 		if e.complexity.TopicContent.Language == nil {
 			break
@@ -868,7 +860,6 @@ input TopicContentInput {
 }
 
 type TopicContent {
-    id: ID
     language: String!
     topicId: String!
     startTime: Int
@@ -3104,38 +3095,6 @@ func (ec *executionContext) _Topic_updated_by(ctx context.Context, field graphql
 	res := resTmp.(*string)
 	fc.Result = res
 	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _TopicContent_id(ctx context.Context, field graphql.CollectedField, obj *model.TopicContent) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "TopicContent",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.ID, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*string)
-	fc.Result = res
-	return ec.marshalOID2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _TopicContent_language(ctx context.Context, field graphql.CollectedField, obj *model.TopicContent) (ret graphql.Marshaler) {
@@ -5681,13 +5640,6 @@ func (ec *executionContext) _TopicContent(ctx context.Context, sel ast.Selection
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("TopicContent")
-		case "id":
-			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._TopicContent_id(ctx, field, obj)
-			}
-
-			out.Values[i] = innerFunc(ctx)
-
 		case "language":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._TopicContent_language(ctx, field, obj)

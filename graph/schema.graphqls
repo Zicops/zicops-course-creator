@@ -135,7 +135,6 @@ input TopicContentInput {
 }
 
 type TopicContent {
-    id: ID
     language: String!
     topicId: String!
     startTime: Int

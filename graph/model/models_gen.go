@@ -117,7 +117,6 @@ type Topic struct {
 }
 
 type TopicContent struct {
-	ID           *string `json:"id"`
 	Language     string  `json:"language"`
 	TopicID      string  `json:"topicId"`
 	StartTime    *int    `json:"startTime"`
