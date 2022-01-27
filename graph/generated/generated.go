@@ -97,6 +97,7 @@ type ComplexityRoot struct {
 		AddTopicContent          func(childComplexity int, topicID string, topicConent *model.TopicContentInput) int
 		UploadCourseImage        func(childComplexity int, file model.CourseFile) int
 		UploadCoursePreviewVideo func(childComplexity int, file model.CourseFile) int
+		UploadTopicContentVideo  func(childComplexity int, file model.TopicVideo) int
 	}
 
 	Query struct {
@@ -138,6 +139,7 @@ type MutationResolver interface {
 	AddCourseChapter(ctx context.Context, courseID string, chapter *model.ChapterInput) (*model.Chapter, error)
 	AddCourseTopic(ctx context.Context, courseID string, topic *model.TopicInput) (*model.Topic, error)
 	AddTopicContent(ctx context.Context, topicID string, topicConent *model.TopicContentInput) (*model.TopicContent, error)
+	UploadTopicContentVideo(ctx context.Context, file model.TopicVideo) (*bool, error)
 }
 
 type executableSchema struct {
@@ -512,6 +514,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.UploadCoursePreviewVideo(childComplexity, args["file"].(model.CourseFile)), true
 
+	case "Mutation.uploadTopicContentVideo":
+		if e.complexity.Mutation.UploadTopicContentVideo == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_uploadTopicContentVideo_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UploadTopicContentVideo(childComplexity, args["file"].(model.TopicVideo)), true
+
 	case "Topic.chapterId":
 		if e.complexity.Topic.ChapterID == nil {
 			break
@@ -870,6 +884,13 @@ type TopicContent {
     created_at: String
     updated_at: String
 }
+
+input TopicVideo{
+    file: Upload!
+    courseId: String!
+    topicId: String!
+}
+
 # define type mutations to add a course  using courseInput
 type Mutation{
     addCourse(course: CourseInput): Course
@@ -879,6 +900,7 @@ type Mutation{
     addCourseChapter(courseId: String!, chapter: ChapterInput): Chapter
     addCourseTopic(courseId: String!, topic: TopicInput): Topic
     addTopicContent(topicId: String!, topicConent: TopicContentInput): TopicContent
+    uploadTopicContentVideo(file: TopicVideo!): Boolean
 }
 `, BuiltIn: false},
 }
@@ -1021,6 +1043,21 @@ func (ec *executionContext) field_Mutation_uploadCoursePreviewVideo_args(ctx con
 	if tmp, ok := rawArgs["file"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("file"))
 		arg0, err = ec.unmarshalNCourseFile2githubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐCourseFile(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["file"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_uploadTopicContentVideo_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 model.TopicVideo
+	if tmp, ok := rawArgs["file"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("file"))
+		arg0, err = ec.unmarshalNTopicVideo2githubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐTopicVideo(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -2628,6 +2665,45 @@ func (ec *executionContext) _Mutation_addTopicContent(ctx context.Context, field
 	res := resTmp.(*model.TopicContent)
 	fc.Result = res
 	return ec.marshalOTopicContent2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐTopicContent(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_uploadTopicContentVideo(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_uploadTopicContentVideo_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().UploadTopicContentVideo(rctx, args["file"].(model.TopicVideo))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*bool)
+	fc.Result = res
+	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query___type(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -5019,6 +5095,45 @@ func (ec *executionContext) unmarshalInputTopicInput(ctx context.Context, obj in
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputTopicVideo(ctx context.Context, obj interface{}) (model.TopicVideo, error) {
+	var it model.TopicVideo
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	for k, v := range asMap {
+		switch k {
+		case "file":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("file"))
+			it.File, err = ec.unmarshalNUpload2githubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚐUpload(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "courseId":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("courseId"))
+			it.CourseID, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "topicId":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("topicId"))
+			it.TopicID, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
 // endregion **************************** input.gotpl *****************************
 
 // region    ************************** interface.gotpl ***************************
@@ -5454,6 +5569,13 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 		case "addTopicContent":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_addTopicContent(ctx, field)
+			}
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, innerFunc)
+
+		case "uploadTopicContentVideo":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_uploadTopicContentVideo(ctx, field)
 			}
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, innerFunc)
@@ -6162,6 +6284,11 @@ func (ec *executionContext) marshalNString2string(ctx context.Context, sel ast.S
 		}
 	}
 	return res
+}
+
+func (ec *executionContext) unmarshalNTopicVideo2githubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐTopicVideo(ctx context.Context, v interface{}) (model.TopicVideo, error) {
+	res, err := ec.unmarshalInputTopicVideo(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) unmarshalNUpload2githubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚐUpload(ctx context.Context, v interface{}) (graphql.Upload, error) {

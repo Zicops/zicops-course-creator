@@ -5,6 +5,7 @@ package graph
 
 import (
 	"context"
+	"fmt"
 
 	log "github.com/sirupsen/logrus"
 	"github.com/zicops/zicops-course-creator/graph/generated"
@@ -73,6 +74,10 @@ func (r *mutationResolver) AddTopicContent(ctx context.Context, topicID string, 
 		return nil, err
 	}
 	return resp, nil
+}
+
+func (r *mutationResolver) UploadTopicContentVideo(ctx context.Context, file model.TopicVideo) (*bool, error) {
+	panic(fmt.Errorf("not implemented"))
 }
 
 // Mutation returns generated.MutationResolver implementation.

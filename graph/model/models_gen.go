@@ -150,3 +150,9 @@ type TopicInput struct {
 	CreatedBy   *string `json:"created_by"`
 	UpdatedBy   *string `json:"updated_by"`
 }
+
+type TopicVideo struct {
+	File     graphql.Upload `json:"file"`
+	CourseID string         `json:"courseId"`
+	TopicID  string         `json:"topicId"`
+}

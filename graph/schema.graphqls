@@ -145,6 +145,13 @@ type TopicContent {
     created_at: String
     updated_at: String
 }
+
+input TopicVideo{
+    file: Upload!
+    courseId: String!
+    topicId: String!
+}
+
 # define type mutations to add a course  using courseInput
 type Mutation{
     addCourse(course: CourseInput): Course
@@ -154,4 +161,5 @@ type Mutation{
     addCourseChapter(courseId: String!, chapter: ChapterInput): Chapter
     addCourseTopic(courseId: String!, topic: TopicInput): Topic
     addTopicContent(topicId: String!, topicConent: TopicContentInput): TopicContent
+    uploadTopicContentVideo(file: TopicVideo!): Boolean
 }
