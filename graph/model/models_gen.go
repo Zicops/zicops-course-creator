@@ -3,6 +3,10 @@
 package model
 
 import (
+	"fmt"
+	"io"
+	"strconv"
+
 	"github.com/99designs/gqlgen/graphql"
 )
 
@@ -101,6 +105,13 @@ type ModuleInput struct {
 	SetGlobal   *bool   `json:"setGlobal"`
 }
 
+type StaticContent struct {
+	Type     Type           `json:"type"`
+	File     graphql.Upload `json:"file"`
+	CourseID string         `json:"courseId"`
+	TopicID  string         `json:"topicId"`
+}
+
 type Topic struct {
 	ID          *string `json:"id"`
 	Name        string  `json:"name"`
@@ -155,4 +166,45 @@ type TopicVideo struct {
 	File     graphql.Upload `json:"file"`
 	CourseID string         `json:"courseId"`
 	TopicID  string         `json:"topicId"`
+}
+
+type Type string
+
+const (
+	TypeScrom  Type = "SCROM"
+	TypeTincan Type = "TINCAN"
+)
+
+var AllType = []Type{
+	TypeScrom,
+	TypeTincan,
+}
+
+func (e Type) IsValid() bool {
+	switch e {
+	case TypeScrom, TypeTincan:
+		return true
+	}
+	return false
+}
+
+func (e Type) String() string {
+	return string(e)
+}
+
+func (e *Type) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = Type(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid Type", str)
+	}
+	return nil
+}
+
+func (e Type) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(e.String()))
 }

@@ -152,6 +152,17 @@ input TopicVideo{
     topicId: String!
 }
 
+input StaticContent{
+    type: Type!
+    file: Upload!
+    courseId: String!
+    topicId: String!
+}
+# enum Type 
+enum Type {
+    SCROM
+    TINCAN
+}
 # define type mutations to add a course  using courseInput
 type Mutation{
     addCourse(course: CourseInput): Course
@@ -162,4 +173,5 @@ type Mutation{
     addCourseTopic(courseId: String!, topic: TopicInput): Topic
     addTopicContent(topicId: String!, topicConent: TopicContentInput): TopicContent
     uploadTopicContentVideo(file: TopicVideo!): Boolean
+    uploadTopicStaticContent(file: StaticContent!): Boolean
 }
