@@ -16,8 +16,6 @@ import (
 	"github.com/zicops/zicops-course-creator/lib/db/cassandra"
 )
 
-const defaultPort = "8080"
-
 func main() {
 	//os.Setenv("GOOGLE_APPLICATION_CREDENTIALS", "zicops-cc.json")
 	log.Infof("Starting zicops course creator service")
