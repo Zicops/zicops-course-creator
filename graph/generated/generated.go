@@ -70,6 +70,7 @@ type ComplexityRoot struct {
 		PreviewVideo func(childComplexity int) int
 		Status       func(childComplexity int) int
 		Takeaways    func(childComplexity int) int
+		TileImage    func(childComplexity int) int
 		Type         func(childComplexity int) int
 		UpdatedAt    func(childComplexity int) int
 		UpdatedBy    func(childComplexity int) int
@@ -79,6 +80,7 @@ type ComplexityRoot struct {
 		CourseID    func(childComplexity int) int
 		CreatedAt   func(childComplexity int) int
 		Description func(childComplexity int) int
+		Duration    func(childComplexity int) int
 		ID          func(childComplexity int) int
 		IsChapter   func(childComplexity int) int
 		Level       func(childComplexity int) int
@@ -97,6 +99,7 @@ type ComplexityRoot struct {
 		AddTopicContent          func(childComplexity int, topicID string, topicConent *model.TopicContentInput) int
 		UploadCourseImage        func(childComplexity int, file model.CourseFile) int
 		UploadCoursePreviewVideo func(childComplexity int, file model.CourseFile) int
+		UploadCourseTileImage    func(childComplexity int, file model.CourseFile) int
 		UploadTopicContentVideo  func(childComplexity int, file model.TopicVideo) int
 		UploadTopicStaticContent func(childComplexity int, file model.StaticContent) int
 	}
@@ -136,6 +139,7 @@ type MutationResolver interface {
 	AddCourse(ctx context.Context, course *model.CourseInput) (*model.Course, error)
 	UploadCourseImage(ctx context.Context, file model.CourseFile) (*bool, error)
 	UploadCoursePreviewVideo(ctx context.Context, file model.CourseFile) (*bool, error)
+	UploadCourseTileImage(ctx context.Context, file model.CourseFile) (*bool, error)
 	AddCourseModule(ctx context.Context, courseID string, module *model.ModuleInput) (*model.Module, error)
 	AddCourseChapter(ctx context.Context, courseID string, chapter *model.ChapterInput) (*model.Chapter, error)
 	AddCourseTopic(ctx context.Context, courseID string, topic *model.TopicInput) (*model.Topic, error)
@@ -334,6 +338,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Course.Takeaways(childComplexity), true
 
+	case "Course.tileImage":
+		if e.complexity.Course.TileImage == nil {
+			break
+		}
+
+		return e.complexity.Course.TileImage(childComplexity), true
+
 	case "Course.type":
 		if e.complexity.Course.Type == nil {
 			break
@@ -375,6 +386,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Module.Description(childComplexity), true
+
+	case "Module.duration":
+		if e.complexity.Module.Duration == nil {
+			break
+		}
+
+		return e.complexity.Module.Duration(childComplexity), true
 
 	case "Module.id":
 		if e.complexity.Module.ID == nil {
@@ -515,6 +533,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.UploadCoursePreviewVideo(childComplexity, args["file"].(model.CourseFile)), true
+
+	case "Mutation.uploadCourseTileImage":
+		if e.complexity.Mutation.UploadCourseTileImage == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_uploadCourseTileImage_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UploadCourseTileImage(childComplexity, args["file"].(model.CourseFile)), true
 
 	case "Mutation.uploadTopicContentVideo":
 		if e.complexity.Mutation.UploadTopicContentVideo == nil {
@@ -762,6 +792,7 @@ type Course{
     instructor: String
     image: String
     previewVideo: String
+    tileImage: String
     owner: String
     duration: Int
     level: String
@@ -794,6 +825,7 @@ input CourseInput{
     instructor: String
     image: String
     previewVideo: String
+    tileImage: String
     owner: String
     duration: Int
     level: String
@@ -819,6 +851,7 @@ input ModuleInput{
     description: String!
     courseId: String!
     owner: String
+    duration: Int
     level : String
     sequence: Int
     setGlobal: Boolean
@@ -831,6 +864,7 @@ type Module{
     description: String!
     courseId: String!
     owner: String
+    duration: Int
     created_at: String
     updated_at: String
     level : String
@@ -924,12 +958,15 @@ input StaticContent{
 enum Type {
     SCROM
     TINCAN
+    CMI5
+    HTML5
 }
 # define type mutations to add a course  using courseInput
 type Mutation{
     addCourse(course: CourseInput): Course
     uploadCourseImage(file: CourseFile!): Boolean
     uploadCoursePreviewVideo(file: CourseFile!): Boolean
+    uploadCourseTileImage(file: CourseFile!): Boolean
     addCourseModule(courseId: String!, module: ModuleInput): Module
     addCourseChapter(courseId: String!, chapter: ChapterInput): Chapter
     addCourseTopic(courseId: String!, topic: TopicInput): Topic
@@ -1072,6 +1109,21 @@ func (ec *executionContext) field_Mutation_uploadCourseImage_args(ctx context.Co
 }
 
 func (ec *executionContext) field_Mutation_uploadCoursePreviewVideo_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 model.CourseFile
+	if tmp, ok := rawArgs["file"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("file"))
+		arg0, err = ec.unmarshalNCourseFile2githubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐCourseFile(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["file"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_uploadCourseTileImage_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 model.CourseFile
@@ -1619,6 +1671,38 @@ func (ec *executionContext) _Course_previewVideo(ctx context.Context, field grap
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.PreviewVideo, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Course_tileImage(ctx context.Context, field graphql.CollectedField, obj *model.Course) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Course",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.TileImage, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2287,6 +2371,38 @@ func (ec *executionContext) _Module_owner(ctx context.Context, field graphql.Col
 	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _Module_duration(ctx context.Context, field graphql.CollectedField, obj *model.Module) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Module",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Duration, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*int)
+	fc.Result = res
+	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _Module_created_at(ctx context.Context, field graphql.CollectedField, obj *model.Module) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -2551,6 +2667,45 @@ func (ec *executionContext) _Mutation_uploadCoursePreviewVideo(ctx context.Conte
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Mutation().UploadCoursePreviewVideo(rctx, args["file"].(model.CourseFile))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*bool)
+	fc.Result = res
+	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_uploadCourseTileImage(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_uploadCourseTileImage_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().UploadCourseTileImage(rctx, args["file"].(model.CourseFile))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4832,6 +4987,14 @@ func (ec *executionContext) unmarshalInputCourseInput(ctx context.Context, obj i
 			if err != nil {
 				return it, err
 			}
+		case "tileImage":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tileImage"))
+			it.TileImage, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
 		case "owner":
 			var err error
 
@@ -4988,6 +5151,14 @@ func (ec *executionContext) unmarshalInputModuleInput(ctx context.Context, obj i
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("owner"))
 			it.Owner, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "duration":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("duration"))
+			it.Duration, err = ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -5425,6 +5596,13 @@ func (ec *executionContext) _Course(ctx context.Context, sel ast.SelectionSet, o
 
 			out.Values[i] = innerFunc(ctx)
 
+		case "tileImage":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Course_tileImage(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
 		case "owner":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Course_owner(ctx, field, obj)
@@ -5601,6 +5779,13 @@ func (ec *executionContext) _Module(ctx context.Context, sel ast.SelectionSet, o
 
 			out.Values[i] = innerFunc(ctx)
 
+		case "duration":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Module_duration(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
 		case "created_at":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Module_created_at(ctx, field, obj)
@@ -5683,6 +5868,13 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 		case "uploadCoursePreviewVideo":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_uploadCoursePreviewVideo(ctx, field)
+			}
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, innerFunc)
+
+		case "uploadCourseTileImage":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_uploadCourseTileImage(ctx, field)
 			}
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, innerFunc)

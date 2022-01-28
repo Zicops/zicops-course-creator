@@ -51,6 +51,10 @@ func CourseCreator(ctx context.Context, courseInput *model.CourseInput) (*model.
 		Instructor:   "",
 		Image:        "https://storage.googleapis.com/zicops.com/school-board-ge1701ca8f_640.jpg",
 		PreviewVideo: "https://storage.googleapis.com/zicops.com/school-board-ge1701ca8f_640.jpg",
+		TileImage:   "https://storage.googleapis.com/zicops.com/school-board-ge1701ca8f_640.jpg",
+		TileImageBucket: "",
+		ImageBucket: "",
+		PreviewVideoBucket: "",
 		Duration:     0,
 		Language:     language,
 		TakeAways:    takeaways,
@@ -175,6 +179,42 @@ func UploadCoursePreviewVideo(ctx context.Context, file model.CourseFile) (*bool
 	getUrl := storageC.GetSignedURLForObject(bucketPath)
 	// update course image in cassandra
 	updateQuery := global.CassSession.Session.Query(coursez.CourseTable.Update("previewVideoBucket", "previewVideo")).BindMap(qb.M{"id": file.CourseID, "previewVideoBucket": bucketPath, "previewVideo": getUrl})
+	if err := updateQuery.ExecRelease(); err != nil {
+		return &isSuccess, err
+	}
+	isSuccess = true
+	return &isSuccess, nil
+}
+
+func UploadCourseTileImage(ctx context.Context, file model.CourseFile) (*bool, error) {
+	log.Info("UploadCourseTileImage called")
+	isSuccess := false
+	storageC := bucket.NewStorageHandler()
+	gproject := googleprojectlib.GetGoogleProjectID()
+	err := storageC.InitializeStorageClient(ctx, gproject)
+	if err != nil {
+		log.Errorf("Failed to upload image to course: %v", err.Error())
+		return &isSuccess, nil
+	}
+	bucketPath := file.CourseID + "/" + file.File.Filename
+	writer, err := storageC.UploadToGCS(ctx, bucketPath)
+	if err != nil {
+		log.Errorf("Failed to upload image to course: %v", err.Error())
+		return &isSuccess, nil
+	}
+	defer writer.Close()
+	fileBuffer := bytes.NewBuffer(nil)
+	if _, err := io.Copy(fileBuffer, file.File.File); err != nil {
+		return &isSuccess, nil
+	}
+	currentBytes := fileBuffer.Bytes()
+	_, err = io.Copy(writer, bytes.NewReader(currentBytes))
+	if err != nil {
+		return &isSuccess, err
+	}
+	getUrl := storageC.GetSignedURLForObject(bucketPath)
+	// update course image in cassandra
+	updateQuery := global.CassSession.Session.Query(coursez.CourseTable.Update("tileImageBucket", "tileImage")).BindMap(qb.M{"id": file.CourseID, "tileImageBucket": bucketPath, "tileImage": getUrl})
 	if err := updateQuery.ExecRelease(); err != nil {
 		return &isSuccess, err
 	}

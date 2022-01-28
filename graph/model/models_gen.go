@@ -37,6 +37,7 @@ type Course struct {
 	Instructor   *string   `json:"instructor"`
 	Image        *string   `json:"image"`
 	PreviewVideo *string   `json:"previewVideo"`
+	TileImage    *string   `json:"tileImage"`
 	Owner        *string   `json:"owner"`
 	Duration     *int      `json:"duration"`
 	Level        *string   `json:"level"`
@@ -65,6 +66,7 @@ type CourseInput struct {
 	Instructor   *string   `json:"instructor"`
 	Image        *string   `json:"image"`
 	PreviewVideo *string   `json:"previewVideo"`
+	TileImage    *string   `json:"tileImage"`
 	Owner        *string   `json:"owner"`
 	Duration     *int      `json:"duration"`
 	Level        *string   `json:"level"`
@@ -86,6 +88,7 @@ type Module struct {
 	Description string  `json:"description"`
 	CourseID    string  `json:"courseId"`
 	Owner       *string `json:"owner"`
+	Duration    *int    `json:"duration"`
 	CreatedAt   *string `json:"created_at"`
 	UpdatedAt   *string `json:"updated_at"`
 	Level       *string `json:"level"`
@@ -100,6 +103,7 @@ type ModuleInput struct {
 	Description string  `json:"description"`
 	CourseID    string  `json:"courseId"`
 	Owner       *string `json:"owner"`
+	Duration    *int    `json:"duration"`
 	Level       *string `json:"level"`
 	Sequence    *int    `json:"sequence"`
 	SetGlobal   *bool   `json:"setGlobal"`
@@ -222,16 +226,20 @@ type Type string
 const (
 	TypeScrom  Type = "SCROM"
 	TypeTincan Type = "TINCAN"
+	TypeCmi5   Type = "CMI5"
+	TypeHTML5  Type = "HTML5"
 )
 
 var AllType = []Type{
 	TypeScrom,
 	TypeTincan,
+	TypeCmi5,
+	TypeHTML5,
 }
 
 func (e Type) IsValid() bool {
 	switch e {
-	case TypeScrom, TypeTincan:
+	case TypeScrom, TypeTincan, TypeCmi5, TypeHTML5:
 		return true
 	}
 	return false

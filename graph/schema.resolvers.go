@@ -39,6 +39,15 @@ func (r *mutationResolver) UploadCoursePreviewVideo(ctx context.Context, file mo
 	return resp, nil
 }
 
+func (r *mutationResolver) UploadCourseTileImage(ctx context.Context, file model.CourseFile) (*bool, error) {
+	resp, err := handlers.UploadCourseTileImage(ctx, file)
+	if err != nil {
+		log.Errorf("error upload course tile image: %v", err)
+		return nil, err
+	}
+	return resp, nil
+}
+
 func (r *mutationResolver) AddCourseModule(ctx context.Context, courseID string, module *model.ModuleInput) (*model.Module, error) {
 	resp, err := handlers.ModuleCreate(ctx, courseID, module)
 	if err != nil {

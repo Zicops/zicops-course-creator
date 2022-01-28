@@ -9,6 +9,7 @@ type Course{
     instructor: String
     image: String
     previewVideo: String
+    tileImage: String
     owner: String
     duration: Int
     level: String
@@ -41,6 +42,7 @@ input CourseInput{
     instructor: String
     image: String
     previewVideo: String
+    tileImage: String
     owner: String
     duration: Int
     level: String
@@ -66,6 +68,7 @@ input ModuleInput{
     description: String!
     courseId: String!
     owner: String
+    duration: Int
     level : String
     sequence: Int
     setGlobal: Boolean
@@ -78,6 +81,7 @@ type Module{
     description: String!
     courseId: String!
     owner: String
+    duration: Int
     created_at: String
     updated_at: String
     level : String
@@ -171,12 +175,15 @@ input StaticContent{
 enum Type {
     SCROM
     TINCAN
+    CMI5
+    HTML5
 }
 # define type mutations to add a course  using courseInput
 type Mutation{
     addCourse(course: CourseInput): Course
     uploadCourseImage(file: CourseFile!): Boolean
     uploadCoursePreviewVideo(file: CourseFile!): Boolean
+    uploadCourseTileImage(file: CourseFile!): Boolean
     addCourseModule(courseId: String!, module: ModuleInput): Module
     addCourseChapter(courseId: String!, chapter: ChapterInput): Chapter
     addCourseTopic(courseId: String!, topic: TopicInput): Topic
