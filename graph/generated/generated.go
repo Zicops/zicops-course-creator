@@ -97,6 +97,11 @@ type ComplexityRoot struct {
 		AddCourseModule          func(childComplexity int, courseID string, module *model.ModuleInput) int
 		AddCourseTopic           func(childComplexity int, courseID string, topic *model.TopicInput) int
 		AddTopicContent          func(childComplexity int, topicID string, topicConent *model.TopicContentInput) int
+		UpdateCourse             func(childComplexity int, course *model.CourseInput) int
+		UpdateCourseChapter      func(childComplexity int, chapter *model.ChapterInput) int
+		UpdateCourseModule       func(childComplexity int, module *model.ModuleInput) int
+		UpdateCourseTopic        func(childComplexity int, topic *model.TopicInput) int
+		UpdateTopicContent       func(childComplexity int, topicContent *model.TopicContentInput) int
 		UploadCourseImage        func(childComplexity int, file model.CourseFile) int
 		UploadCoursePreviewVideo func(childComplexity int, file model.CourseFile) int
 		UploadCourseTileImage    func(childComplexity int, file model.CourseFile) int
@@ -137,13 +142,18 @@ type ComplexityRoot struct {
 
 type MutationResolver interface {
 	AddCourse(ctx context.Context, course *model.CourseInput) (*model.Course, error)
+	UpdateCourse(ctx context.Context, course *model.CourseInput) (*model.Course, error)
 	UploadCourseImage(ctx context.Context, file model.CourseFile) (*bool, error)
 	UploadCoursePreviewVideo(ctx context.Context, file model.CourseFile) (*bool, error)
 	UploadCourseTileImage(ctx context.Context, file model.CourseFile) (*bool, error)
 	AddCourseModule(ctx context.Context, courseID string, module *model.ModuleInput) (*model.Module, error)
+	UpdateCourseModule(ctx context.Context, module *model.ModuleInput) (*model.Module, error)
 	AddCourseChapter(ctx context.Context, courseID string, chapter *model.ChapterInput) (*model.Chapter, error)
+	UpdateCourseChapter(ctx context.Context, chapter *model.ChapterInput) (*model.Chapter, error)
 	AddCourseTopic(ctx context.Context, courseID string, topic *model.TopicInput) (*model.Topic, error)
+	UpdateCourseTopic(ctx context.Context, topic *model.TopicInput) (*model.Topic, error)
 	AddTopicContent(ctx context.Context, topicID string, topicConent *model.TopicContentInput) (*model.TopicContent, error)
+	UpdateTopicContent(ctx context.Context, topicContent *model.TopicContentInput) (*model.TopicContent, error)
 	UploadTopicContentVideo(ctx context.Context, file model.TopicVideo) (*bool, error)
 	UploadTopicStaticContent(ctx context.Context, file model.StaticContent) (*bool, error)
 }
@@ -509,6 +519,66 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.AddTopicContent(childComplexity, args["topicId"].(string), args["topicConent"].(*model.TopicContentInput)), true
+
+	case "Mutation.updateCourse":
+		if e.complexity.Mutation.UpdateCourse == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_updateCourse_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdateCourse(childComplexity, args["course"].(*model.CourseInput)), true
+
+	case "Mutation.updateCourseChapter":
+		if e.complexity.Mutation.UpdateCourseChapter == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_updateCourseChapter_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdateCourseChapter(childComplexity, args["chapter"].(*model.ChapterInput)), true
+
+	case "Mutation.updateCourseModule":
+		if e.complexity.Mutation.UpdateCourseModule == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_updateCourseModule_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdateCourseModule(childComplexity, args["module"].(*model.ModuleInput)), true
+
+	case "Mutation.updateCourseTopic":
+		if e.complexity.Mutation.UpdateCourseTopic == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_updateCourseTopic_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdateCourseTopic(childComplexity, args["topic"].(*model.TopicInput)), true
+
+	case "Mutation.updateTopicContent":
+		if e.complexity.Mutation.UpdateTopicContent == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_updateTopicContent_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdateTopicContent(childComplexity, args["topicContent"].(*model.TopicContentInput)), true
 
 	case "Mutation.uploadCourseImage":
 		if e.complexity.Mutation.UploadCourseImage == nil {
@@ -964,13 +1034,18 @@ enum Type {
 # define type mutations to add a course  using courseInput
 type Mutation{
     addCourse(course: CourseInput): Course
+    updateCourse(course: CourseInput): Course
     uploadCourseImage(file: CourseFile!): Boolean
     uploadCoursePreviewVideo(file: CourseFile!): Boolean
     uploadCourseTileImage(file: CourseFile!): Boolean
     addCourseModule(courseId: String!, module: ModuleInput): Module
+    updateCourseModule(module: ModuleInput): Module
     addCourseChapter(courseId: String!, chapter: ChapterInput): Chapter
+    updateCourseChapter(chapter: ChapterInput): Chapter
     addCourseTopic(courseId: String!, topic: TopicInput): Topic
+    updateCourseTopic(topic: TopicInput): Topic
     addTopicContent(topicId: String!, topicConent: TopicContentInput): TopicContent
+    updateTopicContent(topicContent: TopicContentInput): TopicContent
     uploadTopicContentVideo(file: TopicVideo!): Boolean
     uploadTopicStaticContent(file: StaticContent!): Boolean
 }
@@ -1090,6 +1165,81 @@ func (ec *executionContext) field_Mutation_addTopicContent_args(ctx context.Cont
 		}
 	}
 	args["topicConent"] = arg1
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_updateCourseChapter_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 *model.ChapterInput
+	if tmp, ok := rawArgs["chapter"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("chapter"))
+		arg0, err = ec.unmarshalOChapterInput2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐChapterInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["chapter"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_updateCourseModule_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 *model.ModuleInput
+	if tmp, ok := rawArgs["module"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("module"))
+		arg0, err = ec.unmarshalOModuleInput2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐModuleInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["module"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_updateCourseTopic_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 *model.TopicInput
+	if tmp, ok := rawArgs["topic"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("topic"))
+		arg0, err = ec.unmarshalOTopicInput2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐTopicInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["topic"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_updateCourse_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 *model.CourseInput
+	if tmp, ok := rawArgs["course"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("course"))
+		arg0, err = ec.unmarshalOCourseInput2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐCourseInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["course"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_updateTopicContent_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 *model.TopicContentInput
+	if tmp, ok := rawArgs["topicContent"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("topicContent"))
+		arg0, err = ec.unmarshalOTopicContentInput2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐTopicContentInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["topicContent"] = arg0
 	return args, nil
 }
 
@@ -2602,6 +2752,45 @@ func (ec *executionContext) _Mutation_addCourse(ctx context.Context, field graph
 	return ec.marshalOCourse2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐCourse(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _Mutation_updateCourse(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_updateCourse_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().UpdateCourse(rctx, args["course"].(*model.CourseInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.Course)
+	fc.Result = res
+	return ec.marshalOCourse2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐCourse(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _Mutation_uploadCourseImage(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -2758,6 +2947,45 @@ func (ec *executionContext) _Mutation_addCourseModule(ctx context.Context, field
 	return ec.marshalOModule2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐModule(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _Mutation_updateCourseModule(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_updateCourseModule_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().UpdateCourseModule(rctx, args["module"].(*model.ModuleInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.Module)
+	fc.Result = res
+	return ec.marshalOModule2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐModule(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _Mutation_addCourseChapter(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -2784,6 +3012,45 @@ func (ec *executionContext) _Mutation_addCourseChapter(ctx context.Context, fiel
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Mutation().AddCourseChapter(rctx, args["courseId"].(string), args["chapter"].(*model.ChapterInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.Chapter)
+	fc.Result = res
+	return ec.marshalOChapter2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐChapter(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_updateCourseChapter(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_updateCourseChapter_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().UpdateCourseChapter(rctx, args["chapter"].(*model.ChapterInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2836,6 +3103,45 @@ func (ec *executionContext) _Mutation_addCourseTopic(ctx context.Context, field 
 	return ec.marshalOTopic2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐTopic(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _Mutation_updateCourseTopic(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_updateCourseTopic_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().UpdateCourseTopic(rctx, args["topic"].(*model.TopicInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.Topic)
+	fc.Result = res
+	return ec.marshalOTopic2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐTopic(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _Mutation_addTopicContent(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -2862,6 +3168,45 @@ func (ec *executionContext) _Mutation_addTopicContent(ctx context.Context, field
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Mutation().AddTopicContent(rctx, args["topicId"].(string), args["topicConent"].(*model.TopicContentInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.TopicContent)
+	fc.Result = res
+	return ec.marshalOTopicContent2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐTopicContent(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_updateTopicContent(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_updateTopicContent_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().UpdateTopicContent(rctx, args["topicContent"].(*model.TopicContentInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -5858,6 +6203,13 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, innerFunc)
 
+		case "updateCourse":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_updateCourse(ctx, field)
+			}
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, innerFunc)
+
 		case "uploadCourseImage":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_uploadCourseImage(ctx, field)
@@ -5886,9 +6238,23 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, innerFunc)
 
+		case "updateCourseModule":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_updateCourseModule(ctx, field)
+			}
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, innerFunc)
+
 		case "addCourseChapter":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_addCourseChapter(ctx, field)
+			}
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, innerFunc)
+
+		case "updateCourseChapter":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_updateCourseChapter(ctx, field)
 			}
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, innerFunc)
@@ -5900,9 +6266,23 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, innerFunc)
 
+		case "updateCourseTopic":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_updateCourseTopic(ctx, field)
+			}
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, innerFunc)
+
 		case "addTopicContent":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_addTopicContent(ctx, field)
+			}
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, innerFunc)
+
+		case "updateTopicContent":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_updateTopicContent(ctx, field)
 			}
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, innerFunc)

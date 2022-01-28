@@ -5,6 +5,7 @@ package graph
 
 import (
 	"context"
+	"fmt"
 
 	log "github.com/sirupsen/logrus"
 	"github.com/zicops/zicops-course-creator/graph/generated"
@@ -19,6 +20,10 @@ func (r *mutationResolver) AddCourse(ctx context.Context, course *model.CourseIn
 		return nil, err
 	}
 	return resp, nil
+}
+
+func (r *mutationResolver) UpdateCourse(ctx context.Context, course *model.CourseInput) (*model.Course, error) {
+	panic(fmt.Errorf("not implemented"))
 }
 
 func (r *mutationResolver) UploadCourseImage(ctx context.Context, file model.CourseFile) (*bool, error) {
@@ -57,6 +62,10 @@ func (r *mutationResolver) AddCourseModule(ctx context.Context, courseID string,
 	return resp, nil
 }
 
+func (r *mutationResolver) UpdateCourseModule(ctx context.Context, module *model.ModuleInput) (*model.Module, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
 func (r *mutationResolver) AddCourseChapter(ctx context.Context, courseID string, chapter *model.ChapterInput) (*model.Chapter, error) {
 	resp, err := handlers.ChapterCreate(ctx, courseID, chapter)
 	if err != nil {
@@ -64,6 +73,10 @@ func (r *mutationResolver) AddCourseChapter(ctx context.Context, courseID string
 		return nil, err
 	}
 	return resp, nil
+}
+
+func (r *mutationResolver) UpdateCourseChapter(ctx context.Context, chapter *model.ChapterInput) (*model.Chapter, error) {
+	panic(fmt.Errorf("not implemented"))
 }
 
 func (r *mutationResolver) AddCourseTopic(ctx context.Context, courseID string, topic *model.TopicInput) (*model.Topic, error) {
@@ -75,6 +88,10 @@ func (r *mutationResolver) AddCourseTopic(ctx context.Context, courseID string, 
 	return resp, nil
 }
 
+func (r *mutationResolver) UpdateCourseTopic(ctx context.Context, topic *model.TopicInput) (*model.Topic, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
 func (r *mutationResolver) AddTopicContent(ctx context.Context, topicID string, topicConent *model.TopicContentInput) (*model.TopicContent, error) {
 	resp, err := handlers.TopicContentCreate(ctx, topicID, topicConent)
 	if err != nil {
@@ -82,6 +99,10 @@ func (r *mutationResolver) AddTopicContent(ctx context.Context, topicID string, 
 		return nil, err
 	}
 	return resp, nil
+}
+
+func (r *mutationResolver) UpdateTopicContent(ctx context.Context, topicContent *model.TopicContentInput) (*model.TopicContent, error) {
+	panic(fmt.Errorf("not implemented"))
 }
 
 func (r *mutationResolver) UploadTopicContentVideo(ctx context.Context, file model.TopicVideo) (*bool, error) {
