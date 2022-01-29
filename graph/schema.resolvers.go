@@ -117,7 +117,12 @@ func (r *mutationResolver) AddTopicContent(ctx context.Context, topicID string, 
 }
 
 func (r *mutationResolver) UpdateTopicContent(ctx context.Context, topicContent *model.TopicContentInput) (*model.TopicContent, error) {
-	panic(fmt.Errorf("not implemented"))
+	resp, err := handlers.UpdateTopicContent(ctx, topicContent)
+	if err != nil {
+		log.Errorf("error updating topic content: %v", err)
+		return nil, err
+	}
+	return resp, nil
 }
 
 func (r *mutationResolver) UploadTopicContentVideo(ctx context.Context, file model.TopicVideo) (*bool, error) {
