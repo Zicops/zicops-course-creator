@@ -156,8 +156,8 @@ func (r *mutationResolver) UpdateQuiz(ctx context.Context, quiz *model.QuizInput
 	return resp, nil
 }
 
-func (r *mutationResolver) UploadQuizFile(ctx context.Context, couseID string, file model.QuizFile) (*bool, error) {
-	resp, err := handlers.UploadQuizFile(ctx, couseID, file)
+func (r *mutationResolver) UploadQuizFile(ctx context.Context, courseID string, file model.QuizFile) (*bool, error) {
+	resp, err := handlers.UploadQuizFile(ctx, courseID, file)
 	if err != nil {
 		log.Errorf("error uploading quiz file: %v", err)
 		return nil, err
@@ -166,15 +166,30 @@ func (r *mutationResolver) UploadQuizFile(ctx context.Context, couseID string, f
 }
 
 func (r *mutationResolver) AddQuizMcq(ctx context.Context, quiz *model.QuizMcq) (*bool, error) {
-	panic(fmt.Errorf("not implemented"))
+	resp, err := handlers.AddMCQQuiz(ctx, quiz)
+	if err != nil {
+		log.Errorf("error adding mcq quiz: %v", err)
+		return nil, err
+	}
+	return resp, nil
 }
 
 func (r *mutationResolver) AddQuizDescriptive(ctx context.Context, quiz *model.QuizDescriptive) (*bool, error) {
-	panic(fmt.Errorf("not implemented"))
+	resp, err := handlers.AddQuizDescriptive(ctx, quiz)
+	if err != nil {
+		log.Errorf("error adding descriptive quiz: %v", err)
+		return nil, err
+	}
+	return resp, nil
 }
 
-func (r *mutationResolver) UploadTopicResource(ctx context.Context, resource *model.TopicResourceInput) (*bool, error) {
-	panic(fmt.Errorf("not implemented"))
+func (r *mutationResolver) UploadTopicResource(ctx context.Context, courseID string, resource *model.TopicResourceInput) (*bool, error) {
+	resp, err := handlers.AddTopicResources(ctx, courseID, resource)
+	if err != nil {
+		log.Errorf("error adding topic resource: %v", err)
+		return nil, err
+	}
+	return resp, nil
 }
 
 // Mutation returns generated.MutationResolver implementation.

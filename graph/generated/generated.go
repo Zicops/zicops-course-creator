@@ -109,9 +109,9 @@ type ComplexityRoot struct {
 		UploadCourseImage        func(childComplexity int, file model.CourseFile) int
 		UploadCoursePreviewVideo func(childComplexity int, file model.CourseFile) int
 		UploadCourseTileImage    func(childComplexity int, file model.CourseFile) int
-		UploadQuizFile           func(childComplexity int, couseID string, file model.QuizFile) int
+		UploadQuizFile           func(childComplexity int, courseID string, file model.QuizFile) int
 		UploadTopicContentVideo  func(childComplexity int, file model.TopicVideo) int
-		UploadTopicResource      func(childComplexity int, resource *model.TopicResourceInput) int
+		UploadTopicResource      func(childComplexity int, courseID string, resource *model.TopicResourceInput) int
 		UploadTopicStaticContent func(childComplexity int, file model.StaticContent) int
 	}
 
@@ -177,10 +177,10 @@ type MutationResolver interface {
 	UploadTopicStaticContent(ctx context.Context, file model.StaticContent) (*bool, error)
 	AddQuiz(ctx context.Context, quiz *model.QuizInput) (*model.Quiz, error)
 	UpdateQuiz(ctx context.Context, quiz *model.QuizInput) (*model.Quiz, error)
-	UploadQuizFile(ctx context.Context, couseID string, file model.QuizFile) (*bool, error)
+	UploadQuizFile(ctx context.Context, courseID string, file model.QuizFile) (*bool, error)
 	AddQuizMcq(ctx context.Context, quiz *model.QuizMcq) (*bool, error)
 	AddQuizDescriptive(ctx context.Context, quiz *model.QuizDescriptive) (*bool, error)
-	UploadTopicResource(ctx context.Context, resource *model.TopicResourceInput) (*bool, error)
+	UploadTopicResource(ctx context.Context, courseID string, resource *model.TopicResourceInput) (*bool, error)
 }
 
 type executableSchema struct {
@@ -699,7 +699,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.UploadQuizFile(childComplexity, args["couseId"].(string), args["file"].(model.QuizFile)), true
+		return e.complexity.Mutation.UploadQuizFile(childComplexity, args["courseId"].(string), args["file"].(model.QuizFile)), true
 
 	case "Mutation.uploadTopicContentVideo":
 		if e.complexity.Mutation.UploadTopicContentVideo == nil {
@@ -723,7 +723,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.UploadTopicResource(childComplexity, args["resource"].(*model.TopicResourceInput)), true
+		return e.complexity.Mutation.UploadTopicResource(childComplexity, args["courseId"].(string), args["resource"].(*model.TopicResourceInput)), true
 
 	case "Mutation.uploadTopicStaticContent":
 		if e.complexity.Mutation.UploadTopicStaticContent == nil {
@@ -1272,10 +1272,10 @@ type Mutation{
     uploadTopicStaticContent(file: StaticContent!): Boolean
     addQuiz(quiz: QuizInput): Quiz
     updateQuiz(quiz: QuizInput): Quiz
-    uploadQuizFile(couseId:String!, file: QuizFile!): Boolean
+    uploadQuizFile(courseId:String!, file: QuizFile!): Boolean
     addQuizMCQ(quiz: QuizMcq): Boolean
     addQuizDescriptive(quiz: QuizDescriptive): Boolean
-    uploadTopicResource(resource:TopicResourceInput): Boolean
+    uploadTopicResource(courseId:String!, resource:TopicResourceInput): Boolean
 }
 `, BuiltIn: false},
 }
@@ -1580,14 +1580,14 @@ func (ec *executionContext) field_Mutation_uploadQuizFile_args(ctx context.Conte
 	var err error
 	args := map[string]interface{}{}
 	var arg0 string
-	if tmp, ok := rawArgs["couseId"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("couseId"))
+	if tmp, ok := rawArgs["courseId"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("courseId"))
 		arg0, err = ec.unmarshalNString2string(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["couseId"] = arg0
+	args["courseId"] = arg0
 	var arg1 model.QuizFile
 	if tmp, ok := rawArgs["file"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("file"))
@@ -1618,15 +1618,24 @@ func (ec *executionContext) field_Mutation_uploadTopicContentVideo_args(ctx cont
 func (ec *executionContext) field_Mutation_uploadTopicResource_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 *model.TopicResourceInput
-	if tmp, ok := rawArgs["resource"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("resource"))
-		arg0, err = ec.unmarshalOTopicResourceInput2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐTopicResourceInput(ctx, tmp)
+	var arg0 string
+	if tmp, ok := rawArgs["courseId"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("courseId"))
+		arg0, err = ec.unmarshalNString2string(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["resource"] = arg0
+	args["courseId"] = arg0
+	var arg1 *model.TopicResourceInput
+	if tmp, ok := rawArgs["resource"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("resource"))
+		arg1, err = ec.unmarshalOTopicResourceInput2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐTopicResourceInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["resource"] = arg1
 	return args, nil
 }
 
@@ -3728,7 +3737,7 @@ func (ec *executionContext) _Mutation_uploadQuizFile(ctx context.Context, field 
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().UploadQuizFile(rctx, args["couseId"].(string), args["file"].(model.QuizFile))
+		return ec.resolvers.Mutation().UploadQuizFile(rctx, args["courseId"].(string), args["file"].(model.QuizFile))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -3845,7 +3854,7 @@ func (ec *executionContext) _Mutation_uploadTopicResource(ctx context.Context, f
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().UploadTopicResource(rctx, args["resource"].(*model.TopicResourceInput))
+		return ec.resolvers.Mutation().UploadTopicResource(rctx, args["courseId"].(string), args["resource"].(*model.TopicResourceInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)

@@ -105,8 +105,6 @@ func UpdateQuiz(ctx context.Context, quiz *model.QuizInput) (*model.Quiz, error)
 
 func UploadQuizFile(ctx context.Context, couseID string, quiz model.QuizFile) (*bool, error) {
 	log.Info("UploadQuizFile called")
-
-	log.Info("UploadTopicVideo called")
 	isSuccess := false
 	storageC := bucket.NewStorageHandler()
 	gproject := googleprojectlib.GetGoogleProjectID()
@@ -146,5 +144,53 @@ func UploadQuizFile(ctx context.Context, couseID string, quiz model.QuizFile) (*
 		return &isSuccess, err
 	}
 	isSuccess = true
+	return &isSuccess, nil
+}
+
+func AddMCQQuiz(ctx context.Context, quiz *model.QuizMcq) (*bool, error) {
+	log.Info("AddMCQQuiz called")
+	if quiz.QuizID == "" {
+		return nil, fmt.Errorf("quiz id is required")
+	}
+	options := make([]string, 0)
+	for _, option := range quiz.Options {
+		options = append(options, *option)
+	}
+	cassandraQuiz := coursez.QuizMcq{
+		QuizId:        quiz.QuizID,
+		Question:      quiz.Question,
+		Options:       options,
+		CorrectOption: quiz.CorrectOption,
+		Explanation:   quiz.Explanation,
+		IsDeleted:     false,
+	}
+	// set quiz in cassandra
+	insertQuery := global.CassSession.Session.Query(coursez.QuizMcqTable.Insert()).BindStruct(cassandraQuiz)
+	if err := insertQuery.ExecRelease(); err != nil {
+		return nil, err
+	}
+	isSuccess := true
+	return &isSuccess, nil
+
+}
+
+func AddQuizDescriptive(ctx context.Context, quiz *model.QuizDescriptive) (*bool, error) {
+	log.Info("AddQuizDescriptive called")
+	if quiz.QuizID == "" {
+		return nil, fmt.Errorf("quiz id is required")
+	}
+	cassandraQuiz := coursez.QuizDescriptive{
+		QuizId:        quiz.QuizID,
+		Question:      quiz.Question,
+		Explanation:   quiz.Explanation,
+		CorrectAnswer: quiz.CorrectAnswer,
+		IsDeleted:     false,
+	}
+	// set quiz in cassandra
+	insertQuery := global.CassSession.Session.Query(coursez.QuizDescriptiveTable.Insert()).BindStruct(cassandraQuiz)
+	if err := insertQuery.ExecRelease(); err != nil {
+		return nil, err
+	}
+	isSuccess := true
 	return &isSuccess, nil
 }
