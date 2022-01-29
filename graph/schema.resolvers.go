@@ -23,7 +23,12 @@ func (r *mutationResolver) AddCourse(ctx context.Context, course *model.CourseIn
 }
 
 func (r *mutationResolver) UpdateCourse(ctx context.Context, course *model.CourseInput) (*model.Course, error) {
-	panic(fmt.Errorf("not implemented"))
+	resp, err := handlers.CourseUpdate(ctx, course)
+	if err != nil {
+		log.Errorf("error creating course: %v", err)
+		return nil, err
+	}
+	return resp, nil
 }
 
 func (r *mutationResolver) UploadCourseImage(ctx context.Context, file model.CourseFile) (*bool, error) {

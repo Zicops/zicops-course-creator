@@ -45,25 +45,25 @@ func CourseCreator(ctx context.Context, courseInput *model.CourseInput) (*model.
 	}
 
 	cassandraCourse := coursez.Course{
-		ID:           guid.String(),
-		Name:         courseInput.Name,
-		Description:  courseInput.Description,
-		Instructor:   "",
-		Image:        "https://storage.googleapis.com/zicops.com/school-board-ge1701ca8f_640.jpg",
-		PreviewVideo: "https://storage.googleapis.com/zicops.com/school-board-ge1701ca8f_640.jpg",
-		TileImage:   "https://storage.googleapis.com/zicops.com/school-board-ge1701ca8f_640.jpg",
-		TileImageBucket: "",
-		ImageBucket: "",
+		ID:                 guid.String(),
+		Name:               courseInput.Name,
+		Description:        courseInput.Description,
+		Instructor:         "",
+		Image:              "https://storage.googleapis.com/zicops.com/school-board-ge1701ca8f_640.jpg",
+		PreviewVideo:       "https://storage.googleapis.com/zicops.com/school-board-ge1701ca8f_640.jpg",
+		TileImage:          "https://storage.googleapis.com/zicops.com/school-board-ge1701ca8f_640.jpg",
+		TileImageBucket:    "",
+		ImageBucket:        "",
 		PreviewVideoBucket: "",
-		Duration:     0,
-		Language:     language,
-		TakeAways:    takeaways,
-		CreatedAt:    time.Now().Unix(),
-		UpdatedAt:    time.Now().Unix(),
-		Prequisites:  prequisites,
-		GoodFor:      goodFor,
-		MustFor:      mustFor,
-		IsDeleted:    false,
+		Duration:           0,
+		Language:           language,
+		TakeAways:          takeaways,
+		CreatedAt:          time.Now().Unix(),
+		UpdatedAt:          time.Now().Unix(),
+		Prequisites:        prequisites,
+		GoodFor:            goodFor,
+		MustFor:            mustFor,
+		IsDeleted:          false,
 	}
 	if courseInput.Type != nil {
 		cassandraCourse.Type = *courseInput.Type
@@ -220,4 +220,109 @@ func UploadCourseTileImage(ctx context.Context, file model.CourseFile) (*bool, e
 	}
 	isSuccess = true
 	return &isSuccess, nil
+}
+
+func CourseUpdate(ctx context.Context, courseInput *model.CourseInput) (*model.Course, error) {
+	log.Info("CourseUpdater called")
+	// set course input in cassandra
+	courseID := *courseInput.ID
+	// get course from cassandra
+	cassandraCourse := coursez.Course{
+		ID: courseID,
+	}
+	getQuery := global.CassSession.Session.Query(coursez.CourseTable.Get()).BindStruct(cassandraCourse)
+	if err := getQuery.ExecRelease(); err != nil {
+		return nil, err
+	}
+	language := []string{}
+	takeaways := []string{}
+	prequisites := []string{}
+	goodFor := []string{}
+	mustFor := []string{}
+	for _, lang := range courseInput.Language {
+		language = append(language, *lang)
+	}
+	for _, take := range courseInput.Takeaways {
+		takeaways = append(takeaways, *take)
+	}
+	for _, preq := range courseInput.Prequisites {
+		prequisites = append(prequisites, *preq)
+	}
+	for _, good := range courseInput.GoodFor {
+		goodFor = append(goodFor, *good)
+	}
+	for _, must := range courseInput.MustFor {
+		mustFor = append(mustFor, *must)
+	}
+
+	// update cassandraCourse with input
+	if courseInput.Name != "" {
+		cassandraCourse.Name = courseInput.Name
+	}
+	if courseInput.Description != "" {
+		cassandraCourse.Description = courseInput.Description
+	}
+	if courseInput.Status.String() != "" {
+		cassandraCourse.Status = courseInput.Status.String()
+	}
+	if courseInput.Language != nil {
+		cassandraCourse.Language = language
+	}
+	if courseInput.Takeaways != nil {
+		cassandraCourse.TakeAways = takeaways
+	}
+	if courseInput.Prequisites != nil {
+		cassandraCourse.Prequisites = prequisites
+	}
+	if courseInput.GoodFor != nil {
+		cassandraCourse.GoodFor = goodFor
+	}
+	if courseInput.MustFor != nil {
+		cassandraCourse.MustFor = mustFor
+	}
+	if courseInput.Owner != nil {
+		cassandraCourse.Owner = *courseInput.Owner
+	}
+	if courseInput.Level != nil {
+		cassandraCourse.Level = *courseInput.Level
+	}
+	cassandraCourse.UpdatedAt = time.Now().Unix()
+	if courseInput.CreatedBy != nil {
+		cassandraCourse.CreatedBy = *courseInput.CreatedBy
+	}
+	if courseInput.UpdatedBy != nil {
+		cassandraCourse.UpdatedBy = *courseInput.UpdatedBy
+	}
+	if courseInput.Type != nil {
+		cassandraCourse.Type = *courseInput.Type
+	}
+	// set course in cassandra
+	updateQuery := global.CassSession.Session.Query(coursez.CourseTable.Update()).BindStruct(cassandraCourse)
+	if err := updateQuery.ExecRelease(); err != nil {
+		return nil, err
+	}
+	created := strconv.FormatInt(cassandraCourse.CreatedAt, 10)
+	responseModel := model.Course{
+		ID:           &cassandraCourse.ID,
+		Name:         courseInput.Name,
+		Description:  courseInput.Description,
+		Instructor:   courseInput.Instructor,
+		Image:        &cassandraCourse.Image,
+		PreviewVideo: &cassandraCourse.PreviewVideo,
+		Owner:        courseInput.Owner,
+		Duration:     &cassandraCourse.Duration,
+		Level:        courseInput.Level,
+		Language:     courseInput.Language,
+		Takeaways:    courseInput.Takeaways,
+		CreatedAt:    &created,
+		UpdatedAt:    &created,
+		Type:         courseInput.Type,
+		Prequisites:  courseInput.Prequisites,
+		GoodFor:      courseInput.GoodFor,
+		MustFor:      courseInput.MustFor,
+		CreatedBy:    courseInput.CreatedBy,
+		UpdatedBy:    courseInput.UpdatedBy,
+		Status:       courseInput.Status,
+	}
+	return &responseModel, nil
 }
