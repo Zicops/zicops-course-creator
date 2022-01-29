@@ -3,6 +3,7 @@ package handlers
 import (
 	"bytes"
 	"context"
+	"fmt"
 	"io"
 	"strconv"
 	"time"
@@ -224,6 +225,9 @@ func UploadCourseTileImage(ctx context.Context, file model.CourseFile) (*bool, e
 
 func CourseUpdate(ctx context.Context, courseInput *model.CourseInput) (*model.Course, error) {
 	log.Info("CourseUpdater called")
+	if courseInput.ID == nil {
+		return nil, fmt.Errorf("course id is required")
+	}
 	// set course input in cassandra
 	courseID := *courseInput.ID
 	// get course from cassandra
@@ -301,6 +305,7 @@ func CourseUpdate(ctx context.Context, courseInput *model.CourseInput) (*model.C
 	if err := updateQuery.ExecRelease(); err != nil {
 		return nil, err
 	}
+	updated := strconv.FormatInt(cassandraCourse.UpdatedAt, 10)
 	created := strconv.FormatInt(cassandraCourse.CreatedAt, 10)
 	responseModel := model.Course{
 		ID:           &cassandraCourse.ID,
@@ -315,7 +320,7 @@ func CourseUpdate(ctx context.Context, courseInput *model.CourseInput) (*model.C
 		Language:     courseInput.Language,
 		Takeaways:    courseInput.Takeaways,
 		CreatedAt:    &created,
-		UpdatedAt:    &created,
+		UpdatedAt:    &updated,
 		Type:         courseInput.Type,
 		Prequisites:  courseInput.Prequisites,
 		GoodFor:      courseInput.GoodFor,
