@@ -109,6 +109,54 @@ type ModuleInput struct {
 	SetGlobal   *bool   `json:"setGlobal"`
 }
 
+type Quiz struct {
+	ID          *string `json:"id"`
+	Name        string  `json:"name"`
+	Category    string  `json:"category"`
+	Type        string  `json:"type"`
+	IsMandatory bool    `json:"isMandatory"`
+	CreatedAt   *string `json:"created_at"`
+	UpdatedAt   *string `json:"updated_at"`
+	TopicID     string  `json:"topicId"`
+	Sequence    *int    `json:"sequence"`
+	StartTime   *int    `json:"startTime"`
+}
+
+type QuizDescriptive struct {
+	QuizID        string `json:"quizId"`
+	Question      string `json:"question"`
+	CorrectAnswer string `json:"correctAnswer"`
+	Explanation   string `json:"explanation"`
+}
+
+type QuizFile struct {
+	QuizID string         `json:"quizId"`
+	Type   string         `json:"type"`
+	Name   string         `json:"name"`
+	File   graphql.Upload `json:"file"`
+}
+
+type QuizInput struct {
+	ID          *string `json:"id"`
+	Name        string  `json:"name"`
+	Category    string  `json:"category"`
+	Type        string  `json:"type"`
+	IsMandatory bool    `json:"isMandatory"`
+	CreatedAt   *string `json:"created_at"`
+	UpdatedAt   *string `json:"updated_at"`
+	TopicID     string  `json:"topicId"`
+	Sequence    *int    `json:"sequence"`
+	StartTime   *int    `json:"startTime"`
+}
+
+type QuizMcq struct {
+	QuizID        string    `json:"quizId"`
+	Question      string    `json:"question"`
+	Options       []*string `json:"options"`
+	CorrectOption string    `json:"correctOption"`
+	Explanation   string    `json:"explanation"`
+}
+
 type StaticContent struct {
 	Type     Type           `json:"type"`
 	File     graphql.Upload `json:"file"`
@@ -164,6 +212,17 @@ type TopicInput struct {
 	Sequence    *int    `json:"sequence"`
 	CreatedBy   *string `json:"created_by"`
 	UpdatedBy   *string `json:"updated_by"`
+}
+
+type TopicResourceInput struct {
+	Type      string         `json:"type"`
+	TopicID   string         `json:"topicId"`
+	CreatedAt *string        `json:"created_at"`
+	UpdatedAt *string        `json:"updated_at"`
+	CreatedBy *string        `json:"created_by"`
+	UpdatedBy *string        `json:"updated_by"`
+	URL       string         `json:"url"`
+	File      graphql.Upload `json:"file"`
 }
 
 type TopicVideo struct {

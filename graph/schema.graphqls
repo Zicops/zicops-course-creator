@@ -178,6 +178,61 @@ enum Type {
     CMI5
     HTML5
 }
+
+type Quiz {
+    id: ID
+    name: String!
+    category: String!
+    type: String!
+    isMandatory: Boolean!
+    created_at: String
+    updated_at: String
+    topicId: String!
+    sequence: Int
+    startTime: Int
+}
+input QuizInput {
+    id: ID
+    name: String!
+    category: String!
+    type: String!
+    isMandatory: Boolean!
+    created_at: String
+    updated_at: String
+    topicId: String!
+    sequence: Int
+    startTime: Int
+}
+input QuizFile {
+    quizId: String!
+    type: String!
+    name: String!
+    file: Upload!
+}
+input QuizMcq {
+    quizId: String!
+    question: String!
+    options: [String]!
+    correctOption: String!
+    explanation: String!
+}
+input QuizDescriptive {
+    quizId: String!
+    question: String!
+    correctAnswer: String!
+    explanation: String!
+}
+
+input TopicResourceInput {
+    type: String!
+    topicId: String!
+    created_at: String
+    updated_at: String
+    created_by: String
+    updated_by: String
+    url: String!
+    file: Upload!
+}
 # define type mutations to add a course  using courseInput
 type Mutation{
     addCourse(course: CourseInput): Course
@@ -195,4 +250,10 @@ type Mutation{
     updateTopicContent(topicContent: TopicContentInput): TopicContent
     uploadTopicContentVideo(file: TopicVideo!): Boolean
     uploadTopicStaticContent(file: StaticContent!): Boolean
+    addQuiz(quiz: QuizInput): Quiz
+    updateQuiz(quiz: QuizInput): Quiz
+    uploadQuizFile(file: QuizFile!): Boolean
+    addQuizMCQ(quiz: QuizMcq): Boolean
+    addQuizDescriptive(quiz: QuizDescriptive): Boolean
+    uploadTopicResource(resource:TopicResourceInput): Boolean
 }

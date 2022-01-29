@@ -138,6 +138,30 @@ func (r *mutationResolver) UploadTopicStaticContent(ctx context.Context, file mo
 	return nil, nil
 }
 
+func (r *mutationResolver) AddQuiz(ctx context.Context, quiz *model.QuizInput) (*model.Quiz, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
+func (r *mutationResolver) UpdateQuiz(ctx context.Context, quiz *model.QuizInput) (*model.Quiz, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
+func (r *mutationResolver) UploadQuizFile(ctx context.Context, file model.QuizFile) (*bool, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
+func (r *mutationResolver) AddQuizMcq(ctx context.Context, quiz *model.QuizMcq) (*bool, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
+func (r *mutationResolver) AddQuizDescriptive(ctx context.Context, quiz *model.QuizDescriptive) (*bool, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
+func (r *mutationResolver) UploadTopicResource(ctx context.Context, resource *model.TopicResourceInput) (*bool, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
 // Mutation returns generated.MutationResolver implementation.
 func (r *Resolver) Mutation() generated.MutationResolver { return &mutationResolver{r} }
 

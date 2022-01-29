@@ -96,20 +96,39 @@ type ComplexityRoot struct {
 		AddCourseChapter         func(childComplexity int, courseID string, chapter *model.ChapterInput) int
 		AddCourseModule          func(childComplexity int, courseID string, module *model.ModuleInput) int
 		AddCourseTopic           func(childComplexity int, courseID string, topic *model.TopicInput) int
+		AddQuiz                  func(childComplexity int, quiz *model.QuizInput) int
+		AddQuizDescriptive       func(childComplexity int, quiz *model.QuizDescriptive) int
+		AddQuizMcq               func(childComplexity int, quiz *model.QuizMcq) int
 		AddTopicContent          func(childComplexity int, topicID string, topicConent *model.TopicContentInput) int
 		UpdateCourse             func(childComplexity int, course *model.CourseInput) int
 		UpdateCourseChapter      func(childComplexity int, chapter *model.ChapterInput) int
 		UpdateCourseModule       func(childComplexity int, module *model.ModuleInput) int
 		UpdateCourseTopic        func(childComplexity int, topic *model.TopicInput) int
+		UpdateQuiz               func(childComplexity int, quiz *model.QuizInput) int
 		UpdateTopicContent       func(childComplexity int, topicContent *model.TopicContentInput) int
 		UploadCourseImage        func(childComplexity int, file model.CourseFile) int
 		UploadCoursePreviewVideo func(childComplexity int, file model.CourseFile) int
 		UploadCourseTileImage    func(childComplexity int, file model.CourseFile) int
+		UploadQuizFile           func(childComplexity int, file model.QuizFile) int
 		UploadTopicContentVideo  func(childComplexity int, file model.TopicVideo) int
+		UploadTopicResource      func(childComplexity int, resource *model.TopicResourceInput) int
 		UploadTopicStaticContent func(childComplexity int, file model.StaticContent) int
 	}
 
 	Query struct {
+	}
+
+	Quiz struct {
+		Category    func(childComplexity int) int
+		CreatedAt   func(childComplexity int) int
+		ID          func(childComplexity int) int
+		IsMandatory func(childComplexity int) int
+		Name        func(childComplexity int) int
+		Sequence    func(childComplexity int) int
+		StartTime   func(childComplexity int) int
+		TopicID     func(childComplexity int) int
+		Type        func(childComplexity int) int
+		UpdatedAt   func(childComplexity int) int
 	}
 
 	Topic struct {
@@ -156,6 +175,12 @@ type MutationResolver interface {
 	UpdateTopicContent(ctx context.Context, topicContent *model.TopicContentInput) (*model.TopicContent, error)
 	UploadTopicContentVideo(ctx context.Context, file model.TopicVideo) (*bool, error)
 	UploadTopicStaticContent(ctx context.Context, file model.StaticContent) (*bool, error)
+	AddQuiz(ctx context.Context, quiz *model.QuizInput) (*model.Quiz, error)
+	UpdateQuiz(ctx context.Context, quiz *model.QuizInput) (*model.Quiz, error)
+	UploadQuizFile(ctx context.Context, file model.QuizFile) (*bool, error)
+	AddQuizMcq(ctx context.Context, quiz *model.QuizMcq) (*bool, error)
+	AddQuizDescriptive(ctx context.Context, quiz *model.QuizDescriptive) (*bool, error)
+	UploadTopicResource(ctx context.Context, resource *model.TopicResourceInput) (*bool, error)
 }
 
 type executableSchema struct {
@@ -508,6 +533,42 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.AddCourseTopic(childComplexity, args["courseId"].(string), args["topic"].(*model.TopicInput)), true
 
+	case "Mutation.addQuiz":
+		if e.complexity.Mutation.AddQuiz == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_addQuiz_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.AddQuiz(childComplexity, args["quiz"].(*model.QuizInput)), true
+
+	case "Mutation.addQuizDescriptive":
+		if e.complexity.Mutation.AddQuizDescriptive == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_addQuizDescriptive_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.AddQuizDescriptive(childComplexity, args["quiz"].(*model.QuizDescriptive)), true
+
+	case "Mutation.addQuizMCQ":
+		if e.complexity.Mutation.AddQuizMcq == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_addQuizMCQ_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.AddQuizMcq(childComplexity, args["quiz"].(*model.QuizMcq)), true
+
 	case "Mutation.addTopicContent":
 		if e.complexity.Mutation.AddTopicContent == nil {
 			break
@@ -568,6 +629,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.UpdateCourseTopic(childComplexity, args["topic"].(*model.TopicInput)), true
 
+	case "Mutation.updateQuiz":
+		if e.complexity.Mutation.UpdateQuiz == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_updateQuiz_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdateQuiz(childComplexity, args["quiz"].(*model.QuizInput)), true
+
 	case "Mutation.updateTopicContent":
 		if e.complexity.Mutation.UpdateTopicContent == nil {
 			break
@@ -616,6 +689,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.UploadCourseTileImage(childComplexity, args["file"].(model.CourseFile)), true
 
+	case "Mutation.uploadQuizFile":
+		if e.complexity.Mutation.UploadQuizFile == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_uploadQuizFile_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UploadQuizFile(childComplexity, args["file"].(model.QuizFile)), true
+
 	case "Mutation.uploadTopicContentVideo":
 		if e.complexity.Mutation.UploadTopicContentVideo == nil {
 			break
@@ -628,6 +713,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.UploadTopicContentVideo(childComplexity, args["file"].(model.TopicVideo)), true
 
+	case "Mutation.uploadTopicResource":
+		if e.complexity.Mutation.UploadTopicResource == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_uploadTopicResource_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UploadTopicResource(childComplexity, args["resource"].(*model.TopicResourceInput)), true
+
 	case "Mutation.uploadTopicStaticContent":
 		if e.complexity.Mutation.UploadTopicStaticContent == nil {
 			break
@@ -639,6 +736,76 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.UploadTopicStaticContent(childComplexity, args["file"].(model.StaticContent)), true
+
+	case "Quiz.category":
+		if e.complexity.Quiz.Category == nil {
+			break
+		}
+
+		return e.complexity.Quiz.Category(childComplexity), true
+
+	case "Quiz.created_at":
+		if e.complexity.Quiz.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.Quiz.CreatedAt(childComplexity), true
+
+	case "Quiz.id":
+		if e.complexity.Quiz.ID == nil {
+			break
+		}
+
+		return e.complexity.Quiz.ID(childComplexity), true
+
+	case "Quiz.isMandatory":
+		if e.complexity.Quiz.IsMandatory == nil {
+			break
+		}
+
+		return e.complexity.Quiz.IsMandatory(childComplexity), true
+
+	case "Quiz.name":
+		if e.complexity.Quiz.Name == nil {
+			break
+		}
+
+		return e.complexity.Quiz.Name(childComplexity), true
+
+	case "Quiz.sequence":
+		if e.complexity.Quiz.Sequence == nil {
+			break
+		}
+
+		return e.complexity.Quiz.Sequence(childComplexity), true
+
+	case "Quiz.startTime":
+		if e.complexity.Quiz.StartTime == nil {
+			break
+		}
+
+		return e.complexity.Quiz.StartTime(childComplexity), true
+
+	case "Quiz.topicId":
+		if e.complexity.Quiz.TopicID == nil {
+			break
+		}
+
+		return e.complexity.Quiz.TopicID(childComplexity), true
+
+	case "Quiz.type":
+		if e.complexity.Quiz.Type == nil {
+			break
+		}
+
+		return e.complexity.Quiz.Type(childComplexity), true
+
+	case "Quiz.updated_at":
+		if e.complexity.Quiz.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.Quiz.UpdatedAt(childComplexity), true
 
 	case "Topic.chapterId":
 		if e.complexity.Topic.ChapterID == nil {
@@ -1031,6 +1198,61 @@ enum Type {
     CMI5
     HTML5
 }
+
+type Quiz {
+    id: ID
+    name: String!
+    category: String!
+    type: String!
+    isMandatory: Boolean!
+    created_at: String
+    updated_at: String
+    topicId: String!
+    sequence: Int
+    startTime: Int
+}
+input QuizInput {
+    id: ID
+    name: String!
+    category: String!
+    type: String!
+    isMandatory: Boolean!
+    created_at: String
+    updated_at: String
+    topicId: String!
+    sequence: Int
+    startTime: Int
+}
+input QuizFile {
+    quizId: String!
+    type: String!
+    name: String!
+    file: Upload!
+}
+input QuizMcq {
+    quizId: String!
+    question: String!
+    options: [String]!
+    correctOption: String!
+    explanation: String!
+}
+input QuizDescriptive {
+    quizId: String!
+    question: String!
+    correctAnswer: String!
+    explanation: String!
+}
+
+input TopicResourceInput {
+    type: String!
+    topicId: String!
+    created_at: String
+    updated_at: String
+    created_by: String
+    updated_by: String
+    url: String!
+    file: Upload!
+}
 # define type mutations to add a course  using courseInput
 type Mutation{
     addCourse(course: CourseInput): Course
@@ -1048,6 +1270,12 @@ type Mutation{
     updateTopicContent(topicContent: TopicContentInput): TopicContent
     uploadTopicContentVideo(file: TopicVideo!): Boolean
     uploadTopicStaticContent(file: StaticContent!): Boolean
+    addQuiz(quiz: QuizInput): Quiz
+    updateQuiz(quiz: QuizInput): Quiz
+    uploadQuizFile(file: QuizFile!): Boolean
+    addQuizMCQ(quiz: QuizMcq): Boolean
+    addQuizDescriptive(quiz: QuizDescriptive): Boolean
+    uploadTopicResource(resource:TopicResourceInput): Boolean
 }
 `, BuiltIn: false},
 }
@@ -1144,6 +1372,51 @@ func (ec *executionContext) field_Mutation_addCourse_args(ctx context.Context, r
 	return args, nil
 }
 
+func (ec *executionContext) field_Mutation_addQuizDescriptive_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 *model.QuizDescriptive
+	if tmp, ok := rawArgs["quiz"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("quiz"))
+		arg0, err = ec.unmarshalOQuizDescriptive2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐQuizDescriptive(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["quiz"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_addQuizMCQ_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 *model.QuizMcq
+	if tmp, ok := rawArgs["quiz"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("quiz"))
+		arg0, err = ec.unmarshalOQuizMcq2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐQuizMcq(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["quiz"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_addQuiz_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 *model.QuizInput
+	if tmp, ok := rawArgs["quiz"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("quiz"))
+		arg0, err = ec.unmarshalOQuizInput2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐQuizInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["quiz"] = arg0
+	return args, nil
+}
+
 func (ec *executionContext) field_Mutation_addTopicContent_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -1228,6 +1501,21 @@ func (ec *executionContext) field_Mutation_updateCourse_args(ctx context.Context
 	return args, nil
 }
 
+func (ec *executionContext) field_Mutation_updateQuiz_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 *model.QuizInput
+	if tmp, ok := rawArgs["quiz"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("quiz"))
+		arg0, err = ec.unmarshalOQuizInput2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐQuizInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["quiz"] = arg0
+	return args, nil
+}
+
 func (ec *executionContext) field_Mutation_updateTopicContent_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -1288,6 +1576,21 @@ func (ec *executionContext) field_Mutation_uploadCourseTileImage_args(ctx contex
 	return args, nil
 }
 
+func (ec *executionContext) field_Mutation_uploadQuizFile_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 model.QuizFile
+	if tmp, ok := rawArgs["file"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("file"))
+		arg0, err = ec.unmarshalNQuizFile2githubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐQuizFile(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["file"] = arg0
+	return args, nil
+}
+
 func (ec *executionContext) field_Mutation_uploadTopicContentVideo_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -1300,6 +1603,21 @@ func (ec *executionContext) field_Mutation_uploadTopicContentVideo_args(ctx cont
 		}
 	}
 	args["file"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_uploadTopicResource_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 *model.TopicResourceInput
+	if tmp, ok := rawArgs["resource"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("resource"))
+		arg0, err = ec.unmarshalOTopicResourceInput2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐTopicResourceInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["resource"] = arg0
 	return args, nil
 }
 
@@ -3298,6 +3616,240 @@ func (ec *executionContext) _Mutation_uploadTopicStaticContent(ctx context.Conte
 	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _Mutation_addQuiz(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_addQuiz_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().AddQuiz(rctx, args["quiz"].(*model.QuizInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.Quiz)
+	fc.Result = res
+	return ec.marshalOQuiz2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐQuiz(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_updateQuiz(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_updateQuiz_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().UpdateQuiz(rctx, args["quiz"].(*model.QuizInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.Quiz)
+	fc.Result = res
+	return ec.marshalOQuiz2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐQuiz(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_uploadQuizFile(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_uploadQuizFile_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().UploadQuizFile(rctx, args["file"].(model.QuizFile))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*bool)
+	fc.Result = res
+	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_addQuizMCQ(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_addQuizMCQ_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().AddQuizMcq(rctx, args["quiz"].(*model.QuizMcq))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*bool)
+	fc.Result = res
+	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_addQuizDescriptive(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_addQuizDescriptive_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().AddQuizDescriptive(rctx, args["quiz"].(*model.QuizDescriptive))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*bool)
+	fc.Result = res
+	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_uploadTopicResource(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_uploadTopicResource_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().UploadTopicResource(rctx, args["resource"].(*model.TopicResourceInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*bool)
+	fc.Result = res
+	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _Query___type(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -3367,6 +3919,341 @@ func (ec *executionContext) _Query___schema(ctx context.Context, field graphql.C
 	res := resTmp.(*introspection.Schema)
 	fc.Result = res
 	return ec.marshalO__Schema2ᚖgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐSchema(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Quiz_id(ctx context.Context, field graphql.CollectedField, obj *model.Quiz) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Quiz",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOID2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Quiz_name(ctx context.Context, field graphql.CollectedField, obj *model.Quiz) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Quiz",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Name, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Quiz_category(ctx context.Context, field graphql.CollectedField, obj *model.Quiz) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Quiz",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Category, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Quiz_type(ctx context.Context, field graphql.CollectedField, obj *model.Quiz) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Quiz",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Type, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Quiz_isMandatory(ctx context.Context, field graphql.CollectedField, obj *model.Quiz) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Quiz",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.IsMandatory, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Quiz_created_at(ctx context.Context, field graphql.CollectedField, obj *model.Quiz) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Quiz",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CreatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Quiz_updated_at(ctx context.Context, field graphql.CollectedField, obj *model.Quiz) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Quiz",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.UpdatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Quiz_topicId(ctx context.Context, field graphql.CollectedField, obj *model.Quiz) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Quiz",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.TopicID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Quiz_sequence(ctx context.Context, field graphql.CollectedField, obj *model.Quiz) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Quiz",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Sequence, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*int)
+	fc.Result = res
+	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Quiz_startTime(ctx context.Context, field graphql.CollectedField, obj *model.Quiz) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Quiz",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.StartTime, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*int)
+	fc.Result = res
+	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Topic_id(ctx context.Context, field graphql.CollectedField, obj *model.Topic) (ret graphql.Marshaler) {
@@ -5537,6 +6424,250 @@ func (ec *executionContext) unmarshalInputModuleInput(ctx context.Context, obj i
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputQuizDescriptive(ctx context.Context, obj interface{}) (model.QuizDescriptive, error) {
+	var it model.QuizDescriptive
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	for k, v := range asMap {
+		switch k {
+		case "quizId":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("quizId"))
+			it.QuizID, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "question":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("question"))
+			it.Question, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "correctAnswer":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("correctAnswer"))
+			it.CorrectAnswer, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "explanation":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("explanation"))
+			it.Explanation, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputQuizFile(ctx context.Context, obj interface{}) (model.QuizFile, error) {
+	var it model.QuizFile
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	for k, v := range asMap {
+		switch k {
+		case "quizId":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("quizId"))
+			it.QuizID, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "type":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("type"))
+			it.Type, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "name":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("name"))
+			it.Name, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "file":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("file"))
+			it.File, err = ec.unmarshalNUpload2githubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚐUpload(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputQuizInput(ctx context.Context, obj interface{}) (model.QuizInput, error) {
+	var it model.QuizInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	for k, v := range asMap {
+		switch k {
+		case "id":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+			it.ID, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "name":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("name"))
+			it.Name, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "category":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("category"))
+			it.Category, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "type":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("type"))
+			it.Type, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "isMandatory":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("isMandatory"))
+			it.IsMandatory, err = ec.unmarshalNBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "created_at":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("created_at"))
+			it.CreatedAt, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "updated_at":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updated_at"))
+			it.UpdatedAt, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "topicId":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("topicId"))
+			it.TopicID, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "sequence":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("sequence"))
+			it.Sequence, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "startTime":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("startTime"))
+			it.StartTime, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputQuizMcq(ctx context.Context, obj interface{}) (model.QuizMcq, error) {
+	var it model.QuizMcq
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	for k, v := range asMap {
+		switch k {
+		case "quizId":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("quizId"))
+			it.QuizID, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "question":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("question"))
+			it.Question, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "options":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("options"))
+			it.Options, err = ec.unmarshalNString2ᚕᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "correctOption":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("correctOption"))
+			it.CorrectOption, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "explanation":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("explanation"))
+			it.Explanation, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputStaticContent(ctx context.Context, obj interface{}) (model.StaticContent, error) {
 	var it model.StaticContent
 	asMap := map[string]interface{}{}
@@ -5741,6 +6872,85 @@ func (ec *executionContext) unmarshalInputTopicInput(ctx context.Context, obj in
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updated_by"))
 			it.UpdatedBy, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputTopicResourceInput(ctx context.Context, obj interface{}) (model.TopicResourceInput, error) {
+	var it model.TopicResourceInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	for k, v := range asMap {
+		switch k {
+		case "type":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("type"))
+			it.Type, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "topicId":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("topicId"))
+			it.TopicID, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "created_at":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("created_at"))
+			it.CreatedAt, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "updated_at":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updated_at"))
+			it.UpdatedAt, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "created_by":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("created_by"))
+			it.CreatedBy, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "updated_by":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updated_by"))
+			it.UpdatedBy, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "url":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("url"))
+			it.URL, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "file":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("file"))
+			it.File, err = ec.unmarshalNUpload2githubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚐUpload(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -6301,6 +7511,48 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, innerFunc)
 
+		case "addQuiz":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_addQuiz(ctx, field)
+			}
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, innerFunc)
+
+		case "updateQuiz":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_updateQuiz(ctx, field)
+			}
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, innerFunc)
+
+		case "uploadQuizFile":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_uploadQuizFile(ctx, field)
+			}
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, innerFunc)
+
+		case "addQuizMCQ":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_addQuizMCQ(ctx, field)
+			}
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, innerFunc)
+
+		case "addQuizDescriptive":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_addQuizDescriptive(ctx, field)
+			}
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, innerFunc)
+
+		case "uploadTopicResource":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_uploadTopicResource(ctx, field)
+			}
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, innerFunc)
+
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -6344,6 +7596,112 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			}
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, innerFunc)
+
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var quizImplementors = []string{"Quiz"}
+
+func (ec *executionContext) _Quiz(ctx context.Context, sel ast.SelectionSet, obj *model.Quiz) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, quizImplementors)
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("Quiz")
+		case "id":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Quiz_id(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+		case "name":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Quiz_name(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "category":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Quiz_category(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "type":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Quiz_type(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "isMandatory":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Quiz_isMandatory(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "created_at":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Quiz_created_at(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+		case "updated_at":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Quiz_updated_at(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+		case "topicId":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Quiz_topicId(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "sequence":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Quiz_sequence(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+		case "startTime":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Quiz_startTime(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
 
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
@@ -6992,6 +8350,11 @@ func (ec *executionContext) unmarshalNCourseFile2githubᚗcomᚋzicopsᚋzicops�
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
+func (ec *executionContext) unmarshalNQuizFile2githubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐQuizFile(ctx context.Context, v interface{}) (model.QuizFile, error) {
+	res, err := ec.unmarshalInputQuizFile(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
 func (ec *executionContext) unmarshalNStaticContent2githubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐStaticContent(ctx context.Context, v interface{}) (model.StaticContent, error) {
 	res, err := ec.unmarshalInputStaticContent(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -7020,6 +8383,32 @@ func (ec *executionContext) marshalNString2string(ctx context.Context, sel ast.S
 		}
 	}
 	return res
+}
+
+func (ec *executionContext) unmarshalNString2ᚕᚖstring(ctx context.Context, v interface{}) ([]*string, error) {
+	var vSlice []interface{}
+	if v != nil {
+		vSlice = graphql.CoerceList(v)
+	}
+	var err error
+	res := make([]*string, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalOString2ᚖstring(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) marshalNString2ᚕᚖstring(ctx context.Context, sel ast.SelectionSet, v []*string) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	for i := range v {
+		ret[i] = ec.marshalOString2ᚖstring(ctx, sel, v[i])
+	}
+
+	return ret
 }
 
 func (ec *executionContext) unmarshalNTopicVideo2githubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐTopicVideo(ctx context.Context, v interface{}) (model.TopicVideo, error) {
@@ -7408,6 +8797,37 @@ func (ec *executionContext) unmarshalOModuleInput2ᚖgithubᚗcomᚋzicopsᚋzic
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
+func (ec *executionContext) marshalOQuiz2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐQuiz(ctx context.Context, sel ast.SelectionSet, v *model.Quiz) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._Quiz(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalOQuizDescriptive2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐQuizDescriptive(ctx context.Context, v interface{}) (*model.QuizDescriptive, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputQuizDescriptive(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalOQuizInput2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐQuizInput(ctx context.Context, v interface{}) (*model.QuizInput, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputQuizInput(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalOQuizMcq2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐQuizMcq(ctx context.Context, v interface{}) (*model.QuizMcq, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputQuizMcq(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
 func (ec *executionContext) unmarshalOString2string(ctx context.Context, v interface{}) (string, error) {
 	res, err := graphql.UnmarshalString(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -7493,6 +8913,14 @@ func (ec *executionContext) unmarshalOTopicInput2ᚖgithubᚗcomᚋzicopsᚋzico
 		return nil, nil
 	}
 	res, err := ec.unmarshalInputTopicInput(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalOTopicResourceInput2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐTopicResourceInput(ctx context.Context, v interface{}) (*model.TopicResourceInput, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputTopicResourceInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
