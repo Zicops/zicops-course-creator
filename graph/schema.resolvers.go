@@ -86,7 +86,12 @@ func (r *mutationResolver) AddCourseChapter(ctx context.Context, courseID string
 }
 
 func (r *mutationResolver) UpdateCourseChapter(ctx context.Context, chapter *model.ChapterInput) (*model.Chapter, error) {
-	panic(fmt.Errorf("not implemented"))
+	resp, err := handlers.UpdateChapter(ctx, chapter)
+	if err != nil {
+		log.Errorf("error updating chapter: %v", err)
+		return nil, err
+	}
+	return resp, nil
 }
 
 func (r *mutationResolver) AddCourseTopic(ctx context.Context, courseID string, topic *model.TopicInput) (*model.Topic, error) {
