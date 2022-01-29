@@ -252,7 +252,7 @@ type Mutation{
     uploadTopicStaticContent(file: StaticContent!): Boolean
     addQuiz(quiz: QuizInput): Quiz
     updateQuiz(quiz: QuizInput): Quiz
-    uploadQuizFile(file: QuizFile!): Boolean
+    uploadQuizFile(couseId:String!, file: QuizFile!): Boolean
     addQuizMCQ(quiz: QuizMcq): Boolean
     addQuizDescriptive(quiz: QuizDescriptive): Boolean
     uploadTopicResource(resource:TopicResourceInput): Boolean

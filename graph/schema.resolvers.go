@@ -148,11 +148,21 @@ func (r *mutationResolver) AddQuiz(ctx context.Context, quiz *model.QuizInput) (
 }
 
 func (r *mutationResolver) UpdateQuiz(ctx context.Context, quiz *model.QuizInput) (*model.Quiz, error) {
-	panic(fmt.Errorf("not implemented"))
+	resp, err := handlers.UpdateQuiz(ctx, quiz)
+	if err != nil {
+		log.Errorf("error updating quiz: %v", err)
+		return nil, err
+	}
+	return resp, nil
 }
 
-func (r *mutationResolver) UploadQuizFile(ctx context.Context, file model.QuizFile) (*bool, error) {
-	panic(fmt.Errorf("not implemented"))
+func (r *mutationResolver) UploadQuizFile(ctx context.Context, couseID string, file model.QuizFile) (*bool, error) {
+	resp, err := handlers.UploadQuizFile(ctx, couseID, file)
+	if err != nil {
+		log.Errorf("error uploading quiz file: %v", err)
+		return nil, err
+	}
+	return resp, nil
 }
 
 func (r *mutationResolver) AddQuizMcq(ctx context.Context, quiz *model.QuizMcq) (*bool, error) {
