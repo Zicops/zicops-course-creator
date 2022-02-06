@@ -1,29 +1,48 @@
 # GraphQL schema for course creator
 scalar Upload
 
+type sub_categories {
+    name: String
+    rank: Int
+}
+input sub_categories_input {
+    name: String
+    rank: Int
+}
 # define course type
 type Course{
     id: ID
     name: String!
     description: String!
+    summary: String!
     instructor: String
     image: String
     previewVideo: String
     tileImage: String
     owner: String
     duration: Int
-    level: String
+    expertise_level: String
     language: [String]
-    takeaways: [String]
+    benefits: [String]
     created_at: String
     updated_at: String
     type: String
     prequisites: [String]
     goodFor: [String]
     mustFor: [String]
+    related_skills: [String]
+    publish_date: String
+    expiry_date: String
+    expected_completion: String
+    qa_required: Boolean
+    approvers: [String]
     created_by: String
     updated_by: String
     status: Status!
+    is_display: Boolean
+    category: String
+    sub_category: String
+    sub_categories: [sub_categories]
 }
 
 enum Status {
@@ -39,22 +58,33 @@ input CourseInput{
     id: ID    
     name: String!
     description: String!
+    summary: String
     instructor: String
     image: String
     previewVideo: String
     tileImage: String
     owner: String
     duration: Int
-    level: String
+    expertise_level: String
     language: [String]
-    takeaways: [String]
+    benefits: [String]
     type: String
     prequisites: [String]
     goodFor: [String]
     mustFor: [String]
+    related_skills: [String]
+    publish_date: String
+    expiry_date: String
+    expected_completion: String
+    qa_required: Boolean
+    approvers: [String]
     created_by: String
     updated_by: String
     status: Status!
+    is_display: Boolean
+    category: String
+    sub_category: String
+    sub_categories: [sub_categories_input]
 }
 
 input CourseFile{
@@ -233,6 +263,7 @@ input TopicResourceInput {
     url: String!
     file: Upload!
 }
+
 # define type mutations to add a course  using courseInput
 type Mutation{
     addCourse(course: CourseInput): Course

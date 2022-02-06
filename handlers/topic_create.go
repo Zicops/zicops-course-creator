@@ -28,7 +28,7 @@ func TopicCreate(ctx context.Context, courseID string, topic *model.TopicInput) 
 		Sequence:    *topic.Sequence,
 		CreatedBy:   *topic.CreatedBy,
 		UpdatedBy:   *topic.UpdatedBy,
-		IsDeleted:   false,
+		IsActive:   true,
 	}
 	// set course in cassandra
 	insertQuery := global.CassSession.Session.Query(coursez.TopicTable.Insert()).BindStruct(cassandraTopic)

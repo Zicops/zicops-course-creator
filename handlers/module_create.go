@@ -29,7 +29,7 @@ func ModuleCreate(ctx context.Context, courseID string, module *model.ModuleInpu
 		Level:       *module.Level,
 		Sequence:    *module.Sequence,
 		SetGlobal:   *module.SetGlobal,
-		IsDeleted:   false,
+		IsActive:   false,
 	}
 	// set course in cassandra
 	insertQuery := global.CassSession.Session.Query(coursez.ModuleTable.Insert()).BindStruct(cassandraModule)

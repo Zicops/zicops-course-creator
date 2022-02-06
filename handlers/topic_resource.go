@@ -46,7 +46,7 @@ func AddTopicResources(ctx context.Context, courseID string, resource *model.Top
 		Type:       resource.Type,
 		BucketPath: bucketPath,
 		Url:        getUrl,
-		IsDeleted:  false,
+		IsActive:  false,
 		CreatedAt:  time.Now().Unix(),
 		UpdatedAt:  time.Now().Unix(),
 	}

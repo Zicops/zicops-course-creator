@@ -26,12 +26,11 @@ func TopicContentCreate(ctx context.Context, topicID string, topicConent *model.
 		UpdatedAt:          time.Now().Unix(),
 		StartTime:          *topicConent.StartTime,
 		Duration:           *topicConent.Duration,
-		SkipIntro:          *topicConent.SkipIntro,
 		NextShowtime:       *topicConent.NextShowTime,
 		FromEndTime:        *topicConent.FromEndTime,
 		TopicContentBucket: "",
 		Url:                "",
-		IsDeleted:          false,
+		IsActive:           false,
 	}
 	// set course in cassandra
 	insertQuery := global.CassSession.Session.Query(coursez.TopicContentTable.Insert()).BindStruct(cassandraTopicContent)
@@ -109,9 +108,7 @@ func UpdateTopicContent(ctx context.Context, topicConent *model.TopicContentInpu
 	if topicConent.StartTime != nil {
 		cassandraTopicContent.StartTime = *topicConent.StartTime
 	}
-	if topicConent.SkipIntro != nil {
-		cassandraTopicContent.SkipIntro = *topicConent.SkipIntro
-	}
+
 	if topicConent.NextShowTime != nil {
 		cassandraTopicContent.NextShowtime = *topicConent.NextShowTime
 	}

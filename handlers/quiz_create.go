@@ -32,7 +32,7 @@ func CreateTopicQuiz(ctx context.Context, quiz *model.QuizInput) (*model.Quiz, e
 		StartTime:   *quiz.StartTime,
 		Sequence:    *quiz.Sequence,
 		Category:    quiz.Category,
-		IsDeleted:   false,
+		IsActive:   true,
 	}
 	// set quiz in cassandra
 	insertQuery := global.CassSession.Session.Query(coursez.QuizTable.Insert()).BindStruct(cassandraQuiz)
@@ -136,7 +136,7 @@ func UploadQuizFile(ctx context.Context, couseID string, quiz model.QuizFile) (*
 		Name:       quiz.Name,
 		BucketPath: bucketPath,
 		Path:       getUrl,
-		IsDeleted:  false,
+		IsActive:  true,
 	}
 	// update course image in cassandra
 	quizAdd := global.CassSession.Session.Query(coursez.QuizFileTable.Insert()).BindStruct(cassandraQuizFile)
@@ -162,7 +162,7 @@ func AddMCQQuiz(ctx context.Context, quiz *model.QuizMcq) (*bool, error) {
 		Options:       options,
 		CorrectOption: quiz.CorrectOption,
 		Explanation:   quiz.Explanation,
-		IsDeleted:     false,
+		IsActive:     true,
 	}
 	// set quiz in cassandra
 	insertQuery := global.CassSession.Session.Query(coursez.QuizMcqTable.Insert()).BindStruct(cassandraQuiz)
@@ -184,7 +184,7 @@ func AddQuizDescriptive(ctx context.Context, quiz *model.QuizDescriptive) (*bool
 		Question:      quiz.Question,
 		Explanation:   quiz.Explanation,
 		CorrectAnswer: quiz.CorrectAnswer,
-		IsDeleted:     false,
+		IsActive:     true,
 	}
 	// set quiz in cassandra
 	insertQuery := global.CassSession.Session.Query(coursez.QuizDescriptiveTable.Insert()).BindStruct(cassandraQuiz)

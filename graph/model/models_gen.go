@@ -31,27 +31,38 @@ type ChapterInput struct {
 }
 
 type Course struct {
-	ID           *string   `json:"id"`
-	Name         string    `json:"name"`
-	Description  string    `json:"description"`
-	Instructor   *string   `json:"instructor"`
-	Image        *string   `json:"image"`
-	PreviewVideo *string   `json:"previewVideo"`
-	TileImage    *string   `json:"tileImage"`
-	Owner        *string   `json:"owner"`
-	Duration     *int      `json:"duration"`
-	Level        *string   `json:"level"`
-	Language     []*string `json:"language"`
-	Takeaways    []*string `json:"takeaways"`
-	CreatedAt    *string   `json:"created_at"`
-	UpdatedAt    *string   `json:"updated_at"`
-	Type         *string   `json:"type"`
-	Prequisites  []*string `json:"prequisites"`
-	GoodFor      []*string `json:"goodFor"`
-	MustFor      []*string `json:"mustFor"`
-	CreatedBy    *string   `json:"created_by"`
-	UpdatedBy    *string   `json:"updated_by"`
-	Status       Status    `json:"status"`
+	ID                 *string          `json:"id"`
+	Name               string           `json:"name"`
+	Description        string           `json:"description"`
+	Summary            string           `json:"summary"`
+	Instructor         *string          `json:"instructor"`
+	Image              *string          `json:"image"`
+	PreviewVideo       *string          `json:"previewVideo"`
+	TileImage          *string          `json:"tileImage"`
+	Owner              *string          `json:"owner"`
+	Duration           *int             `json:"duration"`
+	ExpertiseLevel     *string          `json:"expertise_level"`
+	Language           []*string        `json:"language"`
+	Benefits           []*string        `json:"benefits"`
+	CreatedAt          *string          `json:"created_at"`
+	UpdatedAt          *string          `json:"updated_at"`
+	Type               *string          `json:"type"`
+	Prequisites        []*string        `json:"prequisites"`
+	GoodFor            []*string        `json:"goodFor"`
+	MustFor            []*string        `json:"mustFor"`
+	RelatedSkills      []*string        `json:"related_skills"`
+	PublishDate        *string          `json:"publish_date"`
+	ExpiryDate         *string          `json:"expiry_date"`
+	ExpectedCompletion *string          `json:"expected_completion"`
+	QaRequired         *bool            `json:"qa_required"`
+	Approvers          []*string        `json:"approvers"`
+	CreatedBy          *string          `json:"created_by"`
+	UpdatedBy          *string          `json:"updated_by"`
+	Status             Status           `json:"status"`
+	IsDisplay          *bool            `json:"is_display"`
+	Category           *string          `json:"category"`
+	SubCategory        *string          `json:"sub_category"`
+	SubCategories      []*SubCategories `json:"sub_categories"`
 }
 
 type CourseFile struct {
@@ -60,25 +71,36 @@ type CourseFile struct {
 }
 
 type CourseInput struct {
-	ID           *string   `json:"id"`
-	Name         string    `json:"name"`
-	Description  string    `json:"description"`
-	Instructor   *string   `json:"instructor"`
-	Image        *string   `json:"image"`
-	PreviewVideo *string   `json:"previewVideo"`
-	TileImage    *string   `json:"tileImage"`
-	Owner        *string   `json:"owner"`
-	Duration     *int      `json:"duration"`
-	Level        *string   `json:"level"`
-	Language     []*string `json:"language"`
-	Takeaways    []*string `json:"takeaways"`
-	Type         *string   `json:"type"`
-	Prequisites  []*string `json:"prequisites"`
-	GoodFor      []*string `json:"goodFor"`
-	MustFor      []*string `json:"mustFor"`
-	CreatedBy    *string   `json:"created_by"`
-	UpdatedBy    *string   `json:"updated_by"`
-	Status       Status    `json:"status"`
+	ID                 *string               `json:"id"`
+	Name               string                `json:"name"`
+	Description        string                `json:"description"`
+	Summary            *string               `json:"summary"`
+	Instructor         *string               `json:"instructor"`
+	Image              *string               `json:"image"`
+	PreviewVideo       *string               `json:"previewVideo"`
+	TileImage          *string               `json:"tileImage"`
+	Owner              *string               `json:"owner"`
+	Duration           *int                  `json:"duration"`
+	ExpertiseLevel     *string               `json:"expertise_level"`
+	Language           []*string             `json:"language"`
+	Benefits           []*string             `json:"benefits"`
+	Type               *string               `json:"type"`
+	Prequisites        []*string             `json:"prequisites"`
+	GoodFor            []*string             `json:"goodFor"`
+	MustFor            []*string             `json:"mustFor"`
+	RelatedSkills      []*string             `json:"related_skills"`
+	PublishDate        *string               `json:"publish_date"`
+	ExpiryDate         *string               `json:"expiry_date"`
+	ExpectedCompletion *string               `json:"expected_completion"`
+	QaRequired         *bool                 `json:"qa_required"`
+	Approvers          []*string             `json:"approvers"`
+	CreatedBy          *string               `json:"created_by"`
+	UpdatedBy          *string               `json:"updated_by"`
+	Status             Status                `json:"status"`
+	IsDisplay          *bool                 `json:"is_display"`
+	Category           *string               `json:"category"`
+	SubCategory        *string               `json:"sub_category"`
+	SubCategories      []*SubCategoriesInput `json:"sub_categories"`
 }
 
 type Module struct {
@@ -229,6 +251,16 @@ type TopicVideo struct {
 	File     graphql.Upload `json:"file"`
 	CourseID string         `json:"courseId"`
 	TopicID  string         `json:"topicId"`
+}
+
+type SubCategories struct {
+	Name *string `json:"name"`
+	Rank *int    `json:"rank"`
+}
+
+type SubCategoriesInput struct {
+	Name *string `json:"name"`
+	Rank *int    `json:"rank"`
 }
 
 type Status string
