@@ -24,16 +24,28 @@ func TopicContentCreate(ctx context.Context, topicID string, topicConent *model.
 		Language:           topicConent.Language,
 		CreatedAt:          time.Now().Unix(),
 		UpdatedAt:          time.Now().Unix(),
-		StartTime:          *topicConent.StartTime,
-		Duration:           *topicConent.Duration,
-		SkipIntroDuration:  *topicConent.SkipIntroDuration,
-		NextShowtime:       *topicConent.NextShowTime,
-		FromEndTime:        *topicConent.FromEndTime,
 		TopicContentBucket: "",
 		Url:                "",
 		SubtitleFile:       "",
-		Type:               *topicConent.Type,
 		IsActive:           false,
+	}
+	if topicConent.StartTime != nil {
+		cassandraTopicContent.StartTime = *topicConent.StartTime
+	}
+	if topicConent.Duration != nil {
+		cassandraTopicContent.Duration = *topicConent.Duration
+	}
+	if topicConent.SkipIntroDuration != nil {
+		cassandraTopicContent.SkipIntroDuration = *topicConent.SkipIntroDuration
+	}
+	if topicConent.NextShowTime != nil {
+		cassandraTopicContent.NextShowtime = *topicConent.NextShowTime
+	}
+	if topicConent.FromEndTime != nil {
+		cassandraTopicContent.FromEndTime = *topicConent.FromEndTime
+	}
+	if topicConent.Type != nil {
+		cassandraTopicContent.Type = *topicConent.Type
 	}
 	// set course in cassandra
 	insertQuery := global.CassSession.Session.Query(coursez.TopicContentTable.Insert()).BindStruct(cassandraTopicContent)

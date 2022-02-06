@@ -29,10 +29,14 @@ func CreateTopicQuiz(ctx context.Context, quiz *model.QuizInput) (*model.Quiz, e
 		Type:        quiz.Type,
 		IsMandatory: quiz.IsMandatory,
 		TopicID:     quiz.TopicID,
-		StartTime:   *quiz.StartTime,
-		Sequence:    *quiz.Sequence,
 		Category:    quiz.Category,
 		IsActive:   true,
+	}
+	if quiz.StartTime!=nil {
+		cassandraQuiz.StartTime = *quiz.StartTime
+	}
+	if quiz.Sequence!=nil {
+		cassandraQuiz.Sequence = *quiz.Sequence
 	}
 	// set quiz in cassandra
 	insertQuery := global.CassSession.Session.Query(coursez.QuizTable.Insert()).BindStruct(cassandraQuiz)
@@ -76,8 +80,12 @@ func UpdateQuiz(ctx context.Context, quiz *model.QuizInput) (*model.Quiz, error)
 	}
 	cassandraQuiz.IsMandatory = quiz.IsMandatory
 	cassandraQuiz.TopicID = quiz.TopicID
-	cassandraQuiz.StartTime = *quiz.StartTime
-	cassandraQuiz.Sequence = *quiz.Sequence
+	if quiz.StartTime!=nil {
+		cassandraQuiz.StartTime = *quiz.StartTime
+	}
+	if quiz.Sequence!=nil {
+		cassandraQuiz.Sequence = *quiz.Sequence
+	}
 	cassandraQuiz.Category = quiz.Category
 	cassandraQuiz.UpdatedAt = time.Now().Unix()
 	// update quiz in cassandra

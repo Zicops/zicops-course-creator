@@ -23,10 +23,14 @@ func ChapterCreate(ctx context.Context, courseID string, chapter *model.ChapterI
 		CreatedAt:   time.Now().Unix(),
 		UpdatedAt:   time.Now().Unix(),
 		CourseID:    courseID,
-		ModuleID:    *chapter.ModuleID,
-		Sequence:    *chapter.Sequence,
-	}
 
+	}
+	if chapter.ModuleID!=nil {
+		cassandraChapter.ModuleID = *chapter.ModuleID
+	}
+	if chapter.Sequence!=nil {
+		cassandraChapter.Sequence = *chapter.Sequence
+	}
 	// set course in cassandra
 	insertQuery := global.CassSession.Session.Query(coursez.ChapterTable.Insert()).BindStruct(cassandraChapter)
 	if err := insertQuery.ExecRelease(); err != nil {

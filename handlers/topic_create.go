@@ -23,13 +23,23 @@ func TopicCreate(ctx context.Context, courseID string, topic *model.TopicInput) 
 		Type:        topic.Type,
 		CreatedAt:   time.Now().Unix(),
 		UpdatedAt:   time.Now().Unix(),
-		ChapterID:   *topic.ChapterID,
 		CourseID:    courseID,
-		ModuleID:    *topic.ModuleID,
-		Sequence:    *topic.Sequence,
-		CreatedBy:   *topic.CreatedBy,
-		UpdatedBy:   *topic.UpdatedBy,
 		IsActive:    true,
+	}
+	if topic.ChapterID != nil {
+		cassandraTopic.ChapterID = *topic.ChapterID
+	}
+	if topic.ModuleID != nil {
+		cassandraTopic.ModuleID = *topic.ModuleID
+	}
+	if topic.Sequence != nil {
+		cassandraTopic.Sequence = *topic.Sequence
+	}
+	if topic.CreatedBy != nil {
+		cassandraTopic.CreatedBy = *topic.CreatedBy
+	}
+	if topic.UpdatedBy != nil {
+		cassandraTopic.UpdatedBy = *topic.UpdatedBy
 	}
 	// set course in cassandra
 	insertQuery := global.CassSession.Session.Query(coursez.TopicTable.Insert()).BindStruct(cassandraTopic)
