@@ -69,38 +69,66 @@ func CourseCreator(ctx context.Context, courseInput *model.CourseInput) (*model.
 		ID:                 guid.String(),
 		Name:               courseInput.Name,
 		Description:        courseInput.Description,
-		Summary:            *courseInput.Summary,
-		Instructor:         *courseInput.Instructor,
 		Image:              "https://storage.googleapis.com/zicops.com/school-board-ge1701ca8f_640.jpg",
 		PreviewVideo:       "https://storage.googleapis.com/zicops.com/school-board-ge1701ca8f_640.jpg",
 		TileImage:          "https://storage.googleapis.com/zicops.com/school-board-ge1701ca8f_640.jpg",
 		TileImageBucket:    "",
 		ImageBucket:        "",
 		PreviewVideoBucket: "",
-		Owner:              *courseInput.Owner,
-		Duration:           *courseInput.Duration,
 		Benefits:           takeaways,
 		Language:           language,
 		CreatedAt:          time.Now().Unix(),
 		UpdatedAt:          time.Now().Unix(),
-		Type:               *courseInput.Type,
 		Prequisites:        prequisites,
 		GoodFor:            goodFor,
 		MustFor:            mustFor,
 		RelatedSkills:      relatedSkills,
-		PublishDate:        *courseInput.PublishDate,
-		ExpiryDate:         *courseInput.ExpiryDate,
-		IsDisplay:          *courseInput.IsDisplay,
-		QARequired:         *courseInput.QaRequired,
 		Approvers:          approvers,
-		CreatedBy:          *courseInput.CreatedBy,
-		UpdatedBy:          *courseInput.UpdatedBy,
 		Status:             courseInput.Status.String(),
 		IsActive:           true,
-		ExpectedCompletion: *courseInput.ExpectedCompletion,
-		Category:           *courseInput.Category,
-		SubCategory:        *courseInput.SubCategory,
 		SubCategories:      subCats,
+	}
+	if courseInput.Summary != nil {
+		cassandraCourse.Summary = *courseInput.Summary
+	}
+	if courseInput.Instructor != nil {
+		cassandraCourse.Instructor = *courseInput.Instructor
+	}
+	if courseInput.Type != nil {
+		cassandraCourse.Type = *courseInput.Type
+	}
+	if courseInput.Owner != nil {
+		cassandraCourse.Owner = *courseInput.Owner
+	}
+	if courseInput.Duration != nil {
+		cassandraCourse.Duration = *courseInput.Duration
+	}
+	if courseInput.PublishDate != nil {
+		cassandraCourse.PublishDate = *courseInput.PublishDate
+	}
+	if courseInput.ExpiryDate != nil {
+		cassandraCourse.ExpiryDate = *courseInput.ExpiryDate
+	}
+	if courseInput.IsDisplay != nil {
+		cassandraCourse.IsDisplay = *courseInput.IsDisplay
+	}
+	if courseInput.QaRequired != nil {
+		cassandraCourse.QARequired = *courseInput.QaRequired
+	}
+	if courseInput.CreatedBy != nil {
+		cassandraCourse.CreatedBy = *courseInput.CreatedBy
+	}
+	if courseInput.UpdatedBy != nil {
+		cassandraCourse.UpdatedBy = *courseInput.UpdatedBy
+	}
+	if courseInput.Category != nil {
+		cassandraCourse.Category = *courseInput.Category
+	}
+	if courseInput.ExpectedCompletion != nil {
+		cassandraCourse.ExpectedCompletion = *courseInput.ExpectedCompletion
+	}
+	if courseInput.SubCategory != nil {
+		cassandraCourse.SubCategory = *courseInput.SubCategory
 	}
 	// set course in cassandra
 	insertQuery := global.CassSession.Session.Query(coursez.CourseTable.Insert()).BindStruct(cassandraCourse)
