@@ -24,12 +24,22 @@ func ModuleCreate(ctx context.Context, courseID string, module *model.ModuleInpu
 		UpdatedAt:   time.Now().Unix(),
 		IsChapter:   module.IsChapter,
 		CourseID:    courseID,
-		Owner:       *module.Owner,
-		Duration:    *module.Duration,
-		Level:       *module.Level,
-		Sequence:    *module.Sequence,
-		SetGlobal:   *module.SetGlobal,
 		IsActive:   false,
+	}
+	if module.Owner!= nil {
+		cassandraModule.Owner = *module.Owner
+	}
+	if module.Duration!= nil {
+		cassandraModule.Duration = *module.Duration
+	}
+	if module.Level!= nil {
+		cassandraModule.Level = *module.Level
+	}
+	if module.Sequence!= nil {
+		cassandraModule.Sequence = *module.Sequence
+	}
+	if module.SetGlobal!= nil {
+		cassandraModule.SetGlobal = *module.SetGlobal
 	}
 	// set course in cassandra
 	insertQuery := global.CassSession.Session.Query(coursez.ModuleTable.Insert()).BindStruct(cassandraModule)
