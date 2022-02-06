@@ -14,11 +14,21 @@ import (
 )
 
 func (r *mutationResolver) AddCatergories(ctx context.Context, category []*string) (*bool, error) {
-	panic(fmt.Errorf("not implemented"))
+	resp, err := handlers.AddCategory(ctx, category)
+	if err != nil {
+		log.Errorf("error adding categotries: %v", err)
+		return nil, err
+	}
+	return resp, nil
 }
 
 func (r *mutationResolver) AddSubCategories(ctx context.Context, subCategory []*string) (*bool, error) {
-	panic(fmt.Errorf("not implemented"))
+	resp, err := handlers.AddSubCategory(ctx, subCategory)
+	if err != nil {
+		log.Errorf("error adding sub categotries: %v", err)
+		return nil, err
+	}
+	return resp, nil
 }
 
 func (r *mutationResolver) AddCourse(ctx context.Context, course *model.CourseInput) (*model.Course, error) {
