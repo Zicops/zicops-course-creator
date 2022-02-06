@@ -103,6 +103,7 @@ type ComplexityRoot struct {
 	}
 
 	Mutation struct {
+		AddCatergories             func(childComplexity int, category []*string) int
 		AddCourse                  func(childComplexity int, course *model.CourseInput) int
 		AddCourseChapter           func(childComplexity int, courseID string, chapter *model.ChapterInput) int
 		AddCourseModule            func(childComplexity int, courseID string, module *model.ModuleInput) int
@@ -110,6 +111,7 @@ type ComplexityRoot struct {
 		AddQuiz                    func(childComplexity int, quiz *model.QuizInput) int
 		AddQuizDescriptive         func(childComplexity int, quiz *model.QuizDescriptive) int
 		AddQuizMcq                 func(childComplexity int, quiz *model.QuizMcq) int
+		AddSubCategories           func(childComplexity int, subCategory []*string) int
 		AddTopicContent            func(childComplexity int, topicID string, topicContent *model.TopicContentInput) int
 		UpdateCourse               func(childComplexity int, course *model.CourseInput) int
 		UpdateCourseChapter        func(childComplexity int, chapter *model.ChapterInput) int
@@ -178,6 +180,8 @@ type ComplexityRoot struct {
 }
 
 type MutationResolver interface {
+	AddCatergories(ctx context.Context, category []*string) (*bool, error)
+	AddSubCategories(ctx context.Context, subCategory []*string) (*bool, error)
 	AddCourse(ctx context.Context, course *model.CourseInput) (*model.Course, error)
 	UpdateCourse(ctx context.Context, course *model.CourseInput) (*model.Course, error)
 	UploadCourseImage(ctx context.Context, file model.CourseFile) (*bool, error)
@@ -581,6 +585,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Module.UpdatedAt(childComplexity), true
 
+	case "Mutation.addCatergories":
+		if e.complexity.Mutation.AddCatergories == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_addCatergories_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.AddCatergories(childComplexity, args["category"].([]*string)), true
+
 	case "Mutation.addCourse":
 		if e.complexity.Mutation.AddCourse == nil {
 			break
@@ -664,6 +680,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.AddQuizMcq(childComplexity, args["quiz"].(*model.QuizMcq)), true
+
+	case "Mutation.addSubCategories":
+		if e.complexity.Mutation.AddSubCategories == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_addSubCategories_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.AddSubCategories(childComplexity, args["sub_category"].([]*string)), true
 
 	case "Mutation.addTopicContent":
 		if e.complexity.Mutation.AddTopicContent == nil {
@@ -1423,6 +1451,8 @@ input TopicResourceInput {
 
 # define type mutations to add a course  using courseInput
 type Mutation{
+    addCatergories(category: [String]!): Boolean
+    addSubCategories(sub_category: [String]!): Boolean
     addCourse(course: CourseInput): Course
     updateCourse(course: CourseInput): Course
     uploadCourseImage(file: CourseFile!): Boolean
@@ -1453,6 +1483,21 @@ var parsedSchema = gqlparser.MustLoadSchema(sources...)
 // endregion ************************** generated!.gotpl **************************
 
 // region    ***************************** args.gotpl *****************************
+
+func (ec *executionContext) field_Mutation_addCatergories_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 []*string
+	if tmp, ok := rawArgs["category"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("category"))
+		arg0, err = ec.unmarshalNString2ᚕᚖstring(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["category"] = arg0
+	return args, nil
+}
 
 func (ec *executionContext) field_Mutation_addCourseChapter_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
@@ -1583,6 +1628,21 @@ func (ec *executionContext) field_Mutation_addQuiz_args(ctx context.Context, raw
 		}
 	}
 	args["quiz"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_addSubCategories_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 []*string
+	if tmp, ok := rawArgs["sub_category"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("sub_category"))
+		arg0, err = ec.unmarshalNString2ᚕᚖstring(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["sub_category"] = arg0
 	return args, nil
 }
 
@@ -3575,6 +3635,84 @@ func (ec *executionContext) _Module_setGlobal(ctx context.Context, field graphql
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.SetGlobal, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*bool)
+	fc.Result = res
+	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_addCatergories(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_addCatergories_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().AddCatergories(rctx, args["category"].([]*string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*bool)
+	fc.Result = res
+	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_addSubCategories(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_addSubCategories_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().AddSubCategories(rctx, args["sub_category"].([]*string))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -8344,6 +8482,20 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Mutation")
+		case "addCatergories":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_addCatergories(ctx, field)
+			}
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, innerFunc)
+
+		case "addSubCategories":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_addSubCategories(ctx, field)
+			}
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, innerFunc)
+
 		case "addCourse":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_addCourse(ctx, field)

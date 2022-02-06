@@ -5,12 +5,21 @@ package graph
 
 import (
 	"context"
+	"fmt"
 
 	log "github.com/sirupsen/logrus"
 	"github.com/zicops/zicops-course-creator/graph/generated"
 	"github.com/zicops/zicops-course-creator/graph/model"
 	"github.com/zicops/zicops-course-creator/handlers"
 )
+
+func (r *mutationResolver) AddCatergories(ctx context.Context, category []*string) (*bool, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
+func (r *mutationResolver) AddSubCategories(ctx context.Context, subCategory []*string) (*bool, error) {
+	panic(fmt.Errorf("not implemented"))
+}
 
 func (r *mutationResolver) AddCourse(ctx context.Context, course *model.CourseInput) (*model.Course, error) {
 	resp, err := handlers.CourseCreator(ctx, course)
