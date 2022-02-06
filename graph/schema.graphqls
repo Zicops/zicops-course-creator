@@ -172,9 +172,10 @@ input TopicContentInput {
     topicId: String!
     startTime: Int
     duration: Int
-    skipIntro: Boolean
+    skipIntroDuration: Int
     nextShowTime: Int
     fromEndTime: Int
+    type: String
 }
 
 type TopicContent {
@@ -182,17 +183,24 @@ type TopicContent {
     topicId: String!
     startTime: Int
     duration: Int
-    skipIntro: Boolean
+    skipIntroDuration: Int
     nextShowTime: Int
     fromEndTime: Int
     created_at: String
     updated_at: String
+    type: String
 }
 
 input TopicVideo{
     file: Upload!
     courseId: String!
     topicId: String!
+}
+
+input TopicSubtitle {
+    file: Upload!
+    courseId: String!
+    topicId: String!    
 }
 
 input StaticContent{
@@ -277,9 +285,10 @@ type Mutation{
     updateCourseChapter(chapter: ChapterInput): Chapter
     addCourseTopic(courseId: String!, topic: TopicInput): Topic
     updateCourseTopic(topic: TopicInput): Topic
-    addTopicContent(topicId: String!, topicConent: TopicContentInput): TopicContent
+    addTopicContent(topicId: String!, topicContent: TopicContentInput): TopicContent
     updateTopicContent(topicContent: TopicContentInput): TopicContent
     uploadTopicContentVideo(file: TopicVideo!): Boolean
+    uploadTopicContentSubtitle(file: TopicSubtitle!): Boolean
     uploadTopicStaticContent(file: StaticContent!): Boolean
     addQuiz(quiz: QuizInput): Quiz
     updateQuiz(quiz: QuizInput): Quiz

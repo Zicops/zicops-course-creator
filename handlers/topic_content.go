@@ -26,10 +26,13 @@ func TopicContentCreate(ctx context.Context, topicID string, topicConent *model.
 		UpdatedAt:          time.Now().Unix(),
 		StartTime:          *topicConent.StartTime,
 		Duration:           *topicConent.Duration,
+		SkipIntroDuration:  *topicConent.SkipIntroDuration,
 		NextShowtime:       *topicConent.NextShowTime,
 		FromEndTime:        *topicConent.FromEndTime,
 		TopicContentBucket: "",
 		Url:                "",
+		SubtitleFile:       "",
+		Type:               *topicConent.Type,
 		IsActive:           false,
 	}
 	// set course in cassandra
@@ -39,15 +42,16 @@ func TopicContentCreate(ctx context.Context, topicID string, topicConent *model.
 	}
 	created := strconv.FormatInt(cassandraTopicContent.CreatedAt, 10)
 	responseModel := model.TopicContent{
-		Language:     topicConent.Language,
-		StartTime:    topicConent.StartTime,
-		CreatedAt:    &created,
-		UpdatedAt:    &created,
-		Duration:     topicConent.Duration,
-		SkipIntro:    topicConent.SkipIntro,
-		NextShowTime: topicConent.NextShowTime,
-		FromEndTime:  topicConent.FromEndTime,
-		TopicID:      topicID,
+		Language:          topicConent.Language,
+		StartTime:         topicConent.StartTime,
+		CreatedAt:         &created,
+		UpdatedAt:         &created,
+		Duration:          topicConent.Duration,
+		SkipIntroDuration: topicConent.SkipIntroDuration,
+		NextShowTime:      topicConent.NextShowTime,
+		FromEndTime:       topicConent.FromEndTime,
+		TopicID:           topicID,
+		Type:              topicConent.Type,
 	}
 	return &responseModel, nil
 }
@@ -88,6 +92,42 @@ func UploadTopicVideo(ctx context.Context, file model.TopicVideo) (*bool, error)
 	return &isSuccess, nil
 }
 
+func UploadTopicSubtitle(ctx context.Context, file model.TopicSubtitle) (*bool, error) {
+	log.Info("UploadTopicSubtitle called")
+	isSuccess := false
+	storageC := bucket.NewStorageHandler()
+	gproject := googleprojectlib.GetGoogleProjectID()
+	err := storageC.InitializeStorageClient(ctx, gproject)
+	if err != nil {
+		log.Errorf("Failed to upload subtitle to course topic: %v", err.Error())
+		return &isSuccess, nil
+	}
+	bucketPath := file.CourseID + "/" + file.TopicID + "/" + file.File.Filename
+	writer, err := storageC.UploadToGCS(ctx, bucketPath)
+	if err != nil {
+		log.Errorf("Failed to upload subtitle to course topic: %v", err.Error())
+		return &isSuccess, nil
+	}
+	defer writer.Close()
+	fileBuffer := bytes.NewBuffer(nil)
+	if _, err := io.Copy(fileBuffer, file.File.File); err != nil {
+		return &isSuccess, nil
+	}
+	currentBytes := fileBuffer.Bytes()
+	_, err = io.Copy(writer, bytes.NewReader(currentBytes))
+	if err != nil {
+		return &isSuccess, err
+	}
+	getUrl := storageC.GetSignedURLForObject(bucketPath)
+	// update course image in cassandra
+	updateQuery := global.CassSession.Session.Query(coursez.TopicContentTable.Update("subtitleFileBucket", "subtitleFile")).BindMap(qb.M{"topicId": file.TopicID, "subtitleFileBucket": bucketPath, "subtitleFile": getUrl})
+	if err := updateQuery.ExecRelease(); err != nil {
+		return &isSuccess, err
+	}
+	isSuccess = true
+	return &isSuccess, nil
+}
+
 func UpdateTopicContent(ctx context.Context, topicConent *model.TopicContentInput) (*model.TopicContent, error) {
 	log.Info("UpdateTopicContent called")
 	topicID := topicConent.TopicID
@@ -108,7 +148,12 @@ func UpdateTopicContent(ctx context.Context, topicConent *model.TopicContentInpu
 	if topicConent.StartTime != nil {
 		cassandraTopicContent.StartTime = *topicConent.StartTime
 	}
-
+	if topicConent.SkipIntroDuration != nil {
+		cassandraTopicContent.SkipIntroDuration = *topicConent.SkipIntroDuration
+	}
+	if topicConent.Type != nil {
+		cassandraTopicContent.Type = *topicConent.Type
+	}
 	if topicConent.NextShowTime != nil {
 		cassandraTopicContent.NextShowtime = *topicConent.NextShowTime
 	}
@@ -127,15 +172,15 @@ func UpdateTopicContent(ctx context.Context, topicConent *model.TopicContentInpu
 	created := strconv.FormatInt(cassandraTopicContent.CreatedAt, 10)
 	updated := strconv.FormatInt(cassandraTopicContent.UpdatedAt, 10)
 	responseModel := model.TopicContent{
-		Language:     topicConent.Language,
-		StartTime:    topicConent.StartTime,
-		CreatedAt:    &created,
-		UpdatedAt:    &updated,
-		Duration:     topicConent.Duration,
-		SkipIntro:    topicConent.SkipIntro,
-		NextShowTime: topicConent.NextShowTime,
-		FromEndTime:  topicConent.FromEndTime,
-		TopicID:      topicID,
+		Language:          topicConent.Language,
+		StartTime:         topicConent.StartTime,
+		CreatedAt:         &created,
+		UpdatedAt:         &updated,
+		Duration:          topicConent.Duration,
+		SkipIntroDuration: topicConent.SkipIntroDuration,
+		NextShowTime:      topicConent.NextShowTime,
+		FromEndTime:       topicConent.FromEndTime,
+		TopicID:           topicID,
 	}
 	return &responseModel, nil
 }

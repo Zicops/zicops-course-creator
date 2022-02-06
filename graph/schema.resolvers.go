@@ -107,8 +107,8 @@ func (r *mutationResolver) UpdateCourseTopic(ctx context.Context, topic *model.T
 	panic(fmt.Errorf("not implemented"))
 }
 
-func (r *mutationResolver) AddTopicContent(ctx context.Context, topicID string, topicConent *model.TopicContentInput) (*model.TopicContent, error) {
-	resp, err := handlers.TopicContentCreate(ctx, topicID, topicConent)
+func (r *mutationResolver) AddTopicContent(ctx context.Context, topicID string, topicContent *model.TopicContentInput) (*model.TopicContent, error) {
+	resp, err := handlers.TopicContentCreate(ctx, topicID, topicContent)
 	if err != nil {
 		log.Errorf("error creating topic content: %v", err)
 		return nil, err
@@ -128,7 +128,16 @@ func (r *mutationResolver) UpdateTopicContent(ctx context.Context, topicContent 
 func (r *mutationResolver) UploadTopicContentVideo(ctx context.Context, file model.TopicVideo) (*bool, error) {
 	resp, err := handlers.UploadTopicVideo(ctx, file)
 	if err != nil {
-		log.Errorf("error creating topic content: %v", err)
+		log.Errorf("error uploading topic video: %v", err)
+		return nil, err
+	}
+	return resp, nil
+}
+
+func (r *mutationResolver) UploadTopicContentSubtitle(ctx context.Context, file model.TopicSubtitle) (*bool, error) {
+	resp, err := handlers.UploadTopicSubtitle(ctx, file)
+	if err != nil {
+		log.Errorf("error uploading topic subtitle: %v", err)
 		return nil, err
 	}
 	return resp, nil

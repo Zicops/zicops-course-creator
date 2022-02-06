@@ -1,29 +1,48 @@
 # GraphQL schema for course creator
 scalar Upload
 
+type sub_categories {
+    name: String
+    rank: Int
+}
+input sub_categories_input {
+    name: String
+    rank: Int
+}
 # define course type
 type Course{
     id: ID
     name: String!
     description: String!
+    summary: String!
     instructor: String
     image: String
     previewVideo: String
     tileImage: String
     owner: String
     duration: Int
-    level: String
+    expertise_level: String
     language: [String]
-    takeaways: [String]
+    benefits: [String]
     created_at: String
     updated_at: String
     type: String
     prequisites: [String]
     goodFor: [String]
     mustFor: [String]
+    related_skills: [String]
+    publish_date: String
+    expiry_date: String
+    expected_completion: String
+    qa_required: Boolean
+    approvers: [String]
     created_by: String
     updated_by: String
     status: Status!
+    is_display: Boolean
+    category: String
+    sub_category: String
+    sub_categories: [sub_categories]
 }
 
 enum Status {
@@ -39,22 +58,33 @@ input CourseInput{
     id: ID    
     name: String!
     description: String!
+    summary: String
     instructor: String
     image: String
     previewVideo: String
     tileImage: String
     owner: String
     duration: Int
-    level: String
+    expertise_level: String
     language: [String]
-    takeaways: [String]
+    benefits: [String]
     type: String
     prequisites: [String]
     goodFor: [String]
     mustFor: [String]
+    related_skills: [String]
+    publish_date: String
+    expiry_date: String
+    expected_completion: String
+    qa_required: Boolean
+    approvers: [String]
     created_by: String
     updated_by: String
     status: Status!
+    is_display: Boolean
+    category: String
+    sub_category: String
+    sub_categories: [sub_categories_input]
 }
 
 input CourseFile{
@@ -142,9 +172,10 @@ input TopicContentInput {
     topicId: String!
     startTime: Int
     duration: Int
-    skipIntro: Boolean
+    skipIntroDuration: Int
     nextShowTime: Int
     fromEndTime: Int
+    type: String
 }
 
 type TopicContent {
@@ -152,17 +183,24 @@ type TopicContent {
     topicId: String!
     startTime: Int
     duration: Int
-    skipIntro: Boolean
+    skipIntroDuration: Int
     nextShowTime: Int
     fromEndTime: Int
     created_at: String
     updated_at: String
+    type: String
 }
 
 input TopicVideo{
     file: Upload!
     courseId: String!
     topicId: String!
+}
+
+input TopicSubtitle {
+    file: Upload!
+    courseId: String!
+    topicId: String!    
 }
 
 input StaticContent{
@@ -233,6 +271,7 @@ input TopicResourceInput {
     url: String!
     file: Upload!
 }
+
 # define type mutations to add a course  using courseInput
 type Mutation{
     addCourse(course: CourseInput): Course
@@ -246,9 +285,10 @@ type Mutation{
     updateCourseChapter(chapter: ChapterInput): Chapter
     addCourseTopic(courseId: String!, topic: TopicInput): Topic
     updateCourseTopic(topic: TopicInput): Topic
-    addTopicContent(topicId: String!, topicConent: TopicContentInput): TopicContent
+    addTopicContent(topicId: String!, topicContent: TopicContentInput): TopicContent
     updateTopicContent(topicContent: TopicContentInput): TopicContent
     uploadTopicContentVideo(file: TopicVideo!): Boolean
+    uploadTopicContentSubtitle(file: TopicSubtitle!): Boolean
     uploadTopicStaticContent(file: StaticContent!): Boolean
     addQuiz(quiz: QuizInput): Quiz
     updateQuiz(quiz: QuizInput): Quiz

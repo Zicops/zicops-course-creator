@@ -103,27 +103,28 @@ type ComplexityRoot struct {
 	}
 
 	Mutation struct {
-		AddCourse                func(childComplexity int, course *model.CourseInput) int
-		AddCourseChapter         func(childComplexity int, courseID string, chapter *model.ChapterInput) int
-		AddCourseModule          func(childComplexity int, courseID string, module *model.ModuleInput) int
-		AddCourseTopic           func(childComplexity int, courseID string, topic *model.TopicInput) int
-		AddQuiz                  func(childComplexity int, quiz *model.QuizInput) int
-		AddQuizDescriptive       func(childComplexity int, quiz *model.QuizDescriptive) int
-		AddQuizMcq               func(childComplexity int, quiz *model.QuizMcq) int
-		AddTopicContent          func(childComplexity int, topicID string, topicConent *model.TopicContentInput) int
-		UpdateCourse             func(childComplexity int, course *model.CourseInput) int
-		UpdateCourseChapter      func(childComplexity int, chapter *model.ChapterInput) int
-		UpdateCourseModule       func(childComplexity int, module *model.ModuleInput) int
-		UpdateCourseTopic        func(childComplexity int, topic *model.TopicInput) int
-		UpdateQuiz               func(childComplexity int, quiz *model.QuizInput) int
-		UpdateTopicContent       func(childComplexity int, topicContent *model.TopicContentInput) int
-		UploadCourseImage        func(childComplexity int, file model.CourseFile) int
-		UploadCoursePreviewVideo func(childComplexity int, file model.CourseFile) int
-		UploadCourseTileImage    func(childComplexity int, file model.CourseFile) int
-		UploadQuizFile           func(childComplexity int, courseID string, file model.QuizFile) int
-		UploadTopicContentVideo  func(childComplexity int, file model.TopicVideo) int
-		UploadTopicResource      func(childComplexity int, courseID string, resource *model.TopicResourceInput) int
-		UploadTopicStaticContent func(childComplexity int, file model.StaticContent) int
+		AddCourse                  func(childComplexity int, course *model.CourseInput) int
+		AddCourseChapter           func(childComplexity int, courseID string, chapter *model.ChapterInput) int
+		AddCourseModule            func(childComplexity int, courseID string, module *model.ModuleInput) int
+		AddCourseTopic             func(childComplexity int, courseID string, topic *model.TopicInput) int
+		AddQuiz                    func(childComplexity int, quiz *model.QuizInput) int
+		AddQuizDescriptive         func(childComplexity int, quiz *model.QuizDescriptive) int
+		AddQuizMcq                 func(childComplexity int, quiz *model.QuizMcq) int
+		AddTopicContent            func(childComplexity int, topicID string, topicContent *model.TopicContentInput) int
+		UpdateCourse               func(childComplexity int, course *model.CourseInput) int
+		UpdateCourseChapter        func(childComplexity int, chapter *model.ChapterInput) int
+		UpdateCourseModule         func(childComplexity int, module *model.ModuleInput) int
+		UpdateCourseTopic          func(childComplexity int, topic *model.TopicInput) int
+		UpdateQuiz                 func(childComplexity int, quiz *model.QuizInput) int
+		UpdateTopicContent         func(childComplexity int, topicContent *model.TopicContentInput) int
+		UploadCourseImage          func(childComplexity int, file model.CourseFile) int
+		UploadCoursePreviewVideo   func(childComplexity int, file model.CourseFile) int
+		UploadCourseTileImage      func(childComplexity int, file model.CourseFile) int
+		UploadQuizFile             func(childComplexity int, courseID string, file model.QuizFile) int
+		UploadTopicContentSubtitle func(childComplexity int, file model.TopicSubtitle) int
+		UploadTopicContentVideo    func(childComplexity int, file model.TopicVideo) int
+		UploadTopicResource        func(childComplexity int, courseID string, resource *model.TopicResourceInput) int
+		UploadTopicStaticContent   func(childComplexity int, file model.StaticContent) int
 	}
 
 	Query struct {
@@ -158,15 +159,16 @@ type ComplexityRoot struct {
 	}
 
 	TopicContent struct {
-		CreatedAt    func(childComplexity int) int
-		Duration     func(childComplexity int) int
-		FromEndTime  func(childComplexity int) int
-		Language     func(childComplexity int) int
-		NextShowTime func(childComplexity int) int
-		SkipIntro    func(childComplexity int) int
-		StartTime    func(childComplexity int) int
-		TopicID      func(childComplexity int) int
-		UpdatedAt    func(childComplexity int) int
+		CreatedAt         func(childComplexity int) int
+		Duration          func(childComplexity int) int
+		FromEndTime       func(childComplexity int) int
+		Language          func(childComplexity int) int
+		NextShowTime      func(childComplexity int) int
+		SkipIntroDuration func(childComplexity int) int
+		StartTime         func(childComplexity int) int
+		TopicID           func(childComplexity int) int
+		Type              func(childComplexity int) int
+		UpdatedAt         func(childComplexity int) int
 	}
 
 	Sub_categories struct {
@@ -187,9 +189,10 @@ type MutationResolver interface {
 	UpdateCourseChapter(ctx context.Context, chapter *model.ChapterInput) (*model.Chapter, error)
 	AddCourseTopic(ctx context.Context, courseID string, topic *model.TopicInput) (*model.Topic, error)
 	UpdateCourseTopic(ctx context.Context, topic *model.TopicInput) (*model.Topic, error)
-	AddTopicContent(ctx context.Context, topicID string, topicConent *model.TopicContentInput) (*model.TopicContent, error)
+	AddTopicContent(ctx context.Context, topicID string, topicContent *model.TopicContentInput) (*model.TopicContent, error)
 	UpdateTopicContent(ctx context.Context, topicContent *model.TopicContentInput) (*model.TopicContent, error)
 	UploadTopicContentVideo(ctx context.Context, file model.TopicVideo) (*bool, error)
+	UploadTopicContentSubtitle(ctx context.Context, file model.TopicSubtitle) (*bool, error)
 	UploadTopicStaticContent(ctx context.Context, file model.StaticContent) (*bool, error)
 	AddQuiz(ctx context.Context, quiz *model.QuizInput) (*model.Quiz, error)
 	UpdateQuiz(ctx context.Context, quiz *model.QuizInput) (*model.Quiz, error)
@@ -672,7 +675,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.AddTopicContent(childComplexity, args["topicId"].(string), args["topicConent"].(*model.TopicContentInput)), true
+		return e.complexity.Mutation.AddTopicContent(childComplexity, args["topicId"].(string), args["topicContent"].(*model.TopicContentInput)), true
 
 	case "Mutation.updateCourse":
 		if e.complexity.Mutation.UpdateCourse == nil {
@@ -793,6 +796,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.UploadQuizFile(childComplexity, args["courseId"].(string), args["file"].(model.QuizFile)), true
+
+	case "Mutation.uploadTopicContentSubtitle":
+		if e.complexity.Mutation.UploadTopicContentSubtitle == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_uploadTopicContentSubtitle_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UploadTopicContentSubtitle(childComplexity, args["file"].(model.TopicSubtitle)), true
 
 	case "Mutation.uploadTopicContentVideo":
 		if e.complexity.Mutation.UploadTopicContentVideo == nil {
@@ -1019,12 +1034,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.TopicContent.NextShowTime(childComplexity), true
 
-	case "TopicContent.skipIntro":
-		if e.complexity.TopicContent.SkipIntro == nil {
+	case "TopicContent.skipIntroDuration":
+		if e.complexity.TopicContent.SkipIntroDuration == nil {
 			break
 		}
 
-		return e.complexity.TopicContent.SkipIntro(childComplexity), true
+		return e.complexity.TopicContent.SkipIntroDuration(childComplexity), true
 
 	case "TopicContent.startTime":
 		if e.complexity.TopicContent.StartTime == nil {
@@ -1039,6 +1054,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.TopicContent.TopicID(childComplexity), true
+
+	case "TopicContent.type":
+		if e.complexity.TopicContent.Type == nil {
+			break
+		}
+
+		return e.complexity.TopicContent.Type(childComplexity), true
 
 	case "TopicContent.updated_at":
 		if e.complexity.TopicContent.UpdatedAt == nil {
@@ -1299,9 +1321,10 @@ input TopicContentInput {
     topicId: String!
     startTime: Int
     duration: Int
-    skipIntro: Boolean
+    skipIntroDuration: Int
     nextShowTime: Int
     fromEndTime: Int
+    type: String
 }
 
 type TopicContent {
@@ -1309,17 +1332,24 @@ type TopicContent {
     topicId: String!
     startTime: Int
     duration: Int
-    skipIntro: Boolean
+    skipIntroDuration: Int
     nextShowTime: Int
     fromEndTime: Int
     created_at: String
     updated_at: String
+    type: String
 }
 
 input TopicVideo{
     file: Upload!
     courseId: String!
     topicId: String!
+}
+
+input TopicSubtitle {
+    file: Upload!
+    courseId: String!
+    topicId: String!    
 }
 
 input StaticContent{
@@ -1404,9 +1434,10 @@ type Mutation{
     updateCourseChapter(chapter: ChapterInput): Chapter
     addCourseTopic(courseId: String!, topic: TopicInput): Topic
     updateCourseTopic(topic: TopicInput): Topic
-    addTopicContent(topicId: String!, topicConent: TopicContentInput): TopicContent
+    addTopicContent(topicId: String!, topicContent: TopicContentInput): TopicContent
     updateTopicContent(topicContent: TopicContentInput): TopicContent
     uploadTopicContentVideo(file: TopicVideo!): Boolean
+    uploadTopicContentSubtitle(file: TopicSubtitle!): Boolean
     uploadTopicStaticContent(file: StaticContent!): Boolean
     addQuiz(quiz: QuizInput): Quiz
     updateQuiz(quiz: QuizInput): Quiz
@@ -1568,14 +1599,14 @@ func (ec *executionContext) field_Mutation_addTopicContent_args(ctx context.Cont
 	}
 	args["topicId"] = arg0
 	var arg1 *model.TopicContentInput
-	if tmp, ok := rawArgs["topicConent"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("topicConent"))
+	if tmp, ok := rawArgs["topicContent"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("topicContent"))
 		arg1, err = ec.unmarshalOTopicContentInput2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐTopicContentInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["topicConent"] = arg1
+	args["topicContent"] = arg1
 	return args, nil
 }
 
@@ -1735,6 +1766,21 @@ func (ec *executionContext) field_Mutation_uploadQuizFile_args(ctx context.Conte
 		}
 	}
 	args["file"] = arg1
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_uploadTopicContentSubtitle_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 model.TopicSubtitle
+	if tmp, ok := rawArgs["file"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("file"))
+		arg0, err = ec.unmarshalNTopicSubtitle2githubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐTopicSubtitle(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["file"] = arg0
 	return args, nil
 }
 
@@ -3996,7 +4042,7 @@ func (ec *executionContext) _Mutation_addTopicContent(ctx context.Context, field
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().AddTopicContent(rctx, args["topicId"].(string), args["topicConent"].(*model.TopicContentInput))
+		return ec.resolvers.Mutation().AddTopicContent(rctx, args["topicId"].(string), args["topicContent"].(*model.TopicContentInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4075,6 +4121,45 @@ func (ec *executionContext) _Mutation_uploadTopicContentVideo(ctx context.Contex
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Mutation().UploadTopicContentVideo(rctx, args["file"].(model.TopicVideo))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*bool)
+	fc.Result = res
+	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_uploadTopicContentSubtitle(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_uploadTopicContentSubtitle_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().UploadTopicContentSubtitle(rctx, args["file"].(model.TopicSubtitle))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -5297,7 +5382,7 @@ func (ec *executionContext) _TopicContent_duration(ctx context.Context, field gr
 	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _TopicContent_skipIntro(ctx context.Context, field graphql.CollectedField, obj *model.TopicContent) (ret graphql.Marshaler) {
+func (ec *executionContext) _TopicContent_skipIntroDuration(ctx context.Context, field graphql.CollectedField, obj *model.TopicContent) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -5315,7 +5400,7 @@ func (ec *executionContext) _TopicContent_skipIntro(ctx context.Context, field g
 	ctx = graphql.WithFieldContext(ctx, fc)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.SkipIntro, nil
+		return obj.SkipIntroDuration, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -5324,9 +5409,9 @@ func (ec *executionContext) _TopicContent_skipIntro(ctx context.Context, field g
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*bool)
+	res := resTmp.(*int)
 	fc.Result = res
-	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
+	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _TopicContent_nextShowTime(ctx context.Context, field graphql.CollectedField, obj *model.TopicContent) (ret graphql.Marshaler) {
@@ -5444,6 +5529,38 @@ func (ec *executionContext) _TopicContent_updated_at(ctx context.Context, field 
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.UpdatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _TopicContent_type(ctx context.Context, field graphql.CollectedField, obj *model.TopicContent) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "TopicContent",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Type, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -7419,11 +7536,11 @@ func (ec *executionContext) unmarshalInputTopicContentInput(ctx context.Context,
 			if err != nil {
 				return it, err
 			}
-		case "skipIntro":
+		case "skipIntroDuration":
 			var err error
 
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("skipIntro"))
-			it.SkipIntro, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("skipIntroDuration"))
+			it.SkipIntroDuration, err = ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7440,6 +7557,14 @@ func (ec *executionContext) unmarshalInputTopicContentInput(ctx context.Context,
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("fromEndTime"))
 			it.FromEndTime, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "type":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("type"))
+			it.Type, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7614,6 +7739,45 @@ func (ec *executionContext) unmarshalInputTopicResourceInput(ctx context.Context
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("file"))
 			it.File, err = ec.unmarshalNUpload2githubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚐUpload(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputTopicSubtitle(ctx context.Context, obj interface{}) (model.TopicSubtitle, error) {
+	var it model.TopicSubtitle
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	for k, v := range asMap {
+		switch k {
+		case "file":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("file"))
+			it.File, err = ec.unmarshalNUpload2githubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚐUpload(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "courseId":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("courseId"))
+			it.CourseID, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "topicId":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("topicId"))
+			it.TopicID, err = ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -8278,6 +8442,13 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, innerFunc)
 
+		case "uploadTopicContentSubtitle":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_uploadTopicContentSubtitle(ctx, field)
+			}
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, innerFunc)
+
 		case "uploadTopicStaticContent":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_uploadTopicStaticContent(ctx, field)
@@ -8649,9 +8820,9 @@ func (ec *executionContext) _TopicContent(ctx context.Context, sel ast.Selection
 
 			out.Values[i] = innerFunc(ctx)
 
-		case "skipIntro":
+		case "skipIntroDuration":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._TopicContent_skipIntro(ctx, field, obj)
+				return ec._TopicContent_skipIntroDuration(ctx, field, obj)
 			}
 
 			out.Values[i] = innerFunc(ctx)
@@ -8680,6 +8851,13 @@ func (ec *executionContext) _TopicContent(ctx context.Context, sel ast.Selection
 		case "updated_at":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._TopicContent_updated_at(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+		case "type":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._TopicContent_type(ctx, field, obj)
 			}
 
 			out.Values[i] = innerFunc(ctx)
@@ -9218,6 +9396,11 @@ func (ec *executionContext) marshalNString2ᚕᚖstring(ctx context.Context, sel
 	}
 
 	return ret
+}
+
+func (ec *executionContext) unmarshalNTopicSubtitle2githubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐTopicSubtitle(ctx context.Context, v interface{}) (model.TopicSubtitle, error) {
+	res, err := ec.unmarshalInputTopicSubtitle(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) unmarshalNTopicVideo2githubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐTopicVideo(ctx context.Context, v interface{}) (model.TopicVideo, error) {

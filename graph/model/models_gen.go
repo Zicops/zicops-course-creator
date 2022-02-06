@@ -202,25 +202,27 @@ type Topic struct {
 }
 
 type TopicContent struct {
-	Language     string  `json:"language"`
-	TopicID      string  `json:"topicId"`
-	StartTime    *int    `json:"startTime"`
-	Duration     *int    `json:"duration"`
-	SkipIntro    *bool   `json:"skipIntro"`
-	NextShowTime *int    `json:"nextShowTime"`
-	FromEndTime  *int    `json:"fromEndTime"`
-	CreatedAt    *string `json:"created_at"`
-	UpdatedAt    *string `json:"updated_at"`
+	Language          string  `json:"language"`
+	TopicID           string  `json:"topicId"`
+	StartTime         *int    `json:"startTime"`
+	Duration          *int    `json:"duration"`
+	SkipIntroDuration *int    `json:"skipIntroDuration"`
+	NextShowTime      *int    `json:"nextShowTime"`
+	FromEndTime       *int    `json:"fromEndTime"`
+	CreatedAt         *string `json:"created_at"`
+	UpdatedAt         *string `json:"updated_at"`
+	Type              *string `json:"type"`
 }
 
 type TopicContentInput struct {
-	Language     string `json:"language"`
-	TopicID      string `json:"topicId"`
-	StartTime    *int   `json:"startTime"`
-	Duration     *int   `json:"duration"`
-	SkipIntro    *bool  `json:"skipIntro"`
-	NextShowTime *int   `json:"nextShowTime"`
-	FromEndTime  *int   `json:"fromEndTime"`
+	Language          string  `json:"language"`
+	TopicID           string  `json:"topicId"`
+	StartTime         *int    `json:"startTime"`
+	Duration          *int    `json:"duration"`
+	SkipIntroDuration *int    `json:"skipIntroDuration"`
+	NextShowTime      *int    `json:"nextShowTime"`
+	FromEndTime       *int    `json:"fromEndTime"`
+	Type              *string `json:"type"`
 }
 
 type TopicInput struct {
@@ -245,6 +247,12 @@ type TopicResourceInput struct {
 	UpdatedBy *string        `json:"updated_by"`
 	URL       string         `json:"url"`
 	File      graphql.Upload `json:"file"`
+}
+
+type TopicSubtitle struct {
+	File     graphql.Upload `json:"file"`
+	CourseID string         `json:"courseId"`
+	TopicID  string         `json:"topicId"`
 }
 
 type TopicVideo struct {
