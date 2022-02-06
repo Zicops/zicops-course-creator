@@ -274,6 +274,8 @@ input TopicResourceInput {
 
 # define type mutations to add a course  using courseInput
 type Mutation{
+    addCatergories(category: [String]!): Boolean
+    addSubCategories(sub_category: [String]!): Boolean
     addCourse(course: CourseInput): Course
     updateCourse(course: CourseInput): Course
     uploadCourseImage(file: CourseFile!): Boolean
