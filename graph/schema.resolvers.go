@@ -5,7 +5,6 @@ package graph
 
 import (
 	"context"
-	"fmt"
 
 	log "github.com/sirupsen/logrus"
 	"github.com/zicops/zicops-course-creator/graph/generated"
