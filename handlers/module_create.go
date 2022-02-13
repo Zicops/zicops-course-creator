@@ -18,11 +18,11 @@ func ModuleCreate(ctx context.Context, courseID string, module *model.ModuleInpu
 	guid := xid.New()
 	cassandraModule := coursez.Module{
 		ID:          guid.String(),
-		Name:        module.Name,
-		Description: module.Description,
+		Name:        *module.Name,
+		Description: *module.Description,
 		CreatedAt:   time.Now().Unix(),
 		UpdatedAt:   time.Now().Unix(),
-		IsChapter:   module.IsChapter,
+		IsChapter:   *module.IsChapter,
 		CourseID:    courseID,
 		IsActive:   false,
 	}
@@ -54,7 +54,7 @@ func ModuleCreate(ctx context.Context, courseID string, module *model.ModuleInpu
 		CreatedAt:   &created,
 		UpdatedAt:   &created,
 		IsChapter:   module.IsChapter,
-		CourseID:    cassandraModule.CourseID,
+		CourseID:    &cassandraModule.CourseID,
 		Owner:       module.Owner,
 		Duration:    module.Duration,
 		Level:       module.Level,
@@ -78,13 +78,13 @@ func UpdateModule(ctx context.Context, module *model.ModuleInput) (*model.Module
 	if err := getQuery.ExecRelease(); err != nil {
 		return nil, err
 	}
-	if module.Name != "" {
-		cassandraModule.Name = module.Name
+	if *module.Name != "" {
+		cassandraModule.Name = *module.Name
 	}
-	if module.Description != "" {
-		cassandraModule.Description = module.Description
+	if *module.Description != "" {
+		cassandraModule.Description = *module.Description
 	}
-	cassandraModule.IsChapter = module.IsChapter
+	cassandraModule.IsChapter = *module.IsChapter
 	if module.Owner != nil {
 		cassandraModule.Owner = *module.Owner
 	}
@@ -115,7 +115,7 @@ func UpdateModule(ctx context.Context, module *model.ModuleInput) (*model.Module
 		CreatedAt:   &created,
 		UpdatedAt:   &updated,
 		IsChapter:   module.IsChapter,
-		CourseID:    cassandraModule.CourseID,
+		CourseID:    &cassandraModule.CourseID,
 		Owner:       module.Owner,
 		Duration:    module.Duration,
 		Level:       module.Level,

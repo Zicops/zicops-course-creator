@@ -23,13 +23,13 @@ func CreateTopicQuiz(ctx context.Context, quiz *model.QuizInput) (*model.Quiz, e
 	guid := xid.New()
 	cassandraQuiz := coursez.Quiz{
 		ID:          guid.String(),
-		Name:        quiz.Name,
+		Name:        *quiz.Name,
 		CreatedAt:   time.Now().Unix(),
 		UpdatedAt:   time.Now().Unix(),
-		Type:        quiz.Type,
-		IsMandatory: quiz.IsMandatory,
-		TopicID:     quiz.TopicID,
-		Category:    quiz.Category,
+		Type:        *quiz.Type,
+		IsMandatory: *quiz.IsMandatory,
+		TopicID:     *quiz.TopicID,
+		Category:    *quiz.Category,
 		IsActive:   true,
 	}
 	if quiz.StartTime!=nil {
@@ -72,21 +72,21 @@ func UpdateQuiz(ctx context.Context, quiz *model.QuizInput) (*model.Quiz, error)
 	if err := getQuery.ExecRelease(); err != nil {
 		return nil, err
 	}
-	if quiz.Name != "" {
-		cassandraQuiz.Name = quiz.Name
+	if *quiz.Name != "" {
+		cassandraQuiz.Name = *quiz.Name
 	}
-	if quiz.Type != "" {
-		cassandraQuiz.Type = quiz.Type
+	if *quiz.Type != "" {
+		cassandraQuiz.Type = *quiz.Type
 	}
-	cassandraQuiz.IsMandatory = quiz.IsMandatory
-	cassandraQuiz.TopicID = quiz.TopicID
+	cassandraQuiz.IsMandatory = *quiz.IsMandatory
+	cassandraQuiz.TopicID = *quiz.TopicID
 	if quiz.StartTime!=nil {
 		cassandraQuiz.StartTime = *quiz.StartTime
 	}
 	if quiz.Sequence!=nil {
 		cassandraQuiz.Sequence = *quiz.Sequence
 	}
-	cassandraQuiz.Category = quiz.Category
+	cassandraQuiz.Category = *quiz.Category
 	cassandraQuiz.UpdatedAt = time.Now().Unix()
 	// update quiz in cassandra
 	updateQuery := global.CassSession.Session.Query(coursez.QuizTable.Update()).BindStruct(cassandraQuiz)
@@ -97,15 +97,15 @@ func UpdateQuiz(ctx context.Context, quiz *model.QuizInput) (*model.Quiz, error)
 	updated := strconv.FormatInt(cassandraQuiz.UpdatedAt, 10)
 	responseModel := model.Quiz{
 		ID:          &cassandraQuiz.ID,
-		Name:        cassandraQuiz.Name,
+		Name:        &cassandraQuiz.Name,
 		CreatedAt:   &created,
 		UpdatedAt:   &updated,
-		Type:        cassandraQuiz.Type,
-		IsMandatory: cassandraQuiz.IsMandatory,
-		TopicID:     cassandraQuiz.TopicID,
+		Type:        &cassandraQuiz.Type,
+		IsMandatory: &cassandraQuiz.IsMandatory,
+		TopicID:     &cassandraQuiz.TopicID,
 		StartTime:   &cassandraQuiz.StartTime,
 		Sequence:    &cassandraQuiz.Sequence,
-		Category:    cassandraQuiz.Category,
+		Category:    &cassandraQuiz.Category,
 	}
 	return &responseModel, nil
 
@@ -121,7 +121,7 @@ func UploadQuizFile(ctx context.Context, couseID string, quiz model.QuizFile) (*
 		log.Errorf("Failed to upload video to course topic: %v", err.Error())
 		return &isSuccess, nil
 	}
-	bucketPath := couseID + "/" + quiz.QuizID + "/" + quiz.File.Filename
+	bucketPath := couseID + "/" + *quiz.QuizID + "/" + quiz.File.Filename
 	writer, err := storageC.UploadToGCS(ctx, bucketPath)
 	if err != nil {
 		log.Errorf("Failed to upload video to course topic: %v", err.Error())
@@ -139,9 +139,9 @@ func UploadQuizFile(ctx context.Context, couseID string, quiz model.QuizFile) (*
 	}
 	getUrl := storageC.GetSignedURLForObject(bucketPath)
 	cassandraQuizFile := coursez.QuizFile{
-		QuizId:     quiz.QuizID,
-		Type:       quiz.Type,
-		Name:       quiz.Name,
+		QuizId:     *quiz.QuizID,
+		Type:       *quiz.Type,
+		Name:       *quiz.Name,
 		BucketPath: bucketPath,
 		Path:       getUrl,
 		IsActive:  true,
@@ -157,7 +157,7 @@ func UploadQuizFile(ctx context.Context, couseID string, quiz model.QuizFile) (*
 
 func AddMCQQuiz(ctx context.Context, quiz *model.QuizMcq) (*bool, error) {
 	log.Info("AddMCQQuiz called")
-	if quiz.QuizID == "" {
+	if *quiz.QuizID == "" {
 		return nil, fmt.Errorf("quiz id is required")
 	}
 	options := make([]string, 0)
@@ -165,11 +165,11 @@ func AddMCQQuiz(ctx context.Context, quiz *model.QuizMcq) (*bool, error) {
 		options = append(options, *option)
 	}
 	cassandraQuiz := coursez.QuizMcq{
-		QuizId:        quiz.QuizID,
-		Question:      quiz.Question,
+		QuizId:        *quiz.QuizID,
+		Question:      *quiz.Question,
 		Options:       options,
-		CorrectOption: quiz.CorrectOption,
-		Explanation:   quiz.Explanation,
+		CorrectOption: *quiz.CorrectOption,
+		Explanation:   *quiz.Explanation,
 		IsActive:     true,
 	}
 	// set quiz in cassandra
@@ -184,14 +184,14 @@ func AddMCQQuiz(ctx context.Context, quiz *model.QuizMcq) (*bool, error) {
 
 func AddQuizDescriptive(ctx context.Context, quiz *model.QuizDescriptive) (*bool, error) {
 	log.Info("AddQuizDescriptive called")
-	if quiz.QuizID == "" {
+	if *quiz.QuizID == "" {
 		return nil, fmt.Errorf("quiz id is required")
 	}
 	cassandraQuiz := coursez.QuizDescriptive{
-		QuizId:        quiz.QuizID,
-		Question:      quiz.Question,
-		Explanation:   quiz.Explanation,
-		CorrectAnswer: quiz.CorrectAnswer,
+		QuizId:        *quiz.QuizID,
+		Question:      *quiz.Question,
+		Explanation:   *quiz.Explanation,
+		CorrectAnswer: *quiz.CorrectAnswer,
 		IsActive:     true,
 	}
 	// set quiz in cassandra

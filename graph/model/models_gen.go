@@ -12,10 +12,10 @@ import (
 
 type Chapter struct {
 	ID          *string `json:"id"`
-	Name        string  `json:"name"`
-	Description string  `json:"description"`
+	Name        *string `json:"name"`
+	Description *string `json:"description"`
 	ModuleID    *string `json:"moduleId"`
-	CourseID    string  `json:"courseId"`
+	CourseID    *string `json:"courseId"`
 	CreatedAt   *string `json:"created_at"`
 	UpdatedAt   *string `json:"updated_at"`
 	Sequence    *int    `json:"sequence"`
@@ -23,18 +23,18 @@ type Chapter struct {
 
 type ChapterInput struct {
 	ID          *string `json:"id"`
-	Name        string  `json:"name"`
-	Description string  `json:"description"`
+	Name        *string `json:"name"`
+	Description *string `json:"description"`
 	ModuleID    *string `json:"moduleId"`
-	CourseID    string  `json:"courseId"`
+	CourseID    *string `json:"courseId"`
 	Sequence    *int    `json:"sequence"`
 }
 
 type Course struct {
 	ID                 *string          `json:"id"`
-	Name               string           `json:"name"`
-	Description        string           `json:"description"`
-	Summary            string           `json:"summary"`
+	Name               *string          `json:"name"`
+	Description        *string          `json:"description"`
+	Summary            *string          `json:"summary"`
 	Instructor         *string          `json:"instructor"`
 	Image              *string          `json:"image"`
 	PreviewVideo       *string          `json:"previewVideo"`
@@ -58,7 +58,7 @@ type Course struct {
 	Approvers          []*string        `json:"approvers"`
 	CreatedBy          *string          `json:"created_by"`
 	UpdatedBy          *string          `json:"updated_by"`
-	Status             Status           `json:"status"`
+	Status             *Status          `json:"status"`
 	IsDisplay          *bool            `json:"is_display"`
 	Category           *string          `json:"category"`
 	SubCategory        *string          `json:"sub_category"`
@@ -66,14 +66,14 @@ type Course struct {
 }
 
 type CourseFile struct {
-	File     graphql.Upload `json:"file"`
-	CourseID string         `json:"courseId"`
+	File     *graphql.Upload `json:"file"`
+	CourseID *string         `json:"courseId"`
 }
 
 type CourseInput struct {
 	ID                 *string               `json:"id"`
-	Name               string                `json:"name"`
-	Description        string                `json:"description"`
+	Name               *string               `json:"name"`
+	Description        *string               `json:"description"`
 	Summary            *string               `json:"summary"`
 	Instructor         *string               `json:"instructor"`
 	Image              *string               `json:"image"`
@@ -96,7 +96,7 @@ type CourseInput struct {
 	Approvers          []*string             `json:"approvers"`
 	CreatedBy          *string               `json:"created_by"`
 	UpdatedBy          *string               `json:"updated_by"`
-	Status             Status                `json:"status"`
+	Status             *Status               `json:"status"`
 	IsDisplay          *bool                 `json:"is_display"`
 	Category           *string               `json:"category"`
 	SubCategory        *string               `json:"sub_category"`
@@ -105,10 +105,10 @@ type CourseInput struct {
 
 type Module struct {
 	ID          *string `json:"id"`
-	Name        string  `json:"name"`
-	IsChapter   bool    `json:"isChapter"`
-	Description string  `json:"description"`
-	CourseID    string  `json:"courseId"`
+	Name        *string `json:"name"`
+	IsChapter   *bool   `json:"isChapter"`
+	Description *string `json:"description"`
+	CourseID    *string `json:"courseId"`
 	Owner       *string `json:"owner"`
 	Duration    *int    `json:"duration"`
 	CreatedAt   *string `json:"created_at"`
@@ -120,10 +120,10 @@ type Module struct {
 
 type ModuleInput struct {
 	ID          *string `json:"id"`
-	Name        string  `json:"name"`
-	IsChapter   bool    `json:"isChapter"`
-	Description string  `json:"description"`
-	CourseID    string  `json:"courseId"`
+	Name        *string `json:"name"`
+	IsChapter   *bool   `json:"isChapter"`
+	Description *string `json:"description"`
+	CourseID    *string `json:"courseId"`
 	Owner       *string `json:"owner"`
 	Duration    *int    `json:"duration"`
 	Level       *string `json:"level"`
@@ -133,67 +133,67 @@ type ModuleInput struct {
 
 type Quiz struct {
 	ID          *string `json:"id"`
-	Name        string  `json:"name"`
-	Category    string  `json:"category"`
-	Type        string  `json:"type"`
-	IsMandatory bool    `json:"isMandatory"`
+	Name        *string `json:"name"`
+	Category    *string `json:"category"`
+	Type        *string `json:"type"`
+	IsMandatory *bool   `json:"isMandatory"`
 	CreatedAt   *string `json:"created_at"`
 	UpdatedAt   *string `json:"updated_at"`
-	TopicID     string  `json:"topicId"`
+	TopicID     *string `json:"topicId"`
 	Sequence    *int    `json:"sequence"`
 	StartTime   *int    `json:"startTime"`
 }
 
 type QuizDescriptive struct {
-	QuizID        string `json:"quizId"`
-	Question      string `json:"question"`
-	CorrectAnswer string `json:"correctAnswer"`
-	Explanation   string `json:"explanation"`
+	QuizID        *string `json:"quizId"`
+	Question      *string `json:"question"`
+	CorrectAnswer *string `json:"correctAnswer"`
+	Explanation   *string `json:"explanation"`
 }
 
 type QuizFile struct {
-	QuizID string         `json:"quizId"`
-	Type   string         `json:"type"`
-	Name   string         `json:"name"`
-	File   graphql.Upload `json:"file"`
+	QuizID *string         `json:"quizId"`
+	Type   *string         `json:"type"`
+	Name   *string         `json:"name"`
+	File   *graphql.Upload `json:"file"`
 }
 
 type QuizInput struct {
 	ID          *string `json:"id"`
-	Name        string  `json:"name"`
-	Category    string  `json:"category"`
-	Type        string  `json:"type"`
-	IsMandatory bool    `json:"isMandatory"`
+	Name        *string `json:"name"`
+	Category    *string `json:"category"`
+	Type        *string `json:"type"`
+	IsMandatory *bool   `json:"isMandatory"`
 	CreatedAt   *string `json:"created_at"`
 	UpdatedAt   *string `json:"updated_at"`
-	TopicID     string  `json:"topicId"`
+	TopicID     *string `json:"topicId"`
 	Sequence    *int    `json:"sequence"`
 	StartTime   *int    `json:"startTime"`
 }
 
 type QuizMcq struct {
-	QuizID        string    `json:"quizId"`
-	Question      string    `json:"question"`
+	QuizID        *string   `json:"quizId"`
+	Question      *string   `json:"question"`
 	Options       []*string `json:"options"`
-	CorrectOption string    `json:"correctOption"`
-	Explanation   string    `json:"explanation"`
+	CorrectOption *string   `json:"correctOption"`
+	Explanation   *string   `json:"explanation"`
 }
 
 type StaticContent struct {
-	Type     Type           `json:"type"`
-	File     graphql.Upload `json:"file"`
-	CourseID string         `json:"courseId"`
-	TopicID  string         `json:"topicId"`
+	Type     *Type           `json:"type"`
+	File     *graphql.Upload `json:"file"`
+	CourseID *string         `json:"courseId"`
+	TopicID  *string         `json:"topicId"`
 }
 
 type Topic struct {
 	ID          *string `json:"id"`
-	Name        string  `json:"name"`
-	Description string  `json:"description"`
-	Type        string  `json:"type"`
+	Name        *string `json:"name"`
+	Description *string `json:"description"`
+	Type        *string `json:"type"`
 	ModuleID    *string `json:"moduleId"`
 	ChapterID   *string `json:"chapterId"`
-	CourseID    string  `json:"courseId"`
+	CourseID    *string `json:"courseId"`
 	CreatedAt   *string `json:"created_at"`
 	UpdatedAt   *string `json:"updated_at"`
 	Sequence    *int    `json:"sequence"`
@@ -202,8 +202,8 @@ type Topic struct {
 }
 
 type TopicContent struct {
-	Language          string  `json:"language"`
-	TopicID           string  `json:"topicId"`
+	Language          *string `json:"language"`
+	TopicID           *string `json:"topicId"`
 	StartTime         *int    `json:"startTime"`
 	Duration          *int    `json:"duration"`
 	SkipIntroDuration *int    `json:"skipIntroDuration"`
@@ -215,8 +215,8 @@ type TopicContent struct {
 }
 
 type TopicContentInput struct {
-	Language          string  `json:"language"`
-	TopicID           string  `json:"topicId"`
+	Language          *string `json:"language"`
+	TopicID           *string `json:"topicId"`
 	StartTime         *int    `json:"startTime"`
 	Duration          *int    `json:"duration"`
 	SkipIntroDuration *int    `json:"skipIntroDuration"`
@@ -227,38 +227,38 @@ type TopicContentInput struct {
 
 type TopicInput struct {
 	ID          *string `json:"id"`
-	Name        string  `json:"name"`
-	Description string  `json:"description"`
-	Type        string  `json:"type"`
+	Name        *string `json:"name"`
+	Description *string `json:"description"`
+	Type        *string `json:"type"`
 	ModuleID    *string `json:"moduleId"`
 	ChapterID   *string `json:"chapterId"`
-	CourseID    string  `json:"courseId"`
+	CourseID    *string `json:"courseId"`
 	Sequence    *int    `json:"sequence"`
 	CreatedBy   *string `json:"created_by"`
 	UpdatedBy   *string `json:"updated_by"`
 }
 
 type TopicResourceInput struct {
-	Type      string         `json:"type"`
-	TopicID   string         `json:"topicId"`
-	CreatedAt *string        `json:"created_at"`
-	UpdatedAt *string        `json:"updated_at"`
-	CreatedBy *string        `json:"created_by"`
-	UpdatedBy *string        `json:"updated_by"`
-	URL       string         `json:"url"`
-	File      graphql.Upload `json:"file"`
+	Type      *string         `json:"type"`
+	TopicID   *string         `json:"topicId"`
+	CreatedAt *string         `json:"created_at"`
+	UpdatedAt *string         `json:"updated_at"`
+	CreatedBy *string         `json:"created_by"`
+	UpdatedBy *string         `json:"updated_by"`
+	URL       *string         `json:"url"`
+	File      *graphql.Upload `json:"file"`
 }
 
 type TopicSubtitle struct {
-	File     graphql.Upload `json:"file"`
-	CourseID string         `json:"courseId"`
-	TopicID  string         `json:"topicId"`
+	File     *graphql.Upload `json:"file"`
+	CourseID *string         `json:"courseId"`
+	TopicID  *string         `json:"topicId"`
 }
 
 type TopicVideo struct {
-	File     graphql.Upload `json:"file"`
-	CourseID string         `json:"courseId"`
-	TopicID  string         `json:"topicId"`
+	File     *graphql.Upload `json:"file"`
+	CourseID *string         `json:"courseId"`
+	TopicID  *string         `json:"topicId"`
 }
 
 type SubCategories struct {

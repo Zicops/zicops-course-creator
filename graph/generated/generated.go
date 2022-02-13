@@ -105,28 +105,28 @@ type ComplexityRoot struct {
 	Mutation struct {
 		AddCatergories             func(childComplexity int, category []*string) int
 		AddCourse                  func(childComplexity int, course *model.CourseInput) int
-		AddCourseChapter           func(childComplexity int, courseID string, chapter *model.ChapterInput) int
-		AddCourseModule            func(childComplexity int, courseID string, module *model.ModuleInput) int
-		AddCourseTopic             func(childComplexity int, courseID string, topic *model.TopicInput) int
+		AddCourseChapter           func(childComplexity int, courseID *string, chapter *model.ChapterInput) int
+		AddCourseModule            func(childComplexity int, courseID *string, module *model.ModuleInput) int
+		AddCourseTopic             func(childComplexity int, courseID *string, topic *model.TopicInput) int
 		AddQuiz                    func(childComplexity int, quiz *model.QuizInput) int
 		AddQuizDescriptive         func(childComplexity int, quiz *model.QuizDescriptive) int
 		AddQuizMcq                 func(childComplexity int, quiz *model.QuizMcq) int
 		AddSubCategories           func(childComplexity int, subCategory []*string) int
-		AddTopicContent            func(childComplexity int, topicID string, topicContent *model.TopicContentInput) int
+		AddTopicContent            func(childComplexity int, topicID *string, topicContent *model.TopicContentInput) int
 		UpdateCourse               func(childComplexity int, course *model.CourseInput) int
 		UpdateCourseChapter        func(childComplexity int, chapter *model.ChapterInput) int
 		UpdateCourseModule         func(childComplexity int, module *model.ModuleInput) int
 		UpdateCourseTopic          func(childComplexity int, topic *model.TopicInput) int
 		UpdateQuiz                 func(childComplexity int, quiz *model.QuizInput) int
 		UpdateTopicContent         func(childComplexity int, topicContent *model.TopicContentInput) int
-		UploadCourseImage          func(childComplexity int, file model.CourseFile) int
-		UploadCoursePreviewVideo   func(childComplexity int, file model.CourseFile) int
-		UploadCourseTileImage      func(childComplexity int, file model.CourseFile) int
-		UploadQuizFile             func(childComplexity int, courseID string, file model.QuizFile) int
-		UploadTopicContentSubtitle func(childComplexity int, file model.TopicSubtitle) int
-		UploadTopicContentVideo    func(childComplexity int, file model.TopicVideo) int
-		UploadTopicResource        func(childComplexity int, courseID string, resource *model.TopicResourceInput) int
-		UploadTopicStaticContent   func(childComplexity int, file model.StaticContent) int
+		UploadCourseImage          func(childComplexity int, file *model.CourseFile) int
+		UploadCoursePreviewVideo   func(childComplexity int, file *model.CourseFile) int
+		UploadCourseTileImage      func(childComplexity int, file *model.CourseFile) int
+		UploadQuizFile             func(childComplexity int, courseID *string, file *model.QuizFile) int
+		UploadTopicContentSubtitle func(childComplexity int, file *model.TopicSubtitle) int
+		UploadTopicContentVideo    func(childComplexity int, file *model.TopicVideo) int
+		UploadTopicResource        func(childComplexity int, courseID *string, resource *model.TopicResourceInput) int
+		UploadTopicStaticContent   func(childComplexity int, file *model.StaticContent) int
 	}
 
 	Query struct {
@@ -184,26 +184,26 @@ type MutationResolver interface {
 	AddSubCategories(ctx context.Context, subCategory []*string) (*bool, error)
 	AddCourse(ctx context.Context, course *model.CourseInput) (*model.Course, error)
 	UpdateCourse(ctx context.Context, course *model.CourseInput) (*model.Course, error)
-	UploadCourseImage(ctx context.Context, file model.CourseFile) (*bool, error)
-	UploadCoursePreviewVideo(ctx context.Context, file model.CourseFile) (*bool, error)
-	UploadCourseTileImage(ctx context.Context, file model.CourseFile) (*bool, error)
-	AddCourseModule(ctx context.Context, courseID string, module *model.ModuleInput) (*model.Module, error)
+	UploadCourseImage(ctx context.Context, file *model.CourseFile) (*bool, error)
+	UploadCoursePreviewVideo(ctx context.Context, file *model.CourseFile) (*bool, error)
+	UploadCourseTileImage(ctx context.Context, file *model.CourseFile) (*bool, error)
+	AddCourseModule(ctx context.Context, courseID *string, module *model.ModuleInput) (*model.Module, error)
 	UpdateCourseModule(ctx context.Context, module *model.ModuleInput) (*model.Module, error)
-	AddCourseChapter(ctx context.Context, courseID string, chapter *model.ChapterInput) (*model.Chapter, error)
+	AddCourseChapter(ctx context.Context, courseID *string, chapter *model.ChapterInput) (*model.Chapter, error)
 	UpdateCourseChapter(ctx context.Context, chapter *model.ChapterInput) (*model.Chapter, error)
-	AddCourseTopic(ctx context.Context, courseID string, topic *model.TopicInput) (*model.Topic, error)
+	AddCourseTopic(ctx context.Context, courseID *string, topic *model.TopicInput) (*model.Topic, error)
 	UpdateCourseTopic(ctx context.Context, topic *model.TopicInput) (*model.Topic, error)
-	AddTopicContent(ctx context.Context, topicID string, topicContent *model.TopicContentInput) (*model.TopicContent, error)
+	AddTopicContent(ctx context.Context, topicID *string, topicContent *model.TopicContentInput) (*model.TopicContent, error)
 	UpdateTopicContent(ctx context.Context, topicContent *model.TopicContentInput) (*model.TopicContent, error)
-	UploadTopicContentVideo(ctx context.Context, file model.TopicVideo) (*bool, error)
-	UploadTopicContentSubtitle(ctx context.Context, file model.TopicSubtitle) (*bool, error)
-	UploadTopicStaticContent(ctx context.Context, file model.StaticContent) (*bool, error)
+	UploadTopicContentVideo(ctx context.Context, file *model.TopicVideo) (*bool, error)
+	UploadTopicContentSubtitle(ctx context.Context, file *model.TopicSubtitle) (*bool, error)
+	UploadTopicStaticContent(ctx context.Context, file *model.StaticContent) (*bool, error)
 	AddQuiz(ctx context.Context, quiz *model.QuizInput) (*model.Quiz, error)
 	UpdateQuiz(ctx context.Context, quiz *model.QuizInput) (*model.Quiz, error)
-	UploadQuizFile(ctx context.Context, courseID string, file model.QuizFile) (*bool, error)
+	UploadQuizFile(ctx context.Context, courseID *string, file *model.QuizFile) (*bool, error)
 	AddQuizMcq(ctx context.Context, quiz *model.QuizMcq) (*bool, error)
 	AddQuizDescriptive(ctx context.Context, quiz *model.QuizDescriptive) (*bool, error)
-	UploadTopicResource(ctx context.Context, courseID string, resource *model.TopicResourceInput) (*bool, error)
+	UploadTopicResource(ctx context.Context, courseID *string, resource *model.TopicResourceInput) (*bool, error)
 }
 
 type executableSchema struct {
@@ -619,7 +619,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.AddCourseChapter(childComplexity, args["courseId"].(string), args["chapter"].(*model.ChapterInput)), true
+		return e.complexity.Mutation.AddCourseChapter(childComplexity, args["courseId"].(*string), args["chapter"].(*model.ChapterInput)), true
 
 	case "Mutation.addCourseModule":
 		if e.complexity.Mutation.AddCourseModule == nil {
@@ -631,7 +631,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.AddCourseModule(childComplexity, args["courseId"].(string), args["module"].(*model.ModuleInput)), true
+		return e.complexity.Mutation.AddCourseModule(childComplexity, args["courseId"].(*string), args["module"].(*model.ModuleInput)), true
 
 	case "Mutation.addCourseTopic":
 		if e.complexity.Mutation.AddCourseTopic == nil {
@@ -643,7 +643,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.AddCourseTopic(childComplexity, args["courseId"].(string), args["topic"].(*model.TopicInput)), true
+		return e.complexity.Mutation.AddCourseTopic(childComplexity, args["courseId"].(*string), args["topic"].(*model.TopicInput)), true
 
 	case "Mutation.addQuiz":
 		if e.complexity.Mutation.AddQuiz == nil {
@@ -703,7 +703,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.AddTopicContent(childComplexity, args["topicId"].(string), args["topicContent"].(*model.TopicContentInput)), true
+		return e.complexity.Mutation.AddTopicContent(childComplexity, args["topicId"].(*string), args["topicContent"].(*model.TopicContentInput)), true
 
 	case "Mutation.updateCourse":
 		if e.complexity.Mutation.UpdateCourse == nil {
@@ -787,7 +787,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.UploadCourseImage(childComplexity, args["file"].(model.CourseFile)), true
+		return e.complexity.Mutation.UploadCourseImage(childComplexity, args["file"].(*model.CourseFile)), true
 
 	case "Mutation.uploadCoursePreviewVideo":
 		if e.complexity.Mutation.UploadCoursePreviewVideo == nil {
@@ -799,7 +799,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.UploadCoursePreviewVideo(childComplexity, args["file"].(model.CourseFile)), true
+		return e.complexity.Mutation.UploadCoursePreviewVideo(childComplexity, args["file"].(*model.CourseFile)), true
 
 	case "Mutation.uploadCourseTileImage":
 		if e.complexity.Mutation.UploadCourseTileImage == nil {
@@ -811,7 +811,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.UploadCourseTileImage(childComplexity, args["file"].(model.CourseFile)), true
+		return e.complexity.Mutation.UploadCourseTileImage(childComplexity, args["file"].(*model.CourseFile)), true
 
 	case "Mutation.uploadQuizFile":
 		if e.complexity.Mutation.UploadQuizFile == nil {
@@ -823,7 +823,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.UploadQuizFile(childComplexity, args["courseId"].(string), args["file"].(model.QuizFile)), true
+		return e.complexity.Mutation.UploadQuizFile(childComplexity, args["courseId"].(*string), args["file"].(*model.QuizFile)), true
 
 	case "Mutation.uploadTopicContentSubtitle":
 		if e.complexity.Mutation.UploadTopicContentSubtitle == nil {
@@ -835,7 +835,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.UploadTopicContentSubtitle(childComplexity, args["file"].(model.TopicSubtitle)), true
+		return e.complexity.Mutation.UploadTopicContentSubtitle(childComplexity, args["file"].(*model.TopicSubtitle)), true
 
 	case "Mutation.uploadTopicContentVideo":
 		if e.complexity.Mutation.UploadTopicContentVideo == nil {
@@ -847,7 +847,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.UploadTopicContentVideo(childComplexity, args["file"].(model.TopicVideo)), true
+		return e.complexity.Mutation.UploadTopicContentVideo(childComplexity, args["file"].(*model.TopicVideo)), true
 
 	case "Mutation.uploadTopicResource":
 		if e.complexity.Mutation.UploadTopicResource == nil {
@@ -859,7 +859,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.UploadTopicResource(childComplexity, args["courseId"].(string), args["resource"].(*model.TopicResourceInput)), true
+		return e.complexity.Mutation.UploadTopicResource(childComplexity, args["courseId"].(*string), args["resource"].(*model.TopicResourceInput)), true
 
 	case "Mutation.uploadTopicStaticContent":
 		if e.complexity.Mutation.UploadTopicStaticContent == nil {
@@ -871,7 +871,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.UploadTopicStaticContent(childComplexity, args["file"].(model.StaticContent)), true
+		return e.complexity.Mutation.UploadTopicStaticContent(childComplexity, args["file"].(*model.StaticContent)), true
 
 	case "Quiz.category":
 		if e.complexity.Quiz.Category == nil {
@@ -1189,9 +1189,9 @@ input sub_categories_input {
 # define course type
 type Course{
     id: ID
-    name: String!
-    description: String!
-    summary: String!
+    name: String
+    description: String
+    summary: String
     instructor: String
     image: String
     previewVideo: String
@@ -1215,7 +1215,7 @@ type Course{
     approvers: [String]
     created_by: String
     updated_by: String
-    status: Status!
+    status: Status
     is_display: Boolean
     category: String
     sub_category: String
@@ -1233,8 +1233,8 @@ enum Status {
 
 input CourseInput{
     id: ID    
-    name: String!
-    description: String!
+    name: String
+    description: String
     summary: String
     instructor: String
     image: String
@@ -1257,7 +1257,7 @@ input CourseInput{
     approvers: [String]
     created_by: String
     updated_by: String
-    status: Status!
+    status: Status
     is_display: Boolean
     category: String
     sub_category: String
@@ -1265,15 +1265,15 @@ input CourseInput{
 }
 
 input CourseFile{
-    file: Upload!
-    courseId: String!
+    file: Upload
+    courseId: String
 }
 input ModuleInput{
     id: ID
-    name: String!
-    isChapter: Boolean!
-    description: String!
-    courseId: String!
+    name: String
+    isChapter: Boolean
+    description: String
+    courseId: String
     owner: String
     duration: Int
     level : String
@@ -1283,10 +1283,10 @@ input ModuleInput{
 
 type Module{
     id: ID
-    name: String!
-    isChapter: Boolean!
-    description: String!
-    courseId: String!
+    name: String
+    isChapter: Boolean
+    description: String
+    courseId: String
     owner: String
     duration: Int
     created_at: String
@@ -1298,19 +1298,19 @@ type Module{
 
 input ChapterInput {
     id: ID
-    name: String!
-    description: String!
+    name: String
+    description: String
     moduleId: String
-    courseId: String!
+    courseId: String
     sequence: Int
 }
 
 type Chapter {
     id: ID
-    name: String!
-    description: String!
+    name: String
+    description: String
     moduleId: String
-    courseId: String!
+    courseId: String
     created_at: String
     updated_at: String
     sequence: Int
@@ -1318,12 +1318,12 @@ type Chapter {
 
 input TopicInput {
     id: ID
-    name: String!
-    description: String!
-    type : String!
+    name: String
+    description: String
+    type : String
     moduleId: String
     chapterId: String
-    courseId: String!
+    courseId: String
     sequence: Int
     created_by: String
     updated_by: String
@@ -1331,12 +1331,12 @@ input TopicInput {
 
 type Topic {
     id: ID
-    name: String!
-    description: String!
-    type : String!
+    name: String
+    description: String
+    type : String
     moduleId: String
     chapterId: String
-    courseId: String!
+    courseId: String
     created_at: String
     updated_at: String
     sequence: Int
@@ -1345,8 +1345,8 @@ type Topic {
 }
 
 input TopicContentInput {
-    language: String!
-    topicId: String!
+    language: String
+    topicId: String
     startTime: Int
     duration: Int
     skipIntroDuration: Int
@@ -1356,8 +1356,8 @@ input TopicContentInput {
 }
 
 type TopicContent {
-    language: String!
-    topicId: String!
+    language: String
+    topicId: String
     startTime: Int
     duration: Int
     skipIntroDuration: Int
@@ -1369,22 +1369,22 @@ type TopicContent {
 }
 
 input TopicVideo{
-    file: Upload!
-    courseId: String!
-    topicId: String!
+    file: Upload
+    courseId: String
+    topicId: String
 }
 
 input TopicSubtitle {
-    file: Upload!
-    courseId: String!
-    topicId: String!    
+    file: Upload
+    courseId: String
+    topicId: String    
 }
 
 input StaticContent{
-    type: Type!
-    file: Upload!
-    courseId: String!
-    topicId: String!
+    type: Type
+    file: Upload
+    courseId: String
+    topicId: String
 }
 # enum Type 
 enum Type {
@@ -1396,85 +1396,85 @@ enum Type {
 
 type Quiz {
     id: ID
-    name: String!
-    category: String!
-    type: String!
-    isMandatory: Boolean!
+    name: String
+    category: String
+    type: String
+    isMandatory: Boolean
     created_at: String
     updated_at: String
-    topicId: String!
+    topicId: String
     sequence: Int
     startTime: Int
 }
 input QuizInput {
     id: ID
-    name: String!
-    category: String!
-    type: String!
-    isMandatory: Boolean!
+    name: String
+    category: String
+    type: String
+    isMandatory: Boolean
     created_at: String
     updated_at: String
-    topicId: String!
+    topicId: String
     sequence: Int
     startTime: Int
 }
 input QuizFile {
-    quizId: String!
-    type: String!
-    name: String!
-    file: Upload!
+    quizId: String
+    type: String
+    name: String
+    file: Upload
 }
 input QuizMcq {
-    quizId: String!
-    question: String!
-    options: [String]!
-    correctOption: String!
-    explanation: String!
+    quizId: String
+    question: String
+    options: [String]
+    correctOption: String
+    explanation: String
 }
 input QuizDescriptive {
-    quizId: String!
-    question: String!
-    correctAnswer: String!
-    explanation: String!
+    quizId: String
+    question: String
+    correctAnswer: String
+    explanation: String
 }
 
 input TopicResourceInput {
-    type: String!
-    topicId: String!
+    type: String
+    topicId: String
     created_at: String
     updated_at: String
     created_by: String
     updated_by: String
-    url: String!
-    file: Upload!
+    url: String
+    file: Upload
 }
 
 # define type mutations to add a course  using courseInput
 type Mutation{
-    addCatergories(category: [String]!): Boolean
-    addSubCategories(sub_category: [String]!): Boolean
+    addCatergories(category: [String]): Boolean
+    addSubCategories(sub_category: [String]): Boolean
     addCourse(course: CourseInput): Course
     updateCourse(course: CourseInput): Course
-    uploadCourseImage(file: CourseFile!): Boolean
-    uploadCoursePreviewVideo(file: CourseFile!): Boolean
-    uploadCourseTileImage(file: CourseFile!): Boolean
-    addCourseModule(courseId: String!, module: ModuleInput): Module
+    uploadCourseImage(file: CourseFile): Boolean
+    uploadCoursePreviewVideo(file: CourseFile): Boolean
+    uploadCourseTileImage(file: CourseFile): Boolean
+    addCourseModule(courseId: String, module: ModuleInput): Module
     updateCourseModule(module: ModuleInput): Module
-    addCourseChapter(courseId: String!, chapter: ChapterInput): Chapter
+    addCourseChapter(courseId: String, chapter: ChapterInput): Chapter
     updateCourseChapter(chapter: ChapterInput): Chapter
-    addCourseTopic(courseId: String!, topic: TopicInput): Topic
+    addCourseTopic(courseId: String, topic: TopicInput): Topic
     updateCourseTopic(topic: TopicInput): Topic
-    addTopicContent(topicId: String!, topicContent: TopicContentInput): TopicContent
+    addTopicContent(topicId: String, topicContent: TopicContentInput): TopicContent
     updateTopicContent(topicContent: TopicContentInput): TopicContent
-    uploadTopicContentVideo(file: TopicVideo!): Boolean
-    uploadTopicContentSubtitle(file: TopicSubtitle!): Boolean
-    uploadTopicStaticContent(file: StaticContent!): Boolean
+    uploadTopicContentVideo(file: TopicVideo): Boolean
+    uploadTopicContentSubtitle(file: TopicSubtitle): Boolean
+    uploadTopicStaticContent(file: StaticContent): Boolean
     addQuiz(quiz: QuizInput): Quiz
     updateQuiz(quiz: QuizInput): Quiz
-    uploadQuizFile(courseId:String!, file: QuizFile!): Boolean
+    uploadQuizFile(courseId:String, file: QuizFile): Boolean
     addQuizMCQ(quiz: QuizMcq): Boolean
     addQuizDescriptive(quiz: QuizDescriptive): Boolean
-    uploadTopicResource(courseId:String!, resource:TopicResourceInput): Boolean
+    uploadTopicResource(courseId:String, resource:TopicResourceInput): Boolean
 }
 `, BuiltIn: false},
 }
@@ -1490,7 +1490,7 @@ func (ec *executionContext) field_Mutation_addCatergories_args(ctx context.Conte
 	var arg0 []*string
 	if tmp, ok := rawArgs["category"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("category"))
-		arg0, err = ec.unmarshalNString2ᚕᚖstring(ctx, tmp)
+		arg0, err = ec.unmarshalOString2ᚕᚖstring(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1502,10 +1502,10 @@ func (ec *executionContext) field_Mutation_addCatergories_args(ctx context.Conte
 func (ec *executionContext) field_Mutation_addCourseChapter_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 string
+	var arg0 *string
 	if tmp, ok := rawArgs["courseId"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("courseId"))
-		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		arg0, err = ec.unmarshalOString2ᚖstring(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1526,10 +1526,10 @@ func (ec *executionContext) field_Mutation_addCourseChapter_args(ctx context.Con
 func (ec *executionContext) field_Mutation_addCourseModule_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 string
+	var arg0 *string
 	if tmp, ok := rawArgs["courseId"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("courseId"))
-		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		arg0, err = ec.unmarshalOString2ᚖstring(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1550,10 +1550,10 @@ func (ec *executionContext) field_Mutation_addCourseModule_args(ctx context.Cont
 func (ec *executionContext) field_Mutation_addCourseTopic_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 string
+	var arg0 *string
 	if tmp, ok := rawArgs["courseId"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("courseId"))
-		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		arg0, err = ec.unmarshalOString2ᚖstring(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1637,7 +1637,7 @@ func (ec *executionContext) field_Mutation_addSubCategories_args(ctx context.Con
 	var arg0 []*string
 	if tmp, ok := rawArgs["sub_category"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("sub_category"))
-		arg0, err = ec.unmarshalNString2ᚕᚖstring(ctx, tmp)
+		arg0, err = ec.unmarshalOString2ᚕᚖstring(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1649,10 +1649,10 @@ func (ec *executionContext) field_Mutation_addSubCategories_args(ctx context.Con
 func (ec *executionContext) field_Mutation_addTopicContent_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 string
+	var arg0 *string
 	if tmp, ok := rawArgs["topicId"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("topicId"))
-		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		arg0, err = ec.unmarshalOString2ᚖstring(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1763,10 +1763,10 @@ func (ec *executionContext) field_Mutation_updateTopicContent_args(ctx context.C
 func (ec *executionContext) field_Mutation_uploadCourseImage_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 model.CourseFile
+	var arg0 *model.CourseFile
 	if tmp, ok := rawArgs["file"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("file"))
-		arg0, err = ec.unmarshalNCourseFile2githubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐCourseFile(ctx, tmp)
+		arg0, err = ec.unmarshalOCourseFile2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐCourseFile(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1778,10 +1778,10 @@ func (ec *executionContext) field_Mutation_uploadCourseImage_args(ctx context.Co
 func (ec *executionContext) field_Mutation_uploadCoursePreviewVideo_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 model.CourseFile
+	var arg0 *model.CourseFile
 	if tmp, ok := rawArgs["file"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("file"))
-		arg0, err = ec.unmarshalNCourseFile2githubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐCourseFile(ctx, tmp)
+		arg0, err = ec.unmarshalOCourseFile2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐCourseFile(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1793,10 +1793,10 @@ func (ec *executionContext) field_Mutation_uploadCoursePreviewVideo_args(ctx con
 func (ec *executionContext) field_Mutation_uploadCourseTileImage_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 model.CourseFile
+	var arg0 *model.CourseFile
 	if tmp, ok := rawArgs["file"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("file"))
-		arg0, err = ec.unmarshalNCourseFile2githubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐCourseFile(ctx, tmp)
+		arg0, err = ec.unmarshalOCourseFile2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐCourseFile(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1808,19 +1808,19 @@ func (ec *executionContext) field_Mutation_uploadCourseTileImage_args(ctx contex
 func (ec *executionContext) field_Mutation_uploadQuizFile_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 string
+	var arg0 *string
 	if tmp, ok := rawArgs["courseId"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("courseId"))
-		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		arg0, err = ec.unmarshalOString2ᚖstring(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
 	args["courseId"] = arg0
-	var arg1 model.QuizFile
+	var arg1 *model.QuizFile
 	if tmp, ok := rawArgs["file"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("file"))
-		arg1, err = ec.unmarshalNQuizFile2githubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐQuizFile(ctx, tmp)
+		arg1, err = ec.unmarshalOQuizFile2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐQuizFile(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1832,10 +1832,10 @@ func (ec *executionContext) field_Mutation_uploadQuizFile_args(ctx context.Conte
 func (ec *executionContext) field_Mutation_uploadTopicContentSubtitle_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 model.TopicSubtitle
+	var arg0 *model.TopicSubtitle
 	if tmp, ok := rawArgs["file"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("file"))
-		arg0, err = ec.unmarshalNTopicSubtitle2githubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐTopicSubtitle(ctx, tmp)
+		arg0, err = ec.unmarshalOTopicSubtitle2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐTopicSubtitle(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1847,10 +1847,10 @@ func (ec *executionContext) field_Mutation_uploadTopicContentSubtitle_args(ctx c
 func (ec *executionContext) field_Mutation_uploadTopicContentVideo_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 model.TopicVideo
+	var arg0 *model.TopicVideo
 	if tmp, ok := rawArgs["file"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("file"))
-		arg0, err = ec.unmarshalNTopicVideo2githubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐTopicVideo(ctx, tmp)
+		arg0, err = ec.unmarshalOTopicVideo2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐTopicVideo(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1862,10 +1862,10 @@ func (ec *executionContext) field_Mutation_uploadTopicContentVideo_args(ctx cont
 func (ec *executionContext) field_Mutation_uploadTopicResource_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 string
+	var arg0 *string
 	if tmp, ok := rawArgs["courseId"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("courseId"))
-		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		arg0, err = ec.unmarshalOString2ᚖstring(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1886,10 +1886,10 @@ func (ec *executionContext) field_Mutation_uploadTopicResource_args(ctx context.
 func (ec *executionContext) field_Mutation_uploadTopicStaticContent_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 model.StaticContent
+	var arg0 *model.StaticContent
 	if tmp, ok := rawArgs["file"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("file"))
-		arg0, err = ec.unmarshalNStaticContent2githubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐStaticContent(ctx, tmp)
+		arg0, err = ec.unmarshalOStaticContent2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐStaticContent(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -2008,14 +2008,11 @@ func (ec *executionContext) _Chapter_name(ctx context.Context, field graphql.Col
 		return graphql.Null
 	}
 	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*string)
 	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Chapter_description(ctx context.Context, field graphql.CollectedField, obj *model.Chapter) (ret graphql.Marshaler) {
@@ -2043,14 +2040,11 @@ func (ec *executionContext) _Chapter_description(ctx context.Context, field grap
 		return graphql.Null
 	}
 	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*string)
 	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Chapter_moduleId(ctx context.Context, field graphql.CollectedField, obj *model.Chapter) (ret graphql.Marshaler) {
@@ -2110,14 +2104,11 @@ func (ec *executionContext) _Chapter_courseId(ctx context.Context, field graphql
 		return graphql.Null
 	}
 	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*string)
 	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Chapter_created_at(ctx context.Context, field graphql.CollectedField, obj *model.Chapter) (ret graphql.Marshaler) {
@@ -2273,14 +2264,11 @@ func (ec *executionContext) _Course_name(ctx context.Context, field graphql.Coll
 		return graphql.Null
 	}
 	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*string)
 	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Course_description(ctx context.Context, field graphql.CollectedField, obj *model.Course) (ret graphql.Marshaler) {
@@ -2308,14 +2296,11 @@ func (ec *executionContext) _Course_description(ctx context.Context, field graph
 		return graphql.Null
 	}
 	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*string)
 	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Course_summary(ctx context.Context, field graphql.CollectedField, obj *model.Course) (ret graphql.Marshaler) {
@@ -2343,14 +2328,11 @@ func (ec *executionContext) _Course_summary(ctx context.Context, field graphql.C
 		return graphql.Null
 	}
 	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*string)
 	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Course_instructor(ctx context.Context, field graphql.CollectedField, obj *model.Course) (ret graphql.Marshaler) {
@@ -3114,14 +3096,11 @@ func (ec *executionContext) _Course_status(ctx context.Context, field graphql.Co
 		return graphql.Null
 	}
 	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
 		return graphql.Null
 	}
-	res := resTmp.(model.Status)
+	res := resTmp.(*model.Status)
 	fc.Result = res
-	return ec.marshalNStatus2githubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐStatus(ctx, field.Selections, res)
+	return ec.marshalOStatus2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐStatus(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Course_is_display(ctx context.Context, field graphql.CollectedField, obj *model.Course) (ret graphql.Marshaler) {
@@ -3309,14 +3288,11 @@ func (ec *executionContext) _Module_name(ctx context.Context, field graphql.Coll
 		return graphql.Null
 	}
 	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*string)
 	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Module_isChapter(ctx context.Context, field graphql.CollectedField, obj *model.Module) (ret graphql.Marshaler) {
@@ -3344,14 +3320,11 @@ func (ec *executionContext) _Module_isChapter(ctx context.Context, field graphql
 		return graphql.Null
 	}
 	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
 		return graphql.Null
 	}
-	res := resTmp.(bool)
+	res := resTmp.(*bool)
 	fc.Result = res
-	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Module_description(ctx context.Context, field graphql.CollectedField, obj *model.Module) (ret graphql.Marshaler) {
@@ -3379,14 +3352,11 @@ func (ec *executionContext) _Module_description(ctx context.Context, field graph
 		return graphql.Null
 	}
 	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*string)
 	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Module_courseId(ctx context.Context, field graphql.CollectedField, obj *model.Module) (ret graphql.Marshaler) {
@@ -3414,14 +3384,11 @@ func (ec *executionContext) _Module_courseId(ctx context.Context, field graphql.
 		return graphql.Null
 	}
 	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*string)
 	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Module_owner(ctx context.Context, field graphql.CollectedField, obj *model.Module) (ret graphql.Marshaler) {
@@ -3829,7 +3796,7 @@ func (ec *executionContext) _Mutation_uploadCourseImage(ctx context.Context, fie
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().UploadCourseImage(rctx, args["file"].(model.CourseFile))
+		return ec.resolvers.Mutation().UploadCourseImage(rctx, args["file"].(*model.CourseFile))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -3868,7 +3835,7 @@ func (ec *executionContext) _Mutation_uploadCoursePreviewVideo(ctx context.Conte
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().UploadCoursePreviewVideo(rctx, args["file"].(model.CourseFile))
+		return ec.resolvers.Mutation().UploadCoursePreviewVideo(rctx, args["file"].(*model.CourseFile))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -3907,7 +3874,7 @@ func (ec *executionContext) _Mutation_uploadCourseTileImage(ctx context.Context,
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().UploadCourseTileImage(rctx, args["file"].(model.CourseFile))
+		return ec.resolvers.Mutation().UploadCourseTileImage(rctx, args["file"].(*model.CourseFile))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -3946,7 +3913,7 @@ func (ec *executionContext) _Mutation_addCourseModule(ctx context.Context, field
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().AddCourseModule(rctx, args["courseId"].(string), args["module"].(*model.ModuleInput))
+		return ec.resolvers.Mutation().AddCourseModule(rctx, args["courseId"].(*string), args["module"].(*model.ModuleInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4024,7 +3991,7 @@ func (ec *executionContext) _Mutation_addCourseChapter(ctx context.Context, fiel
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().AddCourseChapter(rctx, args["courseId"].(string), args["chapter"].(*model.ChapterInput))
+		return ec.resolvers.Mutation().AddCourseChapter(rctx, args["courseId"].(*string), args["chapter"].(*model.ChapterInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4102,7 +4069,7 @@ func (ec *executionContext) _Mutation_addCourseTopic(ctx context.Context, field 
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().AddCourseTopic(rctx, args["courseId"].(string), args["topic"].(*model.TopicInput))
+		return ec.resolvers.Mutation().AddCourseTopic(rctx, args["courseId"].(*string), args["topic"].(*model.TopicInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4180,7 +4147,7 @@ func (ec *executionContext) _Mutation_addTopicContent(ctx context.Context, field
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().AddTopicContent(rctx, args["topicId"].(string), args["topicContent"].(*model.TopicContentInput))
+		return ec.resolvers.Mutation().AddTopicContent(rctx, args["topicId"].(*string), args["topicContent"].(*model.TopicContentInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4258,7 +4225,7 @@ func (ec *executionContext) _Mutation_uploadTopicContentVideo(ctx context.Contex
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().UploadTopicContentVideo(rctx, args["file"].(model.TopicVideo))
+		return ec.resolvers.Mutation().UploadTopicContentVideo(rctx, args["file"].(*model.TopicVideo))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4297,7 +4264,7 @@ func (ec *executionContext) _Mutation_uploadTopicContentSubtitle(ctx context.Con
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().UploadTopicContentSubtitle(rctx, args["file"].(model.TopicSubtitle))
+		return ec.resolvers.Mutation().UploadTopicContentSubtitle(rctx, args["file"].(*model.TopicSubtitle))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4336,7 +4303,7 @@ func (ec *executionContext) _Mutation_uploadTopicStaticContent(ctx context.Conte
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().UploadTopicStaticContent(rctx, args["file"].(model.StaticContent))
+		return ec.resolvers.Mutation().UploadTopicStaticContent(rctx, args["file"].(*model.StaticContent))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4453,7 +4420,7 @@ func (ec *executionContext) _Mutation_uploadQuizFile(ctx context.Context, field 
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().UploadQuizFile(rctx, args["courseId"].(string), args["file"].(model.QuizFile))
+		return ec.resolvers.Mutation().UploadQuizFile(rctx, args["courseId"].(*string), args["file"].(*model.QuizFile))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4570,7 +4537,7 @@ func (ec *executionContext) _Mutation_uploadTopicResource(ctx context.Context, f
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().UploadTopicResource(rctx, args["courseId"].(string), args["resource"].(*model.TopicResourceInput))
+		return ec.resolvers.Mutation().UploadTopicResource(rctx, args["courseId"].(*string), args["resource"].(*model.TopicResourceInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4712,14 +4679,11 @@ func (ec *executionContext) _Quiz_name(ctx context.Context, field graphql.Collec
 		return graphql.Null
 	}
 	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*string)
 	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Quiz_category(ctx context.Context, field graphql.CollectedField, obj *model.Quiz) (ret graphql.Marshaler) {
@@ -4747,14 +4711,11 @@ func (ec *executionContext) _Quiz_category(ctx context.Context, field graphql.Co
 		return graphql.Null
 	}
 	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*string)
 	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Quiz_type(ctx context.Context, field graphql.CollectedField, obj *model.Quiz) (ret graphql.Marshaler) {
@@ -4782,14 +4743,11 @@ func (ec *executionContext) _Quiz_type(ctx context.Context, field graphql.Collec
 		return graphql.Null
 	}
 	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*string)
 	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Quiz_isMandatory(ctx context.Context, field graphql.CollectedField, obj *model.Quiz) (ret graphql.Marshaler) {
@@ -4817,14 +4775,11 @@ func (ec *executionContext) _Quiz_isMandatory(ctx context.Context, field graphql
 		return graphql.Null
 	}
 	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
 		return graphql.Null
 	}
-	res := resTmp.(bool)
+	res := resTmp.(*bool)
 	fc.Result = res
-	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Quiz_created_at(ctx context.Context, field graphql.CollectedField, obj *model.Quiz) (ret graphql.Marshaler) {
@@ -4916,14 +4871,11 @@ func (ec *executionContext) _Quiz_topicId(ctx context.Context, field graphql.Col
 		return graphql.Null
 	}
 	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*string)
 	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Quiz_sequence(ctx context.Context, field graphql.CollectedField, obj *model.Quiz) (ret graphql.Marshaler) {
@@ -5047,14 +4999,11 @@ func (ec *executionContext) _Topic_name(ctx context.Context, field graphql.Colle
 		return graphql.Null
 	}
 	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*string)
 	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Topic_description(ctx context.Context, field graphql.CollectedField, obj *model.Topic) (ret graphql.Marshaler) {
@@ -5082,14 +5031,11 @@ func (ec *executionContext) _Topic_description(ctx context.Context, field graphq
 		return graphql.Null
 	}
 	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*string)
 	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Topic_type(ctx context.Context, field graphql.CollectedField, obj *model.Topic) (ret graphql.Marshaler) {
@@ -5117,14 +5063,11 @@ func (ec *executionContext) _Topic_type(ctx context.Context, field graphql.Colle
 		return graphql.Null
 	}
 	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*string)
 	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Topic_moduleId(ctx context.Context, field graphql.CollectedField, obj *model.Topic) (ret graphql.Marshaler) {
@@ -5216,14 +5159,11 @@ func (ec *executionContext) _Topic_courseId(ctx context.Context, field graphql.C
 		return graphql.Null
 	}
 	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*string)
 	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Topic_created_at(ctx context.Context, field graphql.CollectedField, obj *model.Topic) (ret graphql.Marshaler) {
@@ -5411,14 +5351,11 @@ func (ec *executionContext) _TopicContent_language(ctx context.Context, field gr
 		return graphql.Null
 	}
 	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*string)
 	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _TopicContent_topicId(ctx context.Context, field graphql.CollectedField, obj *model.TopicContent) (ret graphql.Marshaler) {
@@ -5446,14 +5383,11 @@ func (ec *executionContext) _TopicContent_topicId(ctx context.Context, field gra
 		return graphql.Null
 	}
 	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*string)
 	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _TopicContent_startTime(ctx context.Context, field graphql.CollectedField, obj *model.TopicContent) (ret graphql.Marshaler) {
@@ -6919,7 +6853,7 @@ func (ec *executionContext) unmarshalInputChapterInput(ctx context.Context, obj 
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("name"))
-			it.Name, err = ec.unmarshalNString2string(ctx, v)
+			it.Name, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -6927,7 +6861,7 @@ func (ec *executionContext) unmarshalInputChapterInput(ctx context.Context, obj 
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("description"))
-			it.Description, err = ec.unmarshalNString2string(ctx, v)
+			it.Description, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -6943,7 +6877,7 @@ func (ec *executionContext) unmarshalInputChapterInput(ctx context.Context, obj 
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("courseId"))
-			it.CourseID, err = ec.unmarshalNString2string(ctx, v)
+			it.CourseID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -6974,7 +6908,7 @@ func (ec *executionContext) unmarshalInputCourseFile(ctx context.Context, obj in
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("file"))
-			it.File, err = ec.unmarshalNUpload2githubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚐUpload(ctx, v)
+			it.File, err = ec.unmarshalOUpload2ᚖgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚐUpload(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -6982,7 +6916,7 @@ func (ec *executionContext) unmarshalInputCourseFile(ctx context.Context, obj in
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("courseId"))
-			it.CourseID, err = ec.unmarshalNString2string(ctx, v)
+			it.CourseID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7013,7 +6947,7 @@ func (ec *executionContext) unmarshalInputCourseInput(ctx context.Context, obj i
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("name"))
-			it.Name, err = ec.unmarshalNString2string(ctx, v)
+			it.Name, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7021,7 +6955,7 @@ func (ec *executionContext) unmarshalInputCourseInput(ctx context.Context, obj i
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("description"))
-			it.Description, err = ec.unmarshalNString2string(ctx, v)
+			it.Description, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7205,7 +7139,7 @@ func (ec *executionContext) unmarshalInputCourseInput(ctx context.Context, obj i
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("status"))
-			it.Status, err = ec.unmarshalNStatus2githubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐStatus(ctx, v)
+			it.Status, err = ec.unmarshalOStatus2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐStatus(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7268,7 +7202,7 @@ func (ec *executionContext) unmarshalInputModuleInput(ctx context.Context, obj i
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("name"))
-			it.Name, err = ec.unmarshalNString2string(ctx, v)
+			it.Name, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7276,7 +7210,7 @@ func (ec *executionContext) unmarshalInputModuleInput(ctx context.Context, obj i
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("isChapter"))
-			it.IsChapter, err = ec.unmarshalNBoolean2bool(ctx, v)
+			it.IsChapter, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7284,7 +7218,7 @@ func (ec *executionContext) unmarshalInputModuleInput(ctx context.Context, obj i
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("description"))
-			it.Description, err = ec.unmarshalNString2string(ctx, v)
+			it.Description, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7292,7 +7226,7 @@ func (ec *executionContext) unmarshalInputModuleInput(ctx context.Context, obj i
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("courseId"))
-			it.CourseID, err = ec.unmarshalNString2string(ctx, v)
+			it.CourseID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7355,7 +7289,7 @@ func (ec *executionContext) unmarshalInputQuizDescriptive(ctx context.Context, o
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("quizId"))
-			it.QuizID, err = ec.unmarshalNString2string(ctx, v)
+			it.QuizID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7363,7 +7297,7 @@ func (ec *executionContext) unmarshalInputQuizDescriptive(ctx context.Context, o
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("question"))
-			it.Question, err = ec.unmarshalNString2string(ctx, v)
+			it.Question, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7371,7 +7305,7 @@ func (ec *executionContext) unmarshalInputQuizDescriptive(ctx context.Context, o
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("correctAnswer"))
-			it.CorrectAnswer, err = ec.unmarshalNString2string(ctx, v)
+			it.CorrectAnswer, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7379,7 +7313,7 @@ func (ec *executionContext) unmarshalInputQuizDescriptive(ctx context.Context, o
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("explanation"))
-			it.Explanation, err = ec.unmarshalNString2string(ctx, v)
+			it.Explanation, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7402,7 +7336,7 @@ func (ec *executionContext) unmarshalInputQuizFile(ctx context.Context, obj inte
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("quizId"))
-			it.QuizID, err = ec.unmarshalNString2string(ctx, v)
+			it.QuizID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7410,7 +7344,7 @@ func (ec *executionContext) unmarshalInputQuizFile(ctx context.Context, obj inte
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("type"))
-			it.Type, err = ec.unmarshalNString2string(ctx, v)
+			it.Type, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7418,7 +7352,7 @@ func (ec *executionContext) unmarshalInputQuizFile(ctx context.Context, obj inte
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("name"))
-			it.Name, err = ec.unmarshalNString2string(ctx, v)
+			it.Name, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7426,7 +7360,7 @@ func (ec *executionContext) unmarshalInputQuizFile(ctx context.Context, obj inte
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("file"))
-			it.File, err = ec.unmarshalNUpload2githubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚐUpload(ctx, v)
+			it.File, err = ec.unmarshalOUpload2ᚖgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚐUpload(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7457,7 +7391,7 @@ func (ec *executionContext) unmarshalInputQuizInput(ctx context.Context, obj int
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("name"))
-			it.Name, err = ec.unmarshalNString2string(ctx, v)
+			it.Name, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7465,7 +7399,7 @@ func (ec *executionContext) unmarshalInputQuizInput(ctx context.Context, obj int
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("category"))
-			it.Category, err = ec.unmarshalNString2string(ctx, v)
+			it.Category, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7473,7 +7407,7 @@ func (ec *executionContext) unmarshalInputQuizInput(ctx context.Context, obj int
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("type"))
-			it.Type, err = ec.unmarshalNString2string(ctx, v)
+			it.Type, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7481,7 +7415,7 @@ func (ec *executionContext) unmarshalInputQuizInput(ctx context.Context, obj int
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("isMandatory"))
-			it.IsMandatory, err = ec.unmarshalNBoolean2bool(ctx, v)
+			it.IsMandatory, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7505,7 +7439,7 @@ func (ec *executionContext) unmarshalInputQuizInput(ctx context.Context, obj int
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("topicId"))
-			it.TopicID, err = ec.unmarshalNString2string(ctx, v)
+			it.TopicID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7544,7 +7478,7 @@ func (ec *executionContext) unmarshalInputQuizMcq(ctx context.Context, obj inter
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("quizId"))
-			it.QuizID, err = ec.unmarshalNString2string(ctx, v)
+			it.QuizID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7552,7 +7486,7 @@ func (ec *executionContext) unmarshalInputQuizMcq(ctx context.Context, obj inter
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("question"))
-			it.Question, err = ec.unmarshalNString2string(ctx, v)
+			it.Question, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7560,7 +7494,7 @@ func (ec *executionContext) unmarshalInputQuizMcq(ctx context.Context, obj inter
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("options"))
-			it.Options, err = ec.unmarshalNString2ᚕᚖstring(ctx, v)
+			it.Options, err = ec.unmarshalOString2ᚕᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7568,7 +7502,7 @@ func (ec *executionContext) unmarshalInputQuizMcq(ctx context.Context, obj inter
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("correctOption"))
-			it.CorrectOption, err = ec.unmarshalNString2string(ctx, v)
+			it.CorrectOption, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7576,7 +7510,7 @@ func (ec *executionContext) unmarshalInputQuizMcq(ctx context.Context, obj inter
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("explanation"))
-			it.Explanation, err = ec.unmarshalNString2string(ctx, v)
+			it.Explanation, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7599,7 +7533,7 @@ func (ec *executionContext) unmarshalInputStaticContent(ctx context.Context, obj
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("type"))
-			it.Type, err = ec.unmarshalNType2githubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐType(ctx, v)
+			it.Type, err = ec.unmarshalOType2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐType(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7607,7 +7541,7 @@ func (ec *executionContext) unmarshalInputStaticContent(ctx context.Context, obj
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("file"))
-			it.File, err = ec.unmarshalNUpload2githubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚐUpload(ctx, v)
+			it.File, err = ec.unmarshalOUpload2ᚖgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚐUpload(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7615,7 +7549,7 @@ func (ec *executionContext) unmarshalInputStaticContent(ctx context.Context, obj
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("courseId"))
-			it.CourseID, err = ec.unmarshalNString2string(ctx, v)
+			it.CourseID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7623,7 +7557,7 @@ func (ec *executionContext) unmarshalInputStaticContent(ctx context.Context, obj
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("topicId"))
-			it.TopicID, err = ec.unmarshalNString2string(ctx, v)
+			it.TopicID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7646,7 +7580,7 @@ func (ec *executionContext) unmarshalInputTopicContentInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("language"))
-			it.Language, err = ec.unmarshalNString2string(ctx, v)
+			it.Language, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7654,7 +7588,7 @@ func (ec *executionContext) unmarshalInputTopicContentInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("topicId"))
-			it.TopicID, err = ec.unmarshalNString2string(ctx, v)
+			it.TopicID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7733,7 +7667,7 @@ func (ec *executionContext) unmarshalInputTopicInput(ctx context.Context, obj in
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("name"))
-			it.Name, err = ec.unmarshalNString2string(ctx, v)
+			it.Name, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7741,7 +7675,7 @@ func (ec *executionContext) unmarshalInputTopicInput(ctx context.Context, obj in
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("description"))
-			it.Description, err = ec.unmarshalNString2string(ctx, v)
+			it.Description, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7749,7 +7683,7 @@ func (ec *executionContext) unmarshalInputTopicInput(ctx context.Context, obj in
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("type"))
-			it.Type, err = ec.unmarshalNString2string(ctx, v)
+			it.Type, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7773,7 +7707,7 @@ func (ec *executionContext) unmarshalInputTopicInput(ctx context.Context, obj in
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("courseId"))
-			it.CourseID, err = ec.unmarshalNString2string(ctx, v)
+			it.CourseID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7820,7 +7754,7 @@ func (ec *executionContext) unmarshalInputTopicResourceInput(ctx context.Context
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("type"))
-			it.Type, err = ec.unmarshalNString2string(ctx, v)
+			it.Type, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7828,7 +7762,7 @@ func (ec *executionContext) unmarshalInputTopicResourceInput(ctx context.Context
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("topicId"))
-			it.TopicID, err = ec.unmarshalNString2string(ctx, v)
+			it.TopicID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7868,7 +7802,7 @@ func (ec *executionContext) unmarshalInputTopicResourceInput(ctx context.Context
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("url"))
-			it.URL, err = ec.unmarshalNString2string(ctx, v)
+			it.URL, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7876,7 +7810,7 @@ func (ec *executionContext) unmarshalInputTopicResourceInput(ctx context.Context
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("file"))
-			it.File, err = ec.unmarshalNUpload2githubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚐUpload(ctx, v)
+			it.File, err = ec.unmarshalOUpload2ᚖgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚐUpload(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7899,7 +7833,7 @@ func (ec *executionContext) unmarshalInputTopicSubtitle(ctx context.Context, obj
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("file"))
-			it.File, err = ec.unmarshalNUpload2githubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚐUpload(ctx, v)
+			it.File, err = ec.unmarshalOUpload2ᚖgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚐUpload(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7907,7 +7841,7 @@ func (ec *executionContext) unmarshalInputTopicSubtitle(ctx context.Context, obj
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("courseId"))
-			it.CourseID, err = ec.unmarshalNString2string(ctx, v)
+			it.CourseID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7915,7 +7849,7 @@ func (ec *executionContext) unmarshalInputTopicSubtitle(ctx context.Context, obj
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("topicId"))
-			it.TopicID, err = ec.unmarshalNString2string(ctx, v)
+			it.TopicID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7938,7 +7872,7 @@ func (ec *executionContext) unmarshalInputTopicVideo(ctx context.Context, obj in
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("file"))
-			it.File, err = ec.unmarshalNUpload2githubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚐUpload(ctx, v)
+			it.File, err = ec.unmarshalOUpload2ᚖgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚐUpload(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7946,7 +7880,7 @@ func (ec *executionContext) unmarshalInputTopicVideo(ctx context.Context, obj in
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("courseId"))
-			it.CourseID, err = ec.unmarshalNString2string(ctx, v)
+			it.CourseID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7954,7 +7888,7 @@ func (ec *executionContext) unmarshalInputTopicVideo(ctx context.Context, obj in
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("topicId"))
-			it.TopicID, err = ec.unmarshalNString2string(ctx, v)
+			it.TopicID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -8027,9 +7961,6 @@ func (ec *executionContext) _Chapter(ctx context.Context, sel ast.SelectionSet, 
 
 			out.Values[i] = innerFunc(ctx)
 
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
 		case "description":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Chapter_description(ctx, field, obj)
@@ -8037,9 +7968,6 @@ func (ec *executionContext) _Chapter(ctx context.Context, sel ast.SelectionSet, 
 
 			out.Values[i] = innerFunc(ctx)
 
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
 		case "moduleId":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Chapter_moduleId(ctx, field, obj)
@@ -8054,9 +7982,6 @@ func (ec *executionContext) _Chapter(ctx context.Context, sel ast.SelectionSet, 
 
 			out.Values[i] = innerFunc(ctx)
 
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
 		case "created_at":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Chapter_created_at(ctx, field, obj)
@@ -8113,9 +8038,6 @@ func (ec *executionContext) _Course(ctx context.Context, sel ast.SelectionSet, o
 
 			out.Values[i] = innerFunc(ctx)
 
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
 		case "description":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Course_description(ctx, field, obj)
@@ -8123,9 +8045,6 @@ func (ec *executionContext) _Course(ctx context.Context, sel ast.SelectionSet, o
 
 			out.Values[i] = innerFunc(ctx)
 
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
 		case "summary":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Course_summary(ctx, field, obj)
@@ -8133,9 +8052,6 @@ func (ec *executionContext) _Course(ctx context.Context, sel ast.SelectionSet, o
 
 			out.Values[i] = innerFunc(ctx)
 
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
 		case "instructor":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Course_instructor(ctx, field, obj)
@@ -8304,9 +8220,6 @@ func (ec *executionContext) _Course(ctx context.Context, sel ast.SelectionSet, o
 
 			out.Values[i] = innerFunc(ctx)
 
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
 		case "is_display":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Course_is_display(ctx, field, obj)
@@ -8370,9 +8283,6 @@ func (ec *executionContext) _Module(ctx context.Context, sel ast.SelectionSet, o
 
 			out.Values[i] = innerFunc(ctx)
 
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
 		case "isChapter":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Module_isChapter(ctx, field, obj)
@@ -8380,9 +8290,6 @@ func (ec *executionContext) _Module(ctx context.Context, sel ast.SelectionSet, o
 
 			out.Values[i] = innerFunc(ctx)
 
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
 		case "description":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Module_description(ctx, field, obj)
@@ -8390,9 +8297,6 @@ func (ec *executionContext) _Module(ctx context.Context, sel ast.SelectionSet, o
 
 			out.Values[i] = innerFunc(ctx)
 
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
 		case "courseId":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Module_courseId(ctx, field, obj)
@@ -8400,9 +8304,6 @@ func (ec *executionContext) _Module(ctx context.Context, sel ast.SelectionSet, o
 
 			out.Values[i] = innerFunc(ctx)
 
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
 		case "owner":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Module_owner(ctx, field, obj)
@@ -8729,9 +8630,6 @@ func (ec *executionContext) _Quiz(ctx context.Context, sel ast.SelectionSet, obj
 
 			out.Values[i] = innerFunc(ctx)
 
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
 		case "category":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Quiz_category(ctx, field, obj)
@@ -8739,9 +8637,6 @@ func (ec *executionContext) _Quiz(ctx context.Context, sel ast.SelectionSet, obj
 
 			out.Values[i] = innerFunc(ctx)
 
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
 		case "type":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Quiz_type(ctx, field, obj)
@@ -8749,9 +8644,6 @@ func (ec *executionContext) _Quiz(ctx context.Context, sel ast.SelectionSet, obj
 
 			out.Values[i] = innerFunc(ctx)
 
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
 		case "isMandatory":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Quiz_isMandatory(ctx, field, obj)
@@ -8759,9 +8651,6 @@ func (ec *executionContext) _Quiz(ctx context.Context, sel ast.SelectionSet, obj
 
 			out.Values[i] = innerFunc(ctx)
 
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
 		case "created_at":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Quiz_created_at(ctx, field, obj)
@@ -8783,9 +8672,6 @@ func (ec *executionContext) _Quiz(ctx context.Context, sel ast.SelectionSet, obj
 
 			out.Values[i] = innerFunc(ctx)
 
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
 		case "sequence":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Quiz_sequence(ctx, field, obj)
@@ -8835,9 +8721,6 @@ func (ec *executionContext) _Topic(ctx context.Context, sel ast.SelectionSet, ob
 
 			out.Values[i] = innerFunc(ctx)
 
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
 		case "description":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Topic_description(ctx, field, obj)
@@ -8845,9 +8728,6 @@ func (ec *executionContext) _Topic(ctx context.Context, sel ast.SelectionSet, ob
 
 			out.Values[i] = innerFunc(ctx)
 
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
 		case "type":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Topic_type(ctx, field, obj)
@@ -8855,9 +8735,6 @@ func (ec *executionContext) _Topic(ctx context.Context, sel ast.SelectionSet, ob
 
 			out.Values[i] = innerFunc(ctx)
 
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
 		case "moduleId":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Topic_moduleId(ctx, field, obj)
@@ -8879,9 +8756,6 @@ func (ec *executionContext) _Topic(ctx context.Context, sel ast.SelectionSet, ob
 
 			out.Values[i] = innerFunc(ctx)
 
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
 		case "created_at":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Topic_created_at(ctx, field, obj)
@@ -8945,9 +8819,6 @@ func (ec *executionContext) _TopicContent(ctx context.Context, sel ast.Selection
 
 			out.Values[i] = innerFunc(ctx)
 
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
 		case "topicId":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._TopicContent_topicId(ctx, field, obj)
@@ -8955,9 +8826,6 @@ func (ec *executionContext) _TopicContent(ctx context.Context, sel ast.Selection
 
 			out.Values[i] = innerFunc(ctx)
 
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
 		case "startTime":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._TopicContent_startTime(ctx, field, obj)
@@ -9484,31 +9352,6 @@ func (ec *executionContext) marshalNBoolean2bool(ctx context.Context, sel ast.Se
 	return res
 }
 
-func (ec *executionContext) unmarshalNCourseFile2githubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐCourseFile(ctx context.Context, v interface{}) (model.CourseFile, error) {
-	res, err := ec.unmarshalInputCourseFile(ctx, v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) unmarshalNQuizFile2githubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐQuizFile(ctx context.Context, v interface{}) (model.QuizFile, error) {
-	res, err := ec.unmarshalInputQuizFile(ctx, v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) unmarshalNStaticContent2githubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐStaticContent(ctx context.Context, v interface{}) (model.StaticContent, error) {
-	res, err := ec.unmarshalInputStaticContent(ctx, v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) unmarshalNStatus2githubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐStatus(ctx context.Context, v interface{}) (model.Status, error) {
-	var res model.Status
-	err := res.UnmarshalGQL(v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalNStatus2githubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐStatus(ctx context.Context, sel ast.SelectionSet, v model.Status) graphql.Marshaler {
-	return v
-}
-
 func (ec *executionContext) unmarshalNString2string(ctx context.Context, v interface{}) (string, error) {
 	res, err := graphql.UnmarshalString(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -9516,67 +9359,6 @@ func (ec *executionContext) unmarshalNString2string(ctx context.Context, v inter
 
 func (ec *executionContext) marshalNString2string(ctx context.Context, sel ast.SelectionSet, v string) graphql.Marshaler {
 	res := graphql.MarshalString(v)
-	if res == graphql.Null {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "must not be null")
-		}
-	}
-	return res
-}
-
-func (ec *executionContext) unmarshalNString2ᚕᚖstring(ctx context.Context, v interface{}) ([]*string, error) {
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
-	var err error
-	res := make([]*string, len(vSlice))
-	for i := range vSlice {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalOString2ᚖstring(ctx, vSlice[i])
-		if err != nil {
-			return nil, err
-		}
-	}
-	return res, nil
-}
-
-func (ec *executionContext) marshalNString2ᚕᚖstring(ctx context.Context, sel ast.SelectionSet, v []*string) graphql.Marshaler {
-	ret := make(graphql.Array, len(v))
-	for i := range v {
-		ret[i] = ec.marshalOString2ᚖstring(ctx, sel, v[i])
-	}
-
-	return ret
-}
-
-func (ec *executionContext) unmarshalNTopicSubtitle2githubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐTopicSubtitle(ctx context.Context, v interface{}) (model.TopicSubtitle, error) {
-	res, err := ec.unmarshalInputTopicSubtitle(ctx, v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) unmarshalNTopicVideo2githubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐTopicVideo(ctx context.Context, v interface{}) (model.TopicVideo, error) {
-	res, err := ec.unmarshalInputTopicVideo(ctx, v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) unmarshalNType2githubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐType(ctx context.Context, v interface{}) (model.Type, error) {
-	var res model.Type
-	err := res.UnmarshalGQL(v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalNType2githubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐType(ctx context.Context, sel ast.SelectionSet, v model.Type) graphql.Marshaler {
-	return v
-}
-
-func (ec *executionContext) unmarshalNUpload2githubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚐUpload(ctx context.Context, v interface{}) (graphql.Upload, error) {
-	res, err := graphql.UnmarshalUpload(v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalNUpload2githubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚐUpload(ctx context.Context, sel ast.SelectionSet, v graphql.Upload) graphql.Marshaler {
-	res := graphql.MarshalUpload(v)
 	if res == graphql.Null {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")
@@ -9886,6 +9668,14 @@ func (ec *executionContext) marshalOCourse2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑc
 	return ec._Course(ctx, sel, v)
 }
 
+func (ec *executionContext) unmarshalOCourseFile2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐCourseFile(ctx context.Context, v interface{}) (*model.CourseFile, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputCourseFile(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
 func (ec *executionContext) unmarshalOCourseInput2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐCourseInput(ctx context.Context, v interface{}) (*model.CourseInput, error) {
 	if v == nil {
 		return nil, nil
@@ -9956,6 +9746,14 @@ func (ec *executionContext) unmarshalOQuizDescriptive2ᚖgithubᚗcomᚋzicops�
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
+func (ec *executionContext) unmarshalOQuizFile2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐQuizFile(ctx context.Context, v interface{}) (*model.QuizFile, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputQuizFile(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
 func (ec *executionContext) unmarshalOQuizInput2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐQuizInput(ctx context.Context, v interface{}) (*model.QuizInput, error) {
 	if v == nil {
 		return nil, nil
@@ -9970,6 +9768,30 @@ func (ec *executionContext) unmarshalOQuizMcq2ᚖgithubᚗcomᚋzicopsᚋzicops�
 	}
 	res, err := ec.unmarshalInputQuizMcq(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalOStaticContent2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐStaticContent(ctx context.Context, v interface{}) (*model.StaticContent, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputStaticContent(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalOStatus2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐStatus(ctx context.Context, v interface{}) (*model.Status, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var res = new(model.Status)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOStatus2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐStatus(ctx context.Context, sel ast.SelectionSet, v *model.Status) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return v
 }
 
 func (ec *executionContext) unmarshalOString2string(ctx context.Context, v interface{}) (string, error) {
@@ -10066,6 +9888,54 @@ func (ec *executionContext) unmarshalOTopicResourceInput2ᚖgithubᚗcomᚋzicop
 	}
 	res, err := ec.unmarshalInputTopicResourceInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalOTopicSubtitle2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐTopicSubtitle(ctx context.Context, v interface{}) (*model.TopicSubtitle, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputTopicSubtitle(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalOTopicVideo2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐTopicVideo(ctx context.Context, v interface{}) (*model.TopicVideo, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputTopicVideo(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalOType2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐType(ctx context.Context, v interface{}) (*model.Type, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var res = new(model.Type)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOType2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐType(ctx context.Context, sel ast.SelectionSet, v *model.Type) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return v
+}
+
+func (ec *executionContext) unmarshalOUpload2ᚖgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚐUpload(ctx context.Context, v interface{}) (*graphql.Upload, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := graphql.UnmarshalUpload(v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOUpload2ᚖgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚐUpload(ctx context.Context, sel ast.SelectionSet, v *graphql.Upload) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	res := graphql.MarshalUpload(*v)
+	return res
 }
 
 func (ec *executionContext) marshalO__EnumValue2ᚕgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐEnumValueᚄ(ctx context.Context, sel ast.SelectionSet, v []introspection.EnumValue) graphql.Marshaler {

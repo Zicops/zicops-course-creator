@@ -21,7 +21,7 @@ func TopicContentCreate(ctx context.Context, topicID string, topicConent *model.
 	log.Info("TopicContentCreate called")
 	cassandraTopicContent := coursez.TopicContent{
 		TopicId:            topicID,
-		Language:           topicConent.Language,
+		Language:           *topicConent.Language,
 		CreatedAt:          time.Now().Unix(),
 		UpdatedAt:          time.Now().Unix(),
 		TopicContentBucket: "",
@@ -62,7 +62,7 @@ func TopicContentCreate(ctx context.Context, topicID string, topicConent *model.
 		SkipIntroDuration: topicConent.SkipIntroDuration,
 		NextShowTime:      topicConent.NextShowTime,
 		FromEndTime:       topicConent.FromEndTime,
-		TopicID:           topicID,
+		TopicID:           &topicID,
 		Type:              topicConent.Type,
 	}
 	return &responseModel, nil
@@ -78,7 +78,7 @@ func UploadTopicVideo(ctx context.Context, file model.TopicVideo) (*bool, error)
 		log.Errorf("Failed to upload video to course topic: %v", err.Error())
 		return &isSuccess, nil
 	}
-	bucketPath := file.CourseID + "/" + file.TopicID + "/" + file.File.Filename
+	bucketPath := *file.CourseID + "/" + *file.TopicID + "/" + file.File.Filename
 	writer, err := storageC.UploadToGCS(ctx, bucketPath)
 	if err != nil {
 		log.Errorf("Failed to upload video to course topic: %v", err.Error())
@@ -114,7 +114,7 @@ func UploadTopicSubtitle(ctx context.Context, file model.TopicSubtitle) (*bool, 
 		log.Errorf("Failed to upload subtitle to course topic: %v", err.Error())
 		return &isSuccess, nil
 	}
-	bucketPath := file.CourseID + "/" + file.TopicID + "/" + file.File.Filename
+	bucketPath := *file.CourseID + "/" + *file.TopicID + "/" + file.File.Filename
 	writer, err := storageC.UploadToGCS(ctx, bucketPath)
 	if err != nil {
 		log.Errorf("Failed to upload subtitle to course topic: %v", err.Error())
@@ -143,11 +143,11 @@ func UploadTopicSubtitle(ctx context.Context, file model.TopicSubtitle) (*bool, 
 func UpdateTopicContent(ctx context.Context, topicConent *model.TopicContentInput) (*model.TopicContent, error) {
 	log.Info("UpdateTopicContent called")
 	topicID := topicConent.TopicID
-	if topicID == "" {
+	if *topicID == "" {
 		return nil, fmt.Errorf("TopicID is required")
 	}
 	cassandraTopicContent := coursez.TopicContent{
-		TopicId: topicID,
+		TopicId: *topicID,
 	}
 	// get topic content from cassandra
 	getQuery := global.CassSession.Session.Query(coursez.TopicContentTable.Get()).BindStruct(cassandraTopicContent)
@@ -173,8 +173,8 @@ func UpdateTopicContent(ctx context.Context, topicConent *model.TopicContentInpu
 		cassandraTopicContent.FromEndTime = *topicConent.FromEndTime
 	}
 	cassandraTopicContent.UpdatedAt = time.Now().Unix()
-	if topicConent.Language != "" {
-		cassandraTopicContent.Language = topicConent.Language
+	if *topicConent.Language != "" {
+		cassandraTopicContent.Language = *topicConent.Language
 	}
 	// set course in cassandra
 	updateQuery := global.CassSession.Session.Query(coursez.TopicContentTable.Update()).BindStruct(cassandraTopicContent)

@@ -48,8 +48,8 @@ func (r *mutationResolver) UpdateCourse(ctx context.Context, course *model.Cours
 	return resp, nil
 }
 
-func (r *mutationResolver) UploadCourseImage(ctx context.Context, file model.CourseFile) (*bool, error) {
-	resp, err := handlers.UploadCourseImage(ctx, file)
+func (r *mutationResolver) UploadCourseImage(ctx context.Context, file *model.CourseFile) (*bool, error) {
+	resp, err := handlers.UploadCourseImage(ctx, *file)
 	if err != nil {
 		log.Errorf("error upload course image: %v", err)
 		return nil, err
@@ -57,8 +57,8 @@ func (r *mutationResolver) UploadCourseImage(ctx context.Context, file model.Cou
 	return resp, nil
 }
 
-func (r *mutationResolver) UploadCoursePreviewVideo(ctx context.Context, file model.CourseFile) (*bool, error) {
-	resp, err := handlers.UploadCoursePreviewVideo(ctx, file)
+func (r *mutationResolver) UploadCoursePreviewVideo(ctx context.Context, file *model.CourseFile) (*bool, error) {
+	resp, err := handlers.UploadCoursePreviewVideo(ctx, *file)
 	if err != nil {
 		log.Errorf("error upload course video: %v", err)
 		return nil, err
@@ -66,8 +66,8 @@ func (r *mutationResolver) UploadCoursePreviewVideo(ctx context.Context, file mo
 	return resp, nil
 }
 
-func (r *mutationResolver) UploadCourseTileImage(ctx context.Context, file model.CourseFile) (*bool, error) {
-	resp, err := handlers.UploadCourseTileImage(ctx, file)
+func (r *mutationResolver) UploadCourseTileImage(ctx context.Context, file *model.CourseFile) (*bool, error) {
+	resp, err := handlers.UploadCourseTileImage(ctx, *file)
 	if err != nil {
 		log.Errorf("error upload course tile image: %v", err)
 		return nil, err
@@ -75,8 +75,8 @@ func (r *mutationResolver) UploadCourseTileImage(ctx context.Context, file model
 	return resp, nil
 }
 
-func (r *mutationResolver) AddCourseModule(ctx context.Context, courseID string, module *model.ModuleInput) (*model.Module, error) {
-	resp, err := handlers.ModuleCreate(ctx, courseID, module)
+func (r *mutationResolver) AddCourseModule(ctx context.Context, courseID *string, module *model.ModuleInput) (*model.Module, error) {
+	resp, err := handlers.ModuleCreate(ctx, *courseID, module)
 	if err != nil {
 		log.Errorf("error creating module: %v", err)
 		return nil, err
@@ -93,8 +93,8 @@ func (r *mutationResolver) UpdateCourseModule(ctx context.Context, module *model
 	return resp, nil
 }
 
-func (r *mutationResolver) AddCourseChapter(ctx context.Context, courseID string, chapter *model.ChapterInput) (*model.Chapter, error) {
-	resp, err := handlers.ChapterCreate(ctx, courseID, chapter)
+func (r *mutationResolver) AddCourseChapter(ctx context.Context, courseID *string, chapter *model.ChapterInput) (*model.Chapter, error) {
+	resp, err := handlers.ChapterCreate(ctx, *courseID, chapter)
 	if err != nil {
 		log.Errorf("error creating chapter: %v", err)
 		return nil, err
@@ -111,8 +111,8 @@ func (r *mutationResolver) UpdateCourseChapter(ctx context.Context, chapter *mod
 	return resp, nil
 }
 
-func (r *mutationResolver) AddCourseTopic(ctx context.Context, courseID string, topic *model.TopicInput) (*model.Topic, error) {
-	resp, err := handlers.TopicCreate(ctx, courseID, topic)
+func (r *mutationResolver) AddCourseTopic(ctx context.Context, courseID *string, topic *model.TopicInput) (*model.Topic, error) {
+	resp, err := handlers.TopicCreate(ctx, *courseID, topic)
 	if err != nil {
 		log.Errorf("error creating topic: %v", err)
 		return nil, err
@@ -129,8 +129,8 @@ func (r *mutationResolver) UpdateCourseTopic(ctx context.Context, topic *model.T
 	return resp, nil
 }
 
-func (r *mutationResolver) AddTopicContent(ctx context.Context, topicID string, topicContent *model.TopicContentInput) (*model.TopicContent, error) {
-	resp, err := handlers.TopicContentCreate(ctx, topicID, topicContent)
+func (r *mutationResolver) AddTopicContent(ctx context.Context, topicID *string, topicContent *model.TopicContentInput) (*model.TopicContent, error) {
+	resp, err := handlers.TopicContentCreate(ctx, *topicID, topicContent)
 	if err != nil {
 		log.Errorf("error creating topic content: %v", err)
 		return nil, err
@@ -147,8 +147,8 @@ func (r *mutationResolver) UpdateTopicContent(ctx context.Context, topicContent 
 	return resp, nil
 }
 
-func (r *mutationResolver) UploadTopicContentVideo(ctx context.Context, file model.TopicVideo) (*bool, error) {
-	resp, err := handlers.UploadTopicVideo(ctx, file)
+func (r *mutationResolver) UploadTopicContentVideo(ctx context.Context, file *model.TopicVideo) (*bool, error) {
+	resp, err := handlers.UploadTopicVideo(ctx, *file)
 	if err != nil {
 		log.Errorf("error uploading topic video: %v", err)
 		return nil, err
@@ -156,8 +156,8 @@ func (r *mutationResolver) UploadTopicContentVideo(ctx context.Context, file mod
 	return resp, nil
 }
 
-func (r *mutationResolver) UploadTopicContentSubtitle(ctx context.Context, file model.TopicSubtitle) (*bool, error) {
-	resp, err := handlers.UploadTopicSubtitle(ctx, file)
+func (r *mutationResolver) UploadTopicContentSubtitle(ctx context.Context, file *model.TopicSubtitle) (*bool, error) {
+	resp, err := handlers.UploadTopicSubtitle(ctx, *file)
 	if err != nil {
 		log.Errorf("error uploading topic subtitle: %v", err)
 		return nil, err
@@ -165,7 +165,7 @@ func (r *mutationResolver) UploadTopicContentSubtitle(ctx context.Context, file 
 	return resp, nil
 }
 
-func (r *mutationResolver) UploadTopicStaticContent(ctx context.Context, file model.StaticContent) (*bool, error) {
+func (r *mutationResolver) UploadTopicStaticContent(ctx context.Context, file *model.StaticContent) (*bool, error) {
 	return nil, nil
 }
 
@@ -187,8 +187,8 @@ func (r *mutationResolver) UpdateQuiz(ctx context.Context, quiz *model.QuizInput
 	return resp, nil
 }
 
-func (r *mutationResolver) UploadQuizFile(ctx context.Context, courseID string, file model.QuizFile) (*bool, error) {
-	resp, err := handlers.UploadQuizFile(ctx, courseID, file)
+func (r *mutationResolver) UploadQuizFile(ctx context.Context, courseID *string, file *model.QuizFile) (*bool, error) {
+	resp, err := handlers.UploadQuizFile(ctx, *courseID, *file)
 	if err != nil {
 		log.Errorf("error uploading quiz file: %v", err)
 		return nil, err
@@ -214,8 +214,8 @@ func (r *mutationResolver) AddQuizDescriptive(ctx context.Context, quiz *model.Q
 	return resp, nil
 }
 
-func (r *mutationResolver) UploadTopicResource(ctx context.Context, courseID string, resource *model.TopicResourceInput) (*bool, error) {
-	resp, err := handlers.AddTopicResources(ctx, courseID, resource)
+func (r *mutationResolver) UploadTopicResource(ctx context.Context, courseID *string, resource *model.TopicResourceInput) (*bool, error) {
+	resp, err := handlers.AddTopicResources(ctx, *courseID, resource)
 	if err != nil {
 		log.Errorf("error adding topic resource: %v", err)
 		return nil, err

@@ -24,7 +24,7 @@ func AddTopicResources(ctx context.Context, courseID string, resource *model.Top
 		log.Errorf("Failed to upload video to course topic: %v", err.Error())
 		return &isSuccess, nil
 	}
-	bucketPath := courseID + "/" + resource.TopicID + "/" + resource.File.Filename
+	bucketPath := courseID + "/" + *resource.TopicID + "/" + resource.File.Filename
 	writer, err := storageC.UploadToGCS(ctx, bucketPath)
 	if err != nil {
 		log.Errorf("Failed to upload video to course topic: %v", err.Error())
@@ -42,8 +42,8 @@ func AddTopicResources(ctx context.Context, courseID string, resource *model.Top
 	}
 	getUrl := storageC.GetSignedURLForObject(bucketPath)
 	cassandraResource := coursez.Resource{
-		TopicId:    resource.TopicID,
-		Type:       resource.Type,
+		TopicId:    *resource.TopicID,
+		Type:       *resource.Type,
 		BucketPath: bucketPath,
 		Url:        getUrl,
 		IsActive:  false,

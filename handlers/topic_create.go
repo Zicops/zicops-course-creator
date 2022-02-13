@@ -18,9 +18,9 @@ func TopicCreate(ctx context.Context, courseID string, topic *model.TopicInput) 
 	guid := xid.New()
 	cassandraTopic := coursez.Topic{
 		ID:          guid.String(),
-		Name:        topic.Name,
-		Description: topic.Description,
-		Type:        topic.Type,
+		Name:        *topic.Name,
+		Description: *topic.Description,
+		Type:        *topic.Type,
 		CreatedAt:   time.Now().Unix(),
 		UpdatedAt:   time.Now().Unix(),
 		CourseID:    courseID,
@@ -55,7 +55,7 @@ func TopicCreate(ctx context.Context, courseID string, topic *model.TopicInput) 
 		CreatedAt:   &created,
 		UpdatedAt:   &created,
 		ChapterID:   topic.ChapterID,
-		CourseID:    cassandraTopic.CourseID,
+		CourseID:    &cassandraTopic.CourseID,
 		ModuleID:    topic.ModuleID,
 		Sequence:    topic.Sequence,
 		CreatedBy:   topic.CreatedBy,
@@ -75,8 +75,8 @@ func TopicUpdate(ctx context.Context, topic *model.TopicInput) (*model.Topic, er
 	if err := getQuery.ExecRelease(); err != nil {
 		return nil, err
 	}
-	if topic.Description != "" {
-		cassandraTopic.Description = topic.Description
+	if *topic.Description != "" {
+		cassandraTopic.Description = *topic.Description
 	}
 	if topic.Sequence != nil {
 		cassandraTopic.Sequence = *topic.Sequence
@@ -98,7 +98,7 @@ func TopicUpdate(ctx context.Context, topic *model.TopicInput) (*model.Topic, er
 		CreatedAt:   &created,
 		UpdatedAt:   &created,
 		ChapterID:   topic.ChapterID,
-		CourseID:    cassandraTopic.CourseID,
+		CourseID:    &cassandraTopic.CourseID,
 		ModuleID:    topic.ModuleID,
 		Sequence:    topic.Sequence,
 		CreatedBy:   topic.CreatedBy,

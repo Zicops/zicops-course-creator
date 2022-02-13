@@ -18,8 +18,8 @@ func ChapterCreate(ctx context.Context, courseID string, chapter *model.ChapterI
 	guid := xid.New()
 	cassandraChapter := coursez.Chapter{
 		ID:          guid.String(),
-		Name:        chapter.Name,
-		Description: chapter.Description,
+		Name:        *chapter.Name,
+		Description: *chapter.Description,
 		CreatedAt:   time.Now().Unix(),
 		UpdatedAt:   time.Now().Unix(),
 		CourseID:    courseID,
@@ -43,7 +43,7 @@ func ChapterCreate(ctx context.Context, courseID string, chapter *model.ChapterI
 		Description: chapter.Description,
 		CreatedAt:   &created,
 		UpdatedAt:   &created,
-		CourseID:    cassandraChapter.CourseID,
+		CourseID:    &cassandraChapter.CourseID,
 		ModuleID:    chapter.ModuleID,
 		Sequence:    chapter.Sequence,
 	}
@@ -62,11 +62,11 @@ func UpdateChapter(ctx context.Context, chapter *model.ChapterInput) (*model.Cha
 	if err := getQuery.ExecRelease(); err != nil {
 		return nil, err
 	}
-	if chapter.Name != "" {
-		cassandraChapter.Name = chapter.Name
+	if *chapter.Name != "" {
+		cassandraChapter.Name = *chapter.Name
 	}
-	if chapter.Description != "" {
-		cassandraChapter.Description = chapter.Description
+	if *chapter.Description != "" {
+		cassandraChapter.Description = *chapter.Description
 	}
 	if chapter.Sequence != nil {
 		cassandraChapter.Sequence = *chapter.Sequence
@@ -82,11 +82,11 @@ func UpdateChapter(ctx context.Context, chapter *model.ChapterInput) (*model.Cha
 	created := strconv.FormatInt(cassandraChapter.CreatedAt, 10)
 	responseModel := model.Chapter{
 		ID:          &cassandraChapter.ID,
-		Name:        cassandraChapter.Name,
-		Description: cassandraChapter.Description,
+		Name:        &cassandraChapter.Name,
+		Description: &cassandraChapter.Description,
 		CreatedAt:   &created,
 		UpdatedAt:   &created,
-		CourseID:    cassandraChapter.CourseID,
+		CourseID:    &cassandraChapter.CourseID,
 		ModuleID:    &cassandraChapter.ModuleID,
 		Sequence:    &cassandraChapter.Sequence,
 	}

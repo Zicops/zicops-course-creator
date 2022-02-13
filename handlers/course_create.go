@@ -67,8 +67,8 @@ func CourseCreator(ctx context.Context, courseInput *model.CourseInput) (*model.
 	}
 	cassandraCourse := coursez.Course{
 		ID:                 guid.String(),
-		Name:               courseInput.Name,
-		Description:        courseInput.Description,
+		Name:               *courseInput.Name,
+		Description:        *courseInput.Description,
 		Image:              "https://storage.googleapis.com/zicops.com/school-board-ge1701ca8f_640.jpg",
 		PreviewVideo:       "https://storage.googleapis.com/zicops.com/school-board-ge1701ca8f_640.jpg",
 		TileImage:          "https://storage.googleapis.com/zicops.com/school-board-ge1701ca8f_640.jpg",
@@ -140,7 +140,7 @@ func CourseCreator(ctx context.Context, courseInput *model.CourseInput) (*model.
 		ID:                 &cassandraCourse.ID,
 		Name:               courseInput.Name,
 		Description:        courseInput.Description,
-		Summary:            *courseInput.Summary,
+		Summary:            courseInput.Summary,
 		Instructor:         courseInput.Instructor,
 		Image:              &cassandraCourse.Image,
 		PreviewVideo:       &cassandraCourse.PreviewVideo,
@@ -175,7 +175,7 @@ func CourseCreator(ctx context.Context, courseInput *model.CourseInput) (*model.
 func UploadCourseImage(ctx context.Context, file model.CourseFile) (*bool, error) {
 	log.Info("UploadCourseImage called")
 	isSuccess := false
-	if file.CourseID == "" {
+	if *file.CourseID == "" {
 		return &isSuccess, fmt.Errorf("course id is required")
 	}
 	storageC := bucket.NewStorageHandler()
@@ -185,7 +185,7 @@ func UploadCourseImage(ctx context.Context, file model.CourseFile) (*bool, error
 		log.Errorf("Failed to upload image to course: %v", err.Error())
 		return &isSuccess, nil
 	}
-	bucketPath := file.CourseID + "/" + file.File.Filename
+	bucketPath := *file.CourseID + "/" + file.File.Filename
 	writer, err := storageC.UploadToGCS(ctx, bucketPath)
 	if err != nil {
 		log.Errorf("Failed to upload image to course: %v", err.Error())
@@ -214,7 +214,7 @@ func UploadCourseImage(ctx context.Context, file model.CourseFile) (*bool, error
 func UploadCoursePreviewVideo(ctx context.Context, file model.CourseFile) (*bool, error) {
 	log.Info("UploadCoursePreviewVideo called")
 	isSuccess := false
-	if file.CourseID == "" {
+	if *file.CourseID == "" {
 		return &isSuccess, fmt.Errorf("course id is required")
 	}
 	storageC := bucket.NewStorageHandler()
@@ -224,7 +224,7 @@ func UploadCoursePreviewVideo(ctx context.Context, file model.CourseFile) (*bool
 		log.Errorf("Failed to upload image to course: %v", err.Error())
 		return &isSuccess, nil
 	}
-	bucketPath := file.CourseID + "/" + file.File.Filename
+	bucketPath := *file.CourseID + "/" + file.File.Filename
 	writer, err := storageC.UploadToGCS(ctx, bucketPath)
 	if err != nil {
 		log.Errorf("Failed to upload image to course: %v", err.Error())
@@ -253,7 +253,7 @@ func UploadCoursePreviewVideo(ctx context.Context, file model.CourseFile) (*bool
 func UploadCourseTileImage(ctx context.Context, file model.CourseFile) (*bool, error) {
 	log.Info("UploadCourseTileImage called")
 	isSuccess := false
-	if file.CourseID == "" {
+	if *file.CourseID == "" {
 		return &isSuccess, fmt.Errorf("course id is required")
 	}
 	storageC := bucket.NewStorageHandler()
@@ -263,7 +263,7 @@ func UploadCourseTileImage(ctx context.Context, file model.CourseFile) (*bool, e
 		log.Errorf("Failed to upload image to course: %v", err.Error())
 		return &isSuccess, nil
 	}
-	bucketPath := file.CourseID + "/" + file.File.Filename
+	bucketPath := *file.CourseID + "/" + file.File.Filename
 	writer, err := storageC.UploadToGCS(ctx, bucketPath)
 	if err != nil {
 		log.Errorf("Failed to upload image to course: %v", err.Error())
@@ -347,11 +347,11 @@ func CourseUpdate(ctx context.Context, courseInput *model.CourseInput) (*model.C
 	}
 
 	// update cassandraCourse with input
-	if courseInput.Name != "" {
-		cassandraCourse.Name = courseInput.Name
+	if *courseInput.Name != "" {
+		cassandraCourse.Name = *courseInput.Name
 	}
-	if courseInput.Description != "" {
-		cassandraCourse.Description = courseInput.Description
+	if *courseInput.Description != "" {
+		cassandraCourse.Description = *courseInput.Description
 	}
 	if courseInput.Summary != nil {
 		cassandraCourse.Summary = *courseInput.Summary
@@ -428,7 +428,7 @@ func CourseUpdate(ctx context.Context, courseInput *model.CourseInput) (*model.C
 		ID:                 &cassandraCourse.ID,
 		Name:               courseInput.Name,
 		Description:        courseInput.Description,
-		Summary:            *courseInput.Summary,
+		Summary:            courseInput.Summary,
 		Instructor:         courseInput.Instructor,
 		Image:              &cassandraCourse.Image,
 		PreviewVideo:       &cassandraCourse.PreviewVideo,

@@ -12,9 +12,9 @@ input sub_categories_input {
 # define course type
 type Course{
     id: ID
-    name: String!
-    description: String!
-    summary: String!
+    name: String
+    description: String
+    summary: String
     instructor: String
     image: String
     previewVideo: String
@@ -38,7 +38,7 @@ type Course{
     approvers: [String]
     created_by: String
     updated_by: String
-    status: Status!
+    status: Status
     is_display: Boolean
     category: String
     sub_category: String
@@ -56,8 +56,8 @@ enum Status {
 
 input CourseInput{
     id: ID    
-    name: String!
-    description: String!
+    name: String
+    description: String
     summary: String
     instructor: String
     image: String
@@ -80,7 +80,7 @@ input CourseInput{
     approvers: [String]
     created_by: String
     updated_by: String
-    status: Status!
+    status: Status
     is_display: Boolean
     category: String
     sub_category: String
@@ -88,15 +88,15 @@ input CourseInput{
 }
 
 input CourseFile{
-    file: Upload!
-    courseId: String!
+    file: Upload
+    courseId: String
 }
 input ModuleInput{
     id: ID
-    name: String!
-    isChapter: Boolean!
-    description: String!
-    courseId: String!
+    name: String
+    isChapter: Boolean
+    description: String
+    courseId: String
     owner: String
     duration: Int
     level : String
@@ -106,10 +106,10 @@ input ModuleInput{
 
 type Module{
     id: ID
-    name: String!
-    isChapter: Boolean!
-    description: String!
-    courseId: String!
+    name: String
+    isChapter: Boolean
+    description: String
+    courseId: String
     owner: String
     duration: Int
     created_at: String
@@ -121,19 +121,19 @@ type Module{
 
 input ChapterInput {
     id: ID
-    name: String!
-    description: String!
+    name: String
+    description: String
     moduleId: String
-    courseId: String!
+    courseId: String
     sequence: Int
 }
 
 type Chapter {
     id: ID
-    name: String!
-    description: String!
+    name: String
+    description: String
     moduleId: String
-    courseId: String!
+    courseId: String
     created_at: String
     updated_at: String
     sequence: Int
@@ -141,12 +141,12 @@ type Chapter {
 
 input TopicInput {
     id: ID
-    name: String!
-    description: String!
-    type : String!
+    name: String
+    description: String
+    type : String
     moduleId: String
     chapterId: String
-    courseId: String!
+    courseId: String
     sequence: Int
     created_by: String
     updated_by: String
@@ -154,12 +154,12 @@ input TopicInput {
 
 type Topic {
     id: ID
-    name: String!
-    description: String!
-    type : String!
+    name: String
+    description: String
+    type : String
     moduleId: String
     chapterId: String
-    courseId: String!
+    courseId: String
     created_at: String
     updated_at: String
     sequence: Int
@@ -168,8 +168,8 @@ type Topic {
 }
 
 input TopicContentInput {
-    language: String!
-    topicId: String!
+    language: String
+    topicId: String
     startTime: Int
     duration: Int
     skipIntroDuration: Int
@@ -179,8 +179,8 @@ input TopicContentInput {
 }
 
 type TopicContent {
-    language: String!
-    topicId: String!
+    language: String
+    topicId: String
     startTime: Int
     duration: Int
     skipIntroDuration: Int
@@ -192,22 +192,22 @@ type TopicContent {
 }
 
 input TopicVideo{
-    file: Upload!
-    courseId: String!
-    topicId: String!
+    file: Upload
+    courseId: String
+    topicId: String
 }
 
 input TopicSubtitle {
-    file: Upload!
-    courseId: String!
-    topicId: String!    
+    file: Upload
+    courseId: String
+    topicId: String    
 }
 
 input StaticContent{
-    type: Type!
-    file: Upload!
-    courseId: String!
-    topicId: String!
+    type: Type
+    file: Upload
+    courseId: String
+    topicId: String
 }
 # enum Type 
 enum Type {
@@ -219,83 +219,83 @@ enum Type {
 
 type Quiz {
     id: ID
-    name: String!
-    category: String!
-    type: String!
-    isMandatory: Boolean!
+    name: String
+    category: String
+    type: String
+    isMandatory: Boolean
     created_at: String
     updated_at: String
-    topicId: String!
+    topicId: String
     sequence: Int
     startTime: Int
 }
 input QuizInput {
     id: ID
-    name: String!
-    category: String!
-    type: String!
-    isMandatory: Boolean!
+    name: String
+    category: String
+    type: String
+    isMandatory: Boolean
     created_at: String
     updated_at: String
-    topicId: String!
+    topicId: String
     sequence: Int
     startTime: Int
 }
 input QuizFile {
-    quizId: String!
-    type: String!
-    name: String!
-    file: Upload!
+    quizId: String
+    type: String
+    name: String
+    file: Upload
 }
 input QuizMcq {
-    quizId: String!
-    question: String!
-    options: [String]!
-    correctOption: String!
-    explanation: String!
+    quizId: String
+    question: String
+    options: [String]
+    correctOption: String
+    explanation: String
 }
 input QuizDescriptive {
-    quizId: String!
-    question: String!
-    correctAnswer: String!
-    explanation: String!
+    quizId: String
+    question: String
+    correctAnswer: String
+    explanation: String
 }
 
 input TopicResourceInput {
-    type: String!
-    topicId: String!
+    type: String
+    topicId: String
     created_at: String
     updated_at: String
     created_by: String
     updated_by: String
-    url: String!
-    file: Upload!
+    url: String
+    file: Upload
 }
 
 # define type mutations to add a course  using courseInput
 type Mutation{
-    addCatergories(category: [String]!): Boolean
-    addSubCategories(sub_category: [String]!): Boolean
+    addCatergories(category: [String]): Boolean
+    addSubCategories(sub_category: [String]): Boolean
     addCourse(course: CourseInput): Course
     updateCourse(course: CourseInput): Course
-    uploadCourseImage(file: CourseFile!): Boolean
-    uploadCoursePreviewVideo(file: CourseFile!): Boolean
-    uploadCourseTileImage(file: CourseFile!): Boolean
-    addCourseModule(courseId: String!, module: ModuleInput): Module
+    uploadCourseImage(file: CourseFile): Boolean
+    uploadCoursePreviewVideo(file: CourseFile): Boolean
+    uploadCourseTileImage(file: CourseFile): Boolean
+    addCourseModule(courseId: String, module: ModuleInput): Module
     updateCourseModule(module: ModuleInput): Module
-    addCourseChapter(courseId: String!, chapter: ChapterInput): Chapter
+    addCourseChapter(courseId: String, chapter: ChapterInput): Chapter
     updateCourseChapter(chapter: ChapterInput): Chapter
-    addCourseTopic(courseId: String!, topic: TopicInput): Topic
+    addCourseTopic(courseId: String, topic: TopicInput): Topic
     updateCourseTopic(topic: TopicInput): Topic
-    addTopicContent(topicId: String!, topicContent: TopicContentInput): TopicContent
+    addTopicContent(topicId: String, topicContent: TopicContentInput): TopicContent
     updateTopicContent(topicContent: TopicContentInput): TopicContent
-    uploadTopicContentVideo(file: TopicVideo!): Boolean
-    uploadTopicContentSubtitle(file: TopicSubtitle!): Boolean
-    uploadTopicStaticContent(file: StaticContent!): Boolean
+    uploadTopicContentVideo(file: TopicVideo): Boolean
+    uploadTopicContentSubtitle(file: TopicSubtitle): Boolean
+    uploadTopicStaticContent(file: StaticContent): Boolean
     addQuiz(quiz: QuizInput): Quiz
     updateQuiz(quiz: QuizInput): Quiz
-    uploadQuizFile(courseId:String!, file: QuizFile!): Boolean
+    uploadQuizFile(courseId:String, file: QuizFile): Boolean
     addQuizMCQ(quiz: QuizMcq): Boolean
     addQuizDescriptive(quiz: QuizDescriptive): Boolean
-    uploadTopicResource(courseId:String!, resource:TopicResourceInput): Boolean
+    uploadTopicResource(courseId:String, resource:TopicResourceInput): Boolean
 }
