@@ -17,7 +17,7 @@ import (
 )
 
 func main() {
-	os.Setenv("GOOGLE_APPLICATION_CREDENTIALS", "zicops-cc.json")
+	//os.Setenv("GOOGLE_APPLICATION_CREDENTIALS", "zicops-cc.json")
 	log.Infof("Starting zicops course creator service")
 	ctx, cancel := context.WithCancel(context.Background())
 
