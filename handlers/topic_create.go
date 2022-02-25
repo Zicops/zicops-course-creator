@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/rs/xid"
+	"github.com/scylladb/gocqlx/v2/qb"
 	log "github.com/sirupsen/logrus"
 	"github.com/zicops/contracts/coursez"
 	"github.com/zicops/zicops-course-creator/global"
@@ -71,21 +72,30 @@ func TopicUpdate(ctx context.Context, topic *model.TopicInput) (*model.Topic, er
 	cassandraTopic := coursez.Topic{
 		ID: *topic.ID,
 	}
-	getQuery := global.CassSession.Session.Query(coursez.TopicTable.Get()).BindStruct(cassandraTopic)
-	if err := getQuery.ExecRelease(); err != nil {
+	topics := []coursez.Topic{}
+	getQuery := global.CassSession.Session.Query(coursez.TopicTable.Get()).BindMap(qb.M{"id": cassandraTopic.ID})
+	if err := getQuery.SelectRelease(&topics); err != nil {
 		return nil, err
 	}
+	cassandraTopic = topics[0]
+	updateCols := []string{}
 	if *topic.Description != "" {
+		updateCols = append(updateCols, "description")
 		cassandraTopic.Description = *topic.Description
 	}
 	if topic.Sequence != nil {
+		updateCols = append(updateCols, "sequence")
 		cassandraTopic.Sequence = *topic.Sequence
 	}
 	if topic.CreatedBy != nil {
+		updateCols = append(updateCols, "created_by")
 		cassandraTopic.CreatedBy = *topic.CreatedBy
 	}
+	updateCols = append(updateCols, "updated_at")
+	cassandraTopic.UpdatedAt = time.Now().Unix()
 	// set course in cassandra
-	updateQuery := global.CassSession.Session.Query(coursez.TopicTable.Update()).BindStruct(cassandraTopic)
+	upStms, uNames := coursez.TopicTable.Update(updateCols...)
+	updateQuery := global.CassSession.Session.Query(upStms, uNames).BindStruct(&cassandraTopic)
 	if err := updateQuery.ExecRelease(); err != nil {
 		return nil, err
 	}

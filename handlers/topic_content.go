@@ -96,7 +96,7 @@ func UploadTopicVideo(ctx context.Context, file model.TopicVideo) (*bool, error)
 	}
 	getUrl := storageC.GetSignedURLForObject(bucketPath)
 	// update course image in cassandra
-	updateQuery := global.CassSession.Session.Query(coursez.TopicContentTable.Update("topicContentBucket", "url")).BindMap(qb.M{"topicId": file.TopicID, "topicContentBucket": bucketPath, "url": getUrl})
+	updateQuery := global.CassSession.Session.Query(coursez.TopicContentTable.Update("topiccontentbucket", "url")).BindMap(qb.M{"topicid": file.TopicID, "topiccontentbucket": bucketPath, "url": getUrl})
 	if err := updateQuery.ExecRelease(); err != nil {
 		return &isSuccess, err
 	}
@@ -132,7 +132,7 @@ func UploadTopicSubtitle(ctx context.Context, file model.TopicSubtitle) (*bool, 
 	}
 	getUrl := storageC.GetSignedURLForObject(bucketPath)
 	// update course image in cassandra
-	updateQuery := global.CassSession.Session.Query(coursez.TopicContentTable.Update("subtitleFileBucket", "subtitleFile")).BindMap(qb.M{"topicId": file.TopicID, "subtitleFileBucket": bucketPath, "subtitleFile": getUrl})
+	updateQuery := global.CassSession.Session.Query(coursez.TopicContentTable.Update("subtitlefilebucket", "subtitlefile")).BindMap(qb.M{"topicid": file.TopicID, "subtitlefilebucket": bucketPath, "subtitlefile": getUrl})
 	if err := updateQuery.ExecRelease(); err != nil {
 		return &isSuccess, err
 	}
@@ -149,35 +149,49 @@ func UpdateTopicContent(ctx context.Context, topicConent *model.TopicContentInpu
 	cassandraTopicContent := coursez.TopicContent{
 		TopicId: *topicID,
 	}
-	// get topic content from cassandra
-	getQuery := global.CassSession.Session.Query(coursez.TopicContentTable.Get()).BindStruct(cassandraTopicContent)
-	if err := getQuery.ExecRelease(); err != nil {
+	topicContents := []coursez.TopicContent{}
+	getQuery := global.CassSession.Session.Query(coursez.QuizTable.Get()).BindMap(qb.M{"id": cassandraTopicContent.TopicId})
+	if err := getQuery.SelectRelease(&topicContents); err != nil {
 		return nil, err
 	}
+	if len(topicContents) < 1 {
+		return nil, fmt.Errorf("quiz not found")
+	}
+	cassandraTopicContent = topicContents[0]
+	updateCols := []string{}
 	if topicConent.Duration != nil {
+		updateCols = append(updateCols, "duration")
 		cassandraTopicContent.Duration = *topicConent.Duration
 	}
 	if topicConent.StartTime != nil {
+		updateCols = append(updateCols, "startTime")
 		cassandraTopicContent.StartTime = *topicConent.StartTime
 	}
 	if topicConent.SkipIntroDuration != nil {
+		updateCols = append(updateCols, "skipintroduration")
 		cassandraTopicContent.SkipIntroDuration = *topicConent.SkipIntroDuration
 	}
 	if topicConent.Type != nil {
+		updateCols = append(updateCols, "type")
 		cassandraTopicContent.Type = *topicConent.Type
 	}
 	if topicConent.NextShowTime != nil {
+		updateCols = append(updateCols, "nextshowtime")
 		cassandraTopicContent.NextShowtime = *topicConent.NextShowTime
 	}
 	if topicConent.FromEndTime != nil {
+		updateCols = append(updateCols, "fromendtime")
 		cassandraTopicContent.FromEndTime = *topicConent.FromEndTime
 	}
+	updateCols = append(updateCols, "updated_at")
 	cassandraTopicContent.UpdatedAt = time.Now().Unix()
 	if *topicConent.Language != "" {
+		updateCols = append(updateCols, "language")
 		cassandraTopicContent.Language = *topicConent.Language
 	}
 	// set course in cassandra
-	updateQuery := global.CassSession.Session.Query(coursez.TopicContentTable.Update()).BindStruct(cassandraTopicContent)
+	upStms, uNames := coursez.TopicContentTable.Update(updateCols...)
+	updateQuery := global.CassSession.Session.Query(upStms, uNames).BindStruct(&cassandraTopicContent)
 	if err := updateQuery.ExecRelease(); err != nil {
 		return nil, err
 	}

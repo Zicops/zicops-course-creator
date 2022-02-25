@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/rs/xid"
+	"github.com/scylladb/gocqlx/v2/qb"
 	log "github.com/sirupsen/logrus"
 	"github.com/zicops/contracts/coursez"
 	"github.com/zicops/zicops-course-creator/global"
@@ -23,12 +24,11 @@ func ChapterCreate(ctx context.Context, courseID string, chapter *model.ChapterI
 		CreatedAt:   time.Now().Unix(),
 		UpdatedAt:   time.Now().Unix(),
 		CourseID:    courseID,
-
 	}
-	if chapter.ModuleID!=nil {
+	if chapter.ModuleID != nil {
 		cassandraChapter.ModuleID = *chapter.ModuleID
 	}
-	if chapter.Sequence!=nil {
+	if chapter.Sequence != nil {
 		cassandraChapter.Sequence = *chapter.Sequence
 	}
 	// set course in cassandra
@@ -57,25 +57,36 @@ func UpdateChapter(ctx context.Context, chapter *model.ChapterInput) (*model.Cha
 	cassandraChapter := coursez.Chapter{
 		ID: *chapter.ID,
 	}
-	// set course in cassandra
-	getQuery := global.CassSession.Session.Query(coursez.ChapterTable.Get()).BindStruct(cassandraChapter)
-	if err := getQuery.ExecRelease(); err != nil {
+	chapters := []coursez.Chapter{}
+	getQuery := global.CassSession.Session.Query(coursez.ChapterTable.Get()).BindMap(qb.M{"id": cassandraChapter.ID})
+	if err := getQuery.SelectRelease(&chapters); err != nil {
 		return nil, err
 	}
+	if len(chapters) < 1 {
+		return nil, fmt.Errorf("chapter not found")
+	}
+	cassandraChapter = chapters[0]
+	updateCols := make([]string, 0)
 	if *chapter.Name != "" {
+		updateCols = append(updateCols, "name")
 		cassandraChapter.Name = *chapter.Name
 	}
 	if *chapter.Description != "" {
+		updateCols = append(updateCols, "description")
 		cassandraChapter.Description = *chapter.Description
 	}
 	if chapter.Sequence != nil {
+		updateCols = append(updateCols, "sequence")
 		cassandraChapter.Sequence = *chapter.Sequence
 	}
 	if chapter.ModuleID != nil {
+		updateCols = append(updateCols, "moduleid")
 		cassandraChapter.ModuleID = *chapter.ModuleID
 	}
 	cassandraChapter.UpdatedAt = time.Now().Unix()
-	updateQuery := global.CassSession.Session.Query(coursez.ChapterTable.Update()).BindStruct(cassandraChapter)
+	updateCols = append(updateCols, "updated_at")
+	upStms, uNames := coursez.ChapterTable.Update(updateCols...)
+	updateQuery := global.CassSession.Session.Query(upStms, uNames).BindStruct(&cassandraChapter)
 	if err := updateQuery.ExecRelease(); err != nil {
 		return nil, err
 	}

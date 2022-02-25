@@ -203,7 +203,7 @@ func UploadCourseImage(ctx context.Context, file model.CourseFile) (*bool, error
 	}
 	getUrl := storageC.GetSignedURLForObject(bucketPath)
 	// update course image in cassandra
-	updateQuery := global.CassSession.Session.Query(coursez.CourseTable.Update("imageBucket", "image")).BindMap(qb.M{"id": file.CourseID, "imageBucket": bucketPath, "image": getUrl})
+	updateQuery := global.CassSession.Session.Query(coursez.CourseTable.Update("imagebucket", "image")).BindMap(qb.M{"id": file.CourseID, "imagebucket": bucketPath, "image": getUrl})
 	if err := updateQuery.ExecRelease(); err != nil {
 		return &isSuccess, err
 	}
@@ -242,7 +242,7 @@ func UploadCoursePreviewVideo(ctx context.Context, file model.CourseFile) (*bool
 	}
 	getUrl := storageC.GetSignedURLForObject(bucketPath)
 	// update course image in cassandra
-	updateQuery := global.CassSession.Session.Query(coursez.CourseTable.Update("previewVideoBucket", "previewVideo")).BindMap(qb.M{"id": file.CourseID, "previewVideoBucket": bucketPath, "previewVideo": getUrl})
+	updateQuery := global.CassSession.Session.Query(coursez.CourseTable.Update("previewvideobucket", "previewvideo")).BindMap(qb.M{"id": file.CourseID, "previewvideobucket": bucketPath, "previewvideo": getUrl})
 	if err := updateQuery.ExecRelease(); err != nil {
 		return &isSuccess, err
 	}
@@ -281,7 +281,7 @@ func UploadCourseTileImage(ctx context.Context, file model.CourseFile) (*bool, e
 	}
 	getUrl := storageC.GetSignedURLForObject(bucketPath)
 	// update course image in cassandra
-	updateQuery := global.CassSession.Session.Query(coursez.CourseTable.Update("tileImageBucket", "tileImage")).BindMap(qb.M{"id": file.CourseID, "tileImageBucket": bucketPath, "tileImage": getUrl})
+	updateQuery := global.CassSession.Session.Query(coursez.CourseTable.Update("tileimagebucket", "tileImage")).BindMap(qb.M{"id": file.CourseID, "tileimagebucket": bucketPath, "tileimage": getUrl})
 	if err := updateQuery.ExecRelease(); err != nil {
 		return &isSuccess, err
 	}
@@ -300,10 +300,16 @@ func CourseUpdate(ctx context.Context, courseInput *model.CourseInput) (*model.C
 	cassandraCourse := coursez.Course{
 		ID: courseID,
 	}
-	getQuery := global.CassSession.Session.Query(coursez.CourseTable.Get()).BindStruct(cassandraCourse)
-	if err := getQuery.ExecRelease(); err != nil {
+	courses := []coursez.Course{}
+	getQuery := global.CassSession.Session.Query(coursez.CourseTable.Get()).BindMap(qb.M{"id": courseID})
+	if err := getQuery.SelectRelease(&courses); err != nil {
 		return nil, err
 	}
+	if len(courses) < 1 {
+		return nil, fmt.Errorf("course not found")
+	}
+	updateCols := make([]string, 0)
+	cassandraCourse = courses[0]
 	language := []string{}
 	takeaways := []string{}
 	prequisites := []string{}
@@ -345,80 +351,104 @@ func CourseUpdate(ctx context.Context, courseInput *model.CourseInput) (*model.C
 		subCats = append(subCats, subC)
 		subCatsRes = append(subCatsRes, &subCR)
 	}
-
 	// update cassandraCourse with input
-	if *courseInput.Name != "" {
+	if courseInput.Name != nil {
+		updateCols = append(updateCols, "name")
 		cassandraCourse.Name = *courseInput.Name
 	}
-	if *courseInput.Description != "" {
+	if courseInput.Description != nil {
+		updateCols = append(updateCols, "description")
 		cassandraCourse.Description = *courseInput.Description
 	}
 	if courseInput.Summary != nil {
+		updateCols = append(updateCols, "summary")
 		cassandraCourse.Summary = *courseInput.Summary
 	}
 	if courseInput.Instructor != nil {
+		updateCols = append(updateCols, "instructor")
 		cassandraCourse.Instructor = *courseInput.Instructor
 	}
-	if courseInput.Status.String() != "" {
-		cassandraCourse.Status = courseInput.Status.String()
+	if courseInput.Status != nil {
+		updateCols = append(updateCols, "status")
+		cassandraCourse.Status = (*courseInput.Status).String()
 	}
 	if courseInput.Language != nil {
+		updateCols = append(updateCols, "language")
 		cassandraCourse.Language = language
 	}
 	if courseInput.Benefits != nil {
+		updateCols = append(updateCols, "benefits")
 		cassandraCourse.Benefits = takeaways
 	}
 	if courseInput.Prequisites != nil {
+		updateCols = append(updateCols, "prerequisites")
 		cassandraCourse.Prequisites = prequisites
 	}
 	if courseInput.GoodFor != nil {
+		updateCols = append(updateCols, "goodfor")
 		cassandraCourse.GoodFor = goodFor
 	}
 	if courseInput.MustFor != nil {
+		updateCols = append(updateCols, "mustfor")
 		cassandraCourse.MustFor = mustFor
 	}
 	if courseInput.RelatedSkills != nil {
+		updateCols = append(updateCols, "relatedskills")
 		cassandraCourse.RelatedSkills = relatedSkills
 	}
 	if courseInput.Approvers != nil {
+		updateCols = append(updateCols, "approvers")
 		cassandraCourse.Approvers = approvers
 	}
 	if courseInput.Category != nil {
+		updateCols = append(updateCols, "category")
 		cassandraCourse.Category = *courseInput.Category
 	}
 	if courseInput.SubCategory != nil {
+		updateCols = append(updateCols, "sub_category")
 		cassandraCourse.SubCategory = *courseInput.SubCategory
 	}
 	if courseInput.SubCategories != nil {
+		updateCols = append(updateCols, "sub_categories")
 		cassandraCourse.SubCategories = subCats
 	}
 	if courseInput.Owner != nil {
+		updateCols = append(updateCols, "owner")
 		cassandraCourse.Owner = *courseInput.Owner
 	}
 	if courseInput.ExpertiseLevel != nil {
+		updateCols = append(updateCols, "expertise_level")
 		cassandraCourse.ExpertiseLevel = *courseInput.ExpertiseLevel
 	}
 	cassandraCourse.UpdatedAt = time.Now().Unix()
 	if courseInput.CreatedBy != nil {
+		updateCols = append(updateCols, "created_by")
 		cassandraCourse.CreatedBy = *courseInput.CreatedBy
 	}
 	if courseInput.UpdatedBy != nil {
+		updateCols = append(updateCols, "updated_by")
 		cassandraCourse.UpdatedBy = *courseInput.UpdatedBy
 	}
 	if courseInput.Type != nil {
+		updateCols = append(updateCols, "type")
 		cassandraCourse.Type = *courseInput.Type
 	}
 	if courseInput.Duration != nil {
+		updateCols = append(updateCols, "duration")
 		cassandraCourse.Duration = *courseInput.Duration
 	}
 	if courseInput.IsDisplay != nil {
+		updateCols = append(updateCols, "is_display")
 		cassandraCourse.IsDisplay = *courseInput.IsDisplay
 	}
 	if courseInput.ExpectedCompletion != nil {
+		updateCols = append(updateCols, "expected_completion")
 		cassandraCourse.ExpectedCompletion = *courseInput.ExpectedCompletion
 	}
+	updateCols = append(updateCols, "updated_at")
 	// set course in cassandra
-	updateQuery := global.CassSession.Session.Query(coursez.CourseTable.Update()).BindStruct(cassandraCourse)
+	upStms, uNames := coursez.CourseTable.Update(updateCols...)
+	updateQuery := global.CassSession.Session.Query(upStms, uNames).BindStruct(&cassandraCourse)
 	if err := updateQuery.ExecRelease(); err != nil {
 		return nil, err
 	}
