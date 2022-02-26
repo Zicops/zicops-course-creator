@@ -272,15 +272,19 @@ input TopicResourceInput {
     file: Upload
 }
 
+type UploadResult {
+    success: Boolean
+    url: String
+}
 # define type mutations to add a course  using courseInput
 type Mutation{
     addCatergories(category: [String]): Boolean
     addSubCategories(sub_category: [String]): Boolean
     addCourse(course: CourseInput): Course
     updateCourse(course: CourseInput): Course
-    uploadCourseImage(file: CourseFile): Boolean
-    uploadCoursePreviewVideo(file: CourseFile): Boolean
-    uploadCourseTileImage(file: CourseFile): Boolean
+    uploadCourseImage(file: CourseFile): UploadResult
+    uploadCoursePreviewVideo(file: CourseFile): UploadResult
+    uploadCourseTileImage(file: CourseFile): UploadResult
     addCourseModule(courseId: String, module: ModuleInput): Module
     updateCourseModule(module: ModuleInput): Module
     addCourseChapter(courseId: String, chapter: ChapterInput): Chapter
@@ -289,13 +293,13 @@ type Mutation{
     updateCourseTopic(topic: TopicInput): Topic
     addTopicContent(topicId: String, topicContent: TopicContentInput): TopicContent
     updateTopicContent(topicContent: TopicContentInput): TopicContent
-    uploadTopicContentVideo(file: TopicVideo): Boolean
-    uploadTopicContentSubtitle(file: TopicSubtitle): Boolean
-    uploadTopicStaticContent(file: StaticContent): Boolean
+    uploadTopicContentVideo(file: TopicVideo): UploadResult
+    uploadTopicContentSubtitle(file: TopicSubtitle): UploadResult
+    uploadTopicStaticContent(file: StaticContent): UploadResult
     addQuiz(quiz: QuizInput): Quiz
     updateQuiz(quiz: QuizInput): Quiz
-    uploadQuizFile(courseId:String, file: QuizFile): Boolean
+    uploadQuizFile(courseId:String, file: QuizFile): UploadResult
     addQuizMCQ(quiz: QuizMcq): Boolean
     addQuizDescriptive(quiz: QuizDescriptive): Boolean
-    uploadTopicResource(courseId:String, resource:TopicResourceInput): Boolean
+    uploadTopicResource(courseId:String, resource:TopicResourceInput): UploadResult
 }

@@ -133,9 +133,9 @@ func UpdateQuiz(ctx context.Context, quiz *model.QuizInput) (*model.Quiz, error)
 
 }
 
-func UploadQuizFile(ctx context.Context, couseID string, quiz model.QuizFile) (*bool, error) {
+func UploadQuizFile(ctx context.Context, couseID string, quiz model.QuizFile) (*model.UploadResult, error) {
 	log.Info("UploadQuizFile called")
-	isSuccess := false
+	isSuccess := model.UploadResult{}
 	storageC := bucket.NewStorageHandler()
 	gproject := googleprojectlib.GetGoogleProjectID()
 	err := storageC.InitializeStorageClient(ctx, gproject)
@@ -173,7 +173,9 @@ func UploadQuizFile(ctx context.Context, couseID string, quiz model.QuizFile) (*
 	if err := quizAdd.ExecRelease(); err != nil {
 		return &isSuccess, err
 	}
-	isSuccess = true
+	isSuccessRes := true
+	isSuccess.Success = &isSuccessRes
+	isSuccess.URL = &getUrl
 	return &isSuccess, nil
 }
 

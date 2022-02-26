@@ -261,6 +261,11 @@ type TopicVideo struct {
 	TopicID  *string         `json:"topicId"`
 }
 
+type UploadResult struct {
+	Success *bool   `json:"success"`
+	URL     *string `json:"url"`
+}
+
 type SubCategories struct {
 	Name *string `json:"name"`
 	Rank *int    `json:"rank"`

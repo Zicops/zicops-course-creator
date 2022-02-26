@@ -16,7 +16,7 @@ import (
 type Client struct {
 	projectID string
 	client    *storage.Client
-	bucket   *storage.BucketHandle
+	bucket    *storage.BucketHandle
 }
 
 // NewStorageHandler return new database action
@@ -44,7 +44,7 @@ func (sc *Client) InitializeStorageClient(ctx context.Context, projectID string)
 	}
 	sc.client = client
 	sc.projectID = projectID
-	sc.bucket, _= sc.CreateBucket(ctx, constants.COURSES_BUCKET)
+	sc.bucket, _ = sc.CreateBucket(ctx, constants.COURSES_BUCKET)
 	return nil
 }
 

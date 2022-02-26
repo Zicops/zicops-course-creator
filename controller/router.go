@@ -26,7 +26,7 @@ func CCRouter() (*gin.Engine, error) {
 	restRouter.Use(cors.New(configCors))
 	restRouter.GET("/healthz", HealthCheckHandler)
 	// create group for restRouter
-	version1:= restRouter.Group("/api/v1")	
+	version1 := restRouter.Group("/api/v1")
 	version1.POST("/query", graphqlHandler())
 	version1.GET("/playql", playgroundHandler())
 	return restRouter, nil

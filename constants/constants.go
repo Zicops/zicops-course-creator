@@ -7,5 +7,5 @@ const (
 	MAX_WRITE_TIMEOUT           = 50 // secs
 	RESPONSE_JSON_DATA   string = "data"
 	RESPONSDE_JSON_ERROR string = "error"
-	COURSES_BUCKET          = "courses-zicops-one"
+	COURSES_BUCKET              = "courses-zicops-one"
 )

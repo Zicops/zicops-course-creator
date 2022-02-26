@@ -172,9 +172,9 @@ func CourseCreator(ctx context.Context, courseInput *model.CourseInput) (*model.
 	return &responseModel, nil
 }
 
-func UploadCourseImage(ctx context.Context, file model.CourseFile) (*bool, error) {
+func UploadCourseImage(ctx context.Context, file model.CourseFile) (*model.UploadResult, error) {
 	log.Info("UploadCourseImage called")
-	isSuccess := false
+	isSuccess := model.UploadResult{}
 	if *file.CourseID == "" {
 		return &isSuccess, fmt.Errorf("course id is required")
 	}
@@ -207,13 +207,15 @@ func UploadCourseImage(ctx context.Context, file model.CourseFile) (*bool, error
 	if err := updateQuery.ExecRelease(); err != nil {
 		return &isSuccess, err
 	}
-	isSuccess = true
+	isSuccessRes := true
+	isSuccess.Success = &isSuccessRes
+	isSuccess.URL = &getUrl
 	return &isSuccess, nil
 }
 
-func UploadCoursePreviewVideo(ctx context.Context, file model.CourseFile) (*bool, error) {
+func UploadCoursePreviewVideo(ctx context.Context, file model.CourseFile) (*model.UploadResult, error) {
 	log.Info("UploadCoursePreviewVideo called")
-	isSuccess := false
+	isSuccess := model.UploadResult{}
 	if *file.CourseID == "" {
 		return &isSuccess, fmt.Errorf("course id is required")
 	}
@@ -246,13 +248,15 @@ func UploadCoursePreviewVideo(ctx context.Context, file model.CourseFile) (*bool
 	if err := updateQuery.ExecRelease(); err != nil {
 		return &isSuccess, err
 	}
-	isSuccess = true
+	isSuccessRes := true
+	isSuccess.Success = &isSuccessRes
+	isSuccess.URL = &getUrl
 	return &isSuccess, nil
 }
 
-func UploadCourseTileImage(ctx context.Context, file model.CourseFile) (*bool, error) {
+func UploadCourseTileImage(ctx context.Context, file model.CourseFile) (*model.UploadResult, error) {
 	log.Info("UploadCourseTileImage called")
-	isSuccess := false
+	isSuccess := model.UploadResult{}
 	if *file.CourseID == "" {
 		return &isSuccess, fmt.Errorf("course id is required")
 	}
@@ -285,7 +289,9 @@ func UploadCourseTileImage(ctx context.Context, file model.CourseFile) (*bool, e
 	if err := updateQuery.ExecRelease(); err != nil {
 		return &isSuccess, err
 	}
-	isSuccess = true
+	isSuccessRes := true
+	isSuccess.Success = &isSuccessRes
+	isSuccess.URL = &getUrl
 	return &isSuccess, nil
 }
 

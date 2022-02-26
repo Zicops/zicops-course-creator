@@ -14,9 +14,9 @@ import (
 	"github.com/zicops/zicops-course-creator/lib/googleprojectlib"
 )
 
-func AddTopicResources(ctx context.Context, courseID string, resource *model.TopicResourceInput) (*bool, error) {
+func AddTopicResources(ctx context.Context, courseID string, resource *model.TopicResourceInput) (*model.UploadResult, error) {
 	log.Infof("AddTopicResources Called")
-	isSuccess := false
+	isSuccess := model.UploadResult{}
 	storageC := bucket.NewStorageHandler()
 	gproject := googleprojectlib.GetGoogleProjectID()
 	err := storageC.InitializeStorageClient(ctx, gproject)
@@ -46,7 +46,7 @@ func AddTopicResources(ctx context.Context, courseID string, resource *model.Top
 		Type:       *resource.Type,
 		BucketPath: bucketPath,
 		Url:        getUrl,
-		IsActive:  false,
+		IsActive:   false,
 		CreatedAt:  time.Now().Unix(),
 		UpdatedAt:  time.Now().Unix(),
 	}
@@ -55,6 +55,8 @@ func AddTopicResources(ctx context.Context, courseID string, resource *model.Top
 	if err := resourceAdd.ExecRelease(); err != nil {
 		return &isSuccess, err
 	}
-	isSuccess = true
+	isSuccessRes := true
+	isSuccess.Success = &isSuccessRes
+	isSuccess.URL = &getUrl
 	return &isSuccess, nil
 }

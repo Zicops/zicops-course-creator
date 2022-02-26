@@ -173,6 +173,11 @@ type ComplexityRoot struct {
 		UpdatedAt         func(childComplexity int) int
 	}
 
+	UploadResult struct {
+		Success func(childComplexity int) int
+		URL     func(childComplexity int) int
+	}
+
 	Sub_categories struct {
 		Name func(childComplexity int) int
 		Rank func(childComplexity int) int
@@ -184,9 +189,9 @@ type MutationResolver interface {
 	AddSubCategories(ctx context.Context, subCategory []*string) (*bool, error)
 	AddCourse(ctx context.Context, course *model.CourseInput) (*model.Course, error)
 	UpdateCourse(ctx context.Context, course *model.CourseInput) (*model.Course, error)
-	UploadCourseImage(ctx context.Context, file *model.CourseFile) (*bool, error)
-	UploadCoursePreviewVideo(ctx context.Context, file *model.CourseFile) (*bool, error)
-	UploadCourseTileImage(ctx context.Context, file *model.CourseFile) (*bool, error)
+	UploadCourseImage(ctx context.Context, file *model.CourseFile) (*model.UploadResult, error)
+	UploadCoursePreviewVideo(ctx context.Context, file *model.CourseFile) (*model.UploadResult, error)
+	UploadCourseTileImage(ctx context.Context, file *model.CourseFile) (*model.UploadResult, error)
 	AddCourseModule(ctx context.Context, courseID *string, module *model.ModuleInput) (*model.Module, error)
 	UpdateCourseModule(ctx context.Context, module *model.ModuleInput) (*model.Module, error)
 	AddCourseChapter(ctx context.Context, courseID *string, chapter *model.ChapterInput) (*model.Chapter, error)
@@ -195,15 +200,15 @@ type MutationResolver interface {
 	UpdateCourseTopic(ctx context.Context, topic *model.TopicInput) (*model.Topic, error)
 	AddTopicContent(ctx context.Context, topicID *string, topicContent *model.TopicContentInput) (*model.TopicContent, error)
 	UpdateTopicContent(ctx context.Context, topicContent *model.TopicContentInput) (*model.TopicContent, error)
-	UploadTopicContentVideo(ctx context.Context, file *model.TopicVideo) (*bool, error)
-	UploadTopicContentSubtitle(ctx context.Context, file *model.TopicSubtitle) (*bool, error)
-	UploadTopicStaticContent(ctx context.Context, file *model.StaticContent) (*bool, error)
+	UploadTopicContentVideo(ctx context.Context, file *model.TopicVideo) (*model.UploadResult, error)
+	UploadTopicContentSubtitle(ctx context.Context, file *model.TopicSubtitle) (*model.UploadResult, error)
+	UploadTopicStaticContent(ctx context.Context, file *model.StaticContent) (*model.UploadResult, error)
 	AddQuiz(ctx context.Context, quiz *model.QuizInput) (*model.Quiz, error)
 	UpdateQuiz(ctx context.Context, quiz *model.QuizInput) (*model.Quiz, error)
-	UploadQuizFile(ctx context.Context, courseID *string, file *model.QuizFile) (*bool, error)
+	UploadQuizFile(ctx context.Context, courseID *string, file *model.QuizFile) (*model.UploadResult, error)
 	AddQuizMcq(ctx context.Context, quiz *model.QuizMcq) (*bool, error)
 	AddQuizDescriptive(ctx context.Context, quiz *model.QuizDescriptive) (*bool, error)
-	UploadTopicResource(ctx context.Context, courseID *string, resource *model.TopicResourceInput) (*bool, error)
+	UploadTopicResource(ctx context.Context, courseID *string, resource *model.TopicResourceInput) (*model.UploadResult, error)
 }
 
 type executableSchema struct {
@@ -1097,6 +1102,20 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.TopicContent.UpdatedAt(childComplexity), true
 
+	case "UploadResult.success":
+		if e.complexity.UploadResult.Success == nil {
+			break
+		}
+
+		return e.complexity.UploadResult.Success(childComplexity), true
+
+	case "UploadResult.url":
+		if e.complexity.UploadResult.URL == nil {
+			break
+		}
+
+		return e.complexity.UploadResult.URL(childComplexity), true
+
 	case "sub_categories.name":
 		if e.complexity.Sub_categories.Name == nil {
 			break
@@ -1449,15 +1468,19 @@ input TopicResourceInput {
     file: Upload
 }
 
+type UploadResult {
+    success: Boolean
+    url: String
+}
 # define type mutations to add a course  using courseInput
 type Mutation{
     addCatergories(category: [String]): Boolean
     addSubCategories(sub_category: [String]): Boolean
     addCourse(course: CourseInput): Course
     updateCourse(course: CourseInput): Course
-    uploadCourseImage(file: CourseFile): Boolean
-    uploadCoursePreviewVideo(file: CourseFile): Boolean
-    uploadCourseTileImage(file: CourseFile): Boolean
+    uploadCourseImage(file: CourseFile): UploadResult
+    uploadCoursePreviewVideo(file: CourseFile): UploadResult
+    uploadCourseTileImage(file: CourseFile): UploadResult
     addCourseModule(courseId: String, module: ModuleInput): Module
     updateCourseModule(module: ModuleInput): Module
     addCourseChapter(courseId: String, chapter: ChapterInput): Chapter
@@ -1466,15 +1489,15 @@ type Mutation{
     updateCourseTopic(topic: TopicInput): Topic
     addTopicContent(topicId: String, topicContent: TopicContentInput): TopicContent
     updateTopicContent(topicContent: TopicContentInput): TopicContent
-    uploadTopicContentVideo(file: TopicVideo): Boolean
-    uploadTopicContentSubtitle(file: TopicSubtitle): Boolean
-    uploadTopicStaticContent(file: StaticContent): Boolean
+    uploadTopicContentVideo(file: TopicVideo): UploadResult
+    uploadTopicContentSubtitle(file: TopicSubtitle): UploadResult
+    uploadTopicStaticContent(file: StaticContent): UploadResult
     addQuiz(quiz: QuizInput): Quiz
     updateQuiz(quiz: QuizInput): Quiz
-    uploadQuizFile(courseId:String, file: QuizFile): Boolean
+    uploadQuizFile(courseId:String, file: QuizFile): UploadResult
     addQuizMCQ(quiz: QuizMcq): Boolean
     addQuizDescriptive(quiz: QuizDescriptive): Boolean
-    uploadTopicResource(courseId:String, resource:TopicResourceInput): Boolean
+    uploadTopicResource(courseId:String, resource:TopicResourceInput): UploadResult
 }
 `, BuiltIn: false},
 }
@@ -3805,9 +3828,9 @@ func (ec *executionContext) _Mutation_uploadCourseImage(ctx context.Context, fie
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*bool)
+	res := resTmp.(*model.UploadResult)
 	fc.Result = res
-	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
+	return ec.marshalOUploadResult2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐUploadResult(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_uploadCoursePreviewVideo(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -3844,9 +3867,9 @@ func (ec *executionContext) _Mutation_uploadCoursePreviewVideo(ctx context.Conte
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*bool)
+	res := resTmp.(*model.UploadResult)
 	fc.Result = res
-	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
+	return ec.marshalOUploadResult2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐUploadResult(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_uploadCourseTileImage(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -3883,9 +3906,9 @@ func (ec *executionContext) _Mutation_uploadCourseTileImage(ctx context.Context,
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*bool)
+	res := resTmp.(*model.UploadResult)
 	fc.Result = res
-	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
+	return ec.marshalOUploadResult2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐUploadResult(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_addCourseModule(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -4234,9 +4257,9 @@ func (ec *executionContext) _Mutation_uploadTopicContentVideo(ctx context.Contex
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*bool)
+	res := resTmp.(*model.UploadResult)
 	fc.Result = res
-	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
+	return ec.marshalOUploadResult2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐUploadResult(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_uploadTopicContentSubtitle(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -4273,9 +4296,9 @@ func (ec *executionContext) _Mutation_uploadTopicContentSubtitle(ctx context.Con
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*bool)
+	res := resTmp.(*model.UploadResult)
 	fc.Result = res
-	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
+	return ec.marshalOUploadResult2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐUploadResult(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_uploadTopicStaticContent(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -4312,9 +4335,9 @@ func (ec *executionContext) _Mutation_uploadTopicStaticContent(ctx context.Conte
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*bool)
+	res := resTmp.(*model.UploadResult)
 	fc.Result = res
-	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
+	return ec.marshalOUploadResult2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐUploadResult(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_addQuiz(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -4429,9 +4452,9 @@ func (ec *executionContext) _Mutation_uploadQuizFile(ctx context.Context, field 
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*bool)
+	res := resTmp.(*model.UploadResult)
 	fc.Result = res
-	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
+	return ec.marshalOUploadResult2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐUploadResult(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_addQuizMCQ(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -4546,9 +4569,9 @@ func (ec *executionContext) _Mutation_uploadTopicResource(ctx context.Context, f
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*bool)
+	res := resTmp.(*model.UploadResult)
 	fc.Result = res
-	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
+	return ec.marshalOUploadResult2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐUploadResult(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query___type(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -5633,6 +5656,70 @@ func (ec *executionContext) _TopicContent_type(ctx context.Context, field graphq
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Type, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _UploadResult_success(ctx context.Context, field graphql.CollectedField, obj *model.UploadResult) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "UploadResult",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Success, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*bool)
+	fc.Result = res
+	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _UploadResult_url(ctx context.Context, field graphql.CollectedField, obj *model.UploadResult) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "UploadResult",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.URL, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -8893,6 +8980,41 @@ func (ec *executionContext) _TopicContent(ctx context.Context, sel ast.Selection
 	return out
 }
 
+var uploadResultImplementors = []string{"UploadResult"}
+
+func (ec *executionContext) _UploadResult(ctx context.Context, sel ast.SelectionSet, obj *model.UploadResult) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, uploadResultImplementors)
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("UploadResult")
+		case "success":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._UploadResult_success(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+		case "url":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._UploadResult_url(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
 var __DirectiveImplementors = []string{"__Directive"}
 
 func (ec *executionContext) ___Directive(ctx context.Context, sel ast.SelectionSet, obj *introspection.Directive) graphql.Marshaler {
@@ -9936,6 +10058,13 @@ func (ec *executionContext) marshalOUpload2ᚖgithubᚗcomᚋ99designsᚋgqlgen�
 	}
 	res := graphql.MarshalUpload(*v)
 	return res
+}
+
+func (ec *executionContext) marshalOUploadResult2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐUploadResult(ctx context.Context, sel ast.SelectionSet, v *model.UploadResult) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._UploadResult(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalO__EnumValue2ᚕgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐEnumValueᚄ(ctx context.Context, sel ast.SelectionSet, v []introspection.EnumValue) graphql.Marshaler {

@@ -68,9 +68,9 @@ func TopicContentCreate(ctx context.Context, topicID string, topicConent *model.
 	return &responseModel, nil
 }
 
-func UploadTopicVideo(ctx context.Context, file model.TopicVideo) (*bool, error) {
+func UploadTopicVideo(ctx context.Context, file model.TopicVideo) (*model.UploadResult, error) {
 	log.Info("UploadTopicVideo called")
-	isSuccess := false
+	isSuccess := model.UploadResult{}
 	storageC := bucket.NewStorageHandler()
 	gproject := googleprojectlib.GetGoogleProjectID()
 	err := storageC.InitializeStorageClient(ctx, gproject)
@@ -100,13 +100,15 @@ func UploadTopicVideo(ctx context.Context, file model.TopicVideo) (*bool, error)
 	if err := updateQuery.ExecRelease(); err != nil {
 		return &isSuccess, err
 	}
-	isSuccess = true
+	isSuccessRes := true
+	isSuccess.Success = &isSuccessRes
+	isSuccess.URL = &getUrl
 	return &isSuccess, nil
 }
 
-func UploadTopicSubtitle(ctx context.Context, file model.TopicSubtitle) (*bool, error) {
+func UploadTopicSubtitle(ctx context.Context, file model.TopicSubtitle) (*model.UploadResult, error) {
 	log.Info("UploadTopicSubtitle called")
-	isSuccess := false
+	isSuccess := model.UploadResult{}
 	storageC := bucket.NewStorageHandler()
 	gproject := googleprojectlib.GetGoogleProjectID()
 	err := storageC.InitializeStorageClient(ctx, gproject)
@@ -136,7 +138,9 @@ func UploadTopicSubtitle(ctx context.Context, file model.TopicSubtitle) (*bool, 
 	if err := updateQuery.ExecRelease(); err != nil {
 		return &isSuccess, err
 	}
-	isSuccess = true
+	isSuccessRes := true
+	isSuccess.Success = &isSuccessRes
+	isSuccess.URL = &getUrl
 	return &isSuccess, nil
 }
 
