@@ -285,7 +285,7 @@ func UploadCourseTileImage(ctx context.Context, file model.CourseFile) (*model.U
 	}
 	getUrl := storageC.GetSignedURLForObject(bucketPath)
 	// update course image in cassandra
-	updateQuery := global.CassSession.Session.Query(coursez.CourseTable.Update("tileimagebucket", "tileImage")).BindMap(qb.M{"id": file.CourseID, "tileimagebucket": bucketPath, "tileimage": getUrl})
+	updateQuery := global.CassSession.Session.Query(coursez.CourseTable.Update("tileimagebucket", "tileimage")).BindMap(qb.M{"id": file.CourseID, "tileimagebucket": bucketPath, "tileimage": getUrl})
 	if err := updateQuery.ExecRelease(); err != nil {
 		return &isSuccess, err
 	}
