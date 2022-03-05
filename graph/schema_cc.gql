@@ -24,6 +24,7 @@ type Course{
     expertise_level: String
     language: [String]
     benefits: [String]
+    outcomes: [String]
     created_at: String
     updated_at: String
     type: String

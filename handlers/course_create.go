@@ -26,6 +26,7 @@ func CourseCreator(ctx context.Context, courseInput *model.CourseInput) (*model.
 	guid := xid.New()
 	language := []string{}
 	takeaways := []string{}
+	outcomes := []string{}
 	prequisites := []string{}
 	goodFor := []string{}
 	mustFor := []string{}
@@ -39,6 +40,9 @@ func CourseCreator(ctx context.Context, courseInput *model.CourseInput) (*model.
 	}
 	for _, take := range courseInput.Benefits {
 		takeaways = append(takeaways, *take)
+	}
+	for _, out := range courseInput.Outcomes {
+		outcomes = append(outcomes, *out)
 	}
 	for _, preq := range courseInput.Prequisites {
 		prequisites = append(prequisites, *preq)
@@ -76,6 +80,7 @@ func CourseCreator(ctx context.Context, courseInput *model.CourseInput) (*model.
 		ImageBucket:        "",
 		PreviewVideoBucket: "",
 		Benefits:           takeaways,
+		Outcomes:           outcomes,
 		Language:           language,
 		CreatedAt:          time.Now().Unix(),
 		UpdatedAt:          time.Now().Unix(),
@@ -318,6 +323,7 @@ func CourseUpdate(ctx context.Context, courseInput *model.CourseInput) (*model.C
 	cassandraCourse = courses[0]
 	language := []string{}
 	takeaways := []string{}
+	outcomes := []string{}
 	prequisites := []string{}
 	goodFor := []string{}
 	mustFor := []string{}
@@ -331,6 +337,9 @@ func CourseUpdate(ctx context.Context, courseInput *model.CourseInput) (*model.C
 	}
 	for _, take := range courseInput.Benefits {
 		takeaways = append(takeaways, *take)
+	}
+	for _, out := range courseInput.Outcomes {
+		outcomes = append(outcomes, *out)
 	}
 	for _, preq := range courseInput.Prequisites {
 		prequisites = append(prequisites, *preq)
@@ -385,6 +394,10 @@ func CourseUpdate(ctx context.Context, courseInput *model.CourseInput) (*model.C
 	if courseInput.Benefits != nil {
 		updateCols = append(updateCols, "benefits")
 		cassandraCourse.Benefits = takeaways
+	}
+	if courseInput.Outcomes != nil {
+		updateCols = append(updateCols, "outcomes")
+		cassandraCourse.Outcomes = outcomes
 	}
 	if courseInput.Prequisites != nil {
 		updateCols = append(updateCols, "prerequisites")

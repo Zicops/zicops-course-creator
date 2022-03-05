@@ -44,6 +44,7 @@ type Course struct {
 	ExpertiseLevel     *string          `json:"expertise_level"`
 	Language           []*string        `json:"language"`
 	Benefits           []*string        `json:"benefits"`
+	Outcomes           []*string        `json:"outcomes"`
 	CreatedAt          *string          `json:"created_at"`
 	UpdatedAt          *string          `json:"updated_at"`
 	Type               *string          `json:"type"`
@@ -84,6 +85,7 @@ type CourseInput struct {
 	ExpertiseLevel     *string               `json:"expertise_level"`
 	Language           []*string             `json:"language"`
 	Benefits           []*string             `json:"benefits"`
+	Outcomes           []*string             `json:"outcomes"`
 	Type               *string               `json:"type"`
 	Prequisites        []*string             `json:"prequisites"`
 	GoodFor            []*string             `json:"goodFor"`
