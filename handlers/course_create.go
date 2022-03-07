@@ -412,7 +412,7 @@ func CourseUpdate(ctx context.Context, courseInput *model.CourseInput) (*model.C
 		cassandraCourse.MustFor = mustFor
 	}
 	if courseInput.RelatedSkills != nil {
-		updateCols = append(updateCols, "relatedskills")
+		updateCols = append(updateCols, "related_skills")
 		cassandraCourse.RelatedSkills = relatedSkills
 	}
 	if courseInput.Approvers != nil {
@@ -461,7 +461,7 @@ func CourseUpdate(ctx context.Context, courseInput *model.CourseInput) (*model.C
 		cassandraCourse.IsDisplay = *courseInput.IsDisplay
 	}
 	if courseInput.ExpectedCompletion != nil {
-		updateCols = append(updateCols, "expected_completion")
+		updateCols = append(updateCols, "expected_completion_time")
 		cassandraCourse.ExpectedCompletion = *courseInput.ExpectedCompletion
 	}
 	updateCols = append(updateCols, "updated_at")
