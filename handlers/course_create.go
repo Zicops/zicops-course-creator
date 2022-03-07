@@ -400,7 +400,7 @@ func CourseUpdate(ctx context.Context, courseInput *model.CourseInput) (*model.C
 		cassandraCourse.Outcomes = outcomes
 	}
 	if courseInput.Prequisites != nil {
-		updateCols = append(updateCols, "prerequisites")
+		updateCols = append(updateCols, "prequisites")
 		cassandraCourse.Prequisites = prequisites
 	}
 	if courseInput.GoodFor != nil {
