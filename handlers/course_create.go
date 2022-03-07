@@ -464,6 +464,10 @@ func CourseUpdate(ctx context.Context, courseInput *model.CourseInput) (*model.C
 		updateCols = append(updateCols, "expected_completion_time")
 		cassandraCourse.ExpectedCompletion = *courseInput.ExpectedCompletion
 	}
+	if courseInput.QaRequired != nil {
+		updateCols = append(updateCols, "quality_control_check_reqd")
+		cassandraCourse.QARequired = *courseInput.QaRequired
+	}
 	updateCols = append(updateCols, "updated_at")
 	// set course in cassandra
 	upStms, uNames := coursez.CourseTable.Update(updateCols...)
