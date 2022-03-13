@@ -289,6 +289,8 @@ github.com/zicops/contracts v0.0.0-20220224164023-3166cc9ddbe0 h1:/Z7F0UdoC1KXTL
 github.com/zicops/contracts v0.0.0-20220224164023-3166cc9ddbe0/go.mod h1:eKkDjt74gdPC6TF5mXeztjD2ZmwiDHPnPxIb2KpcR1g=
 github.com/zicops/contracts v0.0.0-20220305154259-3645674a2acc h1:KW072B8exsup2v2NIcxD05xyC9HIuns6jn+MYdA/IWQ=
 github.com/zicops/contracts v0.0.0-20220305154259-3645674a2acc/go.mod h1:eKkDjt74gdPC6TF5mXeztjD2ZmwiDHPnPxIb2KpcR1g=
+github.com/zicops/contracts v0.0.0-20220313143509-a40f994c458d h1:VqwYKOLKKoJGlCf5sFgpOGydvTnKlkduHdAsNtS31n8=
+github.com/zicops/contracts v0.0.0-20220313143509-a40f994c458d/go.mod h1:eKkDjt74gdPC6TF5mXeztjD2ZmwiDHPnPxIb2KpcR1g=
 go.opencensus.io v0.21.0/go.mod h1:mSImk1erAIZhrmZN+AvHh14ztQfjbGwt4TtuofqLduU=
 go.opencensus.io v0.22.0/go.mod h1:+kGneAE2xo2IficOXnaByMWTGM9T73dGwxeWcUqIpI8=
 go.opencensus.io v0.22.2/go.mod h1:yxeiOL68Rb0Xd1ddK5vPZ/oVn4vY4Ynel7k9FzqtOIw=
