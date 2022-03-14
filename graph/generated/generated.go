@@ -1255,7 +1255,7 @@ enum Status {
     APPROVAL_PENDING
     ON_HOLD
     APPROVED
-    PUBLSIHED
+    PUBLISHED
     REJECTED
 }
 

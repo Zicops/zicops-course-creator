@@ -285,8 +285,8 @@ github.com/yuin/goldmark v1.1.32/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9de
 github.com/yuin/goldmark v1.2.1/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
 github.com/yuin/goldmark v1.3.5/go.mod h1:mwnBkeHKe2W/ZEtQ+71ViKU8L12m81fl3OWwC1Zlc8k=
 github.com/yuin/goldmark v1.4.1/go.mod h1:mwnBkeHKe2W/ZEtQ+71ViKU8L12m81fl3OWwC1Zlc8k=
-github.com/zicops/contracts v0.0.0-20220313205319-acaa27748c04 h1:pefmIvIMACs3kArFxJIpUK7ympFzFgSfJuSveUN+FhQ=
-github.com/zicops/contracts v0.0.0-20220313205319-acaa27748c04/go.mod h1:eKkDjt74gdPC6TF5mXeztjD2ZmwiDHPnPxIb2KpcR1g=
+github.com/zicops/contracts v0.0.0-20220314105757-3734f6c9a3f0 h1:G6mJEJXrOtOU81uRHWqo4hSVKWDm+RFHiZX6pLDQed8=
+github.com/zicops/contracts v0.0.0-20220314105757-3734f6c9a3f0/go.mod h1:eKkDjt74gdPC6TF5mXeztjD2ZmwiDHPnPxIb2KpcR1g=
 go.opencensus.io v0.21.0/go.mod h1:mSImk1erAIZhrmZN+AvHh14ztQfjbGwt4TtuofqLduU=
 go.opencensus.io v0.22.0/go.mod h1:+kGneAE2xo2IficOXnaByMWTGM9T73dGwxeWcUqIpI8=
 go.opencensus.io v0.22.2/go.mod h1:yxeiOL68Rb0Xd1ddK5vPZ/oVn4vY4Ynel7k9FzqtOIw=

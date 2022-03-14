@@ -286,7 +286,7 @@ const (
 	StatusApprovalPending Status = "APPROVAL_PENDING"
 	StatusOnHold          Status = "ON_HOLD"
 	StatusApproved        Status = "APPROVED"
-	StatusPublsihed       Status = "PUBLSIHED"
+	StatusPublished       Status = "PUBLISHED"
 	StatusRejected        Status = "REJECTED"
 )
 
@@ -295,13 +295,13 @@ var AllStatus = []Status{
 	StatusApprovalPending,
 	StatusOnHold,
 	StatusApproved,
-	StatusPublsihed,
+	StatusPublished,
 	StatusRejected,
 }
 
 func (e Status) IsValid() bool {
 	switch e {
-	case StatusSaved, StatusApprovalPending, StatusOnHold, StatusApproved, StatusPublsihed, StatusRejected:
+	case StatusSaved, StatusApprovalPending, StatusOnHold, StatusApproved, StatusPublished, StatusRejected:
 		return true
 	}
 	return false
