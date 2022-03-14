@@ -1468,6 +1468,7 @@ input QuizDescriptive {
 }
 
 input TopicResourceInput {
+    name: String
     type: String
     topicId: String
     created_at: String
@@ -7887,6 +7888,14 @@ func (ec *executionContext) unmarshalInputTopicResourceInput(ctx context.Context
 
 	for k, v := range asMap {
 		switch k {
+		case "name":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("name"))
+			it.Name, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
 		case "type":
 			var err error
 

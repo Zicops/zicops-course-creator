@@ -41,7 +41,12 @@ func AddTopicResources(ctx context.Context, courseID string, resource *model.Top
 		return &isSuccess, err
 	}
 	getUrl := storageC.GetSignedURLForObject(bucketPath)
+	sourceName := ""
+	if resource.Name != nil {
+		sourceName = *resource.Name
+	}
 	cassandraResource := coursez.Resource{
+		Name:       sourceName,
 		TopicId:    *resource.TopicID,
 		Type:       *resource.Type,
 		BucketPath: bucketPath,

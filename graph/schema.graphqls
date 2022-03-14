@@ -264,6 +264,7 @@ input QuizDescriptive {
 }
 
 input TopicResourceInput {
+    name: String
     type: String
     topicId: String
     created_at: String

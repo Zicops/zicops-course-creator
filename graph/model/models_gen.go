@@ -241,6 +241,7 @@ type TopicInput struct {
 }
 
 type TopicResourceInput struct {
+	Name      *string         `json:"name"`
 	Type      *string         `json:"type"`
 	TopicID   *string         `json:"topicId"`
 	CreatedAt *string         `json:"created_at"`
