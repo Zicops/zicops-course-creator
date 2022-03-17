@@ -208,7 +208,9 @@ func UploadCourseImage(ctx context.Context, file model.CourseFile) (*model.Uploa
 	}
 	getUrl := storageC.GetSignedURLForObject(bucketPath)
 	// update course image in cassandra
-	updateQuery := global.CassSession.Session.Query(coursez.CourseTable.Update("imagebucket", "image")).BindMap(qb.M{"id": file.CourseID, "imagebucket": bucketPath, "image": getUrl})
+	where := qb.Eq("id")
+	updateQB := qb.Update("coursez.course").Set("imagebucket").Set("image").Where(where)
+	updateQuery := updateQB.Query(*global.CassSession.Session).BindMap(qb.M{"id": file.CourseID, "imagebucket": bucketPath, "image": getUrl})
 	if err := updateQuery.ExecRelease(); err != nil {
 		return &isSuccess, err
 	}
@@ -249,7 +251,9 @@ func UploadCoursePreviewVideo(ctx context.Context, file model.CourseFile) (*mode
 	}
 	getUrl := storageC.GetSignedURLForObject(bucketPath)
 	// update course image in cassandra
-	updateQuery := global.CassSession.Session.Query(coursez.CourseTable.Update("previewvideobucket", "previewvideo")).BindMap(qb.M{"id": file.CourseID, "previewvideobucket": bucketPath, "previewvideo": getUrl})
+	where := qb.Eq("id")
+	updateQB := qb.Update("coursez.course").Set("previewvideobucket").Set("previewvideo").Where(where)
+	updateQuery := updateQB.Query(*global.CassSession.Session).BindMap(qb.M{"id": file.CourseID, "previewvideobucket": bucketPath, "previewvideo": getUrl})
 	if err := updateQuery.ExecRelease(); err != nil {
 		return &isSuccess, err
 	}
@@ -289,8 +293,9 @@ func UploadCourseTileImage(ctx context.Context, file model.CourseFile) (*model.U
 		return &isSuccess, err
 	}
 	getUrl := storageC.GetSignedURLForObject(bucketPath)
-	// update course image in cassandra
-	updateQuery := global.CassSession.Session.Query(coursez.CourseTable.Update("tileimagebucket", "tileimage")).BindMap(qb.M{"id": file.CourseID, "tileimagebucket": bucketPath, "tileimage": getUrl})
+	where := qb.Eq("id")
+	updateQB := qb.Update("coursez.course").Set("tileimagebucket").Set("tileimage").Where(where)
+	updateQuery := updateQB.Query(*global.CassSession.Session).BindMap(qb.M{"id": file.CourseID, "tileimagebucket": bucketPath, "tileimage": getUrl})
 	if err := updateQuery.ExecRelease(); err != nil {
 		return &isSuccess, err
 	}

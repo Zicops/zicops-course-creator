@@ -95,8 +95,9 @@ func UploadTopicVideo(ctx context.Context, file model.TopicVideo) (*model.Upload
 		return &isSuccess, err
 	}
 	getUrl := storageC.GetSignedURLForObject(bucketPath)
-	// update course image in cassandra
-	updateQuery := global.CassSession.Session.Query(coursez.TopicContentTable.Update("topiccontentbucket", "url")).BindMap(qb.M{"topicid": file.TopicID, "topiccontentbucket": bucketPath, "url": getUrl})
+	where := qb.Eq("topicid")
+	updateQB := qb.Update("coursez.topic_content").Set("topiccontentbucket").Set("url").Where(where)
+	updateQuery := updateQB.Query(*global.CassSession.Session).BindMap(qb.M{"topicid": file.TopicID, "topiccontentbucket": bucketPath, "url": getUrl})
 	if err := updateQuery.ExecRelease(); err != nil {
 		return &isSuccess, err
 	}
@@ -133,8 +134,9 @@ func UploadTopicSubtitle(ctx context.Context, file model.TopicSubtitle) (*model.
 		return &isSuccess, err
 	}
 	getUrl := storageC.GetSignedURLForObject(bucketPath)
-	// update course image in cassandra
-	updateQuery := global.CassSession.Session.Query(coursez.TopicContentTable.Update("subtitlefilebucket", "subtitlefile")).BindMap(qb.M{"topicid": file.TopicID, "subtitlefilebucket": bucketPath, "subtitlefile": getUrl})
+	where := qb.Eq("topicid")
+	updateQB := qb.Update("coursez.topic_content").Set("subtitlefilebucket").Set("subtitlefile").Where(where)
+	updateQuery := updateQB.Query(*global.CassSession.Session).BindMap(qb.M{"topicid": file.TopicID, "subtitlefilebucket": bucketPath, "subtitlefile": getUrl})
 	if err := updateQuery.ExecRelease(); err != nil {
 		return &isSuccess, err
 	}
