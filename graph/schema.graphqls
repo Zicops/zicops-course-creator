@@ -279,6 +279,7 @@ type UploadResult {
     success: Boolean
     url: String
 }
+
 # define type mutations to add a course  using courseInput
 type Mutation{
     addCatergories(category: [String]): Boolean
