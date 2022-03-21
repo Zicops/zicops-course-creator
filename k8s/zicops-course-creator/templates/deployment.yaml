@@ -47,13 +47,13 @@ spec:
           - name: GOOGLE_APPLICATION_CREDENTIALS
             value: {{ $zcbcred }}
           - name: CASSANDRA_HOST
-            value: "cassandra-dev.default.svc.cluster.local"
+            value: "cassandra-dev1.default.svc.cluster.local"
           - name: CASSANDRA_PORT
             value: "9042"
           - name: CASSANDRA_USERNAME
             value: "cassandra"
           - name: CASSANDRA_PASSWORD
-            value: "PMbPj01rjJ"
+            value: "Vauwbh2yHA"
           - name: CASSANDRA_KEYSPACE
             value: "coursez"   
       volumes:
