@@ -290,7 +290,7 @@ type Mutation{
     uploadCourseTileImage(file: CourseFile): UploadResult
     addCourseModule(courseId: String, module: ModuleInput): Module
     updateCourseModule(module: ModuleInput): Module
-    addCourseChapter(courseId: String, chapter: ChapterInput): Chapter
+    addCourseChapter(courseId: String,  : ChapterInput): Chapter
     updateCourseChapter(chapter: ChapterInput): Chapter
     addCourseTopic(courseId: String, topic: TopicInput): Topic
     updateCourseTopic(topic: TopicInput): Topic

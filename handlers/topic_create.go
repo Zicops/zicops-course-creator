@@ -72,6 +72,12 @@ func TopicUpdate(ctx context.Context, topic *model.TopicInput) (*model.Topic, er
 	cassandraTopic := coursez.Topic{
 		ID: *topic.ID,
 	}
+	if topic.CourseID != nil {
+		cassandraTopic.CourseID = *topic.CourseID
+	}
+	if topic.ModuleID != nil {
+		cassandraTopic.ModuleID = *topic.ModuleID
+	}
 	topics := []coursez.Topic{}
 	getQuery := global.CassSession.Session.Query(coursez.TopicTable.Get()).BindMap(qb.M{"id": cassandraTopic.ID})
 	if err := getQuery.SelectRelease(&topics); err != nil {
