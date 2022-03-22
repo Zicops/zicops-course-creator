@@ -76,7 +76,7 @@ func UpdateModule(ctx context.Context, module *model.ModuleInput) (*model.Module
 	}
 	// set course in cassandra
 	modules := []coursez.Module{}
-	getQuery := global.CassSession.Session.Query(coursez.ChapterTable.Get()).BindMap(qb.M{"id": cassandraModule.ID})
+	getQuery := global.CassSession.Session.Query(coursez.ModuleTable.Get()).BindMap(qb.M{"id": cassandraModule.ID})
 	if err := getQuery.SelectRelease(&modules); err != nil {
 		return nil, err
 	}
@@ -85,11 +85,11 @@ func UpdateModule(ctx context.Context, module *model.ModuleInput) (*model.Module
 	}
 	cassandraModule = modules[0]
 	updateCols := []string{}
-	if *module.Name != "" {
+	if module.Name != nil {
 		updateCols = append(updateCols, "name")
 		cassandraModule.Name = *module.Name
 	}
-	if *module.Description != "" {
+	if module.Description != nil {
 		updateCols = append(updateCols, "description")
 		cassandraModule.Description = *module.Description
 	}
