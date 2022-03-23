@@ -85,7 +85,7 @@ func TopicUpdate(ctx context.Context, topic *model.TopicInput) (*model.Topic, er
 	}
 	cassandraTopic = topics[0]
 	updateCols := []string{}
-	if *topic.Description != "" {
+	if topic.Description != nil {
 		updateCols = append(updateCols, "description")
 		cassandraTopic.Description = *topic.Description
 	}
