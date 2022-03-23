@@ -78,6 +78,10 @@ func UploadTopicVideo(ctx context.Context, file model.TopicVideo) (*model.Upload
 		log.Errorf("Failed to upload video to course topic: %v", err.Error())
 		return &isSuccess, nil
 	}
+	if file.CourseID == nil || file.TopicID == nil {
+		log.Errorf("Failed to upload video to course topic: %v", "courseID or topicID is nil")
+		return &isSuccess, nil
+	}
 	bucketPath := *file.CourseID + "/" + *file.TopicID + "/" + file.File.Filename
 	writer, err := storageC.UploadToGCS(ctx, bucketPath)
 	if err != nil {
