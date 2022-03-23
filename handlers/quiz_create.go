@@ -153,7 +153,7 @@ func UploadQuizFile(ctx context.Context, courseID string, quiz model.QuizFile) (
 		log.Errorf("Failed to upload video to course topic: %v", err.Error())
 		return &isSuccess, nil
 	}
-	if courseID == "" || quiz.QuizID== nil {
+	if courseID == "" || quiz.QuizID == nil {
 		return nil, fmt.Errorf("course id and  quiz id is required")
 	}
 	bucketPath := courseID + "/" + *quiz.QuizID + "/" + quiz.File.Filename
@@ -198,7 +198,7 @@ func UploadQuizFile(ctx context.Context, courseID string, quiz model.QuizFile) (
 
 func AddMCQQuiz(ctx context.Context, quiz *model.QuizMcq) (*bool, error) {
 	log.Info("AddMCQQuiz called")
-	if *quiz.QuizID == "" {
+	if quiz.QuizID == nil {
 		return nil, fmt.Errorf("quiz id is required")
 	}
 	options := make([]string, 0)
@@ -206,12 +206,18 @@ func AddMCQQuiz(ctx context.Context, quiz *model.QuizMcq) (*bool, error) {
 		options = append(options, *option)
 	}
 	cassandraQuiz := coursez.QuizMcq{
-		QuizId:        *quiz.QuizID,
-		Question:      *quiz.Question,
-		Options:       options,
-		CorrectOption: *quiz.CorrectOption,
-		Explanation:   *quiz.Explanation,
-		IsActive:      true,
+		QuizId:   *quiz.QuizID,
+		Options:  options,
+		IsActive: true,
+	}
+	if quiz.Question != nil {
+		cassandraQuiz.Question = *quiz.Question
+	}
+	if quiz.CorrectOption != nil {
+		cassandraQuiz.CorrectOption = *quiz.CorrectOption
+	}
+	if quiz.Explanation != nil {
+		cassandraQuiz.Explanation = *quiz.Explanation
 	}
 	// set quiz in cassandra
 	insertQuery := global.CassSession.Session.Query(coursez.QuizMcqTable.Insert()).BindStruct(cassandraQuiz)
