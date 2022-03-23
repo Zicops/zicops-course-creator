@@ -196,6 +196,7 @@ func UpdateTopicContent(ctx context.Context, topicConent *model.TopicContentInpu
 		cassandraTopicContent.Language = *topicConent.Language
 	}
 	// set course in cassandra
+	
 	upStms, uNames := coursez.TopicContentTable.Update(updateCols...)
 	updateQuery := global.CassSession.Session.Query(upStms, uNames).BindStruct(&cassandraTopicContent)
 	if err := updateQuery.ExecRelease(); err != nil {
