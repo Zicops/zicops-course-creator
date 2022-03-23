@@ -23,15 +23,25 @@ func CreateTopicQuiz(ctx context.Context, quiz *model.QuizInput) (*model.Quiz, e
 	log.Info("CreateTopicQuiz called")
 	guid := xid.New()
 	cassandraQuiz := coursez.Quiz{
-		ID:          guid.String(),
-		Name:        *quiz.Name,
-		CreatedAt:   time.Now().Unix(),
-		UpdatedAt:   time.Now().Unix(),
-		Type:        *quiz.Type,
-		IsMandatory: *quiz.IsMandatory,
-		TopicID:     *quiz.TopicID,
-		Category:    *quiz.Category,
-		IsActive:    true,
+		ID:        guid.String(),
+		CreatedAt: time.Now().Unix(),
+		UpdatedAt: time.Now().Unix(),
+		IsActive:  true,
+	}
+	if quiz.Name != nil {
+		cassandraQuiz.Name = *quiz.Name
+	}
+	if quiz.Type != nil {
+		cassandraQuiz.Type = *quiz.Type
+	}
+	if quiz.IsMandatory != nil {
+		cassandraQuiz.IsMandatory = *quiz.IsMandatory
+	}
+	if quiz.TopicID != nil {
+		cassandraQuiz.TopicID = *quiz.TopicID
+	}
+	if quiz.Category != nil {
+		cassandraQuiz.Category = *quiz.Category
 	}
 	if quiz.StartTime != nil {
 		cassandraQuiz.StartTime = *quiz.StartTime
