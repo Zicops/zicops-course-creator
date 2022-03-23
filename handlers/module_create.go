@@ -93,7 +93,10 @@ func UpdateModule(ctx context.Context, module *model.ModuleInput) (*model.Module
 		updateCols = append(updateCols, "description")
 		cassandraModule.Description = *module.Description
 	}
-	cassandraModule.IsChapter = *module.IsChapter
+	if module.IsChapter != nil {
+		updateCols = append(updateCols, "is_chapter")
+		cassandraModule.IsChapter = *module.IsChapter
+	}
 	if module.Owner != nil {
 		updateCols = append(updateCols, "owner")
 		cassandraModule.Owner = *module.Owner
