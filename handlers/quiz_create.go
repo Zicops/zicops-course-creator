@@ -143,7 +143,7 @@ func UpdateQuiz(ctx context.Context, quiz *model.QuizInput) (*model.Quiz, error)
 
 }
 
-func UploadQuizFile(ctx context.Context, couseID string, quiz model.QuizFile) (*model.UploadResult, error) {
+func UploadQuizFile(ctx context.Context, courseID string, quiz model.QuizFile) (*model.UploadResult, error) {
 	log.Info("UploadQuizFile called")
 	isSuccess := model.UploadResult{}
 	storageC := bucket.NewStorageHandler()
@@ -153,7 +153,10 @@ func UploadQuizFile(ctx context.Context, couseID string, quiz model.QuizFile) (*
 		log.Errorf("Failed to upload video to course topic: %v", err.Error())
 		return &isSuccess, nil
 	}
-	bucketPath := couseID + "/" + *quiz.QuizID + "/" + quiz.File.Filename
+	if courseID == "" || quiz.QuizID== nil {
+		return nil, fmt.Errorf("course id and  quiz id is required")
+	}
+	bucketPath := courseID + "/" + *quiz.QuizID + "/" + quiz.File.Filename
 	writer, err := storageC.UploadToGCS(ctx, bucketPath)
 	if err != nil {
 		log.Errorf("Failed to upload video to course topic: %v", err.Error())
@@ -172,11 +175,15 @@ func UploadQuizFile(ctx context.Context, couseID string, quiz model.QuizFile) (*
 	getUrl := storageC.GetSignedURLForObject(bucketPath)
 	cassandraQuizFile := coursez.QuizFile{
 		QuizId:     *quiz.QuizID,
-		Type:       *quiz.Type,
-		Name:       *quiz.Name,
 		BucketPath: bucketPath,
 		Path:       getUrl,
 		IsActive:   true,
+	}
+	if quiz.Type != nil {
+		cassandraQuizFile.Type = *quiz.Type
+	}
+	if quiz.Name != nil {
+		cassandraQuizFile.Name = *quiz.Name
 	}
 	// update course image in cassandra
 	quizAdd := global.CassSession.Session.Query(coursez.QuizFileTable.Insert()).BindStruct(cassandraQuizFile)
