@@ -24,6 +24,9 @@ func AddTopicResources(ctx context.Context, courseID string, resource *model.Top
 		log.Errorf("Failed to upload video to course topic: %v", err.Error())
 		return &isSuccess, nil
 	}
+	if courseID == "" || resource.TopicID == nil {
+		return &isSuccess, nil
+	}
 	bucketPath := courseID + "/" + *resource.TopicID + "/" + resource.File.Filename
 	writer, err := storageC.UploadToGCS(ctx, bucketPath)
 	if err != nil {
@@ -48,12 +51,14 @@ func AddTopicResources(ctx context.Context, courseID string, resource *model.Top
 	cassandraResource := coursez.Resource{
 		Name:       sourceName,
 		TopicId:    *resource.TopicID,
-		Type:       *resource.Type,
 		BucketPath: bucketPath,
 		Url:        getUrl,
 		IsActive:   false,
 		CreatedAt:  time.Now().Unix(),
 		UpdatedAt:  time.Now().Unix(),
+	}
+	if resource.Type != nil {
+		cassandraResource.Type = *resource.Type
 	}
 	// update course image in cassandra
 	resourceAdd := global.CassSession.Session.Query(coursez.ResourceTable.Insert()).BindStruct(cassandraResource)
