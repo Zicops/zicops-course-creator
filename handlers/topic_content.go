@@ -191,7 +191,7 @@ func UpdateTopicContent(ctx context.Context, topicConent *model.TopicContentInpu
 	}
 	updateCols = append(updateCols, "updated_at")
 	cassandraTopicContent.UpdatedAt = time.Now().Unix()
-	if *topicConent.Language != "" {
+	if topicConent.Language != nil {
 		updateCols = append(updateCols, "language")
 		cassandraTopicContent.Language = *topicConent.Language
 	}
