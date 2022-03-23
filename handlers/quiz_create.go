@@ -231,15 +231,21 @@ func AddMCQQuiz(ctx context.Context, quiz *model.QuizMcq) (*bool, error) {
 
 func AddQuizDescriptive(ctx context.Context, quiz *model.QuizDescriptive) (*bool, error) {
 	log.Info("AddQuizDescriptive called")
-	if *quiz.QuizID == "" {
+	if quiz.QuizID == nil {
 		return nil, fmt.Errorf("quiz id is required")
 	}
 	cassandraQuiz := coursez.QuizDescriptive{
-		QuizId:        *quiz.QuizID,
-		Question:      *quiz.Question,
-		Explanation:   *quiz.Explanation,
-		CorrectAnswer: *quiz.CorrectAnswer,
-		IsActive:      true,
+		QuizId:   *quiz.QuizID,
+		IsActive: true,
+	}
+	if quiz.Question != nil {
+		cassandraQuiz.Question = *quiz.Question
+	}
+	if quiz.Explanation != nil {
+		cassandraQuiz.Explanation = *quiz.Explanation
+	}
+	if quiz.CorrectAnswer != nil {
+		cassandraQuiz.CorrectAnswer = *quiz.CorrectAnswer
 	}
 	// set quiz in cassandra
 	insertQuery := global.CassSession.Session.Query(coursez.QuizDescriptiveTable.Insert()).BindStruct(cassandraQuiz)
