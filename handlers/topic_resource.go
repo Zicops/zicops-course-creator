@@ -17,33 +17,39 @@ import (
 func AddTopicResources(ctx context.Context, courseID string, resource *model.TopicResourceInput) (*model.UploadResult, error) {
 	log.Infof("AddTopicResources Called")
 	isSuccess := model.UploadResult{}
-	storageC := bucket.NewStorageHandler()
-	gproject := googleprojectlib.GetGoogleProjectID()
-	err := storageC.InitializeStorageClient(ctx, gproject)
-	if err != nil {
-		log.Errorf("Failed to upload video to course topic: %v", err.Error())
-		return &isSuccess, nil
+	getUrl := ""
+	bucketPath := ""
+	if resource.URL == nil {
+		storageC := bucket.NewStorageHandler()
+		gproject := googleprojectlib.GetGoogleProjectID()
+		err := storageC.InitializeStorageClient(ctx, gproject)
+		if err != nil {
+			log.Errorf("Failed to upload video to course topic: %v", err.Error())
+			return &isSuccess, nil
+		}
+		if courseID == "" || resource.TopicID == nil {
+			return &isSuccess, nil
+		}
+		bucketPath = courseID + "/" + *resource.TopicID + "/" + resource.File.Filename
+		writer, err := storageC.UploadToGCS(ctx, bucketPath)
+		if err != nil {
+			log.Errorf("Failed to upload video to course topic: %v", err.Error())
+			return &isSuccess, nil
+		}
+		defer writer.Close()
+		fileBuffer := bytes.NewBuffer(nil)
+		if _, err := io.Copy(fileBuffer, resource.File.File); err != nil {
+			return &isSuccess, nil
+		}
+		currentBytes := fileBuffer.Bytes()
+		_, err = io.Copy(writer, bytes.NewReader(currentBytes))
+		if err != nil {
+			return &isSuccess, err
+		}
+		getUrl = storageC.GetSignedURLForObject(bucketPath)
+	} else {
+		getUrl = *resource.URL
 	}
-	if courseID == "" || resource.TopicID == nil {
-		return &isSuccess, nil
-	}
-	bucketPath := courseID + "/" + *resource.TopicID + "/" + resource.File.Filename
-	writer, err := storageC.UploadToGCS(ctx, bucketPath)
-	if err != nil {
-		log.Errorf("Failed to upload video to course topic: %v", err.Error())
-		return &isSuccess, nil
-	}
-	defer writer.Close()
-	fileBuffer := bytes.NewBuffer(nil)
-	if _, err := io.Copy(fileBuffer, resource.File.File); err != nil {
-		return &isSuccess, nil
-	}
-	currentBytes := fileBuffer.Bytes()
-	_, err = io.Copy(writer, bytes.NewReader(currentBytes))
-	if err != nil {
-		return &isSuccess, err
-	}
-	getUrl := storageC.GetSignedURLForObject(bucketPath)
 	sourceName := ""
 	if resource.Name != nil {
 		sourceName = *resource.Name
