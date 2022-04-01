@@ -174,7 +174,7 @@ func UpdateTopicContent(ctx context.Context, topicConent *model.TopicContentInpu
 		cassandraTopicContent.Duration = *topicConent.Duration
 	}
 	if topicConent.StartTime != nil {
-		updateCols = append(updateCols, "startTime")
+		updateCols = append(updateCols, "starttime")
 		cassandraTopicContent.StartTime = *topicConent.StartTime
 	}
 	if topicConent.SkipIntroDuration != nil {
@@ -218,6 +218,7 @@ func UpdateTopicContent(ctx context.Context, topicConent *model.TopicContentInpu
 		NextShowTime:      topicConent.NextShowTime,
 		FromEndTime:       topicConent.FromEndTime,
 		TopicID:           topicID,
+		Type:              topicConent.Type,
 	}
 	return &responseModel, nil
 }
