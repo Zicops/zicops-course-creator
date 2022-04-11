@@ -9,3 +9,7 @@ const (
 	RESPONSDE_JSON_ERROR string = "error"
 	COURSES_BUCKET              = "courses-zicops-one"
 )
+
+var (
+	StaticTypeMap = map[string]string{"scorm": "story_html5.html"}
+)

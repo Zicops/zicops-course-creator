@@ -166,7 +166,12 @@ func (r *mutationResolver) UploadTopicContentSubtitle(ctx context.Context, file 
 }
 
 func (r *mutationResolver) UploadTopicStaticContent(ctx context.Context, file *model.StaticContent) (*model.UploadResult, error) {
-	return nil, nil
+	resp, err := handlers.UploadTopicStaticContent(ctx, file)
+	if err != nil {
+		log.Errorf("error uploading topic subtitle: %v", err)
+		return nil, err
+	}
+	return resp, nil
 }
 
 func (r *mutationResolver) AddQuiz(ctx context.Context, quiz *model.QuizInput) (*model.Quiz, error) {

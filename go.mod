@@ -13,7 +13,7 @@ require (
 	github.com/scylladb/gocqlx/v2 v2.6.0
 	github.com/sirupsen/logrus v1.8.1
 	github.com/vektah/gqlparser/v2 v2.2.0
-	github.com/zicops/contracts v0.0.0-20220322140944-d3006a0a6d7a
+	github.com/zicops/contracts v0.0.0-20220411200008-d591ae72c949
 	golang.org/x/oauth2 v0.0.0-20211104180415-d3ed0bb246c8
 	google.golang.org/api v0.65.0
 	gopkg.in/tylerb/graceful.v1 v1.2.15
@@ -45,6 +45,7 @@ require (
 	github.com/modern-go/reflect2 v0.0.0-20180701023420-4b7aa43c6742 // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/scylladb/go-reflectx v1.0.1 // indirect
+	github.com/scylladb/gocqlx v1.5.0 // indirect
 	github.com/ugorji/go/codec v1.1.7 // indirect
 	github.com/urfave/cli/v2 v2.3.0 // indirect
 	go.opencensus.io v0.23.0 // indirect
