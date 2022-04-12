@@ -56,6 +56,14 @@ func AddTopicResources(ctx context.Context, courseID string, resource *model.Top
 	if resource.Name != nil {
 		sourceName = *resource.Name
 	}
+	createdBy:= ""
+	if resource.CreatedBy != nil {
+		createdBy = *resource.CreatedBy
+	}
+	updatedBy := ""
+	if resource.UpdatedBy != nil {
+		updatedBy = *resource.UpdatedBy
+	}
 	cassandraResource := coursez.Resource{
 		ID:         guid,
 		Name:       sourceName,
@@ -65,6 +73,8 @@ func AddTopicResources(ctx context.Context, courseID string, resource *model.Top
 		IsActive:   false,
 		CreatedAt:  time.Now().Unix(),
 		UpdatedAt:  time.Now().Unix(),
+		CreatedBy:  createdBy,
+		UpdatedBy:  updatedBy,
 	}
 	if resource.Type != nil {
 		cassandraResource.Type = *resource.Type
