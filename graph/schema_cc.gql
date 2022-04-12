@@ -171,7 +171,7 @@ type Topic {
 
 input TopicContentInput {
     language: String
-    topicId: String
+    contentId: String
     startTime: Int
     duration: Int
     skipIntroDuration: Int
@@ -181,6 +181,7 @@ input TopicContentInput {
 }
 
 type TopicContent {
+    id: ID
     language: String
     topicId: String
     startTime: Int
@@ -196,20 +197,20 @@ type TopicContent {
 input TopicVideo{
     file: Upload
     courseId: String
-    topicId: String
+    contentId: String
 }
 
 input TopicSubtitle {
     file: Upload
     courseId: String
-    topicId: String    
+    contentId: String    
 }
 
 input StaticContent{
     type: Type
     file: Upload
     courseId: String
-    topicId: String
+    contentId: String
 }
 # enum Type 
 enum Type {
@@ -279,6 +280,7 @@ type UploadResult {
     success: Boolean
     url: String
 }
+
 # define type mutations to add a course  using courseInput
 type Mutation{
     addCatergories(category: [String]): Boolean

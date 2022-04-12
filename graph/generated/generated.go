@@ -7691,11 +7691,11 @@ func (ec *executionContext) unmarshalInputStaticContent(ctx context.Context, obj
 			if err != nil {
 				return it, err
 			}
-		case "topicId":
+		case "contentId":
 			var err error
 
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("topicId"))
-			it.TopicID, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("contentId"))
+			it.ContentID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7722,11 +7722,11 @@ func (ec *executionContext) unmarshalInputTopicContentInput(ctx context.Context,
 			if err != nil {
 				return it, err
 			}
-		case "topicId":
+		case "contentId":
 			var err error
 
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("topicId"))
-			it.TopicID, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("contentId"))
+			it.ContentID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7991,11 +7991,11 @@ func (ec *executionContext) unmarshalInputTopicSubtitle(ctx context.Context, obj
 			if err != nil {
 				return it, err
 			}
-		case "topicId":
+		case "contentId":
 			var err error
 
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("topicId"))
-			it.TopicID, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("contentId"))
+			it.ContentID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -8030,11 +8030,11 @@ func (ec *executionContext) unmarshalInputTopicVideo(ctx context.Context, obj in
 			if err != nil {
 				return it, err
 			}
-		case "topicId":
+		case "contentId":
 			var err error
 
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("topicId"))
-			it.TopicID, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("contentId"))
+			it.ContentID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}

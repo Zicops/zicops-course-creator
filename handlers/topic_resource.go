@@ -6,6 +6,7 @@ import (
 	"io"
 	"time"
 
+	"github.com/rs/xid"
 	log "github.com/sirupsen/logrus"
 	"github.com/zicops/contracts/coursez"
 	"github.com/zicops/zicops-course-creator/global"
@@ -16,6 +17,7 @@ import (
 
 func AddTopicResources(ctx context.Context, courseID string, resource *model.TopicResourceInput) (*model.UploadResult, error) {
 	log.Infof("AddTopicResources Called")
+	guid := xid.New().String()
 	isSuccess := model.UploadResult{}
 	getUrl := ""
 	bucketPath := ""
@@ -55,6 +57,7 @@ func AddTopicResources(ctx context.Context, courseID string, resource *model.Top
 		sourceName = *resource.Name
 	}
 	cassandraResource := coursez.Resource{
+		ID:         guid,
 		Name:       sourceName,
 		TopicId:    *resource.TopicID,
 		BucketPath: bucketPath,

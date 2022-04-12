@@ -182,10 +182,10 @@ type QuizMcq struct {
 }
 
 type StaticContent struct {
-	Type     *Type           `json:"type"`
-	File     *graphql.Upload `json:"file"`
-	CourseID *string         `json:"courseId"`
-	TopicID  *string         `json:"topicId"`
+	Type       *Type           `json:"type"`
+	File       *graphql.Upload `json:"file"`
+	CourseID   *string         `json:"courseId"`
+	ContentID  *string         `json:"contentId"`
 }
 
 type Topic struct {
@@ -204,6 +204,7 @@ type Topic struct {
 }
 
 type TopicContent struct {
+	ID		  		  *string `json:"id"`
 	Language          *string `json:"language"`
 	TopicID           *string `json:"topicId"`
 	StartTime         *int    `json:"startTime"`
@@ -217,14 +218,14 @@ type TopicContent struct {
 }
 
 type TopicContentInput struct {
-	Language          *string `json:"language"`
-	TopicID           *string `json:"topicId"`
-	StartTime         *int    `json:"startTime"`
-	Duration          *int    `json:"duration"`
-	SkipIntroDuration *int    `json:"skipIntroDuration"`
-	NextShowTime      *int    `json:"nextShowTime"`
-	FromEndTime       *int    `json:"fromEndTime"`
-	Type              *string `json:"type"`
+	Language          	*string `json:"language"`
+	ContentID           *string `json:"contentId"`
+	StartTime         	*int    `json:"startTime"`
+	Duration          	*int    `json:"duration"`
+	SkipIntroDuration 	*int    `json:"skipIntroDuration"`
+	NextShowTime      	*int    `json:"nextShowTime"`
+	FromEndTime       	*int    `json:"fromEndTime"`
+	Type              	*string `json:"type"`
 }
 
 type TopicInput struct {
@@ -253,15 +254,15 @@ type TopicResourceInput struct {
 }
 
 type TopicSubtitle struct {
-	File     *graphql.Upload `json:"file"`
-	CourseID *string         `json:"courseId"`
-	TopicID  *string         `json:"topicId"`
+	File      *graphql.Upload `json:"file"`
+	CourseID  *string         `json:"courseId"`
+	ContentID *string         `json:"contentId"`
 }
 
 type TopicVideo struct {
-	File     *graphql.Upload `json:"file"`
-	CourseID *string         `json:"courseId"`
-	TopicID  *string         `json:"topicId"`
+	File      *graphql.Upload `json:"file"`
+	CourseID  *string         `json:"courseId"`
+	ContentID *string         `json:"contentId"`
 }
 
 type UploadResult struct {

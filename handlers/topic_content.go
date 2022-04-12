@@ -12,6 +12,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/rs/xid"
 	"github.com/scylladb/gocqlx/v2/qb"
 	log "github.com/sirupsen/logrus"
 	"github.com/zicops/contracts/coursez"
@@ -24,7 +25,9 @@ import (
 
 func TopicContentCreate(ctx context.Context, topicID string, topicConent *model.TopicContentInput) (*model.TopicContent, error) {
 	log.Info("TopicContentCreate called")
+	guid := xid.New()
 	cassandraTopicContent := coursez.TopicContent{
+		ID:                 guid.String(),
 		TopicId:            topicID,
 		Language:           *topicConent.Language,
 		CreatedAt:          time.Now().Unix(),
@@ -59,6 +62,7 @@ func TopicContentCreate(ctx context.Context, topicID string, topicConent *model.
 	}
 	created := strconv.FormatInt(cassandraTopicContent.CreatedAt, 10)
 	responseModel := model.TopicContent{
+		ID:                &cassandraTopicContent.ID,
 		Language:          topicConent.Language,
 		StartTime:         topicConent.StartTime,
 		CreatedAt:         &created,
@@ -83,11 +87,11 @@ func UploadTopicVideo(ctx context.Context, file model.TopicVideo) (*model.Upload
 		log.Errorf("Failed to upload video to course topic: %v", err.Error())
 		return &isSuccess, nil
 	}
-	if file.CourseID == nil || file.TopicID == nil {
-		log.Errorf("Failed to upload video to course topic: %v", "courseID or topicID is nil")
+	if file.CourseID == nil || file.ContentID == nil {
+		log.Errorf("Failed to upload video to course topic: %v", "courseID or contentId is nil")
 		return &isSuccess, nil
 	}
-	bucketPath := *file.CourseID + "/" + *file.TopicID + "/" + file.File.Filename
+	bucketPath := *file.CourseID + "/" + *file.ContentID + "/" + file.File.Filename
 	writer, err := storageC.UploadToGCS(ctx, bucketPath)
 	if err != nil {
 		log.Errorf("Failed to upload video to course topic: %v", err.Error())
@@ -104,9 +108,9 @@ func UploadTopicVideo(ctx context.Context, file model.TopicVideo) (*model.Upload
 		return &isSuccess, err
 	}
 	getUrl := storageC.GetSignedURLForObject(bucketPath)
-	where := qb.Eq("topicid")
+	where := qb.Eq("id")
 	updateQB := qb.Update("coursez.topic_content").Set("topiccontentbucket").Set("url").Where(where)
-	updateQuery := updateQB.Query(*global.CassSession.Session).BindMap(qb.M{"topicid": file.TopicID, "topiccontentbucket": bucketPath, "url": getUrl})
+	updateQuery := updateQB.Query(*global.CassSession.Session).BindMap(qb.M{"id": file.ContentID, "topiccontentbucket": bucketPath, "url": getUrl})
 	if err := updateQuery.ExecRelease(); err != nil {
 		return &isSuccess, err
 	}
@@ -126,7 +130,7 @@ func UploadTopicSubtitle(ctx context.Context, file model.TopicSubtitle) (*model.
 		log.Errorf("Failed to upload subtitle to course topic: %v", err.Error())
 		return &isSuccess, nil
 	}
-	bucketPath := *file.CourseID + "/" + *file.TopicID + "/" + file.File.Filename
+	bucketPath := *file.CourseID + "/" + *file.ContentID + "/" + file.File.Filename
 	writer, err := storageC.UploadToGCS(ctx, bucketPath)
 	if err != nil {
 		log.Errorf("Failed to upload subtitle to course topic: %v", err.Error())
@@ -143,9 +147,9 @@ func UploadTopicSubtitle(ctx context.Context, file model.TopicSubtitle) (*model.
 		return &isSuccess, err
 	}
 	getUrl := storageC.GetSignedURLForObject(bucketPath)
-	where := qb.Eq("topicid")
+	where := qb.Eq("id")
 	updateQB := qb.Update("coursez.topic_content").Set("subtitlefilebucket").Set("subtitlefile").Where(where)
-	updateQuery := updateQB.Query(*global.CassSession.Session).BindMap(qb.M{"topicid": file.TopicID, "subtitlefilebucket": bucketPath, "subtitlefile": getUrl})
+	updateQuery := updateQB.Query(*global.CassSession.Session).BindMap(qb.M{"id": file.ContentID, "subtitlefilebucket": bucketPath, "subtitlefile": getUrl})
 	if err := updateQuery.ExecRelease(); err != nil {
 		return &isSuccess, err
 	}
@@ -157,12 +161,12 @@ func UploadTopicSubtitle(ctx context.Context, file model.TopicSubtitle) (*model.
 
 func UpdateTopicContent(ctx context.Context, topicConent *model.TopicContentInput) (*model.TopicContent, error) {
 	log.Info("UpdateTopicContent called")
-	topicID := topicConent.TopicID
+	topicID := topicConent.ContentID
 	if *topicID == "" {
-		return nil, fmt.Errorf("TopicID is required")
+		return nil, fmt.Errorf("ContentID is required")
 	}
 	cassandraTopicContent := coursez.TopicContent{
-		TopicId: *topicID,
+		ID: *topicID,
 	}
 	topicContents := []coursez.TopicContent{}
 	getQuery := global.CassSession.Session.Query(coursez.TopicContentTable.Get()).BindMap(qb.M{"topicid": cassandraTopicContent.TopicId})
@@ -240,7 +244,7 @@ func UploadTopicStaticContent(ctx context.Context, file *model.StaticContent) (*
 	}
 	baseDir := strings.TrimSuffix(file.File.Filename, filepath.Ext(file.File.Filename))
 	baseDir = strings.Split(baseDir, ".")[0]
-	bucketPath := *file.CourseID + "/" + *file.TopicID + "/" + baseDir
+	bucketPath := *file.CourseID + "/" + *file.ContentID + "/" + baseDir
 	writer, err := storageC.UploadToGCS(ctx, bucketPath)
 	if err != nil {
 		log.Errorf("Failed to upload static content to course topic: %v", err.Error())
@@ -300,9 +304,9 @@ func UploadTopicStaticContent(ctx context.Context, file *model.StaticContent) (*
 		return nil, fmt.Errorf("type is empty or not supported")
 	}
 	getUrl := storageC.GetSignedURLForObject(urlPath)
-	where := qb.Eq("topicid")
+	where := qb.Eq("id")
 	updateQB := qb.Update("coursez.topic_content").Set("topiccontentbucket").Set("url").Where(where)
-	updateQuery := updateQB.Query(*global.CassSession.Session).BindMap(qb.M{"topicid": file.TopicID, "topiccontentbucket": urlPath, "url": getUrl})
+	updateQuery := updateQB.Query(*global.CassSession.Session).BindMap(qb.M{"id": file.ContentID, "topiccontentbucket": urlPath, "url": getUrl})
 	if err := updateQuery.ExecRelease(); err != nil {
 		return &isSuccess, err
 	}
