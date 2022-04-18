@@ -97,6 +97,14 @@ func TopicUpdate(ctx context.Context, topic *model.TopicInput) (*model.Topic, er
 		updateCols = append(updateCols, "created_by")
 		cassandraTopic.CreatedBy = *topic.CreatedBy
 	}
+	if topic.Name != nil {
+		updateCols = append(updateCols, "name")
+		cassandraTopic.Name = *topic.Name
+	}
+	if topic.Type != nil {
+		updateCols = append(updateCols, "type")
+		cassandraTopic.Type = *topic.Type
+	}
 	updateCols = append(updateCols, "updated_at")
 	cassandraTopic.UpdatedAt = time.Now().Unix()
 	// set course in cassandra
