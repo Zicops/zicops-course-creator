@@ -56,7 +56,7 @@ func AddTopicResources(ctx context.Context, courseID string, resource *model.Top
 	if resource.Name != nil {
 		sourceName = *resource.Name
 	}
-	createdBy:= ""
+	createdBy := ""
 	if resource.CreatedBy != nil {
 		createdBy = *resource.CreatedBy
 	}
@@ -68,6 +68,7 @@ func AddTopicResources(ctx context.Context, courseID string, resource *model.Top
 		ID:         guid,
 		Name:       sourceName,
 		TopicId:    *resource.TopicID,
+		CourseId:   courseID,
 		BucketPath: bucketPath,
 		Url:        getUrl,
 		IsActive:   false,
