@@ -23,12 +23,13 @@ import (
 	"github.com/zicops/zicops-course-creator/lib/googleprojectlib"
 )
 
-func TopicContentCreate(ctx context.Context, topicID string, topicConent *model.TopicContentInput) (*model.TopicContent, error) {
+func TopicContentCreate(ctx context.Context, topicID string, courseID string, topicConent *model.TopicContentInput) (*model.TopicContent, error) {
 	log.Info("TopicContentCreate called")
 	guid := xid.New()
 	cassandraTopicContent := coursez.TopicContent{
 		ID:                 guid.String(),
 		TopicId:            topicID,
+		CourseId:           courseID,
 		Language:           *topicConent.Language,
 		CreatedAt:          time.Now().Unix(),
 		UpdatedAt:          time.Now().Unix(),

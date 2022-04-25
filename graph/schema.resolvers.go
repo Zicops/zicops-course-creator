@@ -129,8 +129,8 @@ func (r *mutationResolver) UpdateCourseTopic(ctx context.Context, topic *model.T
 	return resp, nil
 }
 
-func (r *mutationResolver) AddTopicContent(ctx context.Context, topicID *string, topicContent *model.TopicContentInput) (*model.TopicContent, error) {
-	resp, err := handlers.TopicContentCreate(ctx, *topicID, topicContent)
+func (r *mutationResolver) AddTopicContent(ctx context.Context, topicID *string, courseID *string, topicContent *model.TopicContentInput) (*model.TopicContent, error) {
+	resp, err := handlers.TopicContentCreate(ctx, *topicID, *courseID, topicContent)
 	if err != nil {
 		log.Errorf("error creating topic content: %v", err)
 		return nil, err
