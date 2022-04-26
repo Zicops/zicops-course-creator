@@ -516,7 +516,7 @@ func CourseUpdate(ctx context.Context, courseInput *model.CourseInput) (*model.C
 		Category:           courseInput.Category,
 		SubCategory:        courseInput.SubCategory,
 		SubCategories:      subCatsRes,
-                Outcomes:.          courseInput.Outcomes,
+                Outcomes:           courseInput.Outcomes,
 	}
 	return &responseModel, nil
 }
