@@ -162,7 +162,7 @@ type ComplexityRoot struct {
 	}
 
 	TopicContent struct {
-		ID          func(childComplexity int) int
+		ID          	  func(childComplexity int) int
 		CreatedAt         func(childComplexity int) int
 		Duration          func(childComplexity int) int
 		FromEndTime       func(childComplexity int) int
@@ -9024,14 +9024,14 @@ func (ec *executionContext) _TopicContent(ctx context.Context, sel ast.Selection
 
 		case "id":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._TopicContent_topicId(ctx, field, obj)
+				return ec._TopicContent_id(ctx, field, obj)
 			}
 
 			out.Values[i] = innerFunc(ctx)
 
 		case "topicId":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._TopicContent_id(ctx, field, obj)
+				return ec._TopicContent_topicId(ctx, field, obj)
 			}
 
 			out.Values[i] = innerFunc(ctx)
