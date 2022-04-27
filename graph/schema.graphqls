@@ -180,6 +180,7 @@ input TopicContentInput {
     nextShowTime: Int
     fromEndTime: Int
     type: String
+    is_default: Boolean
 }
 
 type TopicContent {
@@ -194,6 +195,7 @@ type TopicContent {
     created_at: String
     updated_at: String
     type: String
+    is_default: Boolean
 }
 
 input TopicVideo{

@@ -167,6 +167,7 @@ type ComplexityRoot struct {
 		Duration          func(childComplexity int) int
 		FromEndTime       func(childComplexity int) int
 		ID                func(childComplexity int) int
+		IsDefault         func(childComplexity int) int
 		Language          func(childComplexity int) int
 		NextShowTime      func(childComplexity int) int
 		SkipIntroDuration func(childComplexity int) int
@@ -1077,6 +1078,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.TopicContent.ID(childComplexity), true
 
+	case "TopicContent.is_default":
+		if e.complexity.TopicContent.IsDefault == nil {
+			break
+		}
+
+		return e.complexity.TopicContent.IsDefault(childComplexity), true
+
 	case "TopicContent.language":
 		if e.complexity.TopicContent.Language == nil {
 			break
@@ -1400,6 +1408,7 @@ input TopicContentInput {
     nextShowTime: Int
     fromEndTime: Int
     type: String
+    is_default: Boolean
 }
 
 type TopicContent {
@@ -1414,6 +1423,7 @@ type TopicContent {
     created_at: String
     updated_at: String
     type: String
+    is_default: Boolean
 }
 
 input TopicVideo{
@@ -5805,6 +5815,38 @@ func (ec *executionContext) _TopicContent_type(ctx context.Context, field graphq
 	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _TopicContent_is_default(ctx context.Context, field graphql.CollectedField, obj *model.TopicContent) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "TopicContent",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.IsDefault, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*bool)
+	fc.Result = res
+	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _UploadResult_success(ctx context.Context, field graphql.CollectedField, obj *model.UploadResult) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -7943,6 +7985,14 @@ func (ec *executionContext) unmarshalInputTopicContentInput(ctx context.Context,
 			if err != nil {
 				return it, err
 			}
+		case "is_default":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("is_default"))
+			it.IsDefault, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
 		}
 	}
 
@@ -9210,6 +9260,13 @@ func (ec *executionContext) _TopicContent(ctx context.Context, sel ast.Selection
 		case "type":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._TopicContent_type(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+		case "is_default":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._TopicContent_is_default(ctx, field, obj)
 			}
 
 			out.Values[i] = innerFunc(ctx)

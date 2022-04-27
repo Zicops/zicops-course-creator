@@ -56,6 +56,9 @@ func TopicContentCreate(ctx context.Context, topicID string, courseID string, to
 	if topicConent.Type != nil {
 		cassandraTopicContent.Type = *topicConent.Type
 	}
+	if topicConent.IsDefault != nil {
+		cassandraTopicContent.IsDefault = *topicConent.IsDefault
+	}
 	// set course in cassandra
 	insertQuery := global.CassSession.Session.Query(coursez.TopicContentTable.Insert()).BindStruct(cassandraTopicContent)
 	if err := insertQuery.ExecRelease(); err != nil {
@@ -74,6 +77,7 @@ func TopicContentCreate(ctx context.Context, topicID string, courseID string, to
 		FromEndTime:       topicConent.FromEndTime,
 		TopicID:           &topicID,
 		Type:              topicConent.Type,
+		IsDefault:         topicConent.IsDefault,
 	}
 	return &responseModel, nil
 }
@@ -209,6 +213,10 @@ func UpdateTopicContent(ctx context.Context, topicConent *model.TopicContentInpu
 		updateCols = append(updateCols, "language")
 		cassandraTopicContent.Language = *topicConent.Language
 	}
+	if topicConent.IsDefault != nil {
+		updateCols = append(updateCols, "is_default")
+		cassandraTopicContent.IsDefault = *topicConent.IsDefault
+	}
 	// set course in cassandra
 
 	upStms, uNames := coursez.TopicContentTable.Update(updateCols...)
@@ -229,6 +237,7 @@ func UpdateTopicContent(ctx context.Context, topicConent *model.TopicContentInpu
 		FromEndTime:       topicConent.FromEndTime,
 		TopicID:           topicID,
 		Type:              topicConent.Type,
+		IsDefault:         topicConent.IsDefault,
 	}
 	return &responseModel, nil
 }

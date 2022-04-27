@@ -217,6 +217,7 @@ type TopicContent struct {
 	CreatedAt         *string `json:"created_at"`
 	UpdatedAt         *string `json:"updated_at"`
 	Type              *string `json:"type"`
+	IsDefault         *bool   `json:"is_default"`
 }
 
 type TopicContentInput struct {
@@ -228,6 +229,7 @@ type TopicContentInput struct {
 	NextShowTime      *int    `json:"nextShowTime"`
 	FromEndTime       *int    `json:"fromEndTime"`
 	Type              *string `json:"type"`
+	IsDefault         *bool   `json:"is_default"`
 }
 
 type TopicInput struct {
