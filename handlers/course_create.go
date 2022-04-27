@@ -69,6 +69,10 @@ func CourseCreator(ctx context.Context, courseInput *model.CourseInput) (*model.
 		subCats = append(subCats, subC)
 		subCatsRes = append(subCatsRes, &subCR)
 	}
+	active := false
+	if courseInput.IsActive != nil {
+		courseInput.IsActive = &active
+	}
 	cassandraCourse := coursez.Course{
 		ID:                 guid.String(),
 		Name:               *courseInput.Name,
@@ -90,7 +94,7 @@ func CourseCreator(ctx context.Context, courseInput *model.CourseInput) (*model.
 		RelatedSkills:      relatedSkills,
 		Approvers:          approvers,
 		Status:             courseInput.Status.String(),
-		IsActive:           *courseInput.IsActive,
+		IsActive:           active,
 		SubCategories:      subCats,
 	}
 	if courseInput.Summary != nil {
@@ -140,10 +144,7 @@ func CourseCreator(ctx context.Context, courseInput *model.CourseInput) (*model.
 	if err := insertQuery.ExecRelease(); err != nil {
 		return nil, err
 	}
-	if courseInput.IsActive == nil {
-		active := false
-		courseInput.IsActive = &active
-	}
+
 	created := strconv.FormatInt(cassandraCourse.CreatedAt, 10)
 	responseModel := model.Course{
 		ID:                 &cassandraCourse.ID,

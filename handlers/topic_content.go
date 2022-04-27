@@ -64,10 +64,6 @@ func TopicContentCreate(ctx context.Context, topicID string, courseID string, to
 	if err := insertQuery.ExecRelease(); err != nil {
 		return nil, err
 	}
-	if topicConent.IsDefault == nil {
-		isDefault := false
-		cassandraTopicContent.IsDefault = isDefault
-	}
 	created := strconv.FormatInt(cassandraTopicContent.CreatedAt, 10)
 	responseModel := model.TopicContent{
 		ID:                &cassandraTopicContent.ID,
