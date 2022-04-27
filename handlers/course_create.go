@@ -140,6 +140,10 @@ func CourseCreator(ctx context.Context, courseInput *model.CourseInput) (*model.
 	if err := insertQuery.ExecRelease(); err != nil {
 		return nil, err
 	}
+	if courseInput.IsActive == nil {
+		active := false
+		courseInput.IsActive = &active
+	}
 	created := strconv.FormatInt(cassandraCourse.CreatedAt, 10)
 	responseModel := model.Course{
 		ID:                 &cassandraCourse.ID,
