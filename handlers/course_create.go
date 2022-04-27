@@ -90,7 +90,7 @@ func CourseCreator(ctx context.Context, courseInput *model.CourseInput) (*model.
 		RelatedSkills:      relatedSkills,
 		Approvers:          approvers,
 		Status:             courseInput.Status.String(),
-		IsActive:           true,
+		IsActive:           *courseInput.IsActive,
 		SubCategories:      subCats,
 	}
 	if courseInput.Summary != nil {
@@ -173,7 +173,8 @@ func CourseCreator(ctx context.Context, courseInput *model.CourseInput) (*model.
 		Category:           courseInput.Category,
 		SubCategory:        courseInput.SubCategory,
 		SubCategories:      subCatsRes,
-                Outcomes:           courseInput.Outcomes,
+		Outcomes:           courseInput.Outcomes,
+		IsActive:           courseInput.IsActive,
 	}
 	return &responseModel, nil
 }
@@ -474,6 +475,10 @@ func CourseUpdate(ctx context.Context, courseInput *model.CourseInput) (*model.C
 		updateCols = append(updateCols, "quality_control_check_reqd")
 		cassandraCourse.QARequired = *courseInput.QaRequired
 	}
+	if courseInput.IsActive != nil {
+		updateCols = append(updateCols, "is_active")
+		cassandraCourse.IsActive = *courseInput.IsActive
+	}
 	updateCols = append(updateCols, "updated_at")
 	// set course in cassandra
 	upStms, uNames := coursez.CourseTable.Update(updateCols...)
@@ -516,7 +521,8 @@ func CourseUpdate(ctx context.Context, courseInput *model.CourseInput) (*model.C
 		Category:           courseInput.Category,
 		SubCategory:        courseInput.SubCategory,
 		SubCategories:      subCatsRes,
-                Outcomes:           courseInput.Outcomes,
+		Outcomes:           courseInput.Outcomes,
+		IsActive:           courseInput.IsActive,
 	}
 	return &responseModel, nil
 }

@@ -64,6 +64,7 @@ type Course struct {
 	Category           *string          `json:"category"`
 	SubCategory        *string          `json:"sub_category"`
 	SubCategories      []*SubCategories `json:"sub_categories"`
+	IsActive           *bool            `json:"is_active"`
 }
 
 type CourseFile struct {
@@ -103,6 +104,7 @@ type CourseInput struct {
 	Category           *string               `json:"category"`
 	SubCategory        *string               `json:"sub_category"`
 	SubCategories      []*SubCategoriesInput `json:"sub_categories"`
+	IsActive           *bool                 `json:"is_active"`
 }
 
 type Module struct {
@@ -182,10 +184,10 @@ type QuizMcq struct {
 }
 
 type StaticContent struct {
-	Type       *Type           `json:"type"`
-	File       *graphql.Upload `json:"file"`
-	CourseID   *string         `json:"courseId"`
-	ContentID  *string         `json:"contentId"`
+	Type      *Type           `json:"type"`
+	File      *graphql.Upload `json:"file"`
+	CourseID  *string         `json:"courseId"`
+	ContentID *string         `json:"contentId"`
 }
 
 type Topic struct {
@@ -204,7 +206,7 @@ type Topic struct {
 }
 
 type TopicContent struct {
-	ID		  		  *string `json:"id"`
+	ID                *string `json:"id"`
 	Language          *string `json:"language"`
 	TopicID           *string `json:"topicId"`
 	StartTime         *int    `json:"startTime"`
@@ -218,14 +220,14 @@ type TopicContent struct {
 }
 
 type TopicContentInput struct {
-	Language          	*string `json:"language"`
-	ContentID           *string `json:"contentId"`
-	StartTime         	*int    `json:"startTime"`
-	Duration          	*int    `json:"duration"`
-	SkipIntroDuration 	*int    `json:"skipIntroDuration"`
-	NextShowTime      	*int    `json:"nextShowTime"`
-	FromEndTime       	*int    `json:"fromEndTime"`
-	Type              	*string `json:"type"`
+	Language          *string `json:"language"`
+	ContentID         *string `json:"contentId"`
+	StartTime         *int    `json:"startTime"`
+	Duration          *int    `json:"duration"`
+	SkipIntroDuration *int    `json:"skipIntroDuration"`
+	NextShowTime      *int    `json:"nextShowTime"`
+	FromEndTime       *int    `json:"fromEndTime"`
+	Type              *string `json:"type"`
 }
 
 type TopicInput struct {
