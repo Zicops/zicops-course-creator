@@ -174,7 +174,7 @@ func UpdateTopicContent(ctx context.Context, topicConent *model.TopicContentInpu
 		ID: *topicID,
 	}
 	topicContents := []coursez.TopicContent{}
-	getQuery := global.CassSession.Session.Query(coursez.TopicContentTable.Get()).BindMap(qb.M{"topicid": cassandraTopicContent.TopicId})
+	getQuery := global.CassSession.Session.Query(coursez.TopicContentTable.Get()).BindMap(qb.M{"id": cassandraTopicContent.ID})
 	if err := getQuery.SelectRelease(&topicContents); err != nil {
 		return nil, err
 	}
