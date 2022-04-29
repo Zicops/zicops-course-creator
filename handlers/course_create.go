@@ -71,7 +71,7 @@ func CourseCreator(ctx context.Context, courseInput *model.CourseInput) (*model.
 	}
 	active := false
 	if courseInput.IsActive != nil {
-		courseInput.IsActive = &active
+		active = *courseInput.IsActive
 	}
 	cassandraCourse := coursez.Course{
 		ID:                 guid.String(),
