@@ -12,7 +12,7 @@ import (
 	"github.com/zicops/zicops-course-creator/handlers"
 )
 
-func (r *mutationResolver) AddCatergories(ctx context.Context, category []*string) (*bool, error) {
+func (r *mutationResolver) AddCategories(ctx context.Context, category []*string) (*bool, error) {
 	resp, err := handlers.AddCategory(ctx, category)
 	if err != nil {
 		log.Errorf("error adding categotries: %v", err)
