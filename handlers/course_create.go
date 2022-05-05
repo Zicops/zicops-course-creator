@@ -198,7 +198,7 @@ func UploadCourseImage(ctx context.Context, file model.CourseFile) (*model.Uploa
 		return &isSuccess, nil
 	}
 	bucketPath := *file.CourseID + "/" + file.File.Filename
-	writer, err := storageC.UploadToGCS(ctx, bucketPath)
+	writer, err := storageC.UploadToGCS(ctx, bucketPath, map[string]string{})
 	if err != nil {
 		log.Errorf("Failed to upload image to course: %v", err.Error())
 		return &isSuccess, nil
@@ -241,7 +241,7 @@ func UploadCoursePreviewVideo(ctx context.Context, file model.CourseFile) (*mode
 		return &isSuccess, nil
 	}
 	bucketPath := *file.CourseID + "/" + file.File.Filename
-	writer, err := storageC.UploadToGCS(ctx, bucketPath)
+	writer, err := storageC.UploadToGCS(ctx, bucketPath, map[string]string{})
 	if err != nil {
 		log.Errorf("Failed to upload image to course: %v", err.Error())
 		return &isSuccess, nil
@@ -284,7 +284,7 @@ func UploadCourseTileImage(ctx context.Context, file model.CourseFile) (*model.U
 		return &isSuccess, nil
 	}
 	bucketPath := *file.CourseID + "/" + file.File.Filename
-	writer, err := storageC.UploadToGCS(ctx, bucketPath)
+	writer, err := storageC.UploadToGCS(ctx, bucketPath, map[string]string{})
 	if err != nil {
 		log.Errorf("Failed to upload image to course: %v", err.Error())
 		return &isSuccess, nil

@@ -97,7 +97,7 @@ func UploadTopicVideo(ctx context.Context, file model.TopicVideo) (*model.Upload
 		return &isSuccess, nil
 	}
 	bucketPath := *file.CourseID + "/" + *file.ContentID + "/" + file.File.Filename
-	writer, err := storageC.UploadToGCS(ctx, bucketPath)
+	writer, err := storageC.UploadToGCS(ctx, bucketPath, map[string]string{})
 	if err != nil {
 		log.Errorf("Failed to upload video to course topic: %v", err.Error())
 		return &isSuccess, nil
@@ -135,8 +135,13 @@ func UploadTopicSubtitle(ctx context.Context, file model.TopicSubtitle) (*model.
 		log.Errorf("Failed to upload subtitle to course topic: %v", err.Error())
 		return &isSuccess, nil
 	}
-	bucketPath := *file.CourseID + "/" + *file.ContentID + "/" + file.File.Filename
-	writer, err := storageC.UploadToGCS(ctx, bucketPath)
+	language := "en"
+	if file.Language != nil {
+		language = *file.Language
+	}
+	mainBucket := *file.CourseID + "/" + *file.ContentID + "/subtitles/"
+	bucketPath := mainBucket + file.File.Filename
+	writer, err := storageC.UploadToGCS(ctx, bucketPath, map[string]string{"language": language})
 	if err != nil {
 		log.Errorf("Failed to upload subtitle to course topic: %v", err.Error())
 		return &isSuccess, nil
@@ -154,7 +159,7 @@ func UploadTopicSubtitle(ctx context.Context, file model.TopicSubtitle) (*model.
 	getUrl := storageC.GetSignedURLForObject(bucketPath)
 	where := qb.Eq("id")
 	updateQB := qb.Update("coursez.topic_content").Set("subtitlefilebucket").Set("subtitlefile").Where(where)
-	updateQuery := updateQB.Query(*global.CassSession.Session).BindMap(qb.M{"id": file.ContentID, "subtitlefilebucket": bucketPath, "subtitlefile": getUrl})
+	updateQuery := updateQB.Query(*global.CassSession.Session).BindMap(qb.M{"id": file.ContentID, "subtitlefilebucket": mainBucket, "subtitlefile": getUrl})
 	if err := updateQuery.ExecRelease(); err != nil {
 		return &isSuccess, err
 	}
@@ -255,7 +260,7 @@ func UploadTopicStaticContent(ctx context.Context, file *model.StaticContent) (*
 	baseDir := strings.TrimSuffix(file.File.Filename, filepath.Ext(file.File.Filename))
 	baseDir = strings.Split(baseDir, ".")[0]
 	bucketPath := *file.CourseID + "/" + *file.ContentID + "/" + baseDir
-	writer, err := storageC.UploadToGCS(ctx, bucketPath)
+	writer, err := storageC.UploadToGCS(ctx, bucketPath, map[string]string{})
 	if err != nil {
 		log.Errorf("Failed to upload static content to course topic: %v", err.Error())
 		return &isSuccess, nil
@@ -292,7 +297,7 @@ func UploadTopicStaticContent(ctx context.Context, file *model.StaticContent) (*
 			defer r.Close()
 
 			filePath := filepath.Join(bucketPath, f.Name)
-			w, err := storageC.UploadToGCS(ctx, filePath)
+			w, err := storageC.UploadToGCS(ctx, filePath, map[string]string{})
 			defer w.Close()
 
 			_, err = io.CopyBuffer(w, r, buffer)

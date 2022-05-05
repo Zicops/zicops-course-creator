@@ -157,7 +157,7 @@ func UploadQuizFile(ctx context.Context, courseID string, quiz model.QuizFile) (
 		return nil, fmt.Errorf("course id and  quiz id is required")
 	}
 	bucketPath := courseID + "/" + *quiz.QuizID + "/" + quiz.File.Filename
-	writer, err := storageC.UploadToGCS(ctx, bucketPath)
+	writer, err := storageC.UploadToGCS(ctx, bucketPath, map[string]string{})
 	if err != nil {
 		log.Errorf("Failed to upload video to course topic: %v", err.Error())
 		return &isSuccess, nil

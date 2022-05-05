@@ -1436,6 +1436,7 @@ input TopicSubtitle {
     file: Upload
     courseId: String
     contentId: String    
+    language: String
 }
 
 input StaticContent{
@@ -8211,6 +8212,14 @@ func (ec *executionContext) unmarshalInputTopicSubtitle(ctx context.Context, obj
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("contentId"))
 			it.ContentID, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "language":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("language"))
+			it.Language, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}

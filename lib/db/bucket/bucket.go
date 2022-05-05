@@ -61,9 +61,28 @@ func (sc *Client) CreateBucket(ctx context.Context, bucketName string) (*storage
 }
 
 // UploadToGCS ....
-func (sc *Client) UploadToGCS(ctx context.Context, fileName string) (*storage.Writer, error) {
-	bucketWriter := sc.bucket.Object(fileName).NewWriter(ctx)
-	return bucketWriter, nil
+func (sc *Client) UploadToGCS(ctx context.Context, fileName string, tags map[string]string) (*storage.Writer, error) {
+	bucketObject := sc.bucket.Object(fileName)
+
+	if len(tags) > 0 {
+		attrs, err := bucketObject.Attrs(ctx)
+		if err != nil {
+			return nil, err
+		}
+		bucketObject = bucketObject.If(storage.Conditions{MetagenerationMatch: attrs.Metageneration})
+
+		// writer metadata
+		objectAttrsToUpdate := storage.ObjectAttrsToUpdate{
+			Metadata: tags,
+		}
+		if _, err := bucketObject.Update(ctx, objectAttrsToUpdate); err != nil {
+			return nil, err
+		}
+		bucketWriter := bucketObject.NewWriter(ctx)
+		return bucketWriter, nil
+	} else {
+		return bucketObject.NewWriter(ctx), nil
+	}
 }
 
 func (sc *Client) GetSignedURLForObject(object string) string {
@@ -76,5 +95,6 @@ func (sc *Client) GetSignedURLForObject(object string) string {
 	if err != nil {
 		return ""
 	}
+
 	return url
 }
