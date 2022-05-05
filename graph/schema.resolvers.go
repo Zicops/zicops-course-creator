@@ -156,8 +156,8 @@ func (r *mutationResolver) UploadTopicContentVideo(ctx context.Context, file *mo
 	return resp, nil
 }
 
-func (r *mutationResolver) UploadTopicContentSubtitle(ctx context.Context, file *model.TopicSubtitle) (*model.UploadResult, error) {
-	resp, err := handlers.UploadTopicSubtitle(ctx, *file)
+func (r *mutationResolver) UploadTopicContentSubtitle(ctx context.Context, file []*model.TopicSubtitle) ([]*model.UploadResultSubtitles, error) {
+	resp, err := handlers.UploadTopicSubtitle(ctx, file)
 	if err != nil {
 		log.Errorf("error uploading topic subtitle: %v", err)
 		return nil, err

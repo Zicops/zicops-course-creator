@@ -286,6 +286,11 @@ type UploadResult {
     url: String
 }
 
+type UploadResultSubtitles {
+    success: Boolean
+    url: String
+    language: String
+}
 # define type mutations to add a course  using courseInput
 type Mutation{
     addCategories(category: [String]): Boolean
@@ -304,7 +309,7 @@ type Mutation{
     addTopicContent(topicId: String, courseId:String, topicContent: TopicContentInput): TopicContent
     updateTopicContent(topicContent: TopicContentInput): TopicContent
     uploadTopicContentVideo(file: TopicVideo): UploadResult
-    uploadTopicContentSubtitle(file: TopicSubtitle): UploadResult
+    uploadTopicContentSubtitle(file: [TopicSubtitle]): [UploadResultSubtitles]
     uploadTopicStaticContent(file: StaticContent): UploadResult
     addQuiz(quiz: QuizInput): Quiz
     updateQuiz(quiz: QuizInput): Quiz

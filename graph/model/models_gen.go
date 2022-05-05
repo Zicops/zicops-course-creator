@@ -275,6 +275,12 @@ type UploadResult struct {
 	URL     *string `json:"url"`
 }
 
+type UploadResultSubtitles struct {
+	Success  *bool   `json:"success"`
+	URL      *string `json:"url"`
+	Language *string `json:"language"`
+}
+
 type SubCategories struct {
 	Name *string `json:"name"`
 	Rank *int    `json:"rank"`

@@ -125,7 +125,7 @@ type ComplexityRoot struct {
 		UploadCoursePreviewVideo   func(childComplexity int, file *model.CourseFile) int
 		UploadCourseTileImage      func(childComplexity int, file *model.CourseFile) int
 		UploadQuizFile             func(childComplexity int, courseID *string, file *model.QuizFile) int
-		UploadTopicContentSubtitle func(childComplexity int, file *model.TopicSubtitle) int
+		UploadTopicContentSubtitle func(childComplexity int, file []*model.TopicSubtitle) int
 		UploadTopicContentVideo    func(childComplexity int, file *model.TopicVideo) int
 		UploadTopicResource        func(childComplexity int, courseID *string, resource *model.TopicResourceInput) int
 		UploadTopicStaticContent   func(childComplexity int, file *model.StaticContent) int
@@ -182,6 +182,12 @@ type ComplexityRoot struct {
 		URL     func(childComplexity int) int
 	}
 
+	UploadResultSubtitles struct {
+		Language func(childComplexity int) int
+		Success  func(childComplexity int) int
+		URL      func(childComplexity int) int
+	}
+
 	Sub_categories struct {
 		Name func(childComplexity int) int
 		Rank func(childComplexity int) int
@@ -205,7 +211,7 @@ type MutationResolver interface {
 	AddTopicContent(ctx context.Context, topicID *string, courseID *string, topicContent *model.TopicContentInput) (*model.TopicContent, error)
 	UpdateTopicContent(ctx context.Context, topicContent *model.TopicContentInput) (*model.TopicContent, error)
 	UploadTopicContentVideo(ctx context.Context, file *model.TopicVideo) (*model.UploadResult, error)
-	UploadTopicContentSubtitle(ctx context.Context, file *model.TopicSubtitle) (*model.UploadResult, error)
+	UploadTopicContentSubtitle(ctx context.Context, file []*model.TopicSubtitle) ([]*model.UploadResultSubtitles, error)
 	UploadTopicStaticContent(ctx context.Context, file *model.StaticContent) (*model.UploadResult, error)
 	AddQuiz(ctx context.Context, quiz *model.QuizInput) (*model.Quiz, error)
 	UpdateQuiz(ctx context.Context, quiz *model.QuizInput) (*model.Quiz, error)
@@ -858,7 +864,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.UploadTopicContentSubtitle(childComplexity, args["file"].(*model.TopicSubtitle)), true
+		return e.complexity.Mutation.UploadTopicContentSubtitle(childComplexity, args["file"].([]*model.TopicSubtitle)), true
 
 	case "Mutation.uploadTopicContentVideo":
 		if e.complexity.Mutation.UploadTopicContentVideo == nil {
@@ -1147,6 +1153,27 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.UploadResult.URL(childComplexity), true
+
+	case "UploadResultSubtitles.language":
+		if e.complexity.UploadResultSubtitles.Language == nil {
+			break
+		}
+
+		return e.complexity.UploadResultSubtitles.Language(childComplexity), true
+
+	case "UploadResultSubtitles.success":
+		if e.complexity.UploadResultSubtitles.Success == nil {
+			break
+		}
+
+		return e.complexity.UploadResultSubtitles.Success(childComplexity), true
+
+	case "UploadResultSubtitles.url":
+		if e.complexity.UploadResultSubtitles.URL == nil {
+			break
+		}
+
+		return e.complexity.UploadResultSubtitles.URL(childComplexity), true
 
 	case "sub_categories.name":
 		if e.complexity.Sub_categories.Name == nil {
@@ -1514,6 +1541,11 @@ type UploadResult {
     url: String
 }
 
+type UploadResultSubtitles {
+    success: Boolean
+    url: String
+    language: String
+}
 # define type mutations to add a course  using courseInput
 type Mutation{
     addCategories(category: [String]): Boolean
@@ -1532,7 +1564,7 @@ type Mutation{
     addTopicContent(topicId: String, courseId:String, topicContent: TopicContentInput): TopicContent
     updateTopicContent(topicContent: TopicContentInput): TopicContent
     uploadTopicContentVideo(file: TopicVideo): UploadResult
-    uploadTopicContentSubtitle(file: TopicSubtitle): UploadResult
+    uploadTopicContentSubtitle(file: [TopicSubtitle]): [UploadResultSubtitles]
     uploadTopicStaticContent(file: StaticContent): UploadResult
     addQuiz(quiz: QuizInput): Quiz
     updateQuiz(quiz: QuizInput): Quiz
@@ -1906,10 +1938,10 @@ func (ec *executionContext) field_Mutation_uploadQuizFile_args(ctx context.Conte
 func (ec *executionContext) field_Mutation_uploadTopicContentSubtitle_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 *model.TopicSubtitle
+	var arg0 []*model.TopicSubtitle
 	if tmp, ok := rawArgs["file"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("file"))
-		arg0, err = ec.unmarshalOTopicSubtitle2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐTopicSubtitle(ctx, tmp)
+		arg0, err = ec.unmarshalOTopicSubtitle2ᚕᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐTopicSubtitle(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -4402,7 +4434,7 @@ func (ec *executionContext) _Mutation_uploadTopicContentSubtitle(ctx context.Con
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().UploadTopicContentSubtitle(rctx, args["file"].(*model.TopicSubtitle))
+		return ec.resolvers.Mutation().UploadTopicContentSubtitle(rctx, args["file"].([]*model.TopicSubtitle))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4411,9 +4443,9 @@ func (ec *executionContext) _Mutation_uploadTopicContentSubtitle(ctx context.Con
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*model.UploadResult)
+	res := resTmp.([]*model.UploadResultSubtitles)
 	fc.Result = res
-	return ec.marshalOUploadResult2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐUploadResult(ctx, field.Selections, res)
+	return ec.marshalOUploadResultSubtitles2ᚕᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐUploadResultSubtitles(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_uploadTopicStaticContent(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -5899,6 +5931,102 @@ func (ec *executionContext) _UploadResult_url(ctx context.Context, field graphql
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.URL, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _UploadResultSubtitles_success(ctx context.Context, field graphql.CollectedField, obj *model.UploadResultSubtitles) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "UploadResultSubtitles",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Success, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*bool)
+	fc.Result = res
+	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _UploadResultSubtitles_url(ctx context.Context, field graphql.CollectedField, obj *model.UploadResultSubtitles) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "UploadResultSubtitles",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.URL, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _UploadResultSubtitles_language(ctx context.Context, field graphql.CollectedField, obj *model.UploadResultSubtitles) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "UploadResultSubtitles",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Language, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -9326,6 +9454,48 @@ func (ec *executionContext) _UploadResult(ctx context.Context, sel ast.Selection
 	return out
 }
 
+var uploadResultSubtitlesImplementors = []string{"UploadResultSubtitles"}
+
+func (ec *executionContext) _UploadResultSubtitles(ctx context.Context, sel ast.SelectionSet, obj *model.UploadResultSubtitles) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, uploadResultSubtitlesImplementors)
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("UploadResultSubtitles")
+		case "success":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._UploadResultSubtitles_success(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+		case "url":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._UploadResultSubtitles_url(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+		case "language":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._UploadResultSubtitles_language(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
 var __DirectiveImplementors = []string{"__Directive"}
 
 func (ec *executionContext) ___Directive(ctx context.Context, sel ast.SelectionSet, obj *introspection.Directive) graphql.Marshaler {
@@ -10327,6 +10497,26 @@ func (ec *executionContext) unmarshalOTopicResourceInput2ᚖgithubᚗcomᚋzicop
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
+func (ec *executionContext) unmarshalOTopicSubtitle2ᚕᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐTopicSubtitle(ctx context.Context, v interface{}) ([]*model.TopicSubtitle, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var vSlice []interface{}
+	if v != nil {
+		vSlice = graphql.CoerceList(v)
+	}
+	var err error
+	res := make([]*model.TopicSubtitle, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalOTopicSubtitle2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐTopicSubtitle(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
 func (ec *executionContext) unmarshalOTopicSubtitle2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐTopicSubtitle(ctx context.Context, v interface{}) (*model.TopicSubtitle, error) {
 	if v == nil {
 		return nil, nil
@@ -10380,6 +10570,54 @@ func (ec *executionContext) marshalOUploadResult2ᚖgithubᚗcomᚋzicopsᚋzico
 		return graphql.Null
 	}
 	return ec._UploadResult(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalOUploadResultSubtitles2ᚕᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐUploadResultSubtitles(ctx context.Context, sel ast.SelectionSet, v []*model.UploadResultSubtitles) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalOUploadResultSubtitles2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐUploadResultSubtitles(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	return ret
+}
+
+func (ec *executionContext) marshalOUploadResultSubtitles2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐUploadResultSubtitles(ctx context.Context, sel ast.SelectionSet, v *model.UploadResultSubtitles) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._UploadResultSubtitles(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalO__EnumValue2ᚕgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐEnumValueᚄ(ctx context.Context, sel ast.SelectionSet, v []introspection.EnumValue) graphql.Marshaler {
