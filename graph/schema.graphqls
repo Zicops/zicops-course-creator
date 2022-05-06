@@ -207,7 +207,7 @@ input TopicVideo{
 input TopicSubtitle {
     file: Upload
     courseId: String
-    contentId: String    
+    topicId: String    
     language: String
 }
 

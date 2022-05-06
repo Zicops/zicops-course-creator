@@ -128,7 +128,6 @@ func UploadTopicVideo(ctx context.Context, file model.TopicVideo) (*model.Upload
 func UploadTopicSubtitle(ctx context.Context, files []*model.TopicSubtitle) ([]*model.UploadResultSubtitles, error) {
 	log.Info("UploadTopicSubtitle called")
 	isSuccess := []*model.UploadResultSubtitles{}
-	onceBucket := false
 	for _, file := range files {
 		isLocalSuccess := model.UploadResultSubtitles{}
 		isLocal := false
@@ -145,7 +144,7 @@ func UploadTopicSubtitle(ctx context.Context, files []*model.TopicSubtitle) ([]*
 		if file.Language != nil {
 			language = *file.Language
 		}
-		mainBucket := *file.CourseID + "/" + *file.ContentID + "/subtitles/"
+		mainBucket := *file.CourseID + "/" + *file.TopicID + "/subtitles/"
 		bucketPath := mainBucket + file.File.Filename
 		writer, err := storageC.UploadToGCS(ctx, bucketPath, map[string]string{"language": language})
 		if err != nil {
@@ -163,15 +162,6 @@ func UploadTopicSubtitle(ctx context.Context, files []*model.TopicSubtitle) ([]*
 			isSuccess = append(isSuccess, &isLocalSuccess)
 		}
 		getUrl := storageC.GetSignedURLForObject(bucketPath)
-		if !onceBucket {
-			where := qb.Eq("id")
-			updateQB := qb.Update("coursez.topic_content").Set("subtitlefilebucket").Set("subtitlefile").Where(where)
-			updateQuery := updateQB.Query(*global.CassSession.Session).BindMap(qb.M{"id": file.ContentID, "subtitlefilebucket": mainBucket, "subtitlefile": getUrl})
-			if err := updateQuery.ExecRelease(); err != nil {
-				isSuccess = append(isSuccess, &isLocalSuccess)
-			}
-			onceBucket = true
-		}
 		isLocal = true
 		isLocalSuccess.Success = &isLocal
 		isLocalSuccess.URL = &getUrl

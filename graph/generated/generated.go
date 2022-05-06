@@ -1462,7 +1462,7 @@ input TopicVideo{
 input TopicSubtitle {
     file: Upload
     courseId: String
-    contentId: String    
+    topicId: String    
     language: String
 }
 
@@ -8335,11 +8335,11 @@ func (ec *executionContext) unmarshalInputTopicSubtitle(ctx context.Context, obj
 			if err != nil {
 				return it, err
 			}
-		case "contentId":
+		case "topicId":
 			var err error
 
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("contentId"))
-			it.ContentID, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("topicId"))
+			it.TopicID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}

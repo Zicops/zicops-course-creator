@@ -258,10 +258,10 @@ type TopicResourceInput struct {
 }
 
 type TopicSubtitle struct {
-	File      *graphql.Upload `json:"file"`
-	CourseID  *string         `json:"courseId"`
-	ContentID *string         `json:"contentId"`
-	Language  *string         `json:"language"`
+	File     *graphql.Upload `json:"file"`
+	CourseID *string         `json:"courseId"`
+	TopicID  *string         `json:"topicId"`
+	Language *string         `json:"language"`
 }
 
 type TopicVideo struct {
