@@ -4,6 +4,8 @@ import (
 	"archive/zip"
 	"bytes"
 	"context"
+	"crypto/sha256"
+	"encoding/hex"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -262,7 +264,12 @@ func UploadTopicStaticContent(ctx context.Context, file *model.StaticContent) (*
 	}
 	baseDir := strings.TrimSuffix(file.File.Filename, filepath.Ext(file.File.Filename))
 	baseDir = strings.Split(baseDir, ".")[0]
-	bucketPath := *file.CourseID + "/" + *file.ContentID + "/" + baseDir
+	// convert baseDir to cryptographic hash
+	hash := sha256.New()
+	hash.Write([]byte(baseDir))
+	hashBytes := hash.Sum(nil)
+	hashString := hex.EncodeToString(hashBytes)
+	bucketPath := *file.CourseID + "/" + *file.ContentID + "/" + hashString
 	writer, err := storageC.UploadToGCS(ctx, bucketPath, map[string]string{})
 	if err != nil {
 		log.Errorf("Failed to upload static content to course topic: %v", err.Error())
@@ -295,17 +302,19 @@ func UploadTopicStaticContent(ctx context.Context, file *model.StaticContent) (*
 		err := func() error {
 			r, err := f.Open()
 			if err != nil {
-				return fmt.Errorf("Open: %v", err)
+				return err
 			}
 			defer r.Close()
 
 			filePath := filepath.Join(bucketPath, f.Name)
 			w, err := storageC.UploadToGCS(ctx, filePath, map[string]string{})
+			if err != nil {
+				return err
+			}
 			defer w.Close()
-
 			_, err = io.CopyBuffer(w, r, buffer)
 			if err != nil {
-				return fmt.Errorf("io.Copy: %v", err)
+				return err
 			}
 
 			return nil
