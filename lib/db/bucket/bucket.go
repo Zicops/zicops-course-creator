@@ -63,11 +63,16 @@ func (sc *Client) CreateBucket(ctx context.Context, bucketName string) (*storage
 // UploadToGCS ....
 func (sc *Client) UploadToGCS(ctx context.Context, fileName string, tags map[string]string) (*storage.Writer, error) {
 	bucketObject := sc.bucket.Object(fileName)
+	return bucketObject.NewWriter(ctx), nil
+}
 
+// SetTags ....
+func (sc *Client) SetTags(ctx context.Context, path string, tags map[string]string) error {
+	bucketObject := sc.bucket.Object(path)
 	if len(tags) > 0 {
 		attrs, err := bucketObject.Attrs(ctx)
 		if err != nil {
-			return nil, err
+			return err
 		}
 		bucketObject = bucketObject.If(storage.Conditions{MetagenerationMatch: attrs.Metageneration})
 
@@ -76,13 +81,12 @@ func (sc *Client) UploadToGCS(ctx context.Context, fileName string, tags map[str
 			Metadata: tags,
 		}
 		if _, err := bucketObject.Update(ctx, objectAttrsToUpdate); err != nil {
-			return nil, err
+			return err
 		}
-		bucketWriter := bucketObject.NewWriter(ctx)
-		return bucketWriter, nil
-	} else {
-		return bucketObject.NewWriter(ctx), nil
+		return nil
 	}
+	return nil
+
 }
 
 func (sc *Client) GetSignedURLForObject(object string) string {
