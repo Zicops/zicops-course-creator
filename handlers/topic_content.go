@@ -278,8 +278,8 @@ func UploadTopicStaticContent(ctx context.Context, file *model.StaticContent) (*
 	hash.Write([]byte(baseDir))
 	hashBytes := hash.Sum(nil)
 	hashString := hex.EncodeToString(hashBytes)
-	bucketPath := *file.CourseID + "/" + *file.ContentID + "/" + hashString
-	writer, err := storageC.UploadToGCS(ctx, bucketPath, map[string]string{})
+	bucketPath := *file.CourseID + "/" + *file.ContentID + "/" + hashString + "/" + file.File.Filename
+	writer, err := storageC.UploadToGCSPub(ctx, bucketPath, map[string]string{})
 	if err != nil {
 		log.Errorf("Failed to upload static content to course topic: %v", err.Error())
 		return &isSuccess, nil

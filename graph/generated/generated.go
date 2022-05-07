@@ -1474,7 +1474,7 @@ input StaticContent{
 }
 # enum Type 
 enum Type {
-    SCROM
+    SCORM
     TINCAN
     CMI5
     HTML5

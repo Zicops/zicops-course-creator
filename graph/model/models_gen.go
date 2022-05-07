@@ -343,14 +343,14 @@ func (e Status) MarshalGQL(w io.Writer) {
 type Type string
 
 const (
-	TypeScrom  Type = "SCROM"
+	TypeScorm  Type = "SCORM"
 	TypeTincan Type = "TINCAN"
 	TypeCmi5   Type = "CMI5"
 	TypeHTML5  Type = "HTML5"
 )
 
 var AllType = []Type{
-	TypeScrom,
+	TypeScorm,
 	TypeTincan,
 	TypeCmi5,
 	TypeHTML5,
@@ -358,7 +358,7 @@ var AllType = []Type{
 
 func (e Type) IsValid() bool {
 	switch e {
-	case TypeScrom, TypeTincan, TypeCmi5, TypeHTML5:
+	case TypeScorm, TypeTincan, TypeCmi5, TypeHTML5:
 		return true
 	}
 	return false

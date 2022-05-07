@@ -17,6 +17,7 @@ type Client struct {
 	projectID string
 	client    *storage.Client
 	bucket    *storage.BucketHandle
+	bucketPublic *storage.BucketHandle
 }
 
 // NewStorageHandler return new database action
@@ -45,6 +46,7 @@ func (sc *Client) InitializeStorageClient(ctx context.Context, projectID string)
 	sc.client = client
 	sc.projectID = projectID
 	sc.bucket, _ = sc.CreateBucket(ctx, constants.COURSES_BUCKET)
+	sc.bucketPublic, _ = sc.CreateBucketPublic(ctx, constants.COURSES_PUBLIC_BUCKET)
 	return nil
 }
 
@@ -60,9 +62,27 @@ func (sc *Client) CreateBucket(ctx context.Context, bucketName string) (*storage
 	return bkt, nil
 }
 
+// CreateBucket  ...........
+func (sc *Client) CreateBucketPublic(ctx context.Context, bucketName string) (*storage.BucketHandle, error) {
+	bkt := sc.client.Bucket(bucketName)
+	exists, err := bkt.Attrs(ctx)
+	if err != nil && exists == nil {
+		if err := bkt.Create(ctx, sc.projectID, nil); err != nil {
+			return nil, err
+		}
+	}
+	return bkt, nil
+}
+
 // UploadToGCS ....
 func (sc *Client) UploadToGCS(ctx context.Context, fileName string, tags map[string]string) (*storage.Writer, error) {
 	bucketObject := sc.bucket.Object(fileName)
+	return bucketObject.NewWriter(ctx), nil
+}
+
+// UploadToGCSPub ....
+func (sc *Client) UploadToGCSPub(ctx context.Context, fileName string, tags map[string]string) (*storage.Writer, error) {
+	bucketObject := sc.bucketPublic.Object(fileName)
 	return bucketObject.NewWriter(ctx), nil
 }
 
