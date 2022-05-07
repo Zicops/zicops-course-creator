@@ -141,6 +141,7 @@ func UploadTopicSubtitle(ctx context.Context, files []*model.TopicSubtitle) ([]*
 		if err != nil {
 			log.Errorf("Failed to upload subtitle to course topic: %v", err.Error())
 			isSuccess = append(isSuccess, &isLocalSuccess)
+			continue
 		}
 		language := "en"
 		if file.Language != nil {
@@ -152,16 +153,24 @@ func UploadTopicSubtitle(ctx context.Context, files []*model.TopicSubtitle) ([]*
 		if err != nil {
 			log.Errorf("Failed to upload subtitle to course topic: %v", err.Error())
 			isSuccess = append(isSuccess, &isLocalSuccess)
+			continue
 		}
-		defer writer.Close()
 		fileBuffer := bytes.NewBuffer(nil)
 		if _, err := io.Copy(fileBuffer, file.File.File); err != nil {
 			isSuccess = append(isSuccess, &isLocalSuccess)
+			continue
 		}
 		currentBytes := fileBuffer.Bytes()
 		_, err = io.Copy(writer, bytes.NewReader(currentBytes))
 		if err != nil {
 			isSuccess = append(isSuccess, &isLocalSuccess)
+			continue
+		}
+		writer.Close()
+		err = storageC.SetTags(ctx, bucketPath, map[string]string{"language": language})
+		if err != nil {
+			isSuccess = append(isSuccess, &isLocalSuccess)
+			continue
 		}
 		getUrl := storageC.GetSignedURLForObject(bucketPath)
 		isLocal = true
