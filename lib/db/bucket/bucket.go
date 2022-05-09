@@ -86,6 +86,12 @@ func (sc *Client) UploadToGCSPub(ctx context.Context, fileName string, tags map[
 	return bucketObject.NewWriter(ctx), nil
 }
 
+// BucketReader ....
+func (sc *Client) BucketReader(ctx context.Context, objectName string) (*storage.Reader, error) {
+	readerObject, _ := sc.bucketPublic.Object(objectName).NewReader(ctx)
+	return readerObject, nil
+}
+
 // SetTags ....
 func (sc *Client) SetTags(ctx context.Context, path string, tags map[string]string) error {
 	bucketObject := sc.bucket.Object(path)
