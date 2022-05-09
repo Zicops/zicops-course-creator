@@ -228,6 +228,24 @@ func (r *mutationResolver) UploadTopicResource(ctx context.Context, courseID *st
 	return resp, nil
 }
 
+func (r *mutationResolver) CreateQuestionBank(ctx context.Context, input *model.QuestionBankInput) (*model.QuestionBank, error) {
+	resp, err := handlers.QuestionBankCreate(ctx, input)
+	if err != nil {
+		log.Errorf("error adding question bank: %v", err)
+		return nil, err
+	}
+	return resp, nil
+}
+
+func (r *mutationResolver) UpdateQuestionBank(ctx context.Context, input *model.QuestionBankInput) (*model.QuestionBank, error) {
+	resp, err := handlers.QuestionBankUpdate(ctx, input)
+	if err != nil {
+		log.Errorf("error updating question bank: %v", err)
+		return nil, err
+	}
+	return resp, nil
+}
+
 // Mutation returns generated.MutationResolver implementation.
 func (r *Resolver) Mutation() generated.MutationResolver { return &mutationResolver{r} }
 

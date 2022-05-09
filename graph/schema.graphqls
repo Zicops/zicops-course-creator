@@ -291,6 +291,34 @@ type UploadResultSubtitles {
     url: String
     language: String
 }
+
+input QuestionBankInput {
+    id: ID
+    name: String
+    category: String
+    sub_category: String
+    created_at: String
+    updated_at: String
+    created_by: String
+    updated_by: String
+    is_active: Boolean
+    is_default: Boolean
+    owner: String
+}
+
+type QuestionBank {
+    id: ID
+    name: String
+    category: String
+    sub_category: String
+    created_at: String
+    updated_at: String
+    created_by: String
+    updated_by: String
+    is_active: Boolean
+    is_default: Boolean
+    owner: String
+}
 # define type mutations to add a course  using courseInput
 type Mutation{
     addCategories(category: [String]): Boolean
@@ -317,4 +345,7 @@ type Mutation{
     addQuizMCQ(quiz: QuizMcq): Boolean
     addQuizDescriptive(quiz: QuizDescriptive): Boolean
     uploadTopicResource(courseId:String, resource:TopicResourceInput): UploadResult
+    #################################################################################################
+    createQuestionBank(input: QuestionBankInput): QuestionBank
+    updateQuestionBank(input: QuestionBankInput): QuestionBank
 }

@@ -49,6 +49,7 @@ func ChapterCreate(ctx context.Context, courseID string, chapter *model.ChapterI
 	}
 	return &responseModel, nil
 }
+
 func UpdateChapter(ctx context.Context, chapter *model.ChapterInput) (*model.Chapter, error) {
 	log.Info("ChapterUpdate called")
 	if chapter.ID == nil {

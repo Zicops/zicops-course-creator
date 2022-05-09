@@ -135,6 +135,34 @@ type ModuleInput struct {
 	SetGlobal   *bool   `json:"setGlobal"`
 }
 
+type QuestionBank struct {
+	ID          *string `json:"id"`
+	Name        *string `json:"name"`
+	Category    *string `json:"category"`
+	SubCategory *string `json:"sub_category"`
+	CreatedAt   *string `json:"created_at"`
+	UpdatedAt   *string `json:"updated_at"`
+	CreatedBy   *string `json:"created_by"`
+	UpdatedBy   *string `json:"updated_by"`
+	IsActive    *bool   `json:"is_active"`
+	IsDefault   *bool   `json:"is_default"`
+	Owner       *string `json:"owner"`
+}
+
+type QuestionBankInput struct {
+	ID          *string `json:"id"`
+	Name        *string `json:"name"`
+	Category    *string `json:"category"`
+	SubCategory *string `json:"sub_category"`
+	CreatedAt   *string `json:"created_at"`
+	UpdatedAt   *string `json:"updated_at"`
+	CreatedBy   *string `json:"created_by"`
+	UpdatedBy   *string `json:"updated_by"`
+	IsActive    *bool   `json:"is_active"`
+	IsDefault   *bool   `json:"is_default"`
+	Owner       *string `json:"owner"`
+}
+
 type Quiz struct {
 	ID          *string `json:"id"`
 	Name        *string `json:"name"`

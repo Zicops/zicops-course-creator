@@ -115,10 +115,12 @@ type ComplexityRoot struct {
 		AddQuizMcq                 func(childComplexity int, quiz *model.QuizMcq) int
 		AddSubCategories           func(childComplexity int, subCategory []*string) int
 		AddTopicContent            func(childComplexity int, topicID *string, courseID *string, topicContent *model.TopicContentInput) int
+		CreateQuestionBank         func(childComplexity int, input *model.QuestionBankInput) int
 		UpdateCourse               func(childComplexity int, course *model.CourseInput) int
 		UpdateCourseChapter        func(childComplexity int, chapter *model.ChapterInput) int
 		UpdateCourseModule         func(childComplexity int, module *model.ModuleInput) int
 		UpdateCourseTopic          func(childComplexity int, topic *model.TopicInput) int
+		UpdateQuestionBank         func(childComplexity int, input *model.QuestionBankInput) int
 		UpdateQuiz                 func(childComplexity int, quiz *model.QuizInput) int
 		UpdateTopicContent         func(childComplexity int, topicContent *model.TopicContentInput) int
 		UploadCourseImage          func(childComplexity int, file *model.CourseFile) int
@@ -132,6 +134,20 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
+	}
+
+	QuestionBank struct {
+		Category    func(childComplexity int) int
+		CreatedAt   func(childComplexity int) int
+		CreatedBy   func(childComplexity int) int
+		ID          func(childComplexity int) int
+		IsActive    func(childComplexity int) int
+		IsDefault   func(childComplexity int) int
+		Name        func(childComplexity int) int
+		Owner       func(childComplexity int) int
+		SubCategory func(childComplexity int) int
+		UpdatedAt   func(childComplexity int) int
+		UpdatedBy   func(childComplexity int) int
 	}
 
 	Quiz struct {
@@ -219,6 +235,8 @@ type MutationResolver interface {
 	AddQuizMcq(ctx context.Context, quiz *model.QuizMcq) (*bool, error)
 	AddQuizDescriptive(ctx context.Context, quiz *model.QuizDescriptive) (*bool, error)
 	UploadTopicResource(ctx context.Context, courseID *string, resource *model.TopicResourceInput) (*model.UploadResult, error)
+	CreateQuestionBank(ctx context.Context, input *model.QuestionBankInput) (*model.QuestionBank, error)
+	UpdateQuestionBank(ctx context.Context, input *model.QuestionBankInput) (*model.QuestionBank, error)
 }
 
 type executableSchema struct {
@@ -734,6 +752,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.AddTopicContent(childComplexity, args["topicId"].(*string), args["courseId"].(*string), args["topicContent"].(*model.TopicContentInput)), true
 
+	case "Mutation.createQuestionBank":
+		if e.complexity.Mutation.CreateQuestionBank == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_createQuestionBank_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.CreateQuestionBank(childComplexity, args["input"].(*model.QuestionBankInput)), true
+
 	case "Mutation.updateCourse":
 		if e.complexity.Mutation.UpdateCourse == nil {
 			break
@@ -781,6 +811,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.UpdateCourseTopic(childComplexity, args["topic"].(*model.TopicInput)), true
+
+	case "Mutation.updateQuestionBank":
+		if e.complexity.Mutation.UpdateQuestionBank == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_updateQuestionBank_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdateQuestionBank(childComplexity, args["input"].(*model.QuestionBankInput)), true
 
 	case "Mutation.updateQuiz":
 		if e.complexity.Mutation.UpdateQuiz == nil {
@@ -901,6 +943,83 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.UploadTopicStaticContent(childComplexity, args["file"].(*model.StaticContent)), true
+
+	case "QuestionBank.category":
+		if e.complexity.QuestionBank.Category == nil {
+			break
+		}
+
+		return e.complexity.QuestionBank.Category(childComplexity), true
+
+	case "QuestionBank.created_at":
+		if e.complexity.QuestionBank.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.QuestionBank.CreatedAt(childComplexity), true
+
+	case "QuestionBank.created_by":
+		if e.complexity.QuestionBank.CreatedBy == nil {
+			break
+		}
+
+		return e.complexity.QuestionBank.CreatedBy(childComplexity), true
+
+	case "QuestionBank.id":
+		if e.complexity.QuestionBank.ID == nil {
+			break
+		}
+
+		return e.complexity.QuestionBank.ID(childComplexity), true
+
+	case "QuestionBank.is_active":
+		if e.complexity.QuestionBank.IsActive == nil {
+			break
+		}
+
+		return e.complexity.QuestionBank.IsActive(childComplexity), true
+
+	case "QuestionBank.is_default":
+		if e.complexity.QuestionBank.IsDefault == nil {
+			break
+		}
+
+		return e.complexity.QuestionBank.IsDefault(childComplexity), true
+
+	case "QuestionBank.name":
+		if e.complexity.QuestionBank.Name == nil {
+			break
+		}
+
+		return e.complexity.QuestionBank.Name(childComplexity), true
+
+	case "QuestionBank.owner":
+		if e.complexity.QuestionBank.Owner == nil {
+			break
+		}
+
+		return e.complexity.QuestionBank.Owner(childComplexity), true
+
+	case "QuestionBank.sub_category":
+		if e.complexity.QuestionBank.SubCategory == nil {
+			break
+		}
+
+		return e.complexity.QuestionBank.SubCategory(childComplexity), true
+
+	case "QuestionBank.updated_at":
+		if e.complexity.QuestionBank.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.QuestionBank.UpdatedAt(childComplexity), true
+
+	case "QuestionBank.updated_by":
+		if e.complexity.QuestionBank.UpdatedBy == nil {
+			break
+		}
+
+		return e.complexity.QuestionBank.UpdatedBy(childComplexity), true
 
 	case "Quiz.category":
 		if e.complexity.Quiz.Category == nil {
@@ -1546,6 +1665,34 @@ type UploadResultSubtitles {
     url: String
     language: String
 }
+
+input QuestionBankInput {
+    id: ID
+    name: String
+    category: String
+    sub_category: String
+    created_at: String
+    updated_at: String
+    created_by: String
+    updated_by: String
+    is_active: Boolean
+    is_default: Boolean
+    owner: String
+}
+
+type QuestionBank {
+    id: ID
+    name: String
+    category: String
+    sub_category: String
+    created_at: String
+    updated_at: String
+    created_by: String
+    updated_by: String
+    is_active: Boolean
+    is_default: Boolean
+    owner: String
+}
 # define type mutations to add a course  using courseInput
 type Mutation{
     addCategories(category: [String]): Boolean
@@ -1572,6 +1719,9 @@ type Mutation{
     addQuizMCQ(quiz: QuizMcq): Boolean
     addQuizDescriptive(quiz: QuizDescriptive): Boolean
     uploadTopicResource(courseId:String, resource:TopicResourceInput): UploadResult
+    #################################################################################################
+    createQuestionBank(input: QuestionBankInput): QuestionBank
+    updateQuestionBank(input: QuestionBankInput): QuestionBank
 }
 `, BuiltIn: false},
 }
@@ -1776,6 +1926,21 @@ func (ec *executionContext) field_Mutation_addTopicContent_args(ctx context.Cont
 	return args, nil
 }
 
+func (ec *executionContext) field_Mutation_createQuestionBank_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 *model.QuestionBankInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalOQuestionBankInput2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐQuestionBankInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
 func (ec *executionContext) field_Mutation_updateCourseChapter_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -1833,6 +1998,21 @@ func (ec *executionContext) field_Mutation_updateCourse_args(ctx context.Context
 		}
 	}
 	args["course"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_updateQuestionBank_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 *model.QuestionBankInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalOQuestionBankInput2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐQuestionBankInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
 	return args, nil
 }
 
@@ -4721,6 +4901,84 @@ func (ec *executionContext) _Mutation_uploadTopicResource(ctx context.Context, f
 	return ec.marshalOUploadResult2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐUploadResult(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _Mutation_createQuestionBank(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_createQuestionBank_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().CreateQuestionBank(rctx, args["input"].(*model.QuestionBankInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.QuestionBank)
+	fc.Result = res
+	return ec.marshalOQuestionBank2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐQuestionBank(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_updateQuestionBank(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_updateQuestionBank_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().UpdateQuestionBank(rctx, args["input"].(*model.QuestionBankInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.QuestionBank)
+	fc.Result = res
+	return ec.marshalOQuestionBank2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐQuestionBank(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _Query___type(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -4790,6 +5048,358 @@ func (ec *executionContext) _Query___schema(ctx context.Context, field graphql.C
 	res := resTmp.(*introspection.Schema)
 	fc.Result = res
 	return ec.marshalO__Schema2ᚖgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐSchema(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _QuestionBank_id(ctx context.Context, field graphql.CollectedField, obj *model.QuestionBank) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "QuestionBank",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOID2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _QuestionBank_name(ctx context.Context, field graphql.CollectedField, obj *model.QuestionBank) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "QuestionBank",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Name, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _QuestionBank_category(ctx context.Context, field graphql.CollectedField, obj *model.QuestionBank) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "QuestionBank",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Category, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _QuestionBank_sub_category(ctx context.Context, field graphql.CollectedField, obj *model.QuestionBank) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "QuestionBank",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.SubCategory, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _QuestionBank_created_at(ctx context.Context, field graphql.CollectedField, obj *model.QuestionBank) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "QuestionBank",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CreatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _QuestionBank_updated_at(ctx context.Context, field graphql.CollectedField, obj *model.QuestionBank) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "QuestionBank",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.UpdatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _QuestionBank_created_by(ctx context.Context, field graphql.CollectedField, obj *model.QuestionBank) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "QuestionBank",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CreatedBy, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _QuestionBank_updated_by(ctx context.Context, field graphql.CollectedField, obj *model.QuestionBank) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "QuestionBank",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.UpdatedBy, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _QuestionBank_is_active(ctx context.Context, field graphql.CollectedField, obj *model.QuestionBank) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "QuestionBank",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.IsActive, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*bool)
+	fc.Result = res
+	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _QuestionBank_is_default(ctx context.Context, field graphql.CollectedField, obj *model.QuestionBank) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "QuestionBank",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.IsDefault, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*bool)
+	fc.Result = res
+	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _QuestionBank_owner(ctx context.Context, field graphql.CollectedField, obj *model.QuestionBank) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "QuestionBank",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Owner, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Quiz_id(ctx context.Context, field graphql.CollectedField, obj *model.Quiz) (ret graphql.Marshaler) {
@@ -7750,6 +8360,109 @@ func (ec *executionContext) unmarshalInputModuleInput(ctx context.Context, obj i
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputQuestionBankInput(ctx context.Context, obj interface{}) (model.QuestionBankInput, error) {
+	var it model.QuestionBankInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	for k, v := range asMap {
+		switch k {
+		case "id":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+			it.ID, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "name":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("name"))
+			it.Name, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "category":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("category"))
+			it.Category, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "sub_category":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("sub_category"))
+			it.SubCategory, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "created_at":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("created_at"))
+			it.CreatedAt, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "updated_at":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updated_at"))
+			it.UpdatedAt, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "created_by":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("created_by"))
+			it.CreatedBy, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "updated_by":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updated_by"))
+			it.UpdatedBy, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "is_active":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("is_active"))
+			it.IsActive, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "is_default":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("is_default"))
+			it.IsDefault, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "owner":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("owner"))
+			it.Owner, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputQuizDescriptive(ctx context.Context, obj interface{}) (model.QuizDescriptive, error) {
 	var it model.QuizDescriptive
 	asMap := map[string]interface{}{}
@@ -9063,6 +9776,20 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, innerFunc)
 
+		case "createQuestionBank":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_createQuestionBank(ctx, field)
+			}
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, innerFunc)
+
+		case "updateQuestionBank":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_updateQuestionBank(ctx, field)
+			}
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, innerFunc)
+
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -9106,6 +9833,104 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			}
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, innerFunc)
+
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var questionBankImplementors = []string{"QuestionBank"}
+
+func (ec *executionContext) _QuestionBank(ctx context.Context, sel ast.SelectionSet, obj *model.QuestionBank) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, questionBankImplementors)
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("QuestionBank")
+		case "id":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._QuestionBank_id(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+		case "name":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._QuestionBank_name(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+		case "category":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._QuestionBank_category(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+		case "sub_category":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._QuestionBank_sub_category(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+		case "created_at":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._QuestionBank_created_at(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+		case "updated_at":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._QuestionBank_updated_at(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+		case "created_by":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._QuestionBank_created_by(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+		case "updated_by":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._QuestionBank_updated_by(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+		case "is_active":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._QuestionBank_is_active(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+		case "is_default":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._QuestionBank_is_default(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+		case "owner":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._QuestionBank_owner(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
 
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
@@ -10345,6 +11170,21 @@ func (ec *executionContext) unmarshalOModuleInput2ᚖgithubᚗcomᚋzicopsᚋzic
 		return nil, nil
 	}
 	res, err := ec.unmarshalInputModuleInput(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOQuestionBank2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐQuestionBank(ctx context.Context, sel ast.SelectionSet, v *model.QuestionBank) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._QuestionBank(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalOQuestionBankInput2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐQuestionBankInput(ctx context.Context, v interface{}) (*model.QuestionBankInput, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputQuestionBankInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 

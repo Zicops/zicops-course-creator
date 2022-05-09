@@ -1,0 +1,32 @@
+input QuestionBankInput {
+    id: ID
+    name: String
+    category: String
+    sub_category: String
+    created_at: String
+    updated_at: String
+    created_by: String
+    updated_by: String
+    is_active: Boolean
+    is_default: Boolean
+    owner: String
+}
+
+type QuestionBank {
+    id: ID
+    name: String
+    category: String
+    sub_category: String
+    created_at: String
+    updated_at: String
+    created_by: String
+    updated_by: String
+    is_active: Boolean
+    is_default: Boolean
+    owner: String
+}
+
+type Mutation{
+    createQuestionBank(input: QuestionBankInput): QuestionBank
+    updateQuestionBank(input: QuestionBankInput): QuestionBank
+}
