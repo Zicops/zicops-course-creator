@@ -148,6 +148,34 @@ type ExamCohortInput struct {
 	IsActive  *bool   `json:"IsActive"`
 }
 
+type ExamConfiguration struct {
+	ID           *string `json:"id"`
+	ExamID       *string `json:"ExamId"`
+	Shuffle      *bool   `json:"Shuffle"`
+	DisplayHints *bool   `json:"DisplayHints"`
+	ShowAnswer   *bool   `json:"ShowAnswer"`
+	ShowResult   *bool   `json:"ShowResult"`
+	CreatedBy    *string `json:"CreatedBy"`
+	UpdatedBy    *string `json:"UpdatedBy"`
+	IsActive     *bool   `json:"IsActive"`
+	CreatedAt    *string `json:"CreatedAt"`
+	UpdatedAt    *string `json:"UpdatedAt"`
+}
+
+type ExamConfigurationInput struct {
+	ID           *string `json:"id"`
+	ExamID       *string `json:"ExamId"`
+	Shuffle      *bool   `json:"Shuffle"`
+	DisplayHints *bool   `json:"DisplayHints"`
+	ShowAnswer   *bool   `json:"ShowAnswer"`
+	ShowResult   *bool   `json:"ShowResult"`
+	CreatedBy    *string `json:"CreatedBy"`
+	UpdatedBy    *string `json:"UpdatedBy"`
+	IsActive     *bool   `json:"IsActive"`
+	CreatedAt    *string `json:"CreatedAt"`
+	UpdatedAt    *string `json:"UpdatedAt"`
+}
+
 type ExamInput struct {
 	ID           *string `json:"id"`
 	Name         *string `json:"Name"`

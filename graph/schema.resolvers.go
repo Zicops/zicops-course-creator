@@ -426,6 +426,24 @@ func (r *mutationResolver) UpdateExamCohort(ctx context.Context, input *model.Ex
 	return resp, nil
 }
 
+func (r *mutationResolver) AddExamConfiguration(ctx context.Context, input *model.ExamConfigurationInput) (*model.ExamConfiguration, error) {
+	resp, err := handlers.AddExamConfiguration(ctx, input)
+	if err != nil {
+		log.Errorf("error adding exam config : %v", err)
+		return nil, err
+	}
+	return resp, nil
+}
+
+func (r *mutationResolver) UpdateExamConfiguration(ctx context.Context, input *model.ExamConfigurationInput) (*model.ExamConfiguration, error) {
+	resp, err := handlers.UpdateExamConfiguration(ctx, input)
+	if err != nil {
+		log.Errorf("error updating exam config : %v", err)
+		return nil, err
+	}
+	return resp, nil
+}
+
 // Mutation returns generated.MutationResolver implementation.
 func (r *Resolver) Mutation() generated.MutationResolver { return &mutationResolver{r} }
 
