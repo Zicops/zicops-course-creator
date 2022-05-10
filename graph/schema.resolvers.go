@@ -336,6 +336,24 @@ func (r *mutationResolver) UpdateSectionToBank(ctx context.Context, input *model
 	return resp, nil
 }
 
+func (r *mutationResolver) AddSectionFixedQuestions(ctx context.Context, input *model.SectionFixedQuestionsInput) (*model.SectionFixedQuestions, error) {
+	resp, err := handlers.QuestionFixed(ctx, input)
+	if err != nil {
+		log.Errorf("error adding fixed : %v", err)
+		return nil, err
+	}
+	return resp, nil
+}
+
+func (r *mutationResolver) UpdateSectionFixedQuestions(ctx context.Context, input *model.SectionFixedQuestionsInput) (*model.SectionFixedQuestions, error) {
+	resp, err := handlers.QuestionFixedUpdate(ctx, input)
+	if err != nil {
+		log.Errorf("error updating fixed : %v", err)
+		return nil, err
+	}
+	return resp, nil
+}
+
 // Mutation returns generated.MutationResolver implementation.
 func (r *Resolver) Mutation() generated.MutationResolver { return &mutationResolver{r} }
 

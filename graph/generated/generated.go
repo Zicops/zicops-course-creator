@@ -105,42 +105,44 @@ type ComplexityRoot struct {
 	}
 
 	Mutation struct {
-		AddCategories              func(childComplexity int, category []*string) int
-		AddCourse                  func(childComplexity int, course *model.CourseInput) int
-		AddCourseChapter           func(childComplexity int, courseID *string, chapter *model.ChapterInput) int
-		AddCourseModule            func(childComplexity int, courseID *string, module *model.ModuleInput) int
-		AddCourseTopic             func(childComplexity int, courseID *string, topic *model.TopicInput) int
-		AddQuestionBankQuestion    func(childComplexity int, input *model.QuestionBankQuestionInput) int
-		AddQuestionOptions         func(childComplexity int, input *model.QuestionOptionInput) int
-		AddQuestionPaper           func(childComplexity int, input *model.QuestionPaperInput) int
-		AddQuestionPaperSection    func(childComplexity int, input *model.QuestionPaperSectionInput) int
-		AddQuiz                    func(childComplexity int, quiz *model.QuizInput) int
-		AddQuizDescriptive         func(childComplexity int, quiz *model.QuizDescriptive) int
-		AddQuizMcq                 func(childComplexity int, quiz *model.QuizMcq) int
-		AddSubCategories           func(childComplexity int, subCategory []*string) int
-		AddTopicContent            func(childComplexity int, topicID *string, courseID *string, topicContent *model.TopicContentInput) int
-		CreateQuestionBank         func(childComplexity int, input *model.QuestionBankInput) int
-		MapSectionToBank           func(childComplexity int, input *model.MapSectionToBankInput) int
-		UpdateCourse               func(childComplexity int, course *model.CourseInput) int
-		UpdateCourseChapter        func(childComplexity int, chapter *model.ChapterInput) int
-		UpdateCourseModule         func(childComplexity int, module *model.ModuleInput) int
-		UpdateCourseTopic          func(childComplexity int, topic *model.TopicInput) int
-		UpdateQuestionBank         func(childComplexity int, input *model.QuestionBankInput) int
-		UpdateQuestionBankQuestion func(childComplexity int, input *model.QuestionBankQuestionInput) int
-		UpdateQuestionOptions      func(childComplexity int, input *model.QuestionOptionInput) int
-		UpdateQuestionPaper        func(childComplexity int, input *model.QuestionPaperInput) int
-		UpdateQuestionPaperSection func(childComplexity int, input *model.QuestionPaperSectionInput) int
-		UpdateQuiz                 func(childComplexity int, quiz *model.QuizInput) int
-		UpdateSectionToBank        func(childComplexity int, input *model.MapSectionToBankInput) int
-		UpdateTopicContent         func(childComplexity int, topicContent *model.TopicContentInput) int
-		UploadCourseImage          func(childComplexity int, file *model.CourseFile) int
-		UploadCoursePreviewVideo   func(childComplexity int, file *model.CourseFile) int
-		UploadCourseTileImage      func(childComplexity int, file *model.CourseFile) int
-		UploadQuizFile             func(childComplexity int, courseID *string, file *model.QuizFile) int
-		UploadTopicContentSubtitle func(childComplexity int, file []*model.TopicSubtitle) int
-		UploadTopicContentVideo    func(childComplexity int, file *model.TopicVideo) int
-		UploadTopicResource        func(childComplexity int, courseID *string, resource *model.TopicResourceInput) int
-		UploadTopicStaticContent   func(childComplexity int, file *model.StaticContent) int
+		AddCategories               func(childComplexity int, category []*string) int
+		AddCourse                   func(childComplexity int, course *model.CourseInput) int
+		AddCourseChapter            func(childComplexity int, courseID *string, chapter *model.ChapterInput) int
+		AddCourseModule             func(childComplexity int, courseID *string, module *model.ModuleInput) int
+		AddCourseTopic              func(childComplexity int, courseID *string, topic *model.TopicInput) int
+		AddQuestionBankQuestion     func(childComplexity int, input *model.QuestionBankQuestionInput) int
+		AddQuestionOptions          func(childComplexity int, input *model.QuestionOptionInput) int
+		AddQuestionPaper            func(childComplexity int, input *model.QuestionPaperInput) int
+		AddQuestionPaperSection     func(childComplexity int, input *model.QuestionPaperSectionInput) int
+		AddQuiz                     func(childComplexity int, quiz *model.QuizInput) int
+		AddQuizDescriptive          func(childComplexity int, quiz *model.QuizDescriptive) int
+		AddQuizMcq                  func(childComplexity int, quiz *model.QuizMcq) int
+		AddSectionFixedQuestions    func(childComplexity int, input *model.SectionFixedQuestionsInput) int
+		AddSubCategories            func(childComplexity int, subCategory []*string) int
+		AddTopicContent             func(childComplexity int, topicID *string, courseID *string, topicContent *model.TopicContentInput) int
+		CreateQuestionBank          func(childComplexity int, input *model.QuestionBankInput) int
+		MapSectionToBank            func(childComplexity int, input *model.MapSectionToBankInput) int
+		UpdateCourse                func(childComplexity int, course *model.CourseInput) int
+		UpdateCourseChapter         func(childComplexity int, chapter *model.ChapterInput) int
+		UpdateCourseModule          func(childComplexity int, module *model.ModuleInput) int
+		UpdateCourseTopic           func(childComplexity int, topic *model.TopicInput) int
+		UpdateQuestionBank          func(childComplexity int, input *model.QuestionBankInput) int
+		UpdateQuestionBankQuestion  func(childComplexity int, input *model.QuestionBankQuestionInput) int
+		UpdateQuestionOptions       func(childComplexity int, input *model.QuestionOptionInput) int
+		UpdateQuestionPaper         func(childComplexity int, input *model.QuestionPaperInput) int
+		UpdateQuestionPaperSection  func(childComplexity int, input *model.QuestionPaperSectionInput) int
+		UpdateQuiz                  func(childComplexity int, quiz *model.QuizInput) int
+		UpdateSectionFixedQuestions func(childComplexity int, input *model.SectionFixedQuestionsInput) int
+		UpdateSectionToBank         func(childComplexity int, input *model.MapSectionToBankInput) int
+		UpdateTopicContent          func(childComplexity int, topicContent *model.TopicContentInput) int
+		UploadCourseImage           func(childComplexity int, file *model.CourseFile) int
+		UploadCoursePreviewVideo    func(childComplexity int, file *model.CourseFile) int
+		UploadCourseTileImage       func(childComplexity int, file *model.CourseFile) int
+		UploadQuizFile              func(childComplexity int, courseID *string, file *model.QuizFile) int
+		UploadTopicContentSubtitle  func(childComplexity int, file []*model.TopicSubtitle) int
+		UploadTopicContentVideo     func(childComplexity int, file *model.TopicVideo) int
+		UploadTopicResource         func(childComplexity int, courseID *string, resource *model.TopicResourceInput) int
+		UploadTopicStaticContent    func(childComplexity int, file *model.StaticContent) int
 	}
 
 	Query struct {
@@ -232,6 +234,17 @@ type ComplexityRoot struct {
 		TopicID     func(childComplexity int) int
 		Type        func(childComplexity int) int
 		UpdatedAt   func(childComplexity int) int
+	}
+
+	SectionFixedQuestions struct {
+		CreatedAt  func(childComplexity int) int
+		CreatedBy  func(childComplexity int) int
+		ID         func(childComplexity int) int
+		IsActive   func(childComplexity int) int
+		QuestionID func(childComplexity int) int
+		SqbID      func(childComplexity int) int
+		UpdatedAt  func(childComplexity int) int
+		UpdatedBy  func(childComplexity int) int
 	}
 
 	SectionQBMapping struct {
@@ -334,6 +347,8 @@ type MutationResolver interface {
 	UpdateQuestionPaperSection(ctx context.Context, input *model.QuestionPaperSectionInput) (*model.QuestionPaperSection, error)
 	MapSectionToBank(ctx context.Context, input *model.MapSectionToBankInput) (*model.SectionQBMapping, error)
 	UpdateSectionToBank(ctx context.Context, input *model.MapSectionToBankInput) (*model.SectionQBMapping, error)
+	AddSectionFixedQuestions(ctx context.Context, input *model.SectionFixedQuestionsInput) (*model.SectionFixedQuestions, error)
+	UpdateSectionFixedQuestions(ctx context.Context, input *model.SectionFixedQuestionsInput) (*model.SectionFixedQuestions, error)
 }
 
 type executableSchema struct {
@@ -873,6 +888,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.AddQuizMcq(childComplexity, args["quiz"].(*model.QuizMcq)), true
 
+	case "Mutation.addSectionFixedQuestions":
+		if e.complexity.Mutation.AddSectionFixedQuestions == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_addSectionFixedQuestions_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.AddSectionFixedQuestions(childComplexity, args["input"].(*model.SectionFixedQuestionsInput)), true
+
 	case "Mutation.addSubCategories":
 		if e.complexity.Mutation.AddSubCategories == nil {
 			break
@@ -1040,6 +1067,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.UpdateQuiz(childComplexity, args["quiz"].(*model.QuizInput)), true
+
+	case "Mutation.updateSectionFixedQuestions":
+		if e.complexity.Mutation.UpdateSectionFixedQuestions == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_updateSectionFixedQuestions_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdateSectionFixedQuestions(childComplexity, args["input"].(*model.SectionFixedQuestionsInput)), true
 
 	case "Mutation.updateSectionToBank":
 		if e.complexity.Mutation.UpdateSectionToBank == nil {
@@ -1650,6 +1689,62 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Quiz.UpdatedAt(childComplexity), true
+
+	case "SectionFixedQuestions.CreatedAt":
+		if e.complexity.SectionFixedQuestions.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.SectionFixedQuestions.CreatedAt(childComplexity), true
+
+	case "SectionFixedQuestions.CreatedBy":
+		if e.complexity.SectionFixedQuestions.CreatedBy == nil {
+			break
+		}
+
+		return e.complexity.SectionFixedQuestions.CreatedBy(childComplexity), true
+
+	case "SectionFixedQuestions.id":
+		if e.complexity.SectionFixedQuestions.ID == nil {
+			break
+		}
+
+		return e.complexity.SectionFixedQuestions.ID(childComplexity), true
+
+	case "SectionFixedQuestions.IsActive":
+		if e.complexity.SectionFixedQuestions.IsActive == nil {
+			break
+		}
+
+		return e.complexity.SectionFixedQuestions.IsActive(childComplexity), true
+
+	case "SectionFixedQuestions.QuestionId":
+		if e.complexity.SectionFixedQuestions.QuestionID == nil {
+			break
+		}
+
+		return e.complexity.SectionFixedQuestions.QuestionID(childComplexity), true
+
+	case "SectionFixedQuestions.SqbId":
+		if e.complexity.SectionFixedQuestions.SqbID == nil {
+			break
+		}
+
+		return e.complexity.SectionFixedQuestions.SqbID(childComplexity), true
+
+	case "SectionFixedQuestions.UpdatedAt":
+		if e.complexity.SectionFixedQuestions.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.SectionFixedQuestions.UpdatedAt(childComplexity), true
+
+	case "SectionFixedQuestions.UpdatedBy":
+		if e.complexity.SectionFixedQuestions.UpdatedBy == nil {
+			break
+		}
+
+		return e.complexity.SectionFixedQuestions.UpdatedBy(childComplexity), true
 
 	case "SectionQBMapping.CreatedAt":
 		if e.complexity.SectionQBMapping.CreatedAt == nil {
@@ -2500,6 +2595,28 @@ type SectionQBMapping {
     IsActive : Boolean
 }
 
+input SectionFixedQuestionsInput {
+    id: ID
+    SqbId: String
+    QuestionId: String
+    CreatedAt: String
+    UpdatedAt: String
+    CreatedBy: String
+    UpdatedBy: String
+    IsActive : Boolean
+}
+
+type SectionFixedQuestions {
+    id: ID
+    SqbId: String
+    QuestionId: String
+    CreatedAt: String
+    UpdatedAt: String
+    CreatedBy: String
+    UpdatedBy: String
+    IsActive : Boolean
+}
+
 # define type mutations to add a course  using courseInput
 type Mutation{
     addCategories(category: [String]): Boolean
@@ -2539,6 +2656,8 @@ type Mutation{
     updateQuestionPaperSection(input: QuestionPaperSectionInput): QuestionPaperSection
     mapSectionToBank(input: MapSectionToBankInput): SectionQBMapping
     updateSectionToBank(input: MapSectionToBankInput): SectionQBMapping
+    addSectionFixedQuestions(input: SectionFixedQuestionsInput): SectionFixedQuestions
+    updateSectionFixedQuestions(input: SectionFixedQuestionsInput): SectionFixedQuestions
 }
 `, BuiltIn: false},
 }
@@ -2752,6 +2871,21 @@ func (ec *executionContext) field_Mutation_addQuiz_args(ctx context.Context, raw
 		}
 	}
 	args["quiz"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_addSectionFixedQuestions_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 *model.SectionFixedQuestionsInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalOSectionFixedQuestionsInput2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐSectionFixedQuestionsInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
 	return args, nil
 }
 
@@ -2980,6 +3114,21 @@ func (ec *executionContext) field_Mutation_updateQuiz_args(ctx context.Context, 
 		}
 	}
 	args["quiz"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_updateSectionFixedQuestions_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 *model.SectionFixedQuestionsInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalOSectionFixedQuestionsInput2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐSectionFixedQuestionsInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
 	return args, nil
 }
 
@@ -6336,6 +6485,84 @@ func (ec *executionContext) _Mutation_updateSectionToBank(ctx context.Context, f
 	return ec.marshalOSectionQBMapping2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐSectionQBMapping(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _Mutation_addSectionFixedQuestions(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_addSectionFixedQuestions_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().AddSectionFixedQuestions(rctx, args["input"].(*model.SectionFixedQuestionsInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.SectionFixedQuestions)
+	fc.Result = res
+	return ec.marshalOSectionFixedQuestions2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐSectionFixedQuestions(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_updateSectionFixedQuestions(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_updateSectionFixedQuestions_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().UpdateSectionFixedQuestions(rctx, args["input"].(*model.SectionFixedQuestionsInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.SectionFixedQuestions)
+	fc.Result = res
+	return ec.marshalOSectionFixedQuestions2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐSectionFixedQuestions(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _Query___type(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -8645,6 +8872,262 @@ func (ec *executionContext) _Quiz_startTime(ctx context.Context, field graphql.C
 	res := resTmp.(*int)
 	fc.Result = res
 	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _SectionFixedQuestions_id(ctx context.Context, field graphql.CollectedField, obj *model.SectionFixedQuestions) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "SectionFixedQuestions",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOID2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _SectionFixedQuestions_SqbId(ctx context.Context, field graphql.CollectedField, obj *model.SectionFixedQuestions) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "SectionFixedQuestions",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.SqbID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _SectionFixedQuestions_QuestionId(ctx context.Context, field graphql.CollectedField, obj *model.SectionFixedQuestions) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "SectionFixedQuestions",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.QuestionID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _SectionFixedQuestions_CreatedAt(ctx context.Context, field graphql.CollectedField, obj *model.SectionFixedQuestions) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "SectionFixedQuestions",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CreatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _SectionFixedQuestions_UpdatedAt(ctx context.Context, field graphql.CollectedField, obj *model.SectionFixedQuestions) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "SectionFixedQuestions",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.UpdatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _SectionFixedQuestions_CreatedBy(ctx context.Context, field graphql.CollectedField, obj *model.SectionFixedQuestions) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "SectionFixedQuestions",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CreatedBy, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _SectionFixedQuestions_UpdatedBy(ctx context.Context, field graphql.CollectedField, obj *model.SectionFixedQuestions) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "SectionFixedQuestions",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.UpdatedBy, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _SectionFixedQuestions_IsActive(ctx context.Context, field graphql.CollectedField, obj *model.SectionFixedQuestions) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "SectionFixedQuestions",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.IsActive, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*bool)
+	fc.Result = res
+	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _SectionQBMapping_id(ctx context.Context, field graphql.CollectedField, obj *model.SectionQBMapping) (ret graphql.Marshaler) {
@@ -12627,6 +13110,85 @@ func (ec *executionContext) unmarshalInputQuizMcq(ctx context.Context, obj inter
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputSectionFixedQuestionsInput(ctx context.Context, obj interface{}) (model.SectionFixedQuestionsInput, error) {
+	var it model.SectionFixedQuestionsInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	for k, v := range asMap {
+		switch k {
+		case "id":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+			it.ID, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "SqbId":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("SqbId"))
+			it.SqbID, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "QuestionId":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("QuestionId"))
+			it.QuestionID, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "CreatedAt":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("CreatedAt"))
+			it.CreatedAt, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "UpdatedAt":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("UpdatedAt"))
+			it.UpdatedAt, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "CreatedBy":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("CreatedBy"))
+			it.CreatedBy, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "UpdatedBy":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("UpdatedBy"))
+			it.UpdatedBy, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "IsActive":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("IsActive"))
+			it.IsActive, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputStaticContent(ctx context.Context, obj interface{}) (model.StaticContent, error) {
 	var it model.StaticContent
 	asMap := map[string]interface{}{}
@@ -13780,6 +14342,20 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, innerFunc)
 
+		case "addSectionFixedQuestions":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_addSectionFixedQuestions(ctx, field)
+			}
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, innerFunc)
+
+		case "updateSectionFixedQuestions":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_updateSectionFixedQuestions(ctx, field)
+			}
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, innerFunc)
+
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -14436,6 +15012,83 @@ func (ec *executionContext) _Quiz(ctx context.Context, sel ast.SelectionSet, obj
 		case "startTime":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Quiz_startTime(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var sectionFixedQuestionsImplementors = []string{"SectionFixedQuestions"}
+
+func (ec *executionContext) _SectionFixedQuestions(ctx context.Context, sel ast.SelectionSet, obj *model.SectionFixedQuestions) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, sectionFixedQuestionsImplementors)
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("SectionFixedQuestions")
+		case "id":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._SectionFixedQuestions_id(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+		case "SqbId":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._SectionFixedQuestions_SqbId(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+		case "QuestionId":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._SectionFixedQuestions_QuestionId(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+		case "CreatedAt":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._SectionFixedQuestions_CreatedAt(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+		case "UpdatedAt":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._SectionFixedQuestions_UpdatedAt(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+		case "CreatedBy":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._SectionFixedQuestions_CreatedBy(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+		case "UpdatedBy":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._SectionFixedQuestions_UpdatedBy(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+		case "IsActive":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._SectionFixedQuestions_IsActive(ctx, field, obj)
 			}
 
 			out.Values[i] = innerFunc(ctx)
@@ -15821,6 +16474,21 @@ func (ec *executionContext) unmarshalOQuizMcq2ᚖgithubᚗcomᚋzicopsᚋzicops�
 		return nil, nil
 	}
 	res, err := ec.unmarshalInputQuizMcq(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOSectionFixedQuestions2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐSectionFixedQuestions(ctx context.Context, sel ast.SelectionSet, v *model.SectionFixedQuestions) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._SectionFixedQuestions(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalOSectionFixedQuestionsInput2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐSectionFixedQuestionsInput(ctx context.Context, v interface{}) (*model.SectionFixedQuestionsInput, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputSectionFixedQuestionsInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 

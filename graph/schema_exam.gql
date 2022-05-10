@@ -182,6 +182,28 @@ type SectionQBMapping {
     IsActive : Boolean
 }
 
+input SectionFixedQuestionsInput {
+    id: ID
+    SqbId: String
+    QuestionId: String
+    CreatedAt: String
+    UpdatedAt: String
+    CreatedBy: String
+    UpdatedBy: String
+    IsActive : Boolean
+}
+
+type SectionFixedQuestions {
+    id: ID
+    SqbId: String
+    QuestionId: String
+    CreatedAt: String
+    UpdatedAt: String
+    CreatedBy: String
+    UpdatedBy: String
+    IsActive : Boolean
+}
+
 type Mutation{
     createQuestionBank(input: QuestionBankInput): QuestionBank
     updateQuestionBank(input: QuestionBankInput): QuestionBank
@@ -195,4 +217,6 @@ type Mutation{
     updateQuestionPaperSection(input: QuestionPaperSectionInput): QuestionPaperSection
     mapSectionToBank(input: MapSectionToBankInput): SectionQBMapping
     updateSectionToBank(input: MapSectionToBankInput): SectionQBMapping
+    addSectionFixedQuestions(input: SectionFixedQuestionsInput): SectionFixedQuestions
+    updateSectionFixedQuestions(input: SectionFixedQuestionsInput): SectionFixedQuestions
 }

@@ -350,6 +350,28 @@ type QuizMcq struct {
 	Explanation   *string   `json:"explanation"`
 }
 
+type SectionFixedQuestions struct {
+	ID         *string `json:"id"`
+	SqbID      *string `json:"SqbId"`
+	QuestionID *string `json:"QuestionId"`
+	CreatedAt  *string `json:"CreatedAt"`
+	UpdatedAt  *string `json:"UpdatedAt"`
+	CreatedBy  *string `json:"CreatedBy"`
+	UpdatedBy  *string `json:"UpdatedBy"`
+	IsActive   *bool   `json:"IsActive"`
+}
+
+type SectionFixedQuestionsInput struct {
+	ID         *string `json:"id"`
+	SqbID      *string `json:"SqbId"`
+	QuestionID *string `json:"QuestionId"`
+	CreatedAt  *string `json:"CreatedAt"`
+	UpdatedAt  *string `json:"UpdatedAt"`
+	CreatedBy  *string `json:"CreatedBy"`
+	UpdatedBy  *string `json:"UpdatedBy"`
+	IsActive   *bool   `json:"IsActive"`
+}
+
 type SectionQBMapping struct {
 	ID              *string `json:"id"`
 	QbID            *string `json:"QbId"`

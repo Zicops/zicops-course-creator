@@ -475,6 +475,28 @@ type SectionQBMapping {
     IsActive : Boolean
 }
 
+input SectionFixedQuestionsInput {
+    id: ID
+    SqbId: String
+    QuestionId: String
+    CreatedAt: String
+    UpdatedAt: String
+    CreatedBy: String
+    UpdatedBy: String
+    IsActive : Boolean
+}
+
+type SectionFixedQuestions {
+    id: ID
+    SqbId: String
+    QuestionId: String
+    CreatedAt: String
+    UpdatedAt: String
+    CreatedBy: String
+    UpdatedBy: String
+    IsActive : Boolean
+}
+
 # define type mutations to add a course  using courseInput
 type Mutation{
     addCategories(category: [String]): Boolean
@@ -514,4 +536,6 @@ type Mutation{
     updateQuestionPaperSection(input: QuestionPaperSectionInput): QuestionPaperSection
     mapSectionToBank(input: MapSectionToBankInput): SectionQBMapping
     updateSectionToBank(input: MapSectionToBankInput): SectionQBMapping
+    addSectionFixedQuestions(input: SectionFixedQuestionsInput): SectionFixedQuestions
+    updateSectionFixedQuestions(input: SectionFixedQuestionsInput): SectionFixedQuestions
 }
