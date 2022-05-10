@@ -163,7 +163,7 @@ func UpdateQuestionOptions(ctx context.Context, input *model.QuestionOptionInput
 	if len(updatedCols) == 0 {
 		return nil, fmt.Errorf("nothing to update")
 	}
-	upStms, uNames := qbankz.QuestionMainTable.Update(updatedCols...)
+	upStms, uNames := qbankz.OptionsMainTable.Update(updatedCols...)
 	updateQuery := global.CassSession.Session.Query(upStms, uNames).BindStruct(&cassandraQuestionBank)
 	if err := updateQuery.ExecRelease(); err != nil {
 		return nil, err

@@ -117,7 +117,7 @@ func QuestionPaperUpdate(ctx context.Context, input *model.QuestionPaperInput) (
 	if len(updatedCols) == 0 {
 		return nil, fmt.Errorf("nothing to update")
 	}
-	upStms, uNames := qbankz.QuestionBankMainTable.Update(updatedCols...)
+	upStms, uNames := qbankz.QuestionPaperMainTable.Update(updatedCols...)
 	updateQuery := global.CassSession.Session.Query(upStms, uNames).BindStruct(&cassandraQuestionBank)
 	if err := updateQuery.ExecRelease(); err != nil {
 		return nil, err
@@ -192,7 +192,7 @@ func QuestionPaperSectionUpdate(ctx context.Context, input *model.QuestionPaperS
 		ID: *input.ID,
 	}
 	banks := []qbankz.SectionMain{}
-	getQuery := global.CassSession.Session.Query(qbankz.QuestionPaperMainTable.Get()).BindMap(qb.M{"id": cassandraQuestionBank.ID})
+	getQuery := global.CassSession.Session.Query(qbankz.SectionMainTable.Get()).BindMap(qb.M{"id": cassandraQuestionBank.ID})
 	if err := getQuery.SelectRelease(&banks); err != nil {
 		return nil, err
 	}
