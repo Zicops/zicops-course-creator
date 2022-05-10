@@ -149,6 +149,39 @@ input QuestionPaperSection {
     TotalQuestions: Int
 }
 
+
+input MapSectionToBankInput {
+    id: ID
+    QbId: String
+    SectionId: String
+    DifficultyLevel: String
+    TotalQuestions: Int
+    QuestionMarks: String
+    QuestionType: String
+    RetrieveType: String
+    CreatedAt: String
+    UpdatedAt: String
+    CreatedBy: String
+    UpdatedBy: String
+    IsActive : Boolean
+}
+
+type SectionQBMapping {
+    id: ID
+    QbId: String
+    SectionId: String
+    DifficultyLevel: String
+    TotalQuestions: Int
+    QuestionMarks: String
+    QuestionType: String
+    RetrieveType: String
+    CreatedAt: String
+    UpdatedAt: String
+    CreatedBy: String
+    UpdatedBy: String
+    IsActive : Boolean
+}
+
 type Mutation{
     createQuestionBank(input: QuestionBankInput): QuestionBank
     updateQuestionBank(input: QuestionBankInput): QuestionBank
@@ -160,4 +193,6 @@ type Mutation{
     updateQuestionPaper(input: QuestionPaperInput): QuestionPaper
     addQuestionPaperSection(input: QuestionPaperSectionInput): QuestionPaperSection
     updateQuestionPaperSection(input: QuestionPaperSectionInput): QuestionPaperSection
+    mapSectionToBank(input: MapSectionToBankInput): SectionQBMapping
+    updateSectionToBank(input: MapSectionToBankInput): SectionQBMapping
 }

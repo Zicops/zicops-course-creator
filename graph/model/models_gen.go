@@ -107,6 +107,22 @@ type CourseInput struct {
 	IsActive           *bool                 `json:"is_active"`
 }
 
+type MapSectionToBankInput struct {
+	ID              *string `json:"id"`
+	QbID            *string `json:"QbId"`
+	SectionID       *string `json:"SectionId"`
+	DifficultyLevel *string `json:"DifficultyLevel"`
+	TotalQuestions  *int    `json:"TotalQuestions"`
+	QuestionMarks   *string `json:"QuestionMarks"`
+	QuestionType    *string `json:"QuestionType"`
+	RetrieveType    *string `json:"RetrieveType"`
+	CreatedAt       *string `json:"CreatedAt"`
+	UpdatedAt       *string `json:"UpdatedAt"`
+	CreatedBy       *string `json:"CreatedBy"`
+	UpdatedBy       *string `json:"UpdatedBy"`
+	IsActive        *bool   `json:"IsActive"`
+}
+
 type Module struct {
 	ID          *string `json:"id"`
 	Name        *string `json:"name"`
@@ -332,6 +348,22 @@ type QuizMcq struct {
 	Options       []*string `json:"options"`
 	CorrectOption *string   `json:"correctOption"`
 	Explanation   *string   `json:"explanation"`
+}
+
+type SectionQBMapping struct {
+	ID              *string `json:"id"`
+	QbID            *string `json:"QbId"`
+	SectionID       *string `json:"SectionId"`
+	DifficultyLevel *string `json:"DifficultyLevel"`
+	TotalQuestions  *int    `json:"TotalQuestions"`
+	QuestionMarks   *string `json:"QuestionMarks"`
+	QuestionType    *string `json:"QuestionType"`
+	RetrieveType    *string `json:"RetrieveType"`
+	CreatedAt       *string `json:"CreatedAt"`
+	UpdatedAt       *string `json:"UpdatedAt"`
+	CreatedBy       *string `json:"CreatedBy"`
+	UpdatedBy       *string `json:"UpdatedBy"`
+	IsActive        *bool   `json:"IsActive"`
 }
 
 type StaticContent struct {

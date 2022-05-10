@@ -5,7 +5,6 @@ package graph
 
 import (
 	"context"
-	"fmt"
 
 	log "github.com/sirupsen/logrus"
 	"github.com/zicops/zicops-course-creator/graph/generated"
@@ -302,11 +301,39 @@ func (r *mutationResolver) UpdateQuestionPaper(ctx context.Context, input *model
 }
 
 func (r *mutationResolver) AddQuestionPaperSection(ctx context.Context, input *model.QuestionPaperSectionInput) (*model.QuestionPaperSection, error) {
-	panic(fmt.Errorf("not implemented"))
+	resp, err := handlers.QuestionPaperSectionCreate(ctx, input)
+	if err != nil {
+		log.Errorf("error creating question section: %v", err)
+		return nil, err
+	}
+	return resp, nil
 }
 
 func (r *mutationResolver) UpdateQuestionPaperSection(ctx context.Context, input *model.QuestionPaperSectionInput) (*model.QuestionPaperSection, error) {
-	panic(fmt.Errorf("not implemented"))
+	resp, err := handlers.QuestionPaperSectionCreate(ctx, input)
+	if err != nil {
+		log.Errorf("error updating question paper section: %v", err)
+		return nil, err
+	}
+	return resp, nil
+}
+
+func (r *mutationResolver) MapSectionToBank(ctx context.Context, input *model.MapSectionToBankInput) (*model.SectionQBMapping, error) {
+	resp, err := handlers.QuestionSectionMap(ctx, input)
+	if err != nil {
+		log.Errorf("error creating mapping: %v", err)
+		return nil, err
+	}
+	return resp, nil
+}
+
+func (r *mutationResolver) UpdateSectionToBank(ctx context.Context, input *model.MapSectionToBankInput) (*model.SectionQBMapping, error) {
+	resp, err := handlers.QuestionSectionMapUpdate(ctx, input)
+	if err != nil {
+		log.Errorf("error updating mapping: %v", err)
+		return nil, err
+	}
+	return resp, nil
 }
 
 // Mutation returns generated.MutationResolver implementation.

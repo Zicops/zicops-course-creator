@@ -120,6 +120,7 @@ type ComplexityRoot struct {
 		AddSubCategories           func(childComplexity int, subCategory []*string) int
 		AddTopicContent            func(childComplexity int, topicID *string, courseID *string, topicContent *model.TopicContentInput) int
 		CreateQuestionBank         func(childComplexity int, input *model.QuestionBankInput) int
+		MapSectionToBank           func(childComplexity int, input *model.MapSectionToBankInput) int
 		UpdateCourse               func(childComplexity int, course *model.CourseInput) int
 		UpdateCourseChapter        func(childComplexity int, chapter *model.ChapterInput) int
 		UpdateCourseModule         func(childComplexity int, module *model.ModuleInput) int
@@ -130,6 +131,7 @@ type ComplexityRoot struct {
 		UpdateQuestionPaper        func(childComplexity int, input *model.QuestionPaperInput) int
 		UpdateQuestionPaperSection func(childComplexity int, input *model.QuestionPaperSectionInput) int
 		UpdateQuiz                 func(childComplexity int, quiz *model.QuizInput) int
+		UpdateSectionToBank        func(childComplexity int, input *model.MapSectionToBankInput) int
 		UpdateTopicContent         func(childComplexity int, topicContent *model.TopicContentInput) int
 		UploadCourseImage          func(childComplexity int, file *model.CourseFile) int
 		UploadCoursePreviewVideo   func(childComplexity int, file *model.CourseFile) int
@@ -232,6 +234,22 @@ type ComplexityRoot struct {
 		UpdatedAt   func(childComplexity int) int
 	}
 
+	SectionQBMapping struct {
+		CreatedAt       func(childComplexity int) int
+		CreatedBy       func(childComplexity int) int
+		DifficultyLevel func(childComplexity int) int
+		ID              func(childComplexity int) int
+		IsActive        func(childComplexity int) int
+		QbID            func(childComplexity int) int
+		QuestionMarks   func(childComplexity int) int
+		QuestionType    func(childComplexity int) int
+		RetrieveType    func(childComplexity int) int
+		SectionID       func(childComplexity int) int
+		TotalQuestions  func(childComplexity int) int
+		UpdatedAt       func(childComplexity int) int
+		UpdatedBy       func(childComplexity int) int
+	}
+
 	Topic struct {
 		ChapterID   func(childComplexity int) int
 		CourseID    func(childComplexity int) int
@@ -314,6 +332,8 @@ type MutationResolver interface {
 	UpdateQuestionPaper(ctx context.Context, input *model.QuestionPaperInput) (*model.QuestionPaper, error)
 	AddQuestionPaperSection(ctx context.Context, input *model.QuestionPaperSectionInput) (*model.QuestionPaperSection, error)
 	UpdateQuestionPaperSection(ctx context.Context, input *model.QuestionPaperSectionInput) (*model.QuestionPaperSection, error)
+	MapSectionToBank(ctx context.Context, input *model.MapSectionToBankInput) (*model.SectionQBMapping, error)
+	UpdateSectionToBank(ctx context.Context, input *model.MapSectionToBankInput) (*model.SectionQBMapping, error)
 }
 
 type executableSchema struct {
@@ -889,6 +909,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.CreateQuestionBank(childComplexity, args["input"].(*model.QuestionBankInput)), true
 
+	case "Mutation.mapSectionToBank":
+		if e.complexity.Mutation.MapSectionToBank == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_mapSectionToBank_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.MapSectionToBank(childComplexity, args["input"].(*model.MapSectionToBankInput)), true
+
 	case "Mutation.updateCourse":
 		if e.complexity.Mutation.UpdateCourse == nil {
 			break
@@ -1008,6 +1040,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.UpdateQuiz(childComplexity, args["quiz"].(*model.QuizInput)), true
+
+	case "Mutation.updateSectionToBank":
+		if e.complexity.Mutation.UpdateSectionToBank == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_updateSectionToBank_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdateSectionToBank(childComplexity, args["input"].(*model.MapSectionToBankInput)), true
 
 	case "Mutation.updateTopicContent":
 		if e.complexity.Mutation.UpdateTopicContent == nil {
@@ -1606,6 +1650,97 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Quiz.UpdatedAt(childComplexity), true
+
+	case "SectionQBMapping.CreatedAt":
+		if e.complexity.SectionQBMapping.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.SectionQBMapping.CreatedAt(childComplexity), true
+
+	case "SectionQBMapping.CreatedBy":
+		if e.complexity.SectionQBMapping.CreatedBy == nil {
+			break
+		}
+
+		return e.complexity.SectionQBMapping.CreatedBy(childComplexity), true
+
+	case "SectionQBMapping.DifficultyLevel":
+		if e.complexity.SectionQBMapping.DifficultyLevel == nil {
+			break
+		}
+
+		return e.complexity.SectionQBMapping.DifficultyLevel(childComplexity), true
+
+	case "SectionQBMapping.id":
+		if e.complexity.SectionQBMapping.ID == nil {
+			break
+		}
+
+		return e.complexity.SectionQBMapping.ID(childComplexity), true
+
+	case "SectionQBMapping.IsActive":
+		if e.complexity.SectionQBMapping.IsActive == nil {
+			break
+		}
+
+		return e.complexity.SectionQBMapping.IsActive(childComplexity), true
+
+	case "SectionQBMapping.QbId":
+		if e.complexity.SectionQBMapping.QbID == nil {
+			break
+		}
+
+		return e.complexity.SectionQBMapping.QbID(childComplexity), true
+
+	case "SectionQBMapping.QuestionMarks":
+		if e.complexity.SectionQBMapping.QuestionMarks == nil {
+			break
+		}
+
+		return e.complexity.SectionQBMapping.QuestionMarks(childComplexity), true
+
+	case "SectionQBMapping.QuestionType":
+		if e.complexity.SectionQBMapping.QuestionType == nil {
+			break
+		}
+
+		return e.complexity.SectionQBMapping.QuestionType(childComplexity), true
+
+	case "SectionQBMapping.RetrieveType":
+		if e.complexity.SectionQBMapping.RetrieveType == nil {
+			break
+		}
+
+		return e.complexity.SectionQBMapping.RetrieveType(childComplexity), true
+
+	case "SectionQBMapping.SectionId":
+		if e.complexity.SectionQBMapping.SectionID == nil {
+			break
+		}
+
+		return e.complexity.SectionQBMapping.SectionID(childComplexity), true
+
+	case "SectionQBMapping.TotalQuestions":
+		if e.complexity.SectionQBMapping.TotalQuestions == nil {
+			break
+		}
+
+		return e.complexity.SectionQBMapping.TotalQuestions(childComplexity), true
+
+	case "SectionQBMapping.UpdatedAt":
+		if e.complexity.SectionQBMapping.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.SectionQBMapping.UpdatedAt(childComplexity), true
+
+	case "SectionQBMapping.UpdatedBy":
+		if e.complexity.SectionQBMapping.UpdatedBy == nil {
+			break
+		}
+
+		return e.complexity.SectionQBMapping.UpdatedBy(childComplexity), true
 
 	case "Topic.chapterId":
 		if e.complexity.Topic.ChapterID == nil {
@@ -2333,6 +2468,38 @@ input QuestionPaperSectionInput {
     TotalQuestions: Int
 }
 
+input MapSectionToBankInput {
+    id: ID
+    QbId: String
+    SectionId: String
+    DifficultyLevel: String
+    TotalQuestions: Int
+    QuestionMarks: String
+    QuestionType: String
+    RetrieveType: String
+    CreatedAt: String
+    UpdatedAt: String
+    CreatedBy: String
+    UpdatedBy: String
+    IsActive : Boolean
+}
+
+type SectionQBMapping {
+    id: ID
+    QbId: String
+    SectionId: String
+    DifficultyLevel: String
+    TotalQuestions: Int
+    QuestionMarks: String
+    QuestionType: String
+    RetrieveType: String
+    CreatedAt: String
+    UpdatedAt: String
+    CreatedBy: String
+    UpdatedBy: String
+    IsActive : Boolean
+}
+
 # define type mutations to add a course  using courseInput
 type Mutation{
     addCategories(category: [String]): Boolean
@@ -2370,6 +2537,8 @@ type Mutation{
     updateQuestionPaper(input: QuestionPaperInput): QuestionPaper
     addQuestionPaperSection(input: QuestionPaperSectionInput): QuestionPaperSection
     updateQuestionPaperSection(input: QuestionPaperSectionInput): QuestionPaperSection
+    mapSectionToBank(input: MapSectionToBankInput): SectionQBMapping
+    updateSectionToBank(input: MapSectionToBankInput): SectionQBMapping
 }
 `, BuiltIn: false},
 }
@@ -2649,6 +2818,21 @@ func (ec *executionContext) field_Mutation_createQuestionBank_args(ctx context.C
 	return args, nil
 }
 
+func (ec *executionContext) field_Mutation_mapSectionToBank_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 *model.MapSectionToBankInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalOMapSectionToBankInput2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐMapSectionToBankInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
 func (ec *executionContext) field_Mutation_updateCourseChapter_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -2796,6 +2980,21 @@ func (ec *executionContext) field_Mutation_updateQuiz_args(ctx context.Context, 
 		}
 	}
 	args["quiz"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_updateSectionToBank_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 *model.MapSectionToBankInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalOMapSectionToBankInput2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐMapSectionToBankInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
 	return args, nil
 }
 
@@ -6059,6 +6258,84 @@ func (ec *executionContext) _Mutation_updateQuestionPaperSection(ctx context.Con
 	return ec.marshalOQuestionPaperSection2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐQuestionPaperSection(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _Mutation_mapSectionToBank(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_mapSectionToBank_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().MapSectionToBank(rctx, args["input"].(*model.MapSectionToBankInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.SectionQBMapping)
+	fc.Result = res
+	return ec.marshalOSectionQBMapping2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐSectionQBMapping(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_updateSectionToBank(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_updateSectionToBank_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().UpdateSectionToBank(rctx, args["input"].(*model.MapSectionToBankInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.SectionQBMapping)
+	fc.Result = res
+	return ec.marshalOSectionQBMapping2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐSectionQBMapping(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _Query___type(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -8368,6 +8645,422 @@ func (ec *executionContext) _Quiz_startTime(ctx context.Context, field graphql.C
 	res := resTmp.(*int)
 	fc.Result = res
 	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _SectionQBMapping_id(ctx context.Context, field graphql.CollectedField, obj *model.SectionQBMapping) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "SectionQBMapping",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOID2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _SectionQBMapping_QbId(ctx context.Context, field graphql.CollectedField, obj *model.SectionQBMapping) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "SectionQBMapping",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.QbID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _SectionQBMapping_SectionId(ctx context.Context, field graphql.CollectedField, obj *model.SectionQBMapping) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "SectionQBMapping",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.SectionID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _SectionQBMapping_DifficultyLevel(ctx context.Context, field graphql.CollectedField, obj *model.SectionQBMapping) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "SectionQBMapping",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.DifficultyLevel, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _SectionQBMapping_TotalQuestions(ctx context.Context, field graphql.CollectedField, obj *model.SectionQBMapping) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "SectionQBMapping",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.TotalQuestions, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*int)
+	fc.Result = res
+	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _SectionQBMapping_QuestionMarks(ctx context.Context, field graphql.CollectedField, obj *model.SectionQBMapping) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "SectionQBMapping",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.QuestionMarks, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _SectionQBMapping_QuestionType(ctx context.Context, field graphql.CollectedField, obj *model.SectionQBMapping) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "SectionQBMapping",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.QuestionType, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _SectionQBMapping_RetrieveType(ctx context.Context, field graphql.CollectedField, obj *model.SectionQBMapping) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "SectionQBMapping",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.RetrieveType, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _SectionQBMapping_CreatedAt(ctx context.Context, field graphql.CollectedField, obj *model.SectionQBMapping) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "SectionQBMapping",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CreatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _SectionQBMapping_UpdatedAt(ctx context.Context, field graphql.CollectedField, obj *model.SectionQBMapping) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "SectionQBMapping",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.UpdatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _SectionQBMapping_CreatedBy(ctx context.Context, field graphql.CollectedField, obj *model.SectionQBMapping) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "SectionQBMapping",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CreatedBy, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _SectionQBMapping_UpdatedBy(ctx context.Context, field graphql.CollectedField, obj *model.SectionQBMapping) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "SectionQBMapping",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.UpdatedBy, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _SectionQBMapping_IsActive(ctx context.Context, field graphql.CollectedField, obj *model.SectionQBMapping) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "SectionQBMapping",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.IsActive, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*bool)
+	fc.Result = res
+	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Topic_id(ctx context.Context, field graphql.CollectedField, obj *model.Topic) (ret graphql.Marshaler) {
@@ -10913,6 +11606,125 @@ func (ec *executionContext) unmarshalInputCourseInput(ctx context.Context, obj i
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputMapSectionToBankInput(ctx context.Context, obj interface{}) (model.MapSectionToBankInput, error) {
+	var it model.MapSectionToBankInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	for k, v := range asMap {
+		switch k {
+		case "id":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+			it.ID, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "QbId":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("QbId"))
+			it.QbID, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "SectionId":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("SectionId"))
+			it.SectionID, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "DifficultyLevel":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("DifficultyLevel"))
+			it.DifficultyLevel, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "TotalQuestions":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("TotalQuestions"))
+			it.TotalQuestions, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "QuestionMarks":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("QuestionMarks"))
+			it.QuestionMarks, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "QuestionType":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("QuestionType"))
+			it.QuestionType, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "RetrieveType":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("RetrieveType"))
+			it.RetrieveType, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "CreatedAt":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("CreatedAt"))
+			it.CreatedAt, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "UpdatedAt":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("UpdatedAt"))
+			it.UpdatedAt, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "CreatedBy":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("CreatedBy"))
+			it.CreatedBy, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "UpdatedBy":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("UpdatedBy"))
+			it.UpdatedBy, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "IsActive":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("IsActive"))
+			it.IsActive, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputModuleInput(ctx context.Context, obj interface{}) (model.ModuleInput, error) {
 	var it model.ModuleInput
 	asMap := map[string]interface{}{}
@@ -12954,6 +13766,20 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, innerFunc)
 
+		case "mapSectionToBank":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_mapSectionToBank(ctx, field)
+			}
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, innerFunc)
+
+		case "updateSectionToBank":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_updateSectionToBank(ctx, field)
+			}
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, innerFunc)
+
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -13610,6 +14436,118 @@ func (ec *executionContext) _Quiz(ctx context.Context, sel ast.SelectionSet, obj
 		case "startTime":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Quiz_startTime(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var sectionQBMappingImplementors = []string{"SectionQBMapping"}
+
+func (ec *executionContext) _SectionQBMapping(ctx context.Context, sel ast.SelectionSet, obj *model.SectionQBMapping) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, sectionQBMappingImplementors)
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("SectionQBMapping")
+		case "id":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._SectionQBMapping_id(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+		case "QbId":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._SectionQBMapping_QbId(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+		case "SectionId":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._SectionQBMapping_SectionId(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+		case "DifficultyLevel":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._SectionQBMapping_DifficultyLevel(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+		case "TotalQuestions":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._SectionQBMapping_TotalQuestions(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+		case "QuestionMarks":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._SectionQBMapping_QuestionMarks(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+		case "QuestionType":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._SectionQBMapping_QuestionType(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+		case "RetrieveType":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._SectionQBMapping_RetrieveType(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+		case "CreatedAt":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._SectionQBMapping_CreatedAt(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+		case "UpdatedAt":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._SectionQBMapping_UpdatedAt(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+		case "CreatedBy":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._SectionQBMapping_CreatedBy(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+		case "UpdatedBy":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._SectionQBMapping_UpdatedBy(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+		case "IsActive":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._SectionQBMapping_IsActive(ctx, field, obj)
 			}
 
 			out.Values[i] = innerFunc(ctx)
@@ -14749,6 +15687,14 @@ func (ec *executionContext) marshalOInt2ᚖint(ctx context.Context, sel ast.Sele
 	return res
 }
 
+func (ec *executionContext) unmarshalOMapSectionToBankInput2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐMapSectionToBankInput(ctx context.Context, v interface{}) (*model.MapSectionToBankInput, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputMapSectionToBankInput(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
 func (ec *executionContext) marshalOModule2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐModule(ctx context.Context, sel ast.SelectionSet, v *model.Module) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
@@ -14876,6 +15822,13 @@ func (ec *executionContext) unmarshalOQuizMcq2ᚖgithubᚗcomᚋzicopsᚋzicops�
 	}
 	res, err := ec.unmarshalInputQuizMcq(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOSectionQBMapping2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐSectionQBMapping(ctx context.Context, sel ast.SelectionSet, v *model.SectionQBMapping) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._SectionQBMapping(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalOStaticContent2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐStaticContent(ctx context.Context, v interface{}) (*model.StaticContent, error) {
