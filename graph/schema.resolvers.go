@@ -246,6 +246,42 @@ func (r *mutationResolver) UpdateQuestionBank(ctx context.Context, input *model.
 	return resp, nil
 }
 
+func (r *mutationResolver) AddQuestionBankQuestion(ctx context.Context, input *model.QuestionBankQuestionInput) (*model.QuestionBankQuestion, error) {
+	resp, err := handlers.AddQuestionBankQuestion(ctx, input)
+	if err != nil {
+		log.Errorf("error adding question: %v", err)
+		return nil, err
+	}
+	return resp, nil
+}
+
+func (r *mutationResolver) UpdateQuestionBankQuestion(ctx context.Context, input *model.QuestionBankQuestionInput) (*model.QuestionBankQuestion, error) {
+	resp, err := handlers.UpdateQuestionBankQuestion(ctx, input)
+	if err != nil {
+		log.Errorf("error updating question: %v", err)
+		return nil, err
+	}
+	return resp, nil
+}
+
+func (r *mutationResolver) AddQuestionOptions(ctx context.Context, input *model.QuestionOptionInput) (*model.QuestionOption, error) {
+	resp, err := handlers.AddQuestionOptions(ctx, input)
+	if err != nil {
+		log.Errorf("error adding question option: %v", err)
+		return nil, err
+	}
+	return resp, nil
+}
+
+func (r *mutationResolver) UpdateQuestionOptions(ctx context.Context, input *model.QuestionOptionInput) (*model.QuestionOption, error) {
+	resp, err := handlers.UpdateQuestionOptions(ctx, input)
+	if err != nil {
+		log.Errorf("error updating question option: %v", err)
+		return nil, err
+	}
+	return resp, nil
+}
+
 // Mutation returns generated.MutationResolver implementation.
 func (r *Resolver) Mutation() generated.MutationResolver { return &mutationResolver{r} }
 

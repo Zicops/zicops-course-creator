@@ -319,6 +319,67 @@ type QuestionBank {
     is_default: Boolean
     owner: String
 }
+
+type QuestionBankQuestion {
+    id: ID
+    Description: String
+    Type: String
+    Difficulty: Int
+    Attachment: String
+    AttachmentType: String
+    Hint : String
+    QbmId: String
+    Status: String
+    CreatedAt: String
+    UpdatedAt: String
+    CreatedBy: String
+    UpdatedBy: String
+}
+
+input QuestionBankQuestionInput {
+    id: ID
+    Description: String
+    Type: String
+    Difficulty: Int
+    File: Upload
+    AttachmentType: String
+    Hint : String
+    QbmId: String
+    Status: String
+    CreatedAt: String
+    UpdatedAt: String
+    CreatedBy: String
+    UpdatedBy: String
+}
+
+type QuestionOption {
+    id: ID
+    QmId: String
+    Description: String
+    IsCorrect: Boolean
+    CreatedAt: String
+    UpdatedAt: String
+    CreatedBy: String
+    UpdatedBy: String
+    AttachmentType: String
+    Attachment: String
+    IsActive : Boolean
+}
+
+input QuestionOptionInput {
+    id: ID
+    QmId: String
+    Description: String
+    IsCorrect: Boolean
+    CreatedAt: String
+    UpdatedAt: String
+    CreatedBy: String
+    UpdatedBy: String
+    AttachmentType: String
+    File: Upload
+    IsActive : Boolean
+}
+
 # define type mutations to add a course  using courseInput
 type Mutation{
     addCategories(category: [String]): Boolean
@@ -348,4 +409,8 @@ type Mutation{
     #################################################################################################
     createQuestionBank(input: QuestionBankInput): QuestionBank
     updateQuestionBank(input: QuestionBankInput): QuestionBank
+    addQuestionBankQuestion(input: QuestionBankQuestionInput): QuestionBankQuestion
+    updateQuestionBankQuestion(input: QuestionBankQuestionInput): QuestionBankQuestion
+    addQuestionOptions(input: QuestionOptionInput): QuestionOption
+    updateQuestionOptions(input: QuestionOptionInput): QuestionOption
 }

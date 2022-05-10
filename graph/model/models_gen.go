@@ -163,6 +163,66 @@ type QuestionBankInput struct {
 	Owner       *string `json:"owner"`
 }
 
+type QuestionBankQuestion struct {
+	ID             *string `json:"id"`
+	Description    *string `json:"Description"`
+	Type           *string `json:"Type"`
+	Difficulty     *int    `json:"Difficulty"`
+	Attachment     *string `json:"Attachment"`
+	AttachmentType *string `json:"AttachmentType"`
+	Hint           *string `json:"Hint"`
+	QbmID          *string `json:"QbmId"`
+	Status         *string `json:"Status"`
+	CreatedAt      *string `json:"CreatedAt"`
+	UpdatedAt      *string `json:"UpdatedAt"`
+	CreatedBy      *string `json:"CreatedBy"`
+	UpdatedBy      *string `json:"UpdatedBy"`
+}
+
+type QuestionBankQuestionInput struct {
+	ID             *string         `json:"id"`
+	Description    *string         `json:"Description"`
+	Type           *string         `json:"Type"`
+	Difficulty     *int            `json:"Difficulty"`
+	File           *graphql.Upload `json:"File"`
+	AttachmentType *string         `json:"AttachmentType"`
+	Hint           *string         `json:"Hint"`
+	QbmID          *string         `json:"QbmId"`
+	Status         *string         `json:"Status"`
+	CreatedAt      *string         `json:"CreatedAt"`
+	UpdatedAt      *string         `json:"UpdatedAt"`
+	CreatedBy      *string         `json:"CreatedBy"`
+	UpdatedBy      *string         `json:"UpdatedBy"`
+}
+
+type QuestionOption struct {
+	ID             *string `json:"id"`
+	QmID           *string `json:"QmId"`
+	Description    *string `json:"Description"`
+	IsCorrect      *bool   `json:"IsCorrect"`
+	CreatedAt      *string `json:"CreatedAt"`
+	UpdatedAt      *string `json:"UpdatedAt"`
+	CreatedBy      *string `json:"CreatedBy"`
+	UpdatedBy      *string `json:"UpdatedBy"`
+	AttachmentType *string `json:"AttachmentType"`
+	Attachment     *string `json:"Attachment"`
+	IsActive       *bool   `json:"IsActive"`
+}
+
+type QuestionOptionInput struct {
+	ID             *string         `json:"id"`
+	QmID           *string         `json:"QmId"`
+	Description    *string         `json:"Description"`
+	IsCorrect      *bool           `json:"IsCorrect"`
+	CreatedAt      *string         `json:"CreatedAt"`
+	UpdatedAt      *string         `json:"UpdatedAt"`
+	CreatedBy      *string         `json:"CreatedBy"`
+	UpdatedBy      *string         `json:"UpdatedBy"`
+	AttachmentType *string         `json:"AttachmentType"`
+	File           *graphql.Upload `json:"File"`
+	IsActive       *bool           `json:"IsActive"`
+}
+
 type Quiz struct {
 	ID          *string `json:"id"`
 	Name        *string `json:"name"`
