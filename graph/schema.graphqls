@@ -587,6 +587,28 @@ type ExamInstruction {
     IsActive : Boolean
 }
 
+input ExamCohortInput {
+    id: ID
+    ExamId: String
+    CohortId: String
+    CreatedAt: String
+    UpdatedAt: String
+    CreatedBy: String
+    UpdatedBy: String
+    IsActive : Boolean
+}
+
+type ExamCohort {
+    id: ID
+    ExamId: String
+    CohortId: String
+    CreatedAt: String
+    UpdatedAt: String
+    CreatedBy: String
+    UpdatedBy: String
+    IsActive : Boolean
+}
+
 # define type mutations to add a course  using courseInput
 type Mutation{
     addCategories(category: [String]): Boolean
@@ -634,4 +656,6 @@ type Mutation{
     updateExamSchedule(input: ExamScheduleInput): ExamSchedule
     addExamInstruction(input: ExamInstructionInput): ExamInstruction
     updateExamInstruction(input: ExamInstructionInput): ExamInstruction
+    addExamCohort(input: ExamCohortInput): ExamCohort
+    updateExamCohort(input: ExamCohortInput): ExamCohort
 }

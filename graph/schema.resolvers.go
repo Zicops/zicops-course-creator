@@ -408,6 +408,24 @@ func (r *mutationResolver) UpdateExamInstruction(ctx context.Context, input *mod
 	return resp, nil
 }
 
+func (r *mutationResolver) AddExamCohort(ctx context.Context, input *model.ExamCohortInput) (*model.ExamCohort, error) {
+	resp, err := handlers.AddExamCohort(ctx, input)
+	if err != nil {
+		log.Errorf("error adding exam cohort : %v", err)
+		return nil, err
+	}
+	return resp, nil
+}
+
+func (r *mutationResolver) UpdateExamCohort(ctx context.Context, input *model.ExamCohortInput) (*model.ExamCohort, error) {
+	resp, err := handlers.UpdateExamCohort(ctx, input)
+	if err != nil {
+		log.Errorf("error updating exam cohort : %v", err)
+		return nil, err
+	}
+	return resp, nil
+}
+
 // Mutation returns generated.MutationResolver implementation.
 func (r *Resolver) Mutation() generated.MutationResolver { return &mutationResolver{r} }
 

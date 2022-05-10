@@ -126,6 +126,28 @@ type Exam struct {
 	SubCategory  *string `json:"SubCategory"`
 }
 
+type ExamCohort struct {
+	ID        *string `json:"id"`
+	ExamID    *string `json:"ExamId"`
+	CohortID  *string `json:"CohortId"`
+	CreatedAt *string `json:"CreatedAt"`
+	UpdatedAt *string `json:"UpdatedAt"`
+	CreatedBy *string `json:"CreatedBy"`
+	UpdatedBy *string `json:"UpdatedBy"`
+	IsActive  *bool   `json:"IsActive"`
+}
+
+type ExamCohortInput struct {
+	ID        *string `json:"id"`
+	ExamID    *string `json:"ExamId"`
+	CohortID  *string `json:"CohortId"`
+	CreatedAt *string `json:"CreatedAt"`
+	UpdatedAt *string `json:"UpdatedAt"`
+	CreatedBy *string `json:"CreatedBy"`
+	UpdatedBy *string `json:"UpdatedBy"`
+	IsActive  *bool   `json:"IsActive"`
+}
+
 type ExamInput struct {
 	ID           *string `json:"id"`
 	Name         *string `json:"Name"`
