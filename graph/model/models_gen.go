@@ -107,6 +107,44 @@ type CourseInput struct {
 	IsActive           *bool                 `json:"is_active"`
 }
 
+type Exam struct {
+	ID           *string `json:"id"`
+	Name         *string `json:"Name"`
+	Description  *string `json:"Description"`
+	Code         *string `json:"Code"`
+	QpID         *string `json:"QpId"`
+	CreatedAt    *string `json:"CreatedAt"`
+	UpdatedAt    *string `json:"UpdatedAt"`
+	CreatedBy    *string `json:"CreatedBy"`
+	UpdatedBy    *string `json:"UpdatedBy"`
+	IsActive     *bool   `json:"IsActive"`
+	Type         *string `json:"Type"`
+	ScheduleType *string `json:"ScheduleType"`
+	Duration     *int    `json:"Duration"`
+	Status       *string `json:"Status"`
+	Category     *string `json:"Category"`
+	SubCategory  *string `json:"SubCategory"`
+}
+
+type ExamInput struct {
+	ID           *string `json:"id"`
+	Name         *string `json:"Name"`
+	Description  *string `json:"Description"`
+	Code         *string `json:"Code"`
+	QpID         *string `json:"QpId"`
+	CreatedAt    *string `json:"CreatedAt"`
+	UpdatedAt    *string `json:"UpdatedAt"`
+	CreatedBy    *string `json:"CreatedBy"`
+	UpdatedBy    *string `json:"UpdatedBy"`
+	IsActive     *bool   `json:"IsActive"`
+	Type         *string `json:"Type"`
+	ScheduleType *string `json:"ScheduleType"`
+	Duration     *int    `json:"Duration"`
+	Status       *string `json:"Status"`
+	Category     *string `json:"Category"`
+	SubCategory  *string `json:"SubCategory"`
+}
+
 type MapSectionToBankInput struct {
 	ID              *string `json:"id"`
 	QbID            *string `json:"QbId"`

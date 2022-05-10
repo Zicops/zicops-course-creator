@@ -89,6 +89,25 @@ type ComplexityRoot struct {
 		UpdatedBy          func(childComplexity int) int
 	}
 
+	Exam struct {
+		Category     func(childComplexity int) int
+		Code         func(childComplexity int) int
+		CreatedAt    func(childComplexity int) int
+		CreatedBy    func(childComplexity int) int
+		Description  func(childComplexity int) int
+		Duration     func(childComplexity int) int
+		ID           func(childComplexity int) int
+		IsActive     func(childComplexity int) int
+		Name         func(childComplexity int) int
+		QpID         func(childComplexity int) int
+		ScheduleType func(childComplexity int) int
+		Status       func(childComplexity int) int
+		SubCategory  func(childComplexity int) int
+		Type         func(childComplexity int) int
+		UpdatedAt    func(childComplexity int) int
+		UpdatedBy    func(childComplexity int) int
+	}
+
 	Module struct {
 		CourseID    func(childComplexity int) int
 		CreatedAt   func(childComplexity int) int
@@ -110,6 +129,7 @@ type ComplexityRoot struct {
 		AddCourseChapter            func(childComplexity int, courseID *string, chapter *model.ChapterInput) int
 		AddCourseModule             func(childComplexity int, courseID *string, module *model.ModuleInput) int
 		AddCourseTopic              func(childComplexity int, courseID *string, topic *model.TopicInput) int
+		AddExam                     func(childComplexity int, exam *model.ExamInput) int
 		AddQuestionBankQuestion     func(childComplexity int, input *model.QuestionBankQuestionInput) int
 		AddQuestionOptions          func(childComplexity int, input *model.QuestionOptionInput) int
 		AddQuestionPaper            func(childComplexity int, input *model.QuestionPaperInput) int
@@ -126,6 +146,7 @@ type ComplexityRoot struct {
 		UpdateCourseChapter         func(childComplexity int, chapter *model.ChapterInput) int
 		UpdateCourseModule          func(childComplexity int, module *model.ModuleInput) int
 		UpdateCourseTopic           func(childComplexity int, topic *model.TopicInput) int
+		UpdateExam                  func(childComplexity int, exam *model.ExamInput) int
 		UpdateQuestionBank          func(childComplexity int, input *model.QuestionBankInput) int
 		UpdateQuestionBankQuestion  func(childComplexity int, input *model.QuestionBankQuestionInput) int
 		UpdateQuestionOptions       func(childComplexity int, input *model.QuestionOptionInput) int
@@ -349,6 +370,8 @@ type MutationResolver interface {
 	UpdateSectionToBank(ctx context.Context, input *model.MapSectionToBankInput) (*model.SectionQBMapping, error)
 	AddSectionFixedQuestions(ctx context.Context, input *model.SectionFixedQuestionsInput) (*model.SectionFixedQuestions, error)
 	UpdateSectionFixedQuestions(ctx context.Context, input *model.SectionFixedQuestionsInput) (*model.SectionFixedQuestions, error)
+	AddExam(ctx context.Context, exam *model.ExamInput) (*model.Exam, error)
+	UpdateExam(ctx context.Context, exam *model.ExamInput) (*model.Exam, error)
 }
 
 type executableSchema struct {
@@ -660,6 +683,118 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Course.UpdatedBy(childComplexity), true
 
+	case "Exam.Category":
+		if e.complexity.Exam.Category == nil {
+			break
+		}
+
+		return e.complexity.Exam.Category(childComplexity), true
+
+	case "Exam.Code":
+		if e.complexity.Exam.Code == nil {
+			break
+		}
+
+		return e.complexity.Exam.Code(childComplexity), true
+
+	case "Exam.CreatedAt":
+		if e.complexity.Exam.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.Exam.CreatedAt(childComplexity), true
+
+	case "Exam.CreatedBy":
+		if e.complexity.Exam.CreatedBy == nil {
+			break
+		}
+
+		return e.complexity.Exam.CreatedBy(childComplexity), true
+
+	case "Exam.Description":
+		if e.complexity.Exam.Description == nil {
+			break
+		}
+
+		return e.complexity.Exam.Description(childComplexity), true
+
+	case "Exam.Duration":
+		if e.complexity.Exam.Duration == nil {
+			break
+		}
+
+		return e.complexity.Exam.Duration(childComplexity), true
+
+	case "Exam.id":
+		if e.complexity.Exam.ID == nil {
+			break
+		}
+
+		return e.complexity.Exam.ID(childComplexity), true
+
+	case "Exam.IsActive":
+		if e.complexity.Exam.IsActive == nil {
+			break
+		}
+
+		return e.complexity.Exam.IsActive(childComplexity), true
+
+	case "Exam.Name":
+		if e.complexity.Exam.Name == nil {
+			break
+		}
+
+		return e.complexity.Exam.Name(childComplexity), true
+
+	case "Exam.QpId":
+		if e.complexity.Exam.QpID == nil {
+			break
+		}
+
+		return e.complexity.Exam.QpID(childComplexity), true
+
+	case "Exam.ScheduleType":
+		if e.complexity.Exam.ScheduleType == nil {
+			break
+		}
+
+		return e.complexity.Exam.ScheduleType(childComplexity), true
+
+	case "Exam.Status":
+		if e.complexity.Exam.Status == nil {
+			break
+		}
+
+		return e.complexity.Exam.Status(childComplexity), true
+
+	case "Exam.SubCategory":
+		if e.complexity.Exam.SubCategory == nil {
+			break
+		}
+
+		return e.complexity.Exam.SubCategory(childComplexity), true
+
+	case "Exam.Type":
+		if e.complexity.Exam.Type == nil {
+			break
+		}
+
+		return e.complexity.Exam.Type(childComplexity), true
+
+	case "Exam.UpdatedAt":
+		if e.complexity.Exam.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.Exam.UpdatedAt(childComplexity), true
+
+	case "Exam.UpdatedBy":
+		if e.complexity.Exam.UpdatedBy == nil {
+			break
+		}
+
+		return e.complexity.Exam.UpdatedBy(childComplexity), true
+
 	case "Module.courseId":
 		if e.complexity.Module.CourseID == nil {
 			break
@@ -803,6 +938,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.AddCourseTopic(childComplexity, args["courseId"].(*string), args["topic"].(*model.TopicInput)), true
+
+	case "Mutation.addExam":
+		if e.complexity.Mutation.AddExam == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_addExam_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.AddExam(childComplexity, args["exam"].(*model.ExamInput)), true
 
 	case "Mutation.addQuestionBankQuestion":
 		if e.complexity.Mutation.AddQuestionBankQuestion == nil {
@@ -995,6 +1142,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.UpdateCourseTopic(childComplexity, args["topic"].(*model.TopicInput)), true
+
+	case "Mutation.updateExam":
+		if e.complexity.Mutation.UpdateExam == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_updateExam_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdateExam(childComplexity, args["exam"].(*model.ExamInput)), true
 
 	case "Mutation.updateQuestionBank":
 		if e.complexity.Mutation.UpdateQuestionBank == nil {
@@ -2617,6 +2776,44 @@ type SectionFixedQuestions {
     IsActive : Boolean
 }
 
+input ExamInput {
+    id: ID
+    Name: String
+    Description: String
+    Code : String
+    QpId: String
+    CreatedAt: String
+    UpdatedAt: String
+    CreatedBy: String
+    UpdatedBy: String
+    IsActive : Boolean
+    Type: String
+    ScheduleType: String
+    Duration: Int
+    Status: String
+    Category: String
+    SubCategory: String
+}
+
+type Exam {
+    id: ID
+    Name: String
+    Description: String
+    Code : String
+    QpId: String
+    CreatedAt: String
+    UpdatedAt: String
+    CreatedBy: String
+    UpdatedBy: String
+    IsActive : Boolean
+    Type: String
+    ScheduleType: String
+    Duration: Int
+    Status: String
+    Category: String
+    SubCategory: String
+}
+
 # define type mutations to add a course  using courseInput
 type Mutation{
     addCategories(category: [String]): Boolean
@@ -2658,6 +2855,8 @@ type Mutation{
     updateSectionToBank(input: MapSectionToBankInput): SectionQBMapping
     addSectionFixedQuestions(input: SectionFixedQuestionsInput): SectionFixedQuestions
     updateSectionFixedQuestions(input: SectionFixedQuestionsInput): SectionFixedQuestions
+    addExam(exam: ExamInput): Exam
+    updateExam(exam: ExamInput): Exam
 }
 `, BuiltIn: false},
 }
@@ -2766,6 +2965,21 @@ func (ec *executionContext) field_Mutation_addCourse_args(ctx context.Context, r
 		}
 	}
 	args["course"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_addExam_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 *model.ExamInput
+	if tmp, ok := rawArgs["exam"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("exam"))
+		arg0, err = ec.unmarshalOExamInput2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐExamInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["exam"] = arg0
 	return args, nil
 }
 
@@ -3024,6 +3238,21 @@ func (ec *executionContext) field_Mutation_updateCourse_args(ctx context.Context
 		}
 	}
 	args["course"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_updateExam_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 *model.ExamInput
+	if tmp, ok := rawArgs["exam"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("exam"))
+		arg0, err = ec.unmarshalOExamInput2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐExamInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["exam"] = arg0
 	return args, nil
 }
 
@@ -4695,6 +4924,518 @@ func (ec *executionContext) _Course_is_active(ctx context.Context, field graphql
 	res := resTmp.(*bool)
 	fc.Result = res
 	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Exam_id(ctx context.Context, field graphql.CollectedField, obj *model.Exam) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Exam",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOID2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Exam_Name(ctx context.Context, field graphql.CollectedField, obj *model.Exam) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Exam",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Name, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Exam_Description(ctx context.Context, field graphql.CollectedField, obj *model.Exam) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Exam",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Description, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Exam_Code(ctx context.Context, field graphql.CollectedField, obj *model.Exam) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Exam",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Code, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Exam_QpId(ctx context.Context, field graphql.CollectedField, obj *model.Exam) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Exam",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.QpID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Exam_CreatedAt(ctx context.Context, field graphql.CollectedField, obj *model.Exam) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Exam",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CreatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Exam_UpdatedAt(ctx context.Context, field graphql.CollectedField, obj *model.Exam) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Exam",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.UpdatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Exam_CreatedBy(ctx context.Context, field graphql.CollectedField, obj *model.Exam) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Exam",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CreatedBy, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Exam_UpdatedBy(ctx context.Context, field graphql.CollectedField, obj *model.Exam) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Exam",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.UpdatedBy, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Exam_IsActive(ctx context.Context, field graphql.CollectedField, obj *model.Exam) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Exam",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.IsActive, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*bool)
+	fc.Result = res
+	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Exam_Type(ctx context.Context, field graphql.CollectedField, obj *model.Exam) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Exam",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Type, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Exam_ScheduleType(ctx context.Context, field graphql.CollectedField, obj *model.Exam) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Exam",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ScheduleType, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Exam_Duration(ctx context.Context, field graphql.CollectedField, obj *model.Exam) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Exam",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Duration, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*int)
+	fc.Result = res
+	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Exam_Status(ctx context.Context, field graphql.CollectedField, obj *model.Exam) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Exam",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Status, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Exam_Category(ctx context.Context, field graphql.CollectedField, obj *model.Exam) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Exam",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Category, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Exam_SubCategory(ctx context.Context, field graphql.CollectedField, obj *model.Exam) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Exam",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.SubCategory, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Module_id(ctx context.Context, field graphql.CollectedField, obj *model.Module) (ret graphql.Marshaler) {
@@ -6561,6 +7302,84 @@ func (ec *executionContext) _Mutation_updateSectionFixedQuestions(ctx context.Co
 	res := resTmp.(*model.SectionFixedQuestions)
 	fc.Result = res
 	return ec.marshalOSectionFixedQuestions2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐSectionFixedQuestions(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_addExam(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_addExam_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().AddExam(rctx, args["exam"].(*model.ExamInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.Exam)
+	fc.Result = res
+	return ec.marshalOExam2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐExam(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_updateExam(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_updateExam_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().UpdateExam(rctx, args["exam"].(*model.ExamInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.Exam)
+	fc.Result = res
+	return ec.marshalOExam2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐExam(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query___type(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -12089,6 +12908,149 @@ func (ec *executionContext) unmarshalInputCourseInput(ctx context.Context, obj i
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputExamInput(ctx context.Context, obj interface{}) (model.ExamInput, error) {
+	var it model.ExamInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	for k, v := range asMap {
+		switch k {
+		case "id":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+			it.ID, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Name":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Name"))
+			it.Name, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Description":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Description"))
+			it.Description, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Code":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Code"))
+			it.Code, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "QpId":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("QpId"))
+			it.QpID, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "CreatedAt":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("CreatedAt"))
+			it.CreatedAt, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "UpdatedAt":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("UpdatedAt"))
+			it.UpdatedAt, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "CreatedBy":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("CreatedBy"))
+			it.CreatedBy, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "UpdatedBy":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("UpdatedBy"))
+			it.UpdatedBy, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "IsActive":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("IsActive"))
+			it.IsActive, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Type":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Type"))
+			it.Type, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "ScheduleType":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ScheduleType"))
+			it.ScheduleType, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Duration":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Duration"))
+			it.Duration, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Status":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Status"))
+			it.Status, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Category":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Category"))
+			it.Category, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "SubCategory":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("SubCategory"))
+			it.SubCategory, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputMapSectionToBankInput(ctx context.Context, obj interface{}) (model.MapSectionToBankInput, error) {
 	var it model.MapSectionToBankInput
 	asMap := map[string]interface{}{}
@@ -13966,6 +14928,139 @@ func (ec *executionContext) _Course(ctx context.Context, sel ast.SelectionSet, o
 	return out
 }
 
+var examImplementors = []string{"Exam"}
+
+func (ec *executionContext) _Exam(ctx context.Context, sel ast.SelectionSet, obj *model.Exam) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, examImplementors)
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("Exam")
+		case "id":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Exam_id(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+		case "Name":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Exam_Name(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+		case "Description":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Exam_Description(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+		case "Code":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Exam_Code(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+		case "QpId":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Exam_QpId(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+		case "CreatedAt":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Exam_CreatedAt(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+		case "UpdatedAt":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Exam_UpdatedAt(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+		case "CreatedBy":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Exam_CreatedBy(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+		case "UpdatedBy":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Exam_UpdatedBy(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+		case "IsActive":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Exam_IsActive(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+		case "Type":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Exam_Type(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+		case "ScheduleType":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Exam_ScheduleType(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+		case "Duration":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Exam_Duration(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+		case "Status":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Exam_Status(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+		case "Category":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Exam_Category(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+		case "SubCategory":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Exam_SubCategory(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
 var moduleImplementors = []string{"Module"}
 
 func (ec *executionContext) _Module(ctx context.Context, sel ast.SelectionSet, obj *model.Module) graphql.Marshaler {
@@ -14352,6 +15447,20 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 		case "updateSectionFixedQuestions":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_updateSectionFixedQuestions(ctx, field)
+			}
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, innerFunc)
+
+		case "addExam":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_addExam(ctx, field)
+			}
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, innerFunc)
+
+		case "updateExam":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_updateExam(ctx, field)
 			}
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, innerFunc)
@@ -16305,6 +17414,21 @@ func (ec *executionContext) unmarshalOCourseInput2ᚖgithubᚗcomᚋzicopsᚋzic
 		return nil, nil
 	}
 	res, err := ec.unmarshalInputCourseInput(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOExam2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐExam(ctx context.Context, sel ast.SelectionSet, v *model.Exam) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._Exam(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalOExamInput2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐExamInput(ctx context.Context, v interface{}) (*model.ExamInput, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputExamInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 

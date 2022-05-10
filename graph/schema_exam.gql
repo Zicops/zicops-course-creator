@@ -204,6 +204,44 @@ type SectionFixedQuestions {
     IsActive : Boolean
 }
 
+input ExamInput {
+    id: ID
+    Name: String
+    Description: String
+    Code : String
+    QpId: String
+    CreatedAt: String
+    UpdatedAt: String
+    CreatedBy: String
+    UpdatedBy: String
+    IsActive : Boolean
+    Type: String
+    ScheduleType: String
+    Duration: Int
+    Status: String
+    Category: String
+    SubCategory: String
+}
+
+type Exam {
+    id: ID
+    Name: String
+    Description: String
+    Code : String
+    QpId: String
+    CreatedAt: String
+    UpdatedAt: String
+    CreatedBy: String
+    UpdatedBy: String
+    IsActive : Boolean
+    Type: String
+    ScheduleType: String
+    Duration: Int
+    Status: String
+    Category: String
+    SubCategory: String
+}
+
 type Mutation{
     createQuestionBank(input: QuestionBankInput): QuestionBank
     updateQuestionBank(input: QuestionBankInput): QuestionBank
@@ -219,4 +257,6 @@ type Mutation{
     updateSectionToBank(input: MapSectionToBankInput): SectionQBMapping
     addSectionFixedQuestions(input: SectionFixedQuestionsInput): SectionFixedQuestions
     updateSectionFixedQuestions(input: SectionFixedQuestionsInput): SectionFixedQuestions
+    addExam(exam: ExamInput): Exam
+    updateExam(exam: ExamInput): Exam
 }

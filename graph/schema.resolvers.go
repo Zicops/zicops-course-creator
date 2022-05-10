@@ -354,6 +354,24 @@ func (r *mutationResolver) UpdateSectionFixedQuestions(ctx context.Context, inpu
 	return resp, nil
 }
 
+func (r *mutationResolver) AddExam(ctx context.Context, exam *model.ExamInput) (*model.Exam, error) {
+	resp, err := handlers.ExamCreate(ctx, exam)
+	if err != nil {
+		log.Errorf("error adding exam : %v", err)
+		return nil, err
+	}
+	return resp, nil
+}
+
+func (r *mutationResolver) UpdateExam(ctx context.Context, exam *model.ExamInput) (*model.Exam, error) {
+	resp, err := handlers.ExamUpdate(ctx, exam)
+	if err != nil {
+		log.Errorf("error updating exam : %v", err)
+		return nil, err
+	}
+	return resp, nil
+}
+
 // Mutation returns generated.MutationResolver implementation.
 func (r *Resolver) Mutation() generated.MutationResolver { return &mutationResolver{r} }
 
