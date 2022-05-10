@@ -23,6 +23,7 @@ func ExamInstructionsCreate(ctx context.Context, exam *model.ExamInstructionInpu
 		PassingCriteria: *exam.PassingCriteria,
 		NoAttempts:      *exam.NoAttempts,
 		AccessType:      *exam.AccessType,
+		CreatedBy:       *exam.CreatedBy,
 		UpdatedBy:       *exam.UpdatedBy,
 		CreatedAt:       time.Now().Unix(),
 		UpdatedAt:       time.Now().Unix(),
@@ -73,6 +74,7 @@ func ExamInstructionsUpdate(ctx context.Context, input *model.ExamInstructionInp
 		cassandraQuestionBank.IsActive = *input.IsActive
 		updatedCols = append(updatedCols, "is_active")
 	}
+	
 	if input.UpdatedBy != nil {
 		cassandraQuestionBank.UpdatedBy = *input.UpdatedBy
 		updatedCols = append(updatedCols, "updated_by")
