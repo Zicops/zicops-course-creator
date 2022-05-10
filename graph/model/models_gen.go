@@ -223,6 +223,69 @@ type QuestionOptionInput struct {
 	IsActive       *bool           `json:"IsActive"`
 }
 
+type QuestionPaper struct {
+	ID                *string `json:"id"`
+	Name              *string `json:"name"`
+	Category          *string `json:"Category"`
+	SubCategory       *string `json:"SubCategory"`
+	CreatedAt         *string `json:"CreatedAt"`
+	UpdatedAt         *string `json:"UpdatedAt"`
+	CreatedBy         *string `json:"CreatedBy"`
+	UpdatedBy         *string `json:"UpdatedBy"`
+	IsActive          *bool   `json:"IsActive"`
+	DifficultyLevel   *string `json:"DifficultyLevel"`
+	SectionWise       *string `json:"SectionWise"`
+	Description       *string `json:"Description"`
+	SuggestedDuration *string `json:"SuggestedDuration"`
+}
+
+type QuestionPaperInput struct {
+	ID                *string `json:"id"`
+	QpID              *string `json:"QpId"`
+	Name              *string `json:"name"`
+	Category          *string `json:"Category"`
+	SubCategory       *string `json:"SubCategory"`
+	CreatedAt         *string `json:"CreatedAt"`
+	UpdatedAt         *string `json:"UpdatedAt"`
+	CreatedBy         *string `json:"CreatedBy"`
+	UpdatedBy         *string `json:"UpdatedBy"`
+	IsActive          *bool   `json:"IsActive"`
+	DifficultyLevel   *string `json:"DifficultyLevel"`
+	SectionWise       *string `json:"SectionWise"`
+	Description       *string `json:"Description"`
+	SuggestedDuration *string `json:"SuggestedDuration"`
+}
+
+type QuestionPaperSection struct {
+	ID              *string `json:"id"`
+	QpID            *string `json:"QpId"`
+	Name            *string `json:"Name"`
+	Description     *string `json:"Description"`
+	CreatedAt       *string `json:"CreatedAt"`
+	UpdatedAt       *string `json:"UpdatedAt"`
+	CreatedBy       *string `json:"CreatedBy"`
+	UpdatedBy       *string `json:"UpdatedBy"`
+	IsActive        *bool   `json:"IsActive"`
+	Type            *string `json:"Type"`
+	DifficultyLevel *string `json:"DifficultyLevel"`
+	TotalQuestions  *int    `json:"TotalQuestions"`
+}
+
+type QuestionPaperSectionInput struct {
+	ID              *string `json:"id"`
+	QpID            *string `json:"QpId"`
+	Name            *string `json:"Name"`
+	Description     *string `json:"Description"`
+	CreatedAt       *string `json:"CreatedAt"`
+	UpdatedAt       *string `json:"UpdatedAt"`
+	CreatedBy       *string `json:"CreatedBy"`
+	UpdatedBy       *string `json:"UpdatedBy"`
+	IsActive        *bool   `json:"IsActive"`
+	Type            *string `json:"Type"`
+	DifficultyLevel *string `json:"DifficultyLevel"`
+	TotalQuestions  *int    `json:"TotalQuestions"`
+}
+
 type Quiz struct {
 	ID          *string `json:"id"`
 	Name        *string `json:"name"`

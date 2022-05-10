@@ -5,6 +5,7 @@ package graph
 
 import (
 	"context"
+	"fmt"
 
 	log "github.com/sirupsen/logrus"
 	"github.com/zicops/zicops-course-creator/graph/generated"
@@ -280,6 +281,32 @@ func (r *mutationResolver) UpdateQuestionOptions(ctx context.Context, input *mod
 		return nil, err
 	}
 	return resp, nil
+}
+
+func (r *mutationResolver) AddQuestionPaper(ctx context.Context, input *model.QuestionPaperInput) (*model.QuestionPaper, error) {
+	resp, err := handlers.QuestionPaperCreate(ctx, input)
+	if err != nil {
+		log.Errorf("error updating question option: %v", err)
+		return nil, err
+	}
+	return resp, nil
+}
+
+func (r *mutationResolver) UpdateQuestionPaper(ctx context.Context, input *model.QuestionPaperInput) (*model.QuestionPaper, error) {
+	resp, err := handlers.QuestionPaperUpdate(ctx, input)
+	if err != nil {
+		log.Errorf("error updating question option: %v", err)
+		return nil, err
+	}
+	return resp, nil
+}
+
+func (r *mutationResolver) AddQuestionPaperSection(ctx context.Context, input *model.QuestionPaperSectionInput) (*model.QuestionPaperSection, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
+func (r *mutationResolver) UpdateQuestionPaperSection(ctx context.Context, input *model.QuestionPaperSectionInput) (*model.QuestionPaperSection, error) {
+	panic(fmt.Errorf("not implemented"))
 }
 
 // Mutation returns generated.MutationResolver implementation.

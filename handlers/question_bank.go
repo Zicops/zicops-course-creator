@@ -104,6 +104,7 @@ func QuestionBankUpdate(ctx context.Context, input *model.QuestionBankInput) (*m
 	}
 	updatedAt := time.Now().Unix()
 	cassandraQuestionBank.UpdatedAt = updatedAt
+	updatedCols = append(updatedCols, "updated_at")
 	if len(updatedCols) == 0 {
 		return nil, fmt.Errorf("nothing to update")
 	}

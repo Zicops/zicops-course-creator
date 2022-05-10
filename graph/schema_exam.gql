@@ -86,6 +86,69 @@ input QuestionOptionInput {
     IsActive : Boolean
 }
 
+type QuestionPaper {
+    id: ID
+    name: String
+    Category: String
+    SubCategory: String
+    CreatedAt: String
+    UpdatedAt: String
+    CreatedBy: String
+    UpdatedBy: String
+    IsActive : Boolean
+    DifficultyLevel: String
+    SectionWise: String
+    Description: String
+    SuggestedDuration: String
+}
+
+input QuestionPaperInput {
+    id: ID
+    QpId: String
+    name: String
+    Category: String
+    SubCategory: String
+    CreatedAt: String
+    UpdatedAt: String
+    CreatedBy: String
+    UpdatedBy: String
+    IsActive : Boolean
+    DifficultyLevel: String
+    SectionWise: String
+    Description: String
+    SuggestedDuration: String
+}
+
+type QuestionPaperSectionInput {
+    id: ID
+    QpId: String
+    Name: String
+    Description: String
+    CreatedAt: String
+    UpdatedAt: String
+    CreatedBy: String
+    UpdatedBy: String
+    IsActive : Boolean
+    Type: String
+    DifficultyLevel: String
+    TotalQuestions: Int
+}
+
+input QuestionPaperSection {
+    id: ID
+    QpId: String
+    Name: String
+    Description: String
+    CreatedAt: String
+    UpdatedAt: String
+    CreatedBy: String
+    UpdatedBy: String
+    IsActive : Boolean
+    Type: String
+    DifficultyLevel: String
+    TotalQuestions: Int
+}
+
 type Mutation{
     createQuestionBank(input: QuestionBankInput): QuestionBank
     updateQuestionBank(input: QuestionBankInput): QuestionBank
@@ -93,4 +156,8 @@ type Mutation{
     updateQuestionBankQuestion(input: QuestionBankQuestionInput): QuestionBankQuestion
     addQuestionOptions(input: QuestionOptionInput): QuestionOption
     updateQuestionOptions(input: QuestionOptionInput): QuestionOption
+    addQuestionPaper(input: QuestionPaperInput): QuestionPaper
+    updateQuestionPaper(input: QuestionPaperInput): QuestionPaper
+    addQuestionPaperSection(input: QuestionPaperSectionInput): QuestionPaperSection
+    updateQuestionPaperSection(input: QuestionPaperSectionInput): QuestionPaperSection
 }
