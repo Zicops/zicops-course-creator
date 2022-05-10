@@ -242,6 +242,32 @@ type Exam {
     SubCategory: String
 }
 
+input ExamScheduleInput {
+    id: ID
+    ExamId: String
+    Start: Int
+    End: Int
+    BufferTime: Int
+    CreatedAt: String
+    UpdatedAt: String
+    CreatedBy: String
+    UpdatedBy: String
+    IsActive : Boolean
+}
+
+type ExamSchedule {
+    id: ID
+    ExamId: String
+    Start: Int
+    End: Int
+    BufferTime: Int
+    CreatedAt: String
+    UpdatedAt: String
+    CreatedBy: String
+    UpdatedBy: String
+    IsActive : Boolean
+}
+
 type Mutation{
     createQuestionBank(input: QuestionBankInput): QuestionBank
     updateQuestionBank(input: QuestionBankInput): QuestionBank
@@ -257,6 +283,8 @@ type Mutation{
     updateSectionToBank(input: MapSectionToBankInput): SectionQBMapping
     addSectionFixedQuestions(input: SectionFixedQuestionsInput): SectionFixedQuestions
     updateSectionFixedQuestions(input: SectionFixedQuestionsInput): SectionFixedQuestions
-    addExam(exam: ExamInput): Exam
-    updateExam(exam: ExamInput): Exam
+    addExam(input: ExamInput): Exam
+    updateExam(input: ExamInput): Exam
+    addExamSchedule(input: ExamScheduleInput): ExamSchedule
+    updateExamSchedule(input: ExamScheduleInput): ExamSchedule
 }

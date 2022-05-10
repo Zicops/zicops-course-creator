@@ -354,8 +354,8 @@ func (r *mutationResolver) UpdateSectionFixedQuestions(ctx context.Context, inpu
 	return resp, nil
 }
 
-func (r *mutationResolver) AddExam(ctx context.Context, exam *model.ExamInput) (*model.Exam, error) {
-	resp, err := handlers.ExamCreate(ctx, exam)
+func (r *mutationResolver) AddExam(ctx context.Context, input *model.ExamInput) (*model.Exam, error) {
+	resp, err := handlers.ExamCreate(ctx, input)
 	if err != nil {
 		log.Errorf("error adding exam : %v", err)
 		return nil, err
@@ -363,10 +363,28 @@ func (r *mutationResolver) AddExam(ctx context.Context, exam *model.ExamInput) (
 	return resp, nil
 }
 
-func (r *mutationResolver) UpdateExam(ctx context.Context, exam *model.ExamInput) (*model.Exam, error) {
-	resp, err := handlers.ExamUpdate(ctx, exam)
+func (r *mutationResolver) UpdateExam(ctx context.Context, input *model.ExamInput) (*model.Exam, error) {
+	resp, err := handlers.ExamUpdate(ctx, input)
 	if err != nil {
 		log.Errorf("error updating exam : %v", err)
+		return nil, err
+	}
+	return resp, nil
+}
+
+func (r *mutationResolver) AddExamSchedule(ctx context.Context, input *model.ExamScheduleInput) (*model.ExamSchedule, error) {
+	resp, err := handlers.ExamScheduleCreate(ctx, input)
+	if err != nil {
+		log.Errorf("error adding exam : %v", err)
+		return nil, err
+	}
+	return resp, nil
+}
+
+func (r *mutationResolver) UpdateExamSchedule(ctx context.Context, input *model.ExamScheduleInput) (*model.ExamSchedule, error) {
+	resp, err := handlers.ExamScheduleUpdate(ctx, input)
+	if err != nil {
+		log.Errorf("error adding exam : %v", err)
 		return nil, err
 	}
 	return resp, nil

@@ -145,6 +145,32 @@ type ExamInput struct {
 	SubCategory  *string `json:"SubCategory"`
 }
 
+type ExamSchedule struct {
+	ID         *string `json:"id"`
+	ExamID     *string `json:"ExamId"`
+	Start      *int    `json:"Start"`
+	End        *int    `json:"End"`
+	BufferTime *int    `json:"BufferTime"`
+	CreatedAt  *string `json:"CreatedAt"`
+	UpdatedAt  *string `json:"UpdatedAt"`
+	CreatedBy  *string `json:"CreatedBy"`
+	UpdatedBy  *string `json:"UpdatedBy"`
+	IsActive   *bool   `json:"IsActive"`
+}
+
+type ExamScheduleInput struct {
+	ID         *string `json:"id"`
+	ExamID     *string `json:"ExamId"`
+	Start      *int    `json:"Start"`
+	End        *int    `json:"End"`
+	BufferTime *int    `json:"BufferTime"`
+	CreatedAt  *string `json:"CreatedAt"`
+	UpdatedAt  *string `json:"UpdatedAt"`
+	CreatedBy  *string `json:"CreatedBy"`
+	UpdatedBy  *string `json:"UpdatedBy"`
+	IsActive   *bool   `json:"IsActive"`
+}
+
 type MapSectionToBankInput struct {
 	ID              *string `json:"id"`
 	QbID            *string `json:"QbId"`
