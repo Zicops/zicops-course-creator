@@ -145,6 +145,32 @@ type ExamInput struct {
 	SubCategory  *string `json:"SubCategory"`
 }
 
+type ExamInstruction struct {
+	ID              *string `json:"id"`
+	ExamID          *string `json:"ExamId"`
+	PassingCriteria *string `json:"PassingCriteria"`
+	NoAttempts      *int    `json:"NoAttempts"`
+	AccessType      *string `json:"AccessType"`
+	CreatedAt       *string `json:"CreatedAt"`
+	UpdatedAt       *string `json:"UpdatedAt"`
+	CreatedBy       *string `json:"CreatedBy"`
+	UpdatedBy       *string `json:"UpdatedBy"`
+	IsActive        *bool   `json:"IsActive"`
+}
+
+type ExamInstructionInput struct {
+	ID              *string `json:"id"`
+	ExamID          *string `json:"ExamId"`
+	PassingCriteria *string `json:"PassingCriteria"`
+	NoAttempts      *int    `json:"NoAttempts"`
+	AccessType      *string `json:"AccessType"`
+	CreatedAt       *string `json:"CreatedAt"`
+	UpdatedAt       *string `json:"UpdatedAt"`
+	CreatedBy       *string `json:"CreatedBy"`
+	UpdatedBy       *string `json:"UpdatedBy"`
+	IsActive        *bool   `json:"IsActive"`
+}
+
 type ExamSchedule struct {
 	ID         *string `json:"id"`
 	ExamID     *string `json:"ExamId"`

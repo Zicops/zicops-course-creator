@@ -268,6 +268,32 @@ type ExamSchedule {
     IsActive : Boolean
 }
 
+input ExamInstructionInput {
+    id: ID
+    ExamId: String
+    PassingCriteria: String
+    NoAttempts: Int
+    AccessType: String
+    CreatedAt: String
+    UpdatedAt: String
+    CreatedBy: String
+    UpdatedBy: String
+    IsActive : Boolean
+}
+
+type ExamInstruction {
+    id: ID
+    ExamId: String
+    PassingCriteria: String
+    NoAttempts: Int
+    AccessType: String
+    CreatedAt: String
+    UpdatedAt: String
+    CreatedBy: String
+    UpdatedBy: String
+    IsActive : Boolean
+}
+
 type Mutation{
     createQuestionBank(input: QuestionBankInput): QuestionBank
     updateQuestionBank(input: QuestionBankInput): QuestionBank
@@ -287,4 +313,6 @@ type Mutation{
     updateExam(input: ExamInput): Exam
     addExamSchedule(input: ExamScheduleInput): ExamSchedule
     updateExamSchedule(input: ExamScheduleInput): ExamSchedule
+    addExamInstruction(input: ExamInstructionInput): ExamInstruction
+    updateExamInstruction(input: ExamInstructionInput): ExamInstruction
 }
