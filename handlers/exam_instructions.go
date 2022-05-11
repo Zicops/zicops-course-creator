@@ -29,7 +29,7 @@ func ExamInstructionsCreate(ctx context.Context, exam *model.ExamInstructionInpu
 		UpdatedAt:       time.Now().Unix(),
 		IsActive:        *exam.IsActive,
 	}
-	insertQuery := global.CassSession.Session.Query(qbankz.ExamInstructionsTable.Insert()).BindStruct(cassandraQuestionBank)
+	insertQuery := global.CassSessioQBank.Session.Query(qbankz.ExamInstructionsTable.Insert()).BindStruct(cassandraQuestionBank)
 	if err := insertQuery.ExecRelease(); err != nil {
 		return nil, err
 	}
@@ -57,7 +57,7 @@ func ExamInstructionsUpdate(ctx context.Context, input *model.ExamInstructionInp
 		ID: *input.ID,
 	}
 	banks := []qbankz.ExamInstructions{}
-	getQuery := global.CassSession.Session.Query(qbankz.ExamInstructionsTable.Get()).BindMap(qb.M{"id": cassandraQuestionBank.ID})
+	getQuery := global.CassSessioQBank.Session.Query(qbankz.ExamInstructionsTable.Get()).BindMap(qb.M{"id": cassandraQuestionBank.ID})
 	if err := getQuery.SelectRelease(&banks); err != nil {
 		return nil, err
 	}
@@ -98,7 +98,7 @@ func ExamInstructionsUpdate(ctx context.Context, input *model.ExamInstructionInp
 		return nil, fmt.Errorf("nothing to update")
 	}
 	upStms, uNames := qbankz.ExamInstructionsTable.Update(updatedCols...)
-	updateQuery := global.CassSession.Session.Query(upStms, uNames).BindStruct(&cassandraQuestionBank)
+	updateQuery := global.CassSessioQBank.Session.Query(upStms, uNames).BindStruct(&cassandraQuestionBank)
 	if err := updateQuery.ExecRelease(); err != nil {
 		return nil, err
 	}

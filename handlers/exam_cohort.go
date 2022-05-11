@@ -27,7 +27,7 @@ func AddExamCohort(ctx context.Context, input *model.ExamCohortInput) (*model.Ex
 		UpdatedAt: time.Now().Unix(),
 		CohortID:  *input.CohortID,
 	}
-	insertQuery := global.CassSession.Session.Query(qbankz.ExamCohortTable.Insert()).BindStruct(cassandraQuestionBank)
+	insertQuery := global.CassSessioQBank.Session.Query(qbankz.ExamCohortTable.Insert()).BindStruct(cassandraQuestionBank)
 	if err := insertQuery.ExecRelease(); err != nil {
 		return nil, err
 	}
@@ -54,7 +54,7 @@ func UpdateExamCohort(ctx context.Context, input *model.ExamCohortInput) (*model
 		ID: *input.ID,
 	}
 	banks := []qbankz.ExamCohort{}
-	getQuery := global.CassSession.Session.Query(qbankz.ExamCohortTable.Get()).BindMap(qb.M{"id": cassandraQuestionBank.ID})
+	getQuery := global.CassSessioQBank.Session.Query(qbankz.ExamCohortTable.Get()).BindMap(qb.M{"id": cassandraQuestionBank.ID})
 	if err := getQuery.SelectRelease(&banks); err != nil {
 		return nil, err
 	}
@@ -90,7 +90,7 @@ func UpdateExamCohort(ctx context.Context, input *model.ExamCohortInput) (*model
 		return nil, fmt.Errorf("nothing to update")
 	}
 	upStms, uNames := qbankz.ExamCohortTable.Update(updatedCols...)
-	updateQuery := global.CassSession.Session.Query(upStms, uNames).BindStruct(&cassandraQuestionBank)
+	updateQuery := global.CassSessioQBank.Session.Query(upStms, uNames).BindStruct(&cassandraQuestionBank)
 	if err := updateQuery.ExecRelease(); err != nil {
 		return nil, err
 	}

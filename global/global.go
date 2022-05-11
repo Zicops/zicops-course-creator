@@ -11,6 +11,7 @@ import (
 var (
 	CTX             context.Context
 	CassSession     *cassandra.Cassandra
+	CassSessioQBank *cassandra.Cassandra
 	Cancel          context.CancelFunc
 	WaitGroupServer sync.WaitGroup
 )

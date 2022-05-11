@@ -42,7 +42,7 @@ func ExamScheduleCreate(ctx context.Context, exam *model.ExamScheduleInput) (*mo
 		BufferTime: *exam.BufferTime,
 	}
 
-	insertQuery := global.CassSession.Session.Query(qbankz.ExamScheduleTable.Insert()).BindStruct(cassandraQuestionBank)
+	insertQuery := global.CassSessioQBank.Session.Query(qbankz.ExamScheduleTable.Insert()).BindStruct(cassandraQuestionBank)
 	if err := insertQuery.ExecRelease(); err != nil {
 		return nil, err
 	}
@@ -71,7 +71,7 @@ func ExamScheduleUpdate(ctx context.Context, input *model.ExamScheduleInput) (*m
 		ID: *input.ID,
 	}
 	banks := []qbankz.ExamSchedule{}
-	getQuery := global.CassSession.Session.Query(qbankz.ExamScheduleTable.Get()).BindMap(qb.M{"id": cassandraQuestionBank.ID})
+	getQuery := global.CassSessioQBank.Session.Query(qbankz.ExamScheduleTable.Get()).BindMap(qb.M{"id": cassandraQuestionBank.ID})
 	if err := getQuery.SelectRelease(&banks); err != nil {
 		return nil, err
 	}
@@ -121,7 +121,7 @@ func ExamScheduleUpdate(ctx context.Context, input *model.ExamScheduleInput) (*m
 		return nil, fmt.Errorf("nothing to update")
 	}
 	upStms, uNames := qbankz.ExamScheduleTable.Update(updatedCols...)
-	updateQuery := global.CassSession.Session.Query(upStms, uNames).BindStruct(&cassandraQuestionBank)
+	updateQuery := global.CassSessioQBank.Session.Query(upStms, uNames).BindStruct(&cassandraQuestionBank)
 	if err := updateQuery.ExecRelease(); err != nil {
 		return nil, err
 	}

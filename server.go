@@ -21,15 +21,23 @@ func main() {
 	log.Infof("Starting zicops course creator service")
 	ctx, cancel := context.WithCancel(context.Background())
 
-	cassConfig := config.NewCassandraConfig()
-	cassSession, err := cassandra.New(cassConfig)
+	cassConfig1 := config.NewCassandraConfig("coursez")
+	cassSession1, err := cassandra.New(cassConfig1)
+	if err != nil {
+		log.Errorf("Error connecting to cassandra: %s", err)
+		log.Infof("zicops course creator intialization failed")
+	}
+
+	cassConfig2 := config.NewCassandraConfig("qbankz")
+	cassSession2, err := cassandra.New(cassConfig2)
 	if err != nil {
 		log.Errorf("Error connecting to cassandra: %s", err)
 		log.Infof("zicops course creator intialization failed")
 	}
 	log.Info("Connected to cassandra")
 	global.CTX = ctx
-	global.CassSession = cassSession
+	global.CassSession = cassSession1
+	global.CassSessioQBank = cassSession2
 	global.Cancel = cancel
 	log.Infof("zicops course creator intialization complete")
 	portFromEnv := os.Getenv("PORT")

@@ -35,7 +35,7 @@ func QuestionBankCreate(ctx context.Context, input *model.QuestionBankInput) (*m
 		UpdatedAt:   time.Now().Unix(),
 	}
 
-	insertQuery := global.CassSession.Session.Query(qbankz.QuestionBankMainTable.Insert()).BindStruct(cassandraQuestionBank)
+	insertQuery := global.CassSessioQBank.Session.Query(qbankz.QuestionBankMainTable.Insert()).BindStruct(cassandraQuestionBank)
 	if err := insertQuery.ExecRelease(); err != nil {
 		return nil, err
 	}
@@ -65,7 +65,7 @@ func QuestionBankUpdate(ctx context.Context, input *model.QuestionBankInput) (*m
 		ID: *input.ID,
 	}
 	banks := []qbankz.QuestionBankMain{}
-	getQuery := global.CassSession.Session.Query(qbankz.QuestionBankMainTable.Get()).BindMap(qb.M{"id": cassandraQuestionBank.ID})
+	getQuery := global.CassSessioQBank.Session.Query(qbankz.QuestionBankMainTable.Get()).BindMap(qb.M{"id": cassandraQuestionBank.ID})
 	if err := getQuery.SelectRelease(&banks); err != nil {
 		return nil, err
 	}
@@ -109,7 +109,7 @@ func QuestionBankUpdate(ctx context.Context, input *model.QuestionBankInput) (*m
 		return nil, fmt.Errorf("nothing to update")
 	}
 	upStms, uNames := qbankz.QuestionBankMainTable.Update(updatedCols...)
-	updateQuery := global.CassSession.Session.Query(upStms, uNames).BindStruct(&cassandraQuestionBank)
+	updateQuery := global.CassSessioQBank.Session.Query(upStms, uNames).BindStruct(&cassandraQuestionBank)
 	if err := updateQuery.ExecRelease(); err != nil {
 		return nil, err
 	}
@@ -175,7 +175,7 @@ func AddQuestionBankQuestion(ctx context.Context, input *model.QuestionBankQuest
 	getUrl := storageC.GetSignedURLForObject(bucketPath)
 	cassandraQuestionBank.Attachment = getUrl
 	cassandraQuestionBank.AttachmentBucket = bucketPath
-	insertQuery := global.CassSession.Session.Query(qbankz.QuestionMainTable.Insert()).BindStruct(cassandraQuestionBank)
+	insertQuery := global.CassSessioQBank.Session.Query(qbankz.QuestionMainTable.Insert()).BindStruct(cassandraQuestionBank)
 	if err := insertQuery.ExecRelease(); err != nil {
 		return nil, err
 	}
@@ -210,7 +210,7 @@ func UpdateQuestionBankQuestion(ctx context.Context, input *model.QuestionBankQu
 		ID: *input.ID,
 	}
 	banks := []qbankz.QuestionMain{}
-	getQuery := global.CassSession.Session.Query(qbankz.QuestionMainTable.Get()).BindMap(qb.M{"id": cassandraQuestionBank.ID})
+	getQuery := global.CassSessioQBank.Session.Query(qbankz.QuestionMainTable.Get()).BindMap(qb.M{"id": cassandraQuestionBank.ID})
 	if err := getQuery.SelectRelease(&banks); err != nil {
 		return nil, err
 	}
@@ -284,7 +284,7 @@ func UpdateQuestionBankQuestion(ctx context.Context, input *model.QuestionBankQu
 		return nil, fmt.Errorf("nothing to update")
 	}
 	upStms, uNames := qbankz.QuestionMainTable.Update(updatedCols...)
-	updateQuery := global.CassSession.Session.Query(upStms, uNames).BindStruct(&cassandraQuestionBank)
+	updateQuery := global.CassSessioQBank.Session.Query(upStms, uNames).BindStruct(&cassandraQuestionBank)
 	if err := updateQuery.ExecRelease(); err != nil {
 		return nil, err
 	}
