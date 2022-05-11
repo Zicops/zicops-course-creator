@@ -1,3 +1,5 @@
+scalar Upload
+
 input QuestionBankInput {
     id: ID
     name: String
