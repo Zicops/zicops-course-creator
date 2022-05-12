@@ -138,6 +138,7 @@ func AddQuestionBankQuestion(ctx context.Context, input *model.QuestionBankQuest
 	guid := xid.New()
 	cassandraQuestionBank := qbankz.QuestionMain{
 		ID:             guid.String(),
+		Description:    *input.Description,
 		QbmId:          *input.QbmID,
 		Type:           *input.Type,
 		Difficulty:     *input.Difficulty,
