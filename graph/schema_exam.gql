@@ -106,7 +106,6 @@ type QuestionPaper {
 
 input QuestionPaperInput {
     id: ID
-    QpId: String
     name: String
     Category: String
     SubCategory: String
@@ -123,7 +122,6 @@ input QuestionPaperInput {
 
 type QuestionPaperSectionInput {
     id: ID
-    QpId: String
     Name: String
     Description: String
     CreatedAt: String

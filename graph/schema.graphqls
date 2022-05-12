@@ -398,7 +398,6 @@ type QuestionPaper {
 
 input QuestionPaperInput {
     id: ID
-    QpId: String
     name: String
     Category: String
     SubCategory: String

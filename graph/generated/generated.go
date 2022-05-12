@@ -3113,7 +3113,6 @@ type QuestionPaper {
 
 input QuestionPaperInput {
     id: ID
-    QpId: String
     name: String
     Category: String
     SubCategory: String
@@ -16202,14 +16201,6 @@ func (ec *executionContext) unmarshalInputQuestionPaperInput(ctx context.Context
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
 			it.ID, err = ec.unmarshalOID2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "QpId":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("QpId"))
-			it.QpID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}

@@ -397,7 +397,6 @@ type QuestionPaper struct {
 
 type QuestionPaperInput struct {
 	ID                *string `json:"id"`
-	QpID              *string `json:"QpId"`
 	Name              *string `json:"name"`
 	Category          *string `json:"Category"`
 	SubCategory       *string `json:"SubCategory"`

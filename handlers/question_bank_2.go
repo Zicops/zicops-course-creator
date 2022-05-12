@@ -19,7 +19,7 @@ import (
 )
 
 func AddQuestionOptions(ctx context.Context, input *model.QuestionOptionInput) (*model.QuestionOption, error) {
-	log.Info("AddQuestionBankQuestion called")
+	log.Info("AddQuestionOptions called")
 	if input.QmID == nil {
 		return nil, fmt.Errorf("question id not found")
 	}
