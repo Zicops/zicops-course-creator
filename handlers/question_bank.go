@@ -245,6 +245,10 @@ func UpdateQuestionBankQuestion(ctx context.Context, input *model.QuestionBankQu
 		cassandraQuestionBank.AttachmentType = *input.AttachmentType
 		updatedCols = append(updatedCols, "attachment_type")
 	}
+	if input.CreatedBy != nil {
+		cassandraQuestionBank.CreatedBy = *input.CreatedBy
+		updatedCols = append(updatedCols, "created_by")
+	}
 	if input.UpdatedBy != nil {
 		cassandraQuestionBank.UpdatedBy = *input.UpdatedBy
 		updatedCols = append(updatedCols, "updated_by")
