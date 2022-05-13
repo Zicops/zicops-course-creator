@@ -230,7 +230,10 @@ func QuestionPaperSectionUpdate(ctx context.Context, input *model.QuestionPaperS
 		cassandraQuestionBank.TotalQuestions = *input.TotalQuestions
 		updatedCols = append(updatedCols, "total_questions")
 	}
-
+	if input.QpID != nil {
+		cassandraQuestionBank.QPID = *input.QpID
+		updatedCols = append(updatedCols, "qp_id")
+	}
 	updatedAt := time.Now().Unix()
 	cassandraQuestionBank.UpdatedAt = updatedAt
 	updatedCols = append(updatedCols, "updated_at")

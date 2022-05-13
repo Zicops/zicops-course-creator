@@ -101,7 +101,14 @@ func QuestionSectionMapUpdate(ctx context.Context, input *model.MapSectionToBank
 		cassandraQuestionBank.RetrievalType = *input.RetrieveType
 		updatedCols = append(updatedCols, "retrieval_type")
 	}
-
+	if input.QbID != nil {
+		cassandraQuestionBank.QBId = *input.QbID
+		updatedCols = append(updatedCols, "qb_id")
+	}
+	if input.SectionID != nil {
+		cassandraQuestionBank.SectionID = *input.SectionID
+		updatedCols = append(updatedCols, "section_id")
+	}
 	updatedAt := time.Now().Unix()
 	cassandraQuestionBank.UpdatedAt = updatedAt
 	updatedCols = append(updatedCols, "updated_at")
