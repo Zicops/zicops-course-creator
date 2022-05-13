@@ -33,7 +33,7 @@ func QuestionPaperCreate(ctx context.Context, input *model.QuestionPaperInput) (
 		SuggestedDuration: *input.SuggestedDuration,
 	}
 
-	insertQuery := global.CassSession.Session.Query(qbankz.QuestionPaperMainTable.Insert()).BindStruct(cassandraQuestionBank)
+	insertQuery := global.CassSessioQBank.Session.Query(qbankz.QuestionPaperMainTable.Insert()).BindStruct(cassandraQuestionBank)
 	if err := insertQuery.ExecRelease(); err != nil {
 		return nil, err
 	}
