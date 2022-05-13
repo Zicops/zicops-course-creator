@@ -194,7 +194,7 @@ func AddQuestionBankQuestion(ctx context.Context, input *model.QuestionBankQuest
 		UpdatedBy:      input.UpdatedBy,
 		CreatedAt:      &created,
 		UpdatedAt:      &created,
-		Description:   input.Description,
+		Description:    input.Description,
 	}
 	return &responseModel, nil
 }
@@ -314,6 +314,7 @@ func UpdateQuestionBankQuestion(ctx context.Context, input *model.QuestionBankQu
 		UpdatedBy:      input.UpdatedBy,
 		CreatedAt:      &created,
 		UpdatedAt:      &updated,
+		Description:    input.Description,
 	}
 	return &responseModel, nil
 }
