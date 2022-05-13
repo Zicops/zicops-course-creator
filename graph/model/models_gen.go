@@ -390,7 +390,7 @@ type QuestionPaper struct {
 	UpdatedBy         *string `json:"UpdatedBy"`
 	IsActive          *bool   `json:"IsActive"`
 	DifficultyLevel   *string `json:"DifficultyLevel"`
-	SectionWise       *string `json:"SectionWise"`
+	SectionWise       *bool   `json:"SectionWise"`
 	Description       *string `json:"Description"`
 	SuggestedDuration *string `json:"SuggestedDuration"`
 }
@@ -406,7 +406,7 @@ type QuestionPaperInput struct {
 	UpdatedBy         *string `json:"UpdatedBy"`
 	IsActive          *bool   `json:"IsActive"`
 	DifficultyLevel   *string `json:"DifficultyLevel"`
-	SectionWise       *string `json:"SectionWise"`
+	SectionWise       *bool   `json:"SectionWise"`
 	Description       *string `json:"Description"`
 	SuggestedDuration *string `json:"SuggestedDuration"`
 }

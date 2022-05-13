@@ -3106,7 +3106,7 @@ type QuestionPaper {
     UpdatedBy: String
     IsActive : Boolean
     DifficultyLevel: String
-    SectionWise: String
+    SectionWise: Boolean
     Description: String
     SuggestedDuration: String
 }
@@ -3122,7 +3122,7 @@ input QuestionPaperInput {
     UpdatedBy: String
     IsActive : Boolean
     DifficultyLevel: String
-    SectionWise: String
+    SectionWise: Boolean
     Description: String
     SuggestedDuration: String
 }
@@ -11145,9 +11145,9 @@ func (ec *executionContext) _QuestionPaper_SectionWise(ctx context.Context, fiel
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*string)
+	res := resTmp.(*bool)
 	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _QuestionPaper_Description(ctx context.Context, field graphql.CollectedField, obj *model.QuestionPaper) (ret graphql.Marshaler) {
@@ -16280,7 +16280,7 @@ func (ec *executionContext) unmarshalInputQuestionPaperInput(ctx context.Context
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("SectionWise"))
-			it.SectionWise, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.SectionWise, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
 			if err != nil {
 				return it, err
 			}

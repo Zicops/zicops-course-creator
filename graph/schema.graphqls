@@ -391,7 +391,7 @@ type QuestionPaper {
     UpdatedBy: String
     IsActive : Boolean
     DifficultyLevel: String
-    SectionWise: String
+    SectionWise: Boolean
     Description: String
     SuggestedDuration: String
 }
@@ -407,7 +407,7 @@ input QuestionPaperInput {
     UpdatedBy: String
     IsActive : Boolean
     DifficultyLevel: String
-    SectionWise: String
+    SectionWise: Boolean
     Description: String
     SuggestedDuration: String
 }
