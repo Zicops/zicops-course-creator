@@ -52,6 +52,7 @@ func QuestionSectionMap(ctx context.Context, input *model.MapSectionToBankInput)
 		QuestionMarks:   input.QuestionMarks,
 		RetrieveType:    input.RetrieveType,
 		QbID:            input.QbID,
+		SectionID:       input.SectionID,
 	}
 	return &responseModel, nil
 }
@@ -135,6 +136,8 @@ func QuestionSectionMapUpdate(ctx context.Context, input *model.MapSectionToBank
 		QuestionType:    input.QuestionType,
 		QuestionMarks:   input.QuestionMarks,
 		RetrieveType:    input.RetrieveType,
+		QbID:            input.QbID,
+		SectionID:       input.SectionID,
 	}
 	return &responseModel, nil
 }
