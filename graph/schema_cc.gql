@@ -291,6 +291,351 @@ type UploadResultSubtitles {
     url: String
     language: String
 }
+
+input QuestionBankInput {
+    id: ID
+    name: String
+    category: String
+    sub_category: String
+    created_at: String
+    updated_at: String
+    created_by: String
+    updated_by: String
+    is_active: Boolean
+    is_default: Boolean
+    owner: String
+}
+
+type QuestionBank {
+    id: ID
+    name: String
+    category: String
+    sub_category: String
+    created_at: String
+    updated_at: String
+    created_by: String
+    updated_by: String
+    is_active: Boolean
+    is_default: Boolean
+    owner: String
+}
+
+type QuestionBankQuestion {
+    id: ID
+    Description: String
+    Type: String
+    Difficulty: Int
+    Attachment: String
+    AttachmentType: String
+    Hint : String
+    QbmId: String
+    Status: String
+    CreatedAt: String
+    UpdatedAt: String
+    CreatedBy: String
+    UpdatedBy: String
+}
+
+input QuestionBankQuestionInput {
+    id: ID
+    Description: String
+    Type: String
+    Difficulty: Int
+    File: Upload
+    AttachmentType: String
+    Hint : String
+    QbmId: String
+    Status: String
+    CreatedAt: String
+    UpdatedAt: String
+    CreatedBy: String
+    UpdatedBy: String
+}
+
+type QuestionOption {
+    id: ID
+    QmId: String
+    Description: String
+    IsCorrect: Boolean
+    CreatedAt: String
+    UpdatedAt: String
+    CreatedBy: String
+    UpdatedBy: String
+    AttachmentType: String
+    Attachment: String
+    IsActive : Boolean
+}
+
+input QuestionOptionInput {
+    id: ID
+    QmId: String
+    Description: String
+    IsCorrect: Boolean
+    CreatedAt: String
+    UpdatedAt: String
+    CreatedBy: String
+    UpdatedBy: String
+    AttachmentType: String
+    File: Upload
+    IsActive : Boolean
+}
+
+type QuestionPaper {
+    id: ID
+    name: String
+    Category: String
+    SubCategory: String
+    CreatedAt: String
+    UpdatedAt: String
+    CreatedBy: String
+    UpdatedBy: String
+    IsActive : Boolean
+    DifficultyLevel: String
+    SectionWise: Boolean
+    Description: String
+    SuggestedDuration: String
+}
+
+input QuestionPaperInput {
+    id: ID
+    name: String
+    Category: String
+    SubCategory: String
+    CreatedAt: String
+    UpdatedAt: String
+    CreatedBy: String
+    UpdatedBy: String
+    IsActive : Boolean
+    DifficultyLevel: String
+    SectionWise: Boolean
+    Description: String
+    SuggestedDuration: String
+}
+
+type QuestionPaperSection {
+    id: ID
+    QpId: String
+    Name: String
+    Description: String
+    CreatedAt: String
+    UpdatedAt: String
+    CreatedBy: String
+    UpdatedBy: String
+    IsActive : Boolean
+    Type: String
+    DifficultyLevel: String
+    TotalQuestions: Int
+}
+
+input QuestionPaperSectionInput {
+    id: ID
+    QpId: String
+    Name: String
+    Description: String
+    CreatedAt: String
+    UpdatedAt: String
+    CreatedBy: String
+    UpdatedBy: String
+    IsActive : Boolean
+    Type: String
+    DifficultyLevel: String
+    TotalQuestions: Int
+}
+
+input MapSectionToBankInput {
+    id: ID
+    QbId: String
+    SectionId: String
+    DifficultyLevel: String
+    TotalQuestions: Int
+    QuestionMarks: String
+    QuestionType: String
+    RetrieveType: String
+    CreatedAt: String
+    UpdatedAt: String
+    CreatedBy: String
+    UpdatedBy: String
+    IsActive : Boolean
+}
+
+type SectionQBMapping {
+    id: ID
+    QbId: String
+    SectionId: String
+    DifficultyLevel: String
+    TotalQuestions: Int
+    QuestionMarks: String
+    QuestionType: String
+    RetrieveType: String
+    CreatedAt: String
+    UpdatedAt: String
+    CreatedBy: String
+    UpdatedBy: String
+    IsActive : Boolean
+}
+
+input SectionFixedQuestionsInput {
+    id: ID
+    SqbId: String
+    QuestionId: String
+    CreatedAt: String
+    UpdatedAt: String
+    CreatedBy: String
+    UpdatedBy: String
+    IsActive : Boolean
+}
+
+type SectionFixedQuestions {
+    id: ID
+    SqbId: String
+    QuestionId: String
+    CreatedAt: String
+    UpdatedAt: String
+    CreatedBy: String
+    UpdatedBy: String
+    IsActive : Boolean
+}
+
+input ExamInput {
+    id: ID
+    Name: String
+    Description: String
+    Code : String
+    QpId: String
+    CreatedAt: String
+    UpdatedAt: String
+    CreatedBy: String
+    UpdatedBy: String
+    IsActive : Boolean
+    Type: String
+    ScheduleType: String
+    Duration: Int
+    Status: String
+    Category: String
+    SubCategory: String
+}
+
+type Exam {
+    id: ID
+    Name: String
+    Description: String
+    Code : String
+    QpId: String
+    CreatedAt: String
+    UpdatedAt: String
+    CreatedBy: String
+    UpdatedBy: String
+    IsActive : Boolean
+    Type: String
+    ScheduleType: String
+    Duration: Int
+    Status: String
+    Category: String
+    SubCategory: String
+}
+
+input ExamScheduleInput {
+    id: ID
+    ExamId: String
+    Start: Int
+    End: Int
+    BufferTime: Int
+    CreatedAt: String
+    UpdatedAt: String
+    CreatedBy: String
+    UpdatedBy: String
+    IsActive : Boolean
+}
+
+type ExamSchedule {
+    id: ID
+    ExamId: String
+    Start: Int
+    End: Int
+    BufferTime: Int
+    CreatedAt: String
+    UpdatedAt: String
+    CreatedBy: String
+    UpdatedBy: String
+    IsActive : Boolean
+}
+
+input ExamInstructionInput {
+    id: ID
+    ExamId: String
+    PassingCriteria: String
+    NoAttempts: Int
+    AccessType: String
+    CreatedAt: String
+    UpdatedAt: String
+    CreatedBy: String
+    UpdatedBy: String
+    IsActive : Boolean
+}
+
+type ExamInstruction {
+    id: ID
+    ExamId: String
+    PassingCriteria: String
+    NoAttempts: Int
+    AccessType: String
+    CreatedAt: String
+    UpdatedAt: String
+    CreatedBy: String
+    UpdatedBy: String
+    IsActive : Boolean
+}
+
+input ExamCohortInput {
+    id: ID
+    ExamId: String
+    CohortId: String
+    CreatedAt: String
+    UpdatedAt: String
+    CreatedBy: String
+    UpdatedBy: String
+    IsActive : Boolean
+}
+
+type ExamCohort {
+    id: ID
+    ExamId: String
+    CohortId: String
+    CreatedAt: String
+    UpdatedAt: String
+    CreatedBy: String
+    UpdatedBy: String
+    IsActive : Boolean
+}
+
+input ExamConfigurationInput{
+    id: ID
+    ExamId: String
+    Shuffle: Boolean
+    DisplayHints: Boolean
+    ShowAnswer: Boolean
+    ShowResult: Boolean
+    CreatedBy: String
+    UpdatedBy: String
+    IsActive : Boolean
+    CreatedAt: String
+    UpdatedAt: String
+}
+
+type ExamConfiguration {
+    id: ID
+    ExamId: String
+    Shuffle: Boolean
+    DisplayHints: Boolean
+    ShowAnswer: Boolean
+    ShowResult: Boolean
+    CreatedBy: String
+    UpdatedBy: String
+    IsActive : Boolean
+    CreatedAt: String
+    UpdatedAt: String
+}
+
 # define type mutations to add a course  using courseInput
 type Mutation{
     addCategories(category: [String]): Boolean
@@ -317,4 +662,29 @@ type Mutation{
     addQuizMCQ(quiz: QuizMcq): Boolean
     addQuizDescriptive(quiz: QuizDescriptive): Boolean
     uploadTopicResource(courseId:String, resource:TopicResourceInput): UploadResult
+    #################################################################################################
+    createQuestionBank(input: QuestionBankInput): QuestionBank
+    updateQuestionBank(input: QuestionBankInput): QuestionBank
+    addQuestionBankQuestion(input: QuestionBankQuestionInput): QuestionBankQuestion
+    updateQuestionBankQuestion(input: QuestionBankQuestionInput): QuestionBankQuestion
+    addQuestionOptions(input: QuestionOptionInput): QuestionOption
+    updateQuestionOptions(input: QuestionOptionInput): QuestionOption
+    addQuestionPaper(input: QuestionPaperInput): QuestionPaper
+    updateQuestionPaper(input: QuestionPaperInput): QuestionPaper
+    addQuestionPaperSection(input: QuestionPaperSectionInput): QuestionPaperSection
+    updateQuestionPaperSection(input: QuestionPaperSectionInput): QuestionPaperSection
+    mapSectionToBank(input: MapSectionToBankInput): SectionQBMapping
+    updateSectionToBank(input: MapSectionToBankInput): SectionQBMapping
+    addSectionFixedQuestions(input: SectionFixedQuestionsInput): SectionFixedQuestions
+    updateSectionFixedQuestions(input: SectionFixedQuestionsInput): SectionFixedQuestions
+    addExam(input: ExamInput): Exam
+    updateExam(input: ExamInput): Exam
+    addExamSchedule(input: ExamScheduleInput): ExamSchedule
+    updateExamSchedule(input: ExamScheduleInput): ExamSchedule
+    addExamInstruction(input: ExamInstructionInput): ExamInstruction
+    updateExamInstruction(input: ExamInstructionInput): ExamInstruction
+    addExamCohort(input: ExamCohortInput): ExamCohort
+    updateExamCohort(input: ExamCohortInput): ExamCohort
+    addExamConfiguration(input: ExamConfigurationInput): ExamConfiguration
+    updateExamConfiguration(input: ExamConfigurationInput): ExamConfiguration
 }
