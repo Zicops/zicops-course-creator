@@ -231,7 +231,7 @@ func UpdateQuestionBankQuestion(ctx context.Context, input *model.QuestionBankQu
 	}
 	if input.Difficulty != nil {
 		cassandraQuestionBank.Difficulty = *input.Difficulty
-		updatedCols = append(updatedCols, "difficulty")
+		updatedCols = append(updatedCols, "difficulty_score")
 	}
 	if input.Hint != nil {
 		cassandraQuestionBank.Hint = *input.Hint
