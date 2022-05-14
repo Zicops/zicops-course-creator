@@ -102,6 +102,10 @@ func QuestionBankUpdate(ctx context.Context, input *model.QuestionBankInput) (*m
 		cassandraQuestionBank.UpdatedBy = *input.UpdatedBy
 		updatedCols = append(updatedCols, "updated_by")
 	}
+	if input.CreatedBy != nil {
+		cassandraQuestionBank.CreatedBy = *input.CreatedBy
+		updatedCols = append(updatedCols, "created_by")
+	}
 	updatedAt := time.Now().Unix()
 	cassandraQuestionBank.UpdatedAt = updatedAt
 	updatedCols = append(updatedCols, "updated_at")
@@ -114,6 +118,7 @@ func QuestionBankUpdate(ctx context.Context, input *model.QuestionBankInput) (*m
 		return nil, err
 	}
 	created := strconv.FormatInt(cassandraQuestionBank.CreatedAt, 10)
+	updated := strconv.FormatInt(cassandraQuestionBank.UpdatedAt, 10)
 	responseModel := model.QuestionBank{
 		ID:          &cassandraQuestionBank.ID,
 		Name:        input.Name,
@@ -125,7 +130,7 @@ func QuestionBankUpdate(ctx context.Context, input *model.QuestionBankInput) (*m
 		CreatedBy:   input.CreatedBy,
 		UpdatedBy:   input.UpdatedBy,
 		CreatedAt:   &created,
-		UpdatedAt:   &created,
+		UpdatedAt:   &updated,
 	}
 	return &responseModel, nil
 }
@@ -181,6 +186,7 @@ func AddQuestionBankQuestion(ctx context.Context, input *model.QuestionBankQuest
 		return nil, err
 	}
 	created := strconv.FormatInt(cassandraQuestionBank.CreatedAt, 10)
+	updated := strconv.FormatInt(cassandraQuestionBank.UpdatedAt, 10)
 	responseModel := model.QuestionBankQuestion{
 		ID:             &cassandraQuestionBank.ID,
 		QbmID:          input.QbmID,
@@ -193,7 +199,7 @@ func AddQuestionBankQuestion(ctx context.Context, input *model.QuestionBankQuest
 		CreatedBy:      input.CreatedBy,
 		UpdatedBy:      input.UpdatedBy,
 		CreatedAt:      &created,
-		UpdatedAt:      &created,
+		UpdatedAt:      &updated,
 		Description:    input.Description,
 	}
 	return &responseModel, nil

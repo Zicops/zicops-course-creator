@@ -83,6 +83,10 @@ func QuestionSectionMapUpdate(ctx context.Context, input *model.MapSectionToBank
 		cassandraQuestionBank.UpdatedBy = *input.UpdatedBy
 		updatedCols = append(updatedCols, "updated_by")
 	}
+	if input.CreatedBy != nil {
+		cassandraQuestionBank.CreatedBy = *input.CreatedBy
+		updatedCols = append(updatedCols, "created_by")
+	}
 	if input.DifficultyLevel != nil {
 		cassandraQuestionBank.DifficultyLevel = *input.DifficultyLevel
 		updatedCols = append(updatedCols, "difficulty_level")
@@ -200,6 +204,10 @@ func QuestionFixedUpdate(ctx context.Context, input *model.SectionFixedQuestions
 	if input.UpdatedBy != nil {
 		cassandraQuestionBank.UpdatedBy = *input.UpdatedBy
 		updatedCols = append(updatedCols, "updated_by")
+	}
+	if input.CreatedBy != nil {
+		cassandraQuestionBank.CreatedBy = *input.CreatedBy
+		updatedCols = append(updatedCols, "created_by")
 	}
 	if input.SqbID != nil {
 		cassandraQuestionBank.SQBId = *input.SqbID

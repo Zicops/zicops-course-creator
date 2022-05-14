@@ -79,6 +79,10 @@ func ExamInstructionsUpdate(ctx context.Context, input *model.ExamInstructionInp
 		cassandraQuestionBank.UpdatedBy = *input.UpdatedBy
 		updatedCols = append(updatedCols, "updated_by")
 	}
+	if input.CreatedBy != nil {
+		cassandraQuestionBank.CreatedBy = *input.CreatedBy
+		updatedCols = append(updatedCols, "created_by")
+	}
 	if input.PassingCriteria != nil {
 		cassandraQuestionBank.PassingCriteria = *input.PassingCriteria
 		updatedCols = append(updatedCols, "passing_criteria")
