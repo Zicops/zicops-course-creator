@@ -160,8 +160,8 @@ func QuestionPaperSectionCreate(ctx context.Context, input *model.QuestionPaperS
 		Description:     *input.Description,
 		DifficultyLevel: *input.DifficultyLevel,
 		QPID:            *input.QpID,
-		Type:            *input.Type,
-		TotalQuestions:  *input.TotalQuestions,
+		Type:            "",
+		TotalQuestions:  0,
 	}
 
 	insertQuery := global.CassSessioQBank.Session.Query(qbankz.SectionMainTable.Insert()).BindStruct(cassandraQuestionBank)
