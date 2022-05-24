@@ -36,32 +36,35 @@ func AddQuestionOptions(ctx context.Context, input *model.QuestionOptionInput) (
 		CreatedAt:      time.Now().Unix(),
 		UpdatedAt:      time.Now().Unix(),
 	}
-	bucketPath := "question_banks/" + cassandraQuestionBank.QmId + "/" + cassandraQuestionBank.ID + "/" + input.File.Filename
-	storageC := bucket.NewStorageHandler()
-	gproject := googleprojectlib.GetGoogleProjectID()
-	err := storageC.InitializeStorageClient(ctx, gproject)
-	if err != nil {
-		log.Errorf("Failed to upload question option: %v", err.Error())
-		return nil, err
+	getUrl := ""
+	if input.File != nil {
+		bucketPath := "question_banks/" + cassandraQuestionBank.QmId + "/" + cassandraQuestionBank.ID + "/" + input.File.Filename
+		storageC := bucket.NewStorageHandler()
+		gproject := googleprojectlib.GetGoogleProjectID()
+		err := storageC.InitializeStorageClient(ctx, gproject)
+		if err != nil {
+			log.Errorf("Failed to upload question option: %v", err.Error())
+			return nil, err
+		}
+		writer, err := storageC.UploadToGCS(ctx, bucketPath, map[string]string{})
+		if err != nil {
+			log.Errorf("Failed to upload question option: %v", err.Error())
+			return nil, err
+		}
+		defer writer.Close()
+		fileBuffer := bytes.NewBuffer(nil)
+		if _, err := io.Copy(fileBuffer, input.File.File); err != nil {
+			return nil, err
+		}
+		currentBytes := fileBuffer.Bytes()
+		_, err = io.Copy(writer, bytes.NewReader(currentBytes))
+		if err != nil {
+			return nil, err
+		}
+		getUrl = storageC.GetSignedURLForObject(bucketPath)
+		cassandraQuestionBank.Attachment = getUrl
+		cassandraQuestionBank.AttachmentBucket = bucketPath
 	}
-	writer, err := storageC.UploadToGCS(ctx, bucketPath, map[string]string{})
-	if err != nil {
-		log.Errorf("Failed to upload question option: %v", err.Error())
-		return nil, err
-	}
-	defer writer.Close()
-	fileBuffer := bytes.NewBuffer(nil)
-	if _, err := io.Copy(fileBuffer, input.File.File); err != nil {
-		return nil, err
-	}
-	currentBytes := fileBuffer.Bytes()
-	_, err = io.Copy(writer, bytes.NewReader(currentBytes))
-	if err != nil {
-		return nil, err
-	}
-	getUrl := storageC.GetSignedURLForObject(bucketPath)
-	cassandraQuestionBank.Attachment = getUrl
-	cassandraQuestionBank.AttachmentBucket = bucketPath
 	insertQuery := global.CassSessioQBank.Session.Query(qbankz.OptionsMainTable.Insert()).BindStruct(cassandraQuestionBank)
 	if err := insertQuery.ExecRelease(); err != nil {
 		return nil, err

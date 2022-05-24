@@ -141,6 +141,7 @@ func AddQuestionBankQuestion(ctx context.Context, input *model.QuestionBankQuest
 		return nil, fmt.Errorf("question bank main id not found")
 	}
 	guid := xid.New()
+	getUrl := ""
 	cassandraQuestionBank := qbankz.QuestionMain{
 		ID:             guid.String(),
 		Description:    *input.Description,
@@ -155,32 +156,34 @@ func AddQuestionBankQuestion(ctx context.Context, input *model.QuestionBankQuest
 		CreatedAt:      time.Now().Unix(),
 		UpdatedAt:      time.Now().Unix(),
 	}
-	bucketPath := "question_banks/" + cassandraQuestionBank.QbmId + "/" + cassandraQuestionBank.ID + "/" + input.File.Filename
-	storageC := bucket.NewStorageHandler()
-	gproject := googleprojectlib.GetGoogleProjectID()
-	err := storageC.InitializeStorageClient(ctx, gproject)
-	if err != nil {
-		log.Errorf("Failed to upload video to course topic: %v", err.Error())
-		return nil, err
+	if input.File != nil {
+		bucketPath := "question_banks/" + cassandraQuestionBank.QbmId + "/" + cassandraQuestionBank.ID + "/" + input.File.Filename
+		storageC := bucket.NewStorageHandler()
+		gproject := googleprojectlib.GetGoogleProjectID()
+		err := storageC.InitializeStorageClient(ctx, gproject)
+		if err != nil {
+			log.Errorf("Failed to upload video to course topic: %v", err.Error())
+			return nil, err
+		}
+		writer, err := storageC.UploadToGCS(ctx, bucketPath, map[string]string{})
+		if err != nil {
+			log.Errorf("Failed to upload video to course topic: %v", err.Error())
+			return nil, err
+		}
+		defer writer.Close()
+		fileBuffer := bytes.NewBuffer(nil)
+		if _, err := io.Copy(fileBuffer, input.File.File); err != nil {
+			return nil, err
+		}
+		currentBytes := fileBuffer.Bytes()
+		_, err = io.Copy(writer, bytes.NewReader(currentBytes))
+		if err != nil {
+			return nil, err
+		}
+		getUrl = storageC.GetSignedURLForObject(bucketPath)
+		cassandraQuestionBank.Attachment = getUrl
+		cassandraQuestionBank.AttachmentBucket = bucketPath
 	}
-	writer, err := storageC.UploadToGCS(ctx, bucketPath, map[string]string{})
-	if err != nil {
-		log.Errorf("Failed to upload video to course topic: %v", err.Error())
-		return nil, err
-	}
-	defer writer.Close()
-	fileBuffer := bytes.NewBuffer(nil)
-	if _, err := io.Copy(fileBuffer, input.File.File); err != nil {
-		return nil, err
-	}
-	currentBytes := fileBuffer.Bytes()
-	_, err = io.Copy(writer, bytes.NewReader(currentBytes))
-	if err != nil {
-		return nil, err
-	}
-	getUrl := storageC.GetSignedURLForObject(bucketPath)
-	cassandraQuestionBank.Attachment = getUrl
-	cassandraQuestionBank.AttachmentBucket = bucketPath
 	insertQuery := global.CassSessioQBank.Session.Query(qbankz.QuestionMainTable.Insert()).BindStruct(cassandraQuestionBank)
 	if err := insertQuery.ExecRelease(); err != nil {
 		return nil, err
