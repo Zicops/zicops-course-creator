@@ -24,6 +24,7 @@ func QuestionBankCreate(ctx context.Context, input *model.QuestionBankInput) (*m
 	cassandraQuestionBank := qbankz.QuestionBankMain{
 		ID:          guid.String(),
 		Name:        *input.Name,
+		Description: *input.Description,
 		Category:    *input.Category,
 		SubCategory: *input.SubCategory,
 		IsActive:    *input.IsActive,
@@ -43,6 +44,7 @@ func QuestionBankCreate(ctx context.Context, input *model.QuestionBankInput) (*m
 	responseModel := model.QuestionBank{
 		ID:          &cassandraQuestionBank.ID,
 		Name:        input.Name,
+		Description: input.Description,
 		Owner:       input.Owner,
 		Category:    input.Category,
 		SubCategory: input.SubCategory,
@@ -74,6 +76,10 @@ func QuestionBankUpdate(ctx context.Context, input *model.QuestionBankInput) (*m
 	}
 	cassandraQuestionBank = banks[0]
 	updatedCols := []string{}
+	if input.Description != nil {
+		cassandraQuestionBank.Description = *input.Description
+		updatedCols = append(updatedCols, "description")
+	}
 	if input.Name != nil {
 		cassandraQuestionBank.Name = *input.Name
 		updatedCols = append(updatedCols, "name")
@@ -122,6 +128,7 @@ func QuestionBankUpdate(ctx context.Context, input *model.QuestionBankInput) (*m
 	responseModel := model.QuestionBank{
 		ID:          &cassandraQuestionBank.ID,
 		Name:        input.Name,
+		Description: input.Description,
 		Owner:       input.Owner,
 		Category:    input.Category,
 		SubCategory: input.SubCategory,

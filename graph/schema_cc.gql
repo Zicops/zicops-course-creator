@@ -295,6 +295,7 @@ type UploadResultSubtitles {
 input QuestionBankInput {
     id: ID
     name: String
+    description: String
     category: String
     sub_category: String
     created_at: String
@@ -309,6 +310,7 @@ input QuestionBankInput {
 type QuestionBank {
     id: ID
     name: String
+    description: String
     category: String
     sub_category: String
     created_at: String
