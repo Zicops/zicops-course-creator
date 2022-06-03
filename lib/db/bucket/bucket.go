@@ -14,9 +14,9 @@ import (
 
 // Client ....
 type Client struct {
-	projectID string
-	client    *storage.Client
-	bucket    *storage.BucketHandle
+	projectID    string
+	client       *storage.Client
+	bucket       *storage.BucketHandle
 	bucketPublic *storage.BucketHandle
 }
 

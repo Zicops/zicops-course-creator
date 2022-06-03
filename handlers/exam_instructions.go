@@ -117,7 +117,7 @@ func ExamInstructionsUpdate(ctx context.Context, input *model.ExamInstructionInp
 	updated := strconv.FormatInt(cassandraQuestionBank.UpdatedAt, 10)
 	responseModel := model.ExamInstruction{
 		ID:              &cassandraQuestionBank.ID,
-		Instructions:   &cassandraQuestionBank.Instructions,
+		Instructions:    &cassandraQuestionBank.Instructions,
 		ExamID:          input.ExamID,
 		PassingCriteria: input.PassingCriteria,
 		NoAttempts:      input.NoAttempts,
