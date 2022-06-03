@@ -151,6 +151,7 @@ func AddQuestionBankQuestion(ctx context.Context, input *model.QuestionBankQuest
 	getUrl := ""
 	cassandraQuestionBank := qbankz.QuestionMain{
 		ID:             guid.String(),
+		Name:           *input.Name,
 		Description:    *input.Description,
 		QbmId:          *input.QbmID,
 		Type:           *input.Type,
@@ -199,6 +200,7 @@ func AddQuestionBankQuestion(ctx context.Context, input *model.QuestionBankQuest
 	updated := strconv.FormatInt(cassandraQuestionBank.UpdatedAt, 10)
 	responseModel := model.QuestionBankQuestion{
 		ID:             &cassandraQuestionBank.ID,
+		Name:           input.Name,
 		QbmID:          input.QbmID,
 		Type:           input.Type,
 		Difficulty:     input.Difficulty,
@@ -237,6 +239,10 @@ func UpdateQuestionBankQuestion(ctx context.Context, input *model.QuestionBankQu
 	}
 	cassandraQuestionBank = banks[0]
 	updatedCols := []string{}
+	if input.Name != nil {
+		cassandraQuestionBank.Name = *input.Name
+		updatedCols = append(updatedCols, "name")
+	}
 	if input.Description != nil {
 		cassandraQuestionBank.Description = *input.Description
 		updatedCols = append(updatedCols, "description")
@@ -319,6 +325,7 @@ func UpdateQuestionBankQuestion(ctx context.Context, input *model.QuestionBankQu
 
 	responseModel := model.QuestionBankQuestion{
 		ID:             &cassandraQuestionBank.ID,
+		Name:           &cassandraQuestionBank.Name,
 		QbmID:          input.QbmID,
 		Type:           input.Type,
 		Difficulty:     input.Difficulty,

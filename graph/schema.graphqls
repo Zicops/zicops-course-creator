@@ -324,6 +324,7 @@ type QuestionBank {
 
 type QuestionBankQuestion {
     id: ID
+    Name: String
     Description: String
     Type: String
     Difficulty: Int
@@ -340,6 +341,7 @@ type QuestionBankQuestion {
 
 input QuestionBankQuestionInput {
     id: ID
+    Name: String
     Description: String
     Type: String
     Difficulty: Int
