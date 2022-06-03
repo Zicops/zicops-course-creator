@@ -198,6 +198,7 @@ type ExamInput struct {
 type ExamInstruction struct {
 	ID              *string `json:"id"`
 	ExamID          *string `json:"ExamId"`
+	Instructions    *string `json:"Instructions"`
 	PassingCriteria *string `json:"PassingCriteria"`
 	NoAttempts      *int    `json:"NoAttempts"`
 	AccessType      *string `json:"AccessType"`
@@ -211,6 +212,7 @@ type ExamInstruction struct {
 type ExamInstructionInput struct {
 	ID              *string `json:"id"`
 	ExamID          *string `json:"ExamId"`
+	Instructions    *string `json:"Instructions"`
 	PassingCriteria *string `json:"PassingCriteria"`
 	NoAttempts      *int    `json:"NoAttempts"`
 	AccessType      *string `json:"AccessType"`

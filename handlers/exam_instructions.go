@@ -19,6 +19,7 @@ func ExamInstructionsCreate(ctx context.Context, exam *model.ExamInstructionInpu
 	guid := xid.New()
 	cassandraQuestionBank := qbankz.ExamInstructions{
 		ID:              guid.String(),
+		Instructions:    *exam.Instructions,
 		ExamID:          *exam.ExamID,
 		PassingCriteria: *exam.PassingCriteria,
 		NoAttempts:      *exam.NoAttempts,
@@ -38,6 +39,7 @@ func ExamInstructionsCreate(ctx context.Context, exam *model.ExamInstructionInpu
 	responseModel := model.ExamInstruction{
 		ID:              &cassandraQuestionBank.ID,
 		ExamID:          exam.ExamID,
+		Instructions:    exam.Instructions,
 		PassingCriteria: exam.PassingCriteria,
 		NoAttempts:      exam.NoAttempts,
 		AccessType:      exam.AccessType,
@@ -67,6 +69,10 @@ func ExamInstructionsUpdate(ctx context.Context, input *model.ExamInstructionInp
 	}
 	cassandraQuestionBank = banks[0]
 	updatedCols := []string{}
+	if input.Instructions != nil {
+		cassandraQuestionBank.Instructions = *input.Instructions
+		updatedCols = append(updatedCols, "instructions")
+	}
 	if input.ExamID != nil {
 		cassandraQuestionBank.ExamID = *input.ExamID
 		updatedCols = append(updatedCols, "exam_id")
@@ -111,6 +117,7 @@ func ExamInstructionsUpdate(ctx context.Context, input *model.ExamInstructionInp
 	updated := strconv.FormatInt(cassandraQuestionBank.UpdatedAt, 10)
 	responseModel := model.ExamInstruction{
 		ID:              &cassandraQuestionBank.ID,
+		Instructions:   &cassandraQuestionBank.Instructions,
 		ExamID:          input.ExamID,
 		PassingCriteria: input.PassingCriteria,
 		NoAttempts:      input.NoAttempts,

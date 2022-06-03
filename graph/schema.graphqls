@@ -567,6 +567,7 @@ type ExamSchedule {
 input ExamInstructionInput {
     id: ID
     ExamId: String
+    Instructions: String
     PassingCriteria: String
     NoAttempts: Int
     AccessType: String
@@ -580,6 +581,7 @@ input ExamInstructionInput {
 type ExamInstruction {
     id: ID
     ExamId: String
+    Instructions: String
     PassingCriteria: String
     NoAttempts: Int
     AccessType: String
