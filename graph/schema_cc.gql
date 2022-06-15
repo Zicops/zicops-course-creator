@@ -398,6 +398,7 @@ type QuestionPaper {
     SectionWise: Boolean
     Description: String
     SuggestedDuration: String
+    Status: String
 }
 
 input QuestionPaperInput {
@@ -414,6 +415,7 @@ input QuestionPaperInput {
     SectionWise: Boolean
     Description: String
     SuggestedDuration: String
+    Status: String
 }
 
 type QuestionPaperSection {

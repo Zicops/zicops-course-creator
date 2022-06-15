@@ -31,6 +31,7 @@ func QuestionPaperCreate(ctx context.Context, input *model.QuestionPaperInput) (
 		DifficultyLevel:   *input.DifficultyLevel,
 		SectionWise:       *input.SectionWise,
 		SuggestedDuration: *input.SuggestedDuration,
+		Status:            *input.Status,
 	}
 
 	insertQuery := global.CassSessioQBank.Session.Query(qbankz.QuestionPaperMainTable.Insert()).BindStruct(cassandraQuestionBank)
@@ -53,6 +54,7 @@ func QuestionPaperCreate(ctx context.Context, input *model.QuestionPaperInput) (
 		DifficultyLevel:   input.DifficultyLevel,
 		SectionWise:       input.SectionWise,
 		SuggestedDuration: input.SuggestedDuration,
+		Status:            input.Status,
 	}
 	return &responseModel, nil
 }
@@ -75,6 +77,10 @@ func QuestionPaperUpdate(ctx context.Context, input *model.QuestionPaperInput) (
 	}
 	cassandraQuestionBank = banks[0]
 	updatedCols := []string{}
+	if input.Status != nil {
+		cassandraQuestionBank.Status = *input.Status
+		updatedCols = append(updatedCols, "status")
+	}
 	if input.Name != nil {
 		cassandraQuestionBank.Name = *input.Name
 		updatedCols = append(updatedCols, "name")
@@ -142,6 +148,7 @@ func QuestionPaperUpdate(ctx context.Context, input *model.QuestionPaperInput) (
 		DifficultyLevel:   input.DifficultyLevel,
 		SectionWise:       input.SectionWise,
 		SuggestedDuration: input.SuggestedDuration,
+		Status:            input.Status,
 	}
 	return &responseModel, nil
 }

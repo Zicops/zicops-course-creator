@@ -399,6 +399,7 @@ type QuestionPaper struct {
 	SectionWise       *bool   `json:"SectionWise"`
 	Description       *string `json:"Description"`
 	SuggestedDuration *string `json:"SuggestedDuration"`
+	Status            *string `json:"Status"`
 }
 
 type QuestionPaperInput struct {
@@ -415,6 +416,7 @@ type QuestionPaperInput struct {
 	SectionWise       *bool   `json:"SectionWise"`
 	Description       *string `json:"Description"`
 	SuggestedDuration *string `json:"SuggestedDuration"`
+	Status            *string `json:"Status"`
 }
 
 type QuestionPaperSection struct {
