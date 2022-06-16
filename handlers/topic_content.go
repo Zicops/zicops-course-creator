@@ -109,6 +109,7 @@ func TopicExamCreate(ctx context.Context, topicID string, courseID string, exam 
 		CreatedAt: &created,
 		UpdatedAt: &created,
 		TopicID:   &topicID,
+		ExamID:    exam.ExamID,
 	}
 	return &responseModel, nil
 }
