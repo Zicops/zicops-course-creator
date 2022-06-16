@@ -84,6 +84,35 @@ func TopicContentCreate(ctx context.Context, topicID string, courseID string, to
 	return &responseModel, nil
 }
 
+func TopicExamCreate(ctx context.Context, topicID string, courseID string, exam *model.TopicExamInput) (*model.TopicExam, error) {
+	log.Info("TopicExamCreate called")
+	guid := xid.New()
+	cassandraTopicContent := coursez.TopicExam{
+		ID:        guid.String(),
+		TopicId:   topicID,
+		CourseId:  courseID,
+		Language:  *exam.Language,
+		CreatedAt: time.Now().Unix(),
+		UpdatedAt: time.Now().Unix(),
+		IsActive:  false,
+	}
+	// set course in cassandra
+	insertQuery := global.CassSession.Session.Query(coursez.TopicExamTable.Insert()).BindStruct(cassandraTopicContent)
+	if err := insertQuery.ExecRelease(); err != nil {
+		return nil, err
+	}
+	created := strconv.FormatInt(cassandraTopicContent.CreatedAt, 10)
+	responseModel := model.TopicExam{
+		ID:        &cassandraTopicContent.ID,
+		Language:  exam.Language,
+		CourseID:  &courseID,
+		CreatedAt: &created,
+		UpdatedAt: &created,
+		TopicID:   &topicID,
+	}
+	return &responseModel, nil
+}
+
 func UploadTopicVideo(ctx context.Context, file model.TopicVideo) (*model.UploadResult, error) {
 	log.Info("UploadTopicVideo called")
 	isSuccess := model.UploadResult{}
@@ -257,6 +286,57 @@ func UpdateTopicContent(ctx context.Context, topicConent *model.TopicContentInpu
 		TopicID:           topicID,
 		Type:              topicConent.Type,
 		IsDefault:         topicConent.IsDefault,
+	}
+	return &responseModel, nil
+}
+
+func UpdateTopicExam(ctx context.Context, exam *model.TopicExamInput) (*model.TopicExam, error) {
+	log.Info("UpdateTopicExam called")
+	tExamId := exam.ID
+	if *tExamId == "" {
+		return nil, fmt.Errorf("TopicExamId is required")
+	}
+	cassandraTopicContent := coursez.TopicExam{
+		ID: *tExamId,
+	}
+	topicExams := []coursez.TopicExam{}
+	getQuery := global.CassSession.Session.Query(coursez.TopicExamTable.Get()).BindMap(qb.M{"id": cassandraTopicContent.ID})
+	if err := getQuery.SelectRelease(&topicExams); err != nil {
+		return nil, err
+	}
+	if len(topicExams) < 1 {
+		return nil, fmt.Errorf("quiz not found")
+	}
+	cassandraTopicContent = topicExams[0]
+	updateCols := []string{}
+	if exam.Language != nil {
+		updateCols = append(updateCols, "language")
+		cassandraTopicContent.Language = *exam.Language
+	}
+	if exam.TopicID != nil {
+		updateCols = append(updateCols, "topicid")
+		cassandraTopicContent.TopicId = *exam.TopicID
+	}
+	if exam.ExamID != nil {
+		updateCols = append(updateCols, "examid")
+		cassandraTopicContent.ExamId = *exam.ExamID
+	}
+	updateCols = append(updateCols, "updated_at")
+	cassandraTopicContent.UpdatedAt = time.Now().Unix()
+	upStms, uNames := coursez.TopicExamTable.Update(updateCols...)
+	updateQuery := global.CassSession.Session.Query(upStms, uNames).BindStruct(&cassandraTopicContent)
+	if err := updateQuery.ExecRelease(); err != nil {
+		return nil, err
+	}
+	created := strconv.FormatInt(cassandraTopicContent.CreatedAt, 10)
+	updated := strconv.FormatInt(cassandraTopicContent.UpdatedAt, 10)
+	responseModel := model.TopicExam{
+		Language:  exam.Language,
+		TopicID:   exam.TopicID,
+		ExamID:    exam.ExamID,
+		CreatedAt: &created,
+		UpdatedAt: &updated,
+		ID:        tExamId,
 	}
 	return &responseModel, nil
 }

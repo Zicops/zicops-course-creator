@@ -196,6 +196,7 @@ type ComplexityRoot struct {
 		AddSectionFixedQuestions    func(childComplexity int, input *model.SectionFixedQuestionsInput) int
 		AddSubCategories            func(childComplexity int, subCategory []*string) int
 		AddTopicContent             func(childComplexity int, topicID *string, courseID *string, topicContent *model.TopicContentInput) int
+		AddTopicExam                func(childComplexity int, topicID *string, courseID *string, exam *model.TopicExamInput) int
 		CreateQuestionBank          func(childComplexity int, input *model.QuestionBankInput) int
 		MapSectionToBank            func(childComplexity int, input *model.MapSectionToBankInput) int
 		UpdateCourse                func(childComplexity int, course *model.CourseInput) int
@@ -216,6 +217,7 @@ type ComplexityRoot struct {
 		UpdateSectionFixedQuestions func(childComplexity int, input *model.SectionFixedQuestionsInput) int
 		UpdateSectionToBank         func(childComplexity int, input *model.MapSectionToBankInput) int
 		UpdateTopicContent          func(childComplexity int, topicContent *model.TopicContentInput) int
+		UpdateTopicExam             func(childComplexity int, exam *model.TopicExamInput) int
 		UploadCourseImage           func(childComplexity int, file *model.CourseFile) int
 		UploadCoursePreviewVideo    func(childComplexity int, file *model.CourseFile) int
 		UploadCourseTileImage       func(childComplexity int, file *model.CourseFile) int
@@ -377,6 +379,16 @@ type ComplexityRoot struct {
 		UpdatedAt         func(childComplexity int) int
 	}
 
+	TopicExam struct {
+		CourseID  func(childComplexity int) int
+		CreatedAt func(childComplexity int) int
+		ExamID    func(childComplexity int) int
+		ID        func(childComplexity int) int
+		Language  func(childComplexity int) int
+		TopicID   func(childComplexity int) int
+		UpdatedAt func(childComplexity int) int
+	}
+
 	UploadResult struct {
 		Success func(childComplexity int) int
 		URL     func(childComplexity int) int
@@ -409,6 +421,8 @@ type MutationResolver interface {
 	AddCourseTopic(ctx context.Context, courseID *string, topic *model.TopicInput) (*model.Topic, error)
 	UpdateCourseTopic(ctx context.Context, topic *model.TopicInput) (*model.Topic, error)
 	AddTopicContent(ctx context.Context, topicID *string, courseID *string, topicContent *model.TopicContentInput) (*model.TopicContent, error)
+	AddTopicExam(ctx context.Context, topicID *string, courseID *string, exam *model.TopicExamInput) (*model.TopicExam, error)
+	UpdateTopicExam(ctx context.Context, exam *model.TopicExamInput) (*model.TopicExam, error)
 	UpdateTopicContent(ctx context.Context, topicContent *model.TopicContentInput) (*model.TopicContent, error)
 	UploadTopicContentVideo(ctx context.Context, file *model.TopicVideo) (*model.UploadResult, error)
 	UploadTopicContentSubtitle(ctx context.Context, file []*model.TopicSubtitle) ([]*model.UploadResultSubtitles, error)
@@ -1470,6 +1484,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.AddTopicContent(childComplexity, args["topicId"].(*string), args["courseId"].(*string), args["topicContent"].(*model.TopicContentInput)), true
 
+	case "Mutation.addTopicExam":
+		if e.complexity.Mutation.AddTopicExam == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_addTopicExam_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.AddTopicExam(childComplexity, args["topicId"].(*string), args["courseId"].(*string), args["exam"].(*model.TopicExamInput)), true
+
 	case "Mutation.createQuestionBank":
 		if e.complexity.Mutation.CreateQuestionBank == nil {
 			break
@@ -1709,6 +1735,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.UpdateTopicContent(childComplexity, args["topicContent"].(*model.TopicContentInput)), true
+
+	case "Mutation.updateTopicExam":
+		if e.complexity.Mutation.UpdateTopicExam == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_updateTopicExam_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdateTopicExam(childComplexity, args["exam"].(*model.TopicExamInput)), true
 
 	case "Mutation.uploadCourseImage":
 		if e.complexity.Mutation.UploadCourseImage == nil {
@@ -2632,6 +2670,55 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.TopicContent.UpdatedAt(childComplexity), true
 
+	case "TopicExam.courseId":
+		if e.complexity.TopicExam.CourseID == nil {
+			break
+		}
+
+		return e.complexity.TopicExam.CourseID(childComplexity), true
+
+	case "TopicExam.created_at":
+		if e.complexity.TopicExam.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.TopicExam.CreatedAt(childComplexity), true
+
+	case "TopicExam.examId":
+		if e.complexity.TopicExam.ExamID == nil {
+			break
+		}
+
+		return e.complexity.TopicExam.ExamID(childComplexity), true
+
+	case "TopicExam.id":
+		if e.complexity.TopicExam.ID == nil {
+			break
+		}
+
+		return e.complexity.TopicExam.ID(childComplexity), true
+
+	case "TopicExam.language":
+		if e.complexity.TopicExam.Language == nil {
+			break
+		}
+
+		return e.complexity.TopicExam.Language(childComplexity), true
+
+	case "TopicExam.topicId":
+		if e.complexity.TopicExam.TopicID == nil {
+			break
+		}
+
+		return e.complexity.TopicExam.TopicID(childComplexity), true
+
+	case "TopicExam.updated_at":
+		if e.complexity.TopicExam.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.TopicExam.UpdatedAt(childComplexity), true
+
 	case "UploadResult.success":
 		if e.complexity.UploadResult.Success == nil {
 			break
@@ -2943,6 +3030,25 @@ type TopicContent {
     updated_at: String
     type: String
     is_default: Boolean
+}
+
+type TopicExam{
+    id: ID
+    topicId: String
+    examId: String
+    courseId: String
+    created_at: String
+    updated_at: String
+    language: String
+}
+
+input TopicExamInput{
+    id: ID
+    topicId: String
+    examId: String
+    created_at: String
+    updated_at: String
+    language: String
 }
 
 input TopicVideo{
@@ -3407,6 +3513,8 @@ type Mutation{
     addCourseTopic(courseId: String, topic: TopicInput): Topic
     updateCourseTopic(topic: TopicInput): Topic
     addTopicContent(topicId: String, courseId:String, topicContent: TopicContentInput): TopicContent
+    addTopicExam(topicId: String, courseId:String, exam: TopicExamInput): TopicExam
+    updateTopicExam(exam: TopicExamInput): TopicExam
     updateTopicContent(topicContent: TopicContentInput): TopicContent
     uploadTopicContentVideo(file: TopicVideo): UploadResult
     uploadTopicContentSubtitle(file: [TopicSubtitle]): [UploadResultSubtitles]
@@ -3796,6 +3904,39 @@ func (ec *executionContext) field_Mutation_addTopicContent_args(ctx context.Cont
 	return args, nil
 }
 
+func (ec *executionContext) field_Mutation_addTopicExam_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 *string
+	if tmp, ok := rawArgs["topicId"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("topicId"))
+		arg0, err = ec.unmarshalOString2ᚖstring(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["topicId"] = arg0
+	var arg1 *string
+	if tmp, ok := rawArgs["courseId"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("courseId"))
+		arg1, err = ec.unmarshalOString2ᚖstring(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["courseId"] = arg1
+	var arg2 *model.TopicExamInput
+	if tmp, ok := rawArgs["exam"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("exam"))
+		arg2, err = ec.unmarshalOTopicExamInput2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐTopicExamInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["exam"] = arg2
+	return args, nil
+}
+
 func (ec *executionContext) field_Mutation_createQuestionBank_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -4093,6 +4234,21 @@ func (ec *executionContext) field_Mutation_updateTopicContent_args(ctx context.C
 		}
 	}
 	args["topicContent"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_updateTopicExam_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 *model.TopicExamInput
+	if tmp, ok := rawArgs["exam"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("exam"))
+		arg0, err = ec.unmarshalOTopicExamInput2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐTopicExamInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["exam"] = arg0
 	return args, nil
 }
 
@@ -8351,6 +8507,84 @@ func (ec *executionContext) _Mutation_addTopicContent(ctx context.Context, field
 	res := resTmp.(*model.TopicContent)
 	fc.Result = res
 	return ec.marshalOTopicContent2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐTopicContent(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_addTopicExam(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_addTopicExam_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().AddTopicExam(rctx, args["topicId"].(*string), args["courseId"].(*string), args["exam"].(*model.TopicExamInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.TopicExam)
+	fc.Result = res
+	return ec.marshalOTopicExam2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐTopicExam(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_updateTopicExam(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_updateTopicExam_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().UpdateTopicExam(rctx, args["exam"].(*model.TopicExamInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.TopicExam)
+	fc.Result = res
+	return ec.marshalOTopicExam2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐTopicExam(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_updateTopicContent(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -13526,6 +13760,230 @@ func (ec *executionContext) _TopicContent_is_default(ctx context.Context, field 
 	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _TopicExam_id(ctx context.Context, field graphql.CollectedField, obj *model.TopicExam) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "TopicExam",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOID2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _TopicExam_topicId(ctx context.Context, field graphql.CollectedField, obj *model.TopicExam) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "TopicExam",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.TopicID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _TopicExam_examId(ctx context.Context, field graphql.CollectedField, obj *model.TopicExam) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "TopicExam",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ExamID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _TopicExam_courseId(ctx context.Context, field graphql.CollectedField, obj *model.TopicExam) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "TopicExam",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CourseID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _TopicExam_created_at(ctx context.Context, field graphql.CollectedField, obj *model.TopicExam) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "TopicExam",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CreatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _TopicExam_updated_at(ctx context.Context, field graphql.CollectedField, obj *model.TopicExam) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "TopicExam",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.UpdatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _TopicExam_language(ctx context.Context, field graphql.CollectedField, obj *model.TopicExam) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "TopicExam",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Language, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _UploadResult_success(ctx context.Context, field graphql.CollectedField, obj *model.UploadResult) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -17074,6 +17532,69 @@ func (ec *executionContext) unmarshalInputTopicContentInput(ctx context.Context,
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputTopicExamInput(ctx context.Context, obj interface{}) (model.TopicExamInput, error) {
+	var it model.TopicExamInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	for k, v := range asMap {
+		switch k {
+		case "id":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+			it.ID, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "topicId":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("topicId"))
+			it.TopicID, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "examId":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("examId"))
+			it.ExamID, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "created_at":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("created_at"))
+			it.CreatedAt, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "updated_at":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updated_at"))
+			it.UpdatedAt, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "language":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("language"))
+			it.Language, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputTopicInput(ctx context.Context, obj interface{}) (model.TopicInput, error) {
 	var it model.TopicInput
 	asMap := map[string]interface{}{}
@@ -18436,6 +18957,20 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, innerFunc)
 
+		case "addTopicExam":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_addTopicExam(ctx, field)
+			}
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, innerFunc)
+
+		case "updateTopicExam":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_updateTopicExam(ctx, field)
+			}
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, innerFunc)
+
 		case "updateTopicContent":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_updateTopicContent(ctx, field)
@@ -19765,6 +20300,76 @@ func (ec *executionContext) _TopicContent(ctx context.Context, sel ast.Selection
 	return out
 }
 
+var topicExamImplementors = []string{"TopicExam"}
+
+func (ec *executionContext) _TopicExam(ctx context.Context, sel ast.SelectionSet, obj *model.TopicExam) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, topicExamImplementors)
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("TopicExam")
+		case "id":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._TopicExam_id(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+		case "topicId":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._TopicExam_topicId(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+		case "examId":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._TopicExam_examId(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+		case "courseId":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._TopicExam_courseId(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+		case "created_at":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._TopicExam_created_at(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+		case "updated_at":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._TopicExam_updated_at(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+		case "language":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._TopicExam_language(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
 var uploadResultImplementors = []string{"UploadResult"}
 
 func (ec *executionContext) _UploadResult(ctx context.Context, sel ast.SelectionSet, obj *model.UploadResult) graphql.Marshaler {
@@ -21004,6 +21609,21 @@ func (ec *executionContext) unmarshalOTopicContentInput2ᚖgithubᚗcomᚋzicops
 		return nil, nil
 	}
 	res, err := ec.unmarshalInputTopicContentInput(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOTopicExam2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐTopicExam(ctx context.Context, sel ast.SelectionSet, v *model.TopicExam) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._TopicExam(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalOTopicExamInput2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐTopicExamInput(ctx context.Context, v interface{}) (*model.TopicExamInput, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputTopicExamInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 

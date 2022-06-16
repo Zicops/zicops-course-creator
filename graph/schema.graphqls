@@ -198,6 +198,25 @@ type TopicContent {
     is_default: Boolean
 }
 
+type TopicExam{
+    id: ID
+    topicId: String
+    examId: String
+    courseId: String
+    created_at: String
+    updated_at: String
+    language: String
+}
+
+input TopicExamInput{
+    id: ID
+    topicId: String
+    examId: String
+    created_at: String
+    updated_at: String
+    language: String
+}
+
 input TopicVideo{
     file: Upload
     courseId: String
@@ -660,6 +679,8 @@ type Mutation{
     addCourseTopic(courseId: String, topic: TopicInput): Topic
     updateCourseTopic(topic: TopicInput): Topic
     addTopicContent(topicId: String, courseId:String, topicContent: TopicContentInput): TopicContent
+    addTopicExam(topicId: String, courseId:String, exam: TopicExamInput): TopicExam
+    updateTopicExam(exam: TopicExamInput): TopicExam
     updateTopicContent(topicContent: TopicContentInput): TopicContent
     uploadTopicContentVideo(file: TopicVideo): UploadResult
     uploadTopicContentSubtitle(file: [TopicSubtitle]): [UploadResultSubtitles]

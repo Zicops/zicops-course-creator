@@ -5,6 +5,7 @@ package graph
 
 import (
 	"context"
+	"fmt"
 
 	log "github.com/sirupsen/logrus"
 	"github.com/zicops/zicops-course-creator/graph/generated"
@@ -136,6 +137,19 @@ func (r *mutationResolver) AddTopicContent(ctx context.Context, topicID *string,
 		return nil, err
 	}
 	return resp, nil
+}
+
+func (r *mutationResolver) AddTopicExam(ctx context.Context, topicID *string, courseID *string, exam *model.TopicExamInput) (*model.TopicExam, error) {
+	resp, err := handlers.TopicExamCreate(ctx, *topicID, *courseID, exam)
+	if err != nil {
+		log.Errorf("error creating topic exam: %v", err)
+		return nil, err
+	}
+	return resp, nil
+}
+
+func (r *mutationResolver) UpdateTopicExam(ctx context.Context, exam *model.TopicExamInput) (*model.TopicExam, error) {
+	panic(fmt.Errorf("not implemented"))
 }
 
 func (r *mutationResolver) UpdateTopicContent(ctx context.Context, topicContent *model.TopicContentInput) (*model.TopicContent, error) {
