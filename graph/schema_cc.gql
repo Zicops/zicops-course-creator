@@ -202,6 +202,7 @@ type TopicExam{
     id: ID
     topicId: String
     examId: String
+    courseId: String
     created_at: String
     updated_at: String
     language: String
@@ -666,6 +667,7 @@ type ExamConfiguration {
 type Mutation{
     addCategories(category: [String]): Boolean
     addSubCategories(sub_category: [String]): Boolean
+    addCatSubMapping(category: String, sub_category: [String]): Boolean
     addCourse(course: CourseInput): Course
     updateCourse(course: CourseInput): Course
     uploadCourseImage(file: CourseFile): UploadResult

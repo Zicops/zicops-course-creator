@@ -30,6 +30,15 @@ func (r *mutationResolver) AddSubCategories(ctx context.Context, subCategory []*
 	return resp, nil
 }
 
+func (r *mutationResolver) AddCatSubMapping(ctx context.Context, category *string, subCategory []*string) (*bool, error) {
+	resp, err := handlers.AddCategorySubMap(ctx, category, subCategory)
+	if err != nil {
+		log.Errorf("error adding cat mapping: %v", err)
+		return nil, err
+	}
+	return resp, nil
+}
+
 func (r *mutationResolver) AddCourse(ctx context.Context, course *model.CourseInput) (*model.Course, error) {
 	resp, err := handlers.CourseCreator(ctx, course)
 	if err != nil {

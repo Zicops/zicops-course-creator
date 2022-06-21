@@ -667,6 +667,7 @@ type ExamConfiguration {
 type Mutation{
     addCategories(category: [String]): Boolean
     addSubCategories(sub_category: [String]): Boolean
+    addCatSubMapping(category: String, sub_category: [String]): Boolean
     addCourse(course: CourseInput): Course
     updateCourse(course: CourseInput): Course
     uploadCourseImage(file: CourseFile): UploadResult
