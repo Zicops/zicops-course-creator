@@ -91,6 +91,7 @@ func TopicExamCreate(ctx context.Context, topicID string, courseID string, exam 
 		ID:        guid.String(),
 		TopicId:   topicID,
 		CourseId:  courseID,
+		ExamId:    *exam.ExamID,
 		Language:  *exam.Language,
 		CreatedAt: time.Now().Unix(),
 		UpdatedAt: time.Now().Unix(),
