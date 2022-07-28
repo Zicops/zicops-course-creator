@@ -14,6 +14,15 @@ image:
   health: /healthz
   port: 8090
 
+#Authorization reverse proxy details
+asp:
+  repository: gcr.io/zicops-one/zicops-auth-proxy
+  tag: latest
+  port: 8080
+  pullPolicy: Always
+  arg:
+    mode: "authz"
+
 maxBodySizeMb: 100
 # TODO add more routes for frontend etc..
 

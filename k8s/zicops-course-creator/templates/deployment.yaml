@@ -24,13 +24,30 @@ spec:
     spec:
       containers:
         {{ $zcbcred := printf "%s/%s" .Values.zcServiceAccount.credential.dir .Values.zcServiceAccount.credential.file }}
+        - name: {{ .Chart.Name }}-asp
+          image: "{{ .Values.asp.repository }}:{{ .Values.asp.tag }}"
+          imagePullPolicy: {{ .Values.asp.pullPolicy }}
+          args: [
+            "--port={{ .Values.asp.port }}",
+            "--backend=http://127.0.0.1:{{ .Values.image.port }}",
+            "--mode={{ .Values.asp.arg.mode }}",
+          ]
+          volumeMounts:
+          - name: zicops-cc
+            mountPath: {{ .Values.zcServiceAccount.credential.dir | quote }}
+            readOnly: true 
+          env:
+          - name: GOOGLE_APPLICATION_CREDENTIALS
+            value: {{ $zcbcred }}
+          ports:
+            - name: http-server-cq
+              containerPort: {{ .Values.asp.port }}
+              protocol: TCP
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            - name: http-server-cc
-              containerPort: {{ .Values.image.port }}
-              protocol: TCP
+            - containerPort: {{ .Values.image.port }}
           readinessProbe:
             httpGet:
               path: {{ .Values.image.health }}
@@ -40,7 +57,7 @@ spec:
           volumeMounts:
           - name: zicops-cc
             mountPath: {{ .Values.zcServiceAccount.credential.dir | quote }}
-            readOnly: true    
+            readOnly: true   
           env:
           - name: PORT
             value: {{ .Values.image.port | quote }}
