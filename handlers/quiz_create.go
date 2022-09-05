@@ -49,6 +49,18 @@ func CreateTopicQuiz(ctx context.Context, quiz *model.QuizInput) (*model.Quiz, e
 	if quiz.Sequence != nil {
 		cassandraQuiz.Sequence = *quiz.Sequence
 	}
+	if quiz.CourseID != nil {
+		cassandraQuiz.CourseID = *quiz.CourseID
+	}
+	if quiz.QbID != nil {
+		cassandraQuiz.QbId = *quiz.QbID
+	}
+	if quiz.QuestionID != nil {
+		cassandraQuiz.QuestionID = *quiz.QuestionID
+	}
+	if quiz.Weightage != nil {
+		cassandraQuiz.Weightage = *quiz.Weightage
+	}
 	// set quiz in cassandra
 	insertQuery := global.CassSession.Session.Query(coursez.QuizTable.Insert()).BindStruct(cassandraQuiz)
 	if err := insertQuery.ExecRelease(); err != nil {
@@ -66,6 +78,9 @@ func CreateTopicQuiz(ctx context.Context, quiz *model.QuizInput) (*model.Quiz, e
 		StartTime:   quiz.StartTime,
 		Sequence:    quiz.Sequence,
 		Category:    quiz.Category,
+		QbID:        &cassandraQuiz.QbId,
+		QuestionID:  &cassandraQuiz.QuestionID,
+		Weightage:   &cassandraQuiz.Weightage,
 	}
 	return &responseModel, nil
 }
@@ -117,6 +132,22 @@ func UpdateQuiz(ctx context.Context, quiz *model.QuizInput) (*model.Quiz, error)
 		updateCols = append(updateCols, "category")
 		cassandraQuiz.Category = *quiz.Category
 	}
+	if quiz.CourseID != nil {
+		updateCols = append(updateCols, "courseid")
+		cassandraQuiz.CourseID = *quiz.CourseID
+	}
+	if quiz.QbID != nil {
+		updateCols = append(updateCols, "qbid")
+		cassandraQuiz.QbId = *quiz.QbID
+	}
+	if quiz.QuestionID != nil {
+		updateCols = append(updateCols, "questionid")
+		cassandraQuiz.QuestionID = *quiz.QuestionID
+	}
+	if quiz.Weightage != nil {
+		updateCols = append(updateCols, "weightage")
+		cassandraQuiz.Weightage = *quiz.Weightage
+	}
 	updateCols = append(updateCols, "updated_at")
 	cassandraQuiz.UpdatedAt = time.Now().Unix()
 	// update quiz in cassandra
@@ -138,6 +169,10 @@ func UpdateQuiz(ctx context.Context, quiz *model.QuizInput) (*model.Quiz, error)
 		StartTime:   &cassandraQuiz.StartTime,
 		Sequence:    &cassandraQuiz.Sequence,
 		Category:    &cassandraQuiz.Category,
+		CourseID:    &cassandraQuiz.CourseID,
+		QbID:        &cassandraQuiz.QbId,
+		QuestionID:  &cassandraQuiz.QuestionID,
+		Weightage:   &cassandraQuiz.Weightage,
 	}
 	return &responseModel, nil
 

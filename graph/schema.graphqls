@@ -253,6 +253,10 @@ type Quiz {
     created_at: String
     updated_at: String
     topicId: String
+    courseId: String
+    questionId: String
+    qbId: String
+    weightage: Int
     sequence: Int
     startTime: Int
 }
@@ -265,6 +269,10 @@ input QuizInput {
     created_at: String
     updated_at: String
     topicId: String
+    courseId: String
+    questionId: String
+    qbId: String
+    weightage: Int
     sequence: Int
     startTime: Int
 }
