@@ -403,13 +403,11 @@ func UploadTopicStaticContent(ctx context.Context, file *model.StaticContent) (*
 			if err != nil {
 				return err
 			}
-			defer w.Close()
 			_, err = io.CopyBuffer(w, r, buffer)
 			if err != nil {
 				return err
 			}
-
-			return nil
+			return w.Close()
 		}()
 		if err != nil {
 			return nil, err
@@ -422,7 +420,7 @@ func UploadTopicStaticContent(ctx context.Context, file *model.StaticContent) (*
 	} else {
 		return nil, fmt.Errorf("type is empty or not supported")
 	}
-	getUrl := storageC.GetSignedURLForObject(urlPath)
+	getUrl := storageC.GetSignedURLForObjectPub(urlPath)
 	where := qb.Eq("id")
 	updateQB := qb.Update("coursez.topic_content").Set("topiccontentbucket").Set("url").Where(where)
 	updateQuery := updateQB.Query(*global.CassSession.Session).BindMap(qb.M{"id": file.ContentID, "topiccontentbucket": urlPath, "url": getUrl})

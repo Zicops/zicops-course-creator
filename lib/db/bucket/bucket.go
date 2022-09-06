@@ -128,3 +128,17 @@ func (sc *Client) GetSignedURLForObject(object string) string {
 
 	return url
 }
+
+func (sc *Client) GetSignedURLForObjectPub(object string) string {
+	opts := &storage.SignedURLOptions{
+		Scheme:  storage.SigningSchemeV4,
+		Method:  "GET",
+		Expires: time.Now().Add(24 * time.Hour),
+	}
+	url, err := sc.bucketPublic.SignedURL(object, opts)
+	if err != nil {
+		return ""
+	}
+
+	return url
+}
