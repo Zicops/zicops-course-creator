@@ -89,6 +89,23 @@ type ComplexityRoot struct {
 		UpdatedBy          func(childComplexity int) int
 	}
 
+	CourseCohort struct {
+		AddedBy      func(childComplexity int) int
+		CohortCode   func(childComplexity int) int
+		CohortID     func(childComplexity int) int
+		CourseID     func(childComplexity int) int
+		CourseStatus func(childComplexity int) int
+		CourseType   func(childComplexity int) int
+		CreatedAt    func(childComplexity int) int
+		CreatedBy    func(childComplexity int) int
+		ID           func(childComplexity int) int
+		IsActive     func(childComplexity int) int
+		IsMandatory  func(childComplexity int) int
+		LspID        func(childComplexity int) int
+		UpdatedAt    func(childComplexity int) int
+		UpdatedBy    func(childComplexity int) int
+	}
+
 	Exam struct {
 		Category     func(childComplexity int) int
 		Code         func(childComplexity int) int
@@ -180,6 +197,7 @@ type ComplexityRoot struct {
 		AddCategories               func(childComplexity int, category []*string) int
 		AddCourse                   func(childComplexity int, course *model.CourseInput) int
 		AddCourseChapter            func(childComplexity int, courseID *string, chapter *model.ChapterInput) int
+		AddCourseCohort             func(childComplexity int, input *model.CourseCohortInput) int
 		AddCourseModule             func(childComplexity int, courseID *string, module *model.ModuleInput) int
 		AddCourseTopic              func(childComplexity int, courseID *string, topic *model.TopicInput) int
 		AddExam                     func(childComplexity int, input *model.ExamInput) int
@@ -202,6 +220,7 @@ type ComplexityRoot struct {
 		MapSectionToBank            func(childComplexity int, input *model.MapSectionToBankInput) int
 		UpdateCourse                func(childComplexity int, course *model.CourseInput) int
 		UpdateCourseChapter         func(childComplexity int, chapter *model.ChapterInput) int
+		UpdateCourseCohort          func(childComplexity int, input *model.CourseCohortInput) int
 		UpdateCourseModule          func(childComplexity int, module *model.ModuleInput) int
 		UpdateCourseTopic           func(childComplexity int, topic *model.TopicInput) int
 		UpdateExam                  func(childComplexity int, input *model.ExamInput) int
@@ -463,6 +482,8 @@ type MutationResolver interface {
 	UpdateExamCohort(ctx context.Context, input *model.ExamCohortInput) (*model.ExamCohort, error)
 	AddExamConfiguration(ctx context.Context, input *model.ExamConfigurationInput) (*model.ExamConfiguration, error)
 	UpdateExamConfiguration(ctx context.Context, input *model.ExamConfigurationInput) (*model.ExamConfiguration, error)
+	AddCourseCohort(ctx context.Context, input *model.CourseCohortInput) (*model.CourseCohort, error)
+	UpdateCourseCohort(ctx context.Context, input *model.CourseCohortInput) (*model.CourseCohort, error)
 }
 
 type executableSchema struct {
@@ -773,6 +794,104 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Course.UpdatedBy(childComplexity), true
+
+	case "CourseCohort.AddedBy":
+		if e.complexity.CourseCohort.AddedBy == nil {
+			break
+		}
+
+		return e.complexity.CourseCohort.AddedBy(childComplexity), true
+
+	case "CourseCohort.CohortCode":
+		if e.complexity.CourseCohort.CohortCode == nil {
+			break
+		}
+
+		return e.complexity.CourseCohort.CohortCode(childComplexity), true
+
+	case "CourseCohort.CohortId":
+		if e.complexity.CourseCohort.CohortID == nil {
+			break
+		}
+
+		return e.complexity.CourseCohort.CohortID(childComplexity), true
+
+	case "CourseCohort.CourseId":
+		if e.complexity.CourseCohort.CourseID == nil {
+			break
+		}
+
+		return e.complexity.CourseCohort.CourseID(childComplexity), true
+
+	case "CourseCohort.CourseStatus":
+		if e.complexity.CourseCohort.CourseStatus == nil {
+			break
+		}
+
+		return e.complexity.CourseCohort.CourseStatus(childComplexity), true
+
+	case "CourseCohort.CourseType":
+		if e.complexity.CourseCohort.CourseType == nil {
+			break
+		}
+
+		return e.complexity.CourseCohort.CourseType(childComplexity), true
+
+	case "CourseCohort.CreatedAt":
+		if e.complexity.CourseCohort.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.CourseCohort.CreatedAt(childComplexity), true
+
+	case "CourseCohort.CreatedBy":
+		if e.complexity.CourseCohort.CreatedBy == nil {
+			break
+		}
+
+		return e.complexity.CourseCohort.CreatedBy(childComplexity), true
+
+	case "CourseCohort.id":
+		if e.complexity.CourseCohort.ID == nil {
+			break
+		}
+
+		return e.complexity.CourseCohort.ID(childComplexity), true
+
+	case "CourseCohort.IsActive":
+		if e.complexity.CourseCohort.IsActive == nil {
+			break
+		}
+
+		return e.complexity.CourseCohort.IsActive(childComplexity), true
+
+	case "CourseCohort.isMandatory":
+		if e.complexity.CourseCohort.IsMandatory == nil {
+			break
+		}
+
+		return e.complexity.CourseCohort.IsMandatory(childComplexity), true
+
+	case "CourseCohort.LspId":
+		if e.complexity.CourseCohort.LspID == nil {
+			break
+		}
+
+		return e.complexity.CourseCohort.LspID(childComplexity), true
+
+	case "CourseCohort.UpdatedAt":
+		if e.complexity.CourseCohort.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.CourseCohort.UpdatedAt(childComplexity), true
+
+	case "CourseCohort.UpdatedBy":
+		if e.complexity.CourseCohort.UpdatedBy == nil {
+			break
+		}
+
+		return e.complexity.CourseCohort.UpdatedBy(childComplexity), true
 
 	case "Exam.Category":
 		if e.complexity.Exam.Category == nil {
@@ -1298,6 +1417,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.AddCourseChapter(childComplexity, args["courseId"].(*string), args["chapter"].(*model.ChapterInput)), true
 
+	case "Mutation.addCourseCohort":
+		if e.complexity.Mutation.AddCourseCohort == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_addCourseCohort_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.AddCourseCohort(childComplexity, args["input"].(*model.CourseCohortInput)), true
+
 	case "Mutation.addCourseModule":
 		if e.complexity.Mutation.AddCourseModule == nil {
 			break
@@ -1561,6 +1692,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.UpdateCourseChapter(childComplexity, args["chapter"].(*model.ChapterInput)), true
+
+	case "Mutation.updateCourseCohort":
+		if e.complexity.Mutation.UpdateCourseCohort == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_updateCourseCohort_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdateCourseCohort(childComplexity, args["input"].(*model.CourseCohortInput)), true
 
 	case "Mutation.updateCourseModule":
 		if e.complexity.Mutation.UpdateCourseModule == nil {
@@ -3550,6 +3693,39 @@ type ExamConfiguration {
     CreatedAt: String
     UpdatedAt: String
 }
+input CourseCohortInput {
+    id: ID
+    CourseId: String
+    CohortId: String
+    CourseType: String
+    LspId: String
+    CohortCode: String
+    isMandatory: Boolean
+    CourseStatus: String
+    AddedBy: String
+    CreatedAt: String
+    UpdatedAt: String
+    CreatedBy: String
+    UpdatedBy: String
+    IsActive : Boolean
+}
+
+type CourseCohort {
+    id: ID
+    CourseId: String
+    CohortId: String
+    CourseType: String
+    LspId: String
+    CohortCode: String
+    isMandatory: Boolean
+    CourseStatus: String
+    AddedBy: String
+    CreatedAt: String
+    UpdatedAt: String
+    CreatedBy: String
+    UpdatedBy: String
+    IsActive : Boolean
+}
 
 # define type mutations to add a course  using courseInput
 type Mutation{
@@ -3605,6 +3781,8 @@ type Mutation{
     updateExamCohort(input: ExamCohortInput): ExamCohort
     addExamConfiguration(input: ExamConfigurationInput): ExamConfiguration
     updateExamConfiguration(input: ExamConfigurationInput): ExamConfiguration
+    addCourseCohort(input: CourseCohortInput): CourseCohort
+    updateCourseCohort(input: CourseCohortInput): CourseCohort
 }
 `, BuiltIn: false},
 }
@@ -3674,6 +3852,21 @@ func (ec *executionContext) field_Mutation_addCourseChapter_args(ctx context.Con
 		}
 	}
 	args["chapter"] = arg1
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_addCourseCohort_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 *model.CourseCohortInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalOCourseCohortInput2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐCourseCohortInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
 	return args, nil
 }
 
@@ -4058,6 +4251,21 @@ func (ec *executionContext) field_Mutation_updateCourseChapter_args(ctx context.
 		}
 	}
 	args["chapter"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_updateCourseCohort_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 *model.CourseCohortInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalOCourseCohortInput2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐCourseCohortInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
 	return args, nil
 }
 
@@ -5843,6 +6051,454 @@ func (ec *executionContext) _Course_is_active(ctx context.Context, field graphql
 	}()
 	fc := &graphql.FieldContext{
 		Object:     "Course",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.IsActive, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*bool)
+	fc.Result = res
+	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _CourseCohort_id(ctx context.Context, field graphql.CollectedField, obj *model.CourseCohort) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "CourseCohort",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOID2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _CourseCohort_CourseId(ctx context.Context, field graphql.CollectedField, obj *model.CourseCohort) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "CourseCohort",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CourseID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _CourseCohort_CohortId(ctx context.Context, field graphql.CollectedField, obj *model.CourseCohort) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "CourseCohort",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CohortID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _CourseCohort_CourseType(ctx context.Context, field graphql.CollectedField, obj *model.CourseCohort) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "CourseCohort",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CourseType, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _CourseCohort_LspId(ctx context.Context, field graphql.CollectedField, obj *model.CourseCohort) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "CourseCohort",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.LspID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _CourseCohort_CohortCode(ctx context.Context, field graphql.CollectedField, obj *model.CourseCohort) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "CourseCohort",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CohortCode, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _CourseCohort_isMandatory(ctx context.Context, field graphql.CollectedField, obj *model.CourseCohort) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "CourseCohort",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.IsMandatory, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*bool)
+	fc.Result = res
+	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _CourseCohort_CourseStatus(ctx context.Context, field graphql.CollectedField, obj *model.CourseCohort) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "CourseCohort",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CourseStatus, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _CourseCohort_AddedBy(ctx context.Context, field graphql.CollectedField, obj *model.CourseCohort) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "CourseCohort",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.AddedBy, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _CourseCohort_CreatedAt(ctx context.Context, field graphql.CollectedField, obj *model.CourseCohort) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "CourseCohort",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CreatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _CourseCohort_UpdatedAt(ctx context.Context, field graphql.CollectedField, obj *model.CourseCohort) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "CourseCohort",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.UpdatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _CourseCohort_CreatedBy(ctx context.Context, field graphql.CollectedField, obj *model.CourseCohort) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "CourseCohort",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CreatedBy, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _CourseCohort_UpdatedBy(ctx context.Context, field graphql.CollectedField, obj *model.CourseCohort) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "CourseCohort",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.UpdatedBy, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _CourseCohort_IsActive(ctx context.Context, field graphql.CollectedField, obj *model.CourseCohort) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "CourseCohort",
 		Field:      field,
 		Args:       nil,
 		IsMethod:   false,
@@ -10029,6 +10685,84 @@ func (ec *executionContext) _Mutation_updateExamConfiguration(ctx context.Contex
 	res := resTmp.(*model.ExamConfiguration)
 	fc.Result = res
 	return ec.marshalOExamConfiguration2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐExamConfiguration(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_addCourseCohort(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_addCourseCohort_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().AddCourseCohort(rctx, args["input"].(*model.CourseCohortInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.CourseCohort)
+	fc.Result = res
+	return ec.marshalOCourseCohort2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐCourseCohort(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_updateCourseCohort(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_updateCourseCohort_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().UpdateCourseCohort(rctx, args["input"].(*model.CourseCohortInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.CourseCohort)
+	fc.Result = res
+	return ec.marshalOCourseCohort2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐCourseCohort(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query___type(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -15703,6 +16437,133 @@ func (ec *executionContext) unmarshalInputChapterInput(ctx context.Context, obj 
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputCourseCohortInput(ctx context.Context, obj interface{}) (model.CourseCohortInput, error) {
+	var it model.CourseCohortInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	for k, v := range asMap {
+		switch k {
+		case "id":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+			it.ID, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "CourseId":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("CourseId"))
+			it.CourseID, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "CohortId":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("CohortId"))
+			it.CohortID, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "CourseType":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("CourseType"))
+			it.CourseType, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "LspId":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("LspId"))
+			it.LspID, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "CohortCode":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("CohortCode"))
+			it.CohortCode, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "isMandatory":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("isMandatory"))
+			it.IsMandatory, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "CourseStatus":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("CourseStatus"))
+			it.CourseStatus, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "AddedBy":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("AddedBy"))
+			it.AddedBy, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "CreatedAt":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("CreatedAt"))
+			it.CreatedAt, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "UpdatedAt":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("UpdatedAt"))
+			it.UpdatedAt, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "CreatedBy":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("CreatedBy"))
+			it.CreatedBy, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "UpdatedBy":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("UpdatedBy"))
+			it.UpdatedBy, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "IsActive":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("IsActive"))
+			it.IsActive, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputCourseFile(ctx context.Context, obj interface{}) (model.CourseFile, error) {
 	var it model.CourseFile
 	asMap := map[string]interface{}{}
@@ -18516,6 +19377,125 @@ func (ec *executionContext) _Course(ctx context.Context, sel ast.SelectionSet, o
 	return out
 }
 
+var courseCohortImplementors = []string{"CourseCohort"}
+
+func (ec *executionContext) _CourseCohort(ctx context.Context, sel ast.SelectionSet, obj *model.CourseCohort) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, courseCohortImplementors)
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("CourseCohort")
+		case "id":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._CourseCohort_id(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+		case "CourseId":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._CourseCohort_CourseId(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+		case "CohortId":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._CourseCohort_CohortId(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+		case "CourseType":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._CourseCohort_CourseType(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+		case "LspId":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._CourseCohort_LspId(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+		case "CohortCode":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._CourseCohort_CohortCode(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+		case "isMandatory":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._CourseCohort_isMandatory(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+		case "CourseStatus":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._CourseCohort_CourseStatus(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+		case "AddedBy":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._CourseCohort_AddedBy(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+		case "CreatedAt":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._CourseCohort_CreatedAt(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+		case "UpdatedAt":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._CourseCohort_UpdatedAt(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+		case "CreatedBy":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._CourseCohort_CreatedBy(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+		case "UpdatedBy":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._CourseCohort_UpdatedBy(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+		case "IsActive":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._CourseCohort_IsActive(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
 var examImplementors = []string{"Exam"}
 
 func (ec *executionContext) _Exam(ctx context.Context, sel ast.SelectionSet, obj *model.Exam) graphql.Marshaler {
@@ -19490,6 +20470,20 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 		case "updateExamConfiguration":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_updateExamConfiguration(ctx, field)
+			}
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, innerFunc)
+
+		case "addCourseCohort":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_addCourseCohort(ctx, field)
+			}
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, innerFunc)
+
+		case "updateCourseCohort":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_updateCourseCohort(ctx, field)
 			}
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, innerFunc)
@@ -21547,6 +22541,21 @@ func (ec *executionContext) marshalOCourse2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑc
 		return graphql.Null
 	}
 	return ec._Course(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalOCourseCohort2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐCourseCohort(ctx context.Context, sel ast.SelectionSet, v *model.CourseCohort) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._CourseCohort(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalOCourseCohortInput2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐCourseCohortInput(ctx context.Context, v interface{}) (*model.CourseCohortInput, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputCourseCohortInput(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) unmarshalOCourseFile2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐCourseFile(ctx context.Context, v interface{}) (*model.CourseFile, error) {

@@ -670,6 +670,39 @@ type ExamConfiguration {
     CreatedAt: String
     UpdatedAt: String
 }
+input CourseCohortInput {
+    id: ID
+    CourseId: String
+    CohortId: String
+    CourseType: String
+    LspId: String
+    CohortCode: String
+    isMandatory: Boolean
+    CourseStatus: String
+    AddedBy: String
+    CreatedAt: String
+    UpdatedAt: String
+    CreatedBy: String
+    UpdatedBy: String
+    IsActive : Boolean
+}
+
+type CourseCohort {
+    id: ID
+    CourseId: String
+    CohortId: String
+    CourseType: String
+    LspId: String
+    CohortCode: String
+    isMandatory: Boolean
+    CourseStatus: String
+    AddedBy: String
+    CreatedAt: String
+    UpdatedAt: String
+    CreatedBy: String
+    UpdatedBy: String
+    IsActive : Boolean
+}
 
 # define type mutations to add a course  using courseInput
 type Mutation{
@@ -725,4 +758,6 @@ type Mutation{
     updateExamCohort(input: ExamCohortInput): ExamCohort
     addExamConfiguration(input: ExamConfigurationInput): ExamConfiguration
     updateExamConfiguration(input: ExamConfigurationInput): ExamConfiguration
+    addCourseCohort(input: CourseCohortInput): CourseCohort
+    updateCourseCohort(input: CourseCohortInput): CourseCohort
 }
