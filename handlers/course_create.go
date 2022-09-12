@@ -13,6 +13,7 @@ import (
 
 	"github.com/rs/xid"
 	"github.com/zicops/contracts/coursez"
+	"github.com/zicops/zicops-cass-pool/cassandra"
 	"github.com/zicops/zicops-course-creator/global"
 	"github.com/zicops/zicops-course-creator/graph/model"
 	"github.com/zicops/zicops-course-creator/lib/db/bucket"
@@ -23,6 +24,11 @@ import (
 func CourseCreator(ctx context.Context, courseInput *model.CourseInput) (*model.Course, error) {
 	log.Info("CourseCreator called")
 	// set course input in cassandra
+	session, err := cassandra.GetCassSession("coursez")
+	if err != nil {
+		return nil, err
+	}
+	global.CassSession = session
 	guid := xid.New()
 	language := []string{}
 	takeaways := []string{}
@@ -140,7 +146,7 @@ func CourseCreator(ctx context.Context, courseInput *model.CourseInput) (*model.
 		cassandraCourse.SubCategory = *courseInput.SubCategory
 	}
 	// set course in cassandra
-	insertQuery := global.CassSession.Session.Query(coursez.CourseTable.Insert()).BindStruct(cassandraCourse)
+	insertQuery := global.CassSession.Query(coursez.CourseTable.Insert()).BindStruct(cassandraCourse)
 	if err := insertQuery.ExecRelease(); err != nil {
 		return nil, err
 	}
@@ -187,12 +193,17 @@ func CourseCreator(ctx context.Context, courseInput *model.CourseInput) (*model.
 func UploadCourseImage(ctx context.Context, file model.CourseFile) (*model.UploadResult, error) {
 	log.Info("UploadCourseImage called")
 	isSuccess := model.UploadResult{}
+	session, err := cassandra.GetCassSession("coursez")
+	if err != nil {
+		return nil, err
+	}
+	global.CassSession = session
 	if *file.CourseID == "" {
 		return &isSuccess, fmt.Errorf("course id is required")
 	}
 	storageC := bucket.NewStorageHandler()
 	gproject := googleprojectlib.GetGoogleProjectID()
-	err := storageC.InitializeStorageClient(ctx, gproject)
+	err = storageC.InitializeStorageClient(ctx, gproject)
 	if err != nil {
 		log.Errorf("Failed to upload image to course: %v", err.Error())
 		return &isSuccess, nil
@@ -217,7 +228,7 @@ func UploadCourseImage(ctx context.Context, file model.CourseFile) (*model.Uploa
 	// update course image in cassandra
 	where := qb.Eq("id")
 	updateQB := qb.Update("coursez.course").Set("imagebucket").Set("image").Where(where)
-	updateQuery := updateQB.Query(*global.CassSession.Session).BindMap(qb.M{"id": file.CourseID, "imagebucket": bucketPath, "image": getUrl})
+	updateQuery := updateQB.Query(*global.CassSession).BindMap(qb.M{"id": file.CourseID, "imagebucket": bucketPath, "image": getUrl})
 	if err := updateQuery.ExecRelease(); err != nil {
 		return &isSuccess, err
 	}
@@ -233,9 +244,14 @@ func UploadCoursePreviewVideo(ctx context.Context, file model.CourseFile) (*mode
 	if *file.CourseID == "" {
 		return &isSuccess, fmt.Errorf("course id is required")
 	}
+	session, err := cassandra.GetCassSession("coursez")
+	if err != nil {
+		return nil, err
+	}
+	global.CassSession = session
 	storageC := bucket.NewStorageHandler()
 	gproject := googleprojectlib.GetGoogleProjectID()
-	err := storageC.InitializeStorageClient(ctx, gproject)
+	err = storageC.InitializeStorageClient(ctx, gproject)
 	if err != nil {
 		log.Errorf("Failed to upload image to course: %v", err.Error())
 		return &isSuccess, nil
@@ -260,7 +276,7 @@ func UploadCoursePreviewVideo(ctx context.Context, file model.CourseFile) (*mode
 	// update course image in cassandra
 	where := qb.Eq("id")
 	updateQB := qb.Update("coursez.course").Set("previewvideobucket").Set("previewvideo").Where(where)
-	updateQuery := updateQB.Query(*global.CassSession.Session).BindMap(qb.M{"id": file.CourseID, "previewvideobucket": bucketPath, "previewvideo": getUrl})
+	updateQuery := updateQB.Query(*global.CassSession).BindMap(qb.M{"id": file.CourseID, "previewvideobucket": bucketPath, "previewvideo": getUrl})
 	if err := updateQuery.ExecRelease(); err != nil {
 		return &isSuccess, err
 	}
@@ -276,9 +292,14 @@ func UploadCourseTileImage(ctx context.Context, file model.CourseFile) (*model.U
 	if *file.CourseID == "" {
 		return &isSuccess, fmt.Errorf("course id is required")
 	}
+	session, err := cassandra.GetCassSession("coursez")
+	if err != nil {
+		return nil, err
+	}
+	global.CassSession = session
 	storageC := bucket.NewStorageHandler()
 	gproject := googleprojectlib.GetGoogleProjectID()
-	err := storageC.InitializeStorageClient(ctx, gproject)
+	err = storageC.InitializeStorageClient(ctx, gproject)
 	if err != nil {
 		log.Errorf("Failed to upload image to course: %v", err.Error())
 		return &isSuccess, nil
@@ -302,7 +323,7 @@ func UploadCourseTileImage(ctx context.Context, file model.CourseFile) (*model.U
 	getUrl := storageC.GetSignedURLForObject(bucketPath)
 	where := qb.Eq("id")
 	updateQB := qb.Update("coursez.course").Set("tileimagebucket").Set("tileimage").Where(where)
-	updateQuery := updateQB.Query(*global.CassSession.Session).BindMap(qb.M{"id": file.CourseID, "tileimagebucket": bucketPath, "tileimage": getUrl})
+	updateQuery := updateQB.Query(*global.CassSession).BindMap(qb.M{"id": file.CourseID, "tileimagebucket": bucketPath, "tileimage": getUrl})
 	if err := updateQuery.ExecRelease(); err != nil {
 		return &isSuccess, err
 	}
@@ -317,6 +338,11 @@ func CourseUpdate(ctx context.Context, courseInput *model.CourseInput) (*model.C
 	if courseInput.ID == nil {
 		return nil, fmt.Errorf("course id is required")
 	}
+	session, err := cassandra.GetCassSession("coursez")
+	if err != nil {
+		return nil, err
+	}
+	global.CassSession = session
 	// set course input in cassandra
 	courseID := *courseInput.ID
 	// get course from cassandra
@@ -324,7 +350,7 @@ func CourseUpdate(ctx context.Context, courseInput *model.CourseInput) (*model.C
 		ID: courseID,
 	}
 	courses := []coursez.Course{}
-	getQuery := global.CassSession.Session.Query(coursez.CourseTable.Get()).BindMap(qb.M{"id": courseID})
+	getQuery := global.CassSession.Query(coursez.CourseTable.Get()).BindMap(qb.M{"id": courseID})
 	if err := getQuery.SelectRelease(&courses); err != nil {
 		return nil, err
 	}
@@ -487,7 +513,7 @@ func CourseUpdate(ctx context.Context, courseInput *model.CourseInput) (*model.C
 	updateCols = append(updateCols, "updated_at")
 	// set course in cassandra
 	upStms, uNames := coursez.CourseTable.Update(updateCols...)
-	updateQuery := global.CassSession.Session.Query(upStms, uNames).BindStruct(&cassandraCourse)
+	updateQuery := global.CassSession.Query(upStms, uNames).BindStruct(&cassandraCourse)
 	if err := updateQuery.ExecRelease(); err != nil {
 		return nil, err
 	}

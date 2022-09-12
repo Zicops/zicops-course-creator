@@ -10,12 +10,18 @@ import (
 	"github.com/scylladb/gocqlx/v2/qb"
 	log "github.com/sirupsen/logrus"
 	"github.com/zicops/contracts/coursez"
+	"github.com/zicops/zicops-cass-pool/cassandra"
 	"github.com/zicops/zicops-course-creator/global"
 	"github.com/zicops/zicops-course-creator/graph/model"
 )
 
 func AddCourseCohort(ctx context.Context, input *model.CourseCohortInput) (*model.CourseCohort, error) {
 	log.Info("AddCourseCohort called")
+	session, err := cassandra.GetCassSession("qbankz")
+	if err != nil {
+		return nil, err
+	}
+	global.CassSessioQBank = session
 	guid := xid.New()
 	cassandraQuestionBank := coursez.CourseCohortMapping{
 		ID:           guid.String(),
@@ -33,7 +39,7 @@ func AddCourseCohort(ctx context.Context, input *model.CourseCohortInput) (*mode
 		UpdatedAt:    time.Now().Unix(),
 		CohortCode:   *input.CohortCode,
 	}
-	insertQuery := global.CassSessioQBank.Session.Query(coursez.CourseCohortTable.Insert()).BindStruct(cassandraQuestionBank)
+	insertQuery := global.CassSessioQBank.Query(coursez.CourseCohortTable.Insert()).BindStruct(cassandraQuestionBank)
 	if err := insertQuery.ExecRelease(); err != nil {
 		return nil, err
 	}
@@ -63,11 +69,16 @@ func UpdateCourseCohort(ctx context.Context, input *model.CourseCohortInput) (*m
 	if input.ID == nil {
 		return nil, fmt.Errorf("course cohort id is required")
 	}
+	session, err := cassandra.GetCassSession("qbankz")
+	if err != nil {
+		return nil, err
+	}
+	global.CassSessioQBank = session
 	cassandraQuestionBank := coursez.CourseCohortMapping{
 		ID: *input.ID,
 	}
 	banks := []coursez.CourseCohortMapping{}
-	getQuery := global.CassSessioQBank.Session.Query(coursez.CourseCohortTable.Get()).BindMap(qb.M{"id": cassandraQuestionBank.ID})
+	getQuery := global.CassSessioQBank.Query(coursez.CourseCohortTable.Get()).BindMap(qb.M{"id": cassandraQuestionBank.ID})
 	if err := getQuery.SelectRelease(&banks); err != nil {
 		return nil, err
 	}
@@ -127,7 +138,7 @@ func UpdateCourseCohort(ctx context.Context, input *model.CourseCohortInput) (*m
 		return nil, fmt.Errorf("nothing to update")
 	}
 	upStms, uNames := coursez.CourseCohortTable.Update(updatedCols...)
-	updateQuery := global.CassSessioQBank.Session.Query(upStms, uNames).BindStruct(&cassandraQuestionBank)
+	updateQuery := global.CassSessioQBank.Query(upStms, uNames).BindStruct(&cassandraQuestionBank)
 	if err := updateQuery.ExecRelease(); err != nil {
 		return nil, err
 	}

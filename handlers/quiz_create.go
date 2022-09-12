@@ -12,6 +12,7 @@ import (
 	"github.com/scylladb/gocqlx/v2/qb"
 	log "github.com/sirupsen/logrus"
 	"github.com/zicops/contracts/coursez"
+	"github.com/zicops/zicops-cass-pool/cassandra"
 	"github.com/zicops/zicops-course-creator/global"
 	"github.com/zicops/zicops-course-creator/graph/model"
 	"github.com/zicops/zicops-course-creator/lib/db/bucket"
@@ -19,9 +20,13 @@ import (
 )
 
 func CreateTopicQuiz(ctx context.Context, quiz *model.QuizInput) (*model.Quiz, error) {
-
 	log.Info("CreateTopicQuiz called")
 	guid := xid.New()
+	session, err := cassandra.GetCassSession("coursez")
+	if err != nil {
+		return nil, err
+	}
+	global.CassSession = session
 	cassandraQuiz := coursez.Quiz{
 		ID:        guid.String(),
 		CreatedAt: time.Now().Unix(),
@@ -62,7 +67,7 @@ func CreateTopicQuiz(ctx context.Context, quiz *model.QuizInput) (*model.Quiz, e
 		cassandraQuiz.Weightage = *quiz.Weightage
 	}
 	// set quiz in cassandra
-	insertQuery := global.CassSession.Session.Query(coursez.QuizTable.Insert()).BindStruct(cassandraQuiz)
+	insertQuery := global.CassSession.Query(coursez.QuizTable.Insert()).BindStruct(cassandraQuiz)
 	if err := insertQuery.ExecRelease(); err != nil {
 		return nil, err
 	}
@@ -90,12 +95,17 @@ func UpdateQuiz(ctx context.Context, quiz *model.QuizInput) (*model.Quiz, error)
 	if quiz.ID == nil {
 		return nil, fmt.Errorf("quiz id is required")
 	}
+	session, err := cassandra.GetCassSession("coursez")
+	if err != nil {
+		return nil, err
+	}
+	global.CassSession = session
 	cassandraQuiz := coursez.Quiz{
 		ID: *quiz.ID,
 	}
 	// set course in cassandra
 	quizes := []coursez.Quiz{}
-	getQuery := global.CassSession.Session.Query(coursez.QuizTable.Get()).BindMap(qb.M{"id": cassandraQuiz.ID})
+	getQuery := global.CassSession.Query(coursez.QuizTable.Get()).BindMap(qb.M{"id": cassandraQuiz.ID})
 	if err := getQuery.SelectRelease(&quizes); err != nil {
 		return nil, err
 	}
@@ -152,7 +162,7 @@ func UpdateQuiz(ctx context.Context, quiz *model.QuizInput) (*model.Quiz, error)
 	cassandraQuiz.UpdatedAt = time.Now().Unix()
 	// update quiz in cassandra
 	upStms, uNames := coursez.QuizTable.Update(updateCols...)
-	updateQuery := global.CassSession.Session.Query(upStms, uNames).BindStruct(&cassandraQuiz)
+	updateQuery := global.CassSession.Query(upStms, uNames).BindStruct(&cassandraQuiz)
 	if err := updateQuery.ExecRelease(); err != nil {
 		return nil, err
 	}
@@ -180,10 +190,15 @@ func UpdateQuiz(ctx context.Context, quiz *model.QuizInput) (*model.Quiz, error)
 
 func UploadQuizFile(ctx context.Context, courseID string, quiz model.QuizFile) (*model.UploadResult, error) {
 	log.Info("UploadQuizFile called")
+	session, err := cassandra.GetCassSession("coursez")
+	if err != nil {
+		return nil, err
+	}
+	global.CassSession = session
 	isSuccess := model.UploadResult{}
 	storageC := bucket.NewStorageHandler()
 	gproject := googleprojectlib.GetGoogleProjectID()
-	err := storageC.InitializeStorageClient(ctx, gproject)
+	err = storageC.InitializeStorageClient(ctx, gproject)
 	if err != nil {
 		log.Errorf("Failed to upload video to course topic: %v", err.Error())
 		return &isSuccess, nil
@@ -221,7 +236,7 @@ func UploadQuizFile(ctx context.Context, courseID string, quiz model.QuizFile) (
 		cassandraQuizFile.Name = *quiz.Name
 	}
 	// update course image in cassandra
-	quizAdd := global.CassSession.Session.Query(coursez.QuizFileTable.Insert()).BindStruct(cassandraQuizFile)
+	quizAdd := global.CassSession.Query(coursez.QuizFileTable.Insert()).BindStruct(cassandraQuizFile)
 	if err := quizAdd.ExecRelease(); err != nil {
 		return &isSuccess, err
 	}
@@ -236,6 +251,11 @@ func AddMCQQuiz(ctx context.Context, quiz *model.QuizMcq) (*bool, error) {
 	if quiz.QuizID == nil {
 		return nil, fmt.Errorf("quiz id is required")
 	}
+	session, err := cassandra.GetCassSession("coursez")
+	if err != nil {
+		return nil, err
+	}
+	global.CassSession = session
 	options := make([]string, 0)
 	for _, option := range quiz.Options {
 		options = append(options, *option)
@@ -255,7 +275,7 @@ func AddMCQQuiz(ctx context.Context, quiz *model.QuizMcq) (*bool, error) {
 		cassandraQuiz.Explanation = *quiz.Explanation
 	}
 	// set quiz in cassandra
-	insertQuery := global.CassSession.Session.Query(coursez.QuizMcqTable.Insert()).BindStruct(cassandraQuiz)
+	insertQuery := global.CassSession.Query(coursez.QuizMcqTable.Insert()).BindStruct(cassandraQuiz)
 	if err := insertQuery.ExecRelease(); err != nil {
 		return nil, err
 	}
@@ -269,6 +289,11 @@ func AddQuizDescriptive(ctx context.Context, quiz *model.QuizDescriptive) (*bool
 	if quiz.QuizID == nil {
 		return nil, fmt.Errorf("quiz id is required")
 	}
+	session, err := cassandra.GetCassSession("coursez")
+	if err != nil {
+		return nil, err
+	}
+	global.CassSession = session
 	cassandraQuiz := coursez.QuizDescriptive{
 		QuizId:   *quiz.QuizID,
 		IsActive: true,
@@ -283,7 +308,7 @@ func AddQuizDescriptive(ctx context.Context, quiz *model.QuizDescriptive) (*bool
 		cassandraQuiz.CorrectAnswer = *quiz.CorrectAnswer
 	}
 	// set quiz in cassandra
-	insertQuery := global.CassSession.Session.Query(coursez.QuizDescriptiveTable.Insert()).BindStruct(cassandraQuiz)
+	insertQuery := global.CassSession.Query(coursez.QuizDescriptiveTable.Insert()).BindStruct(cassandraQuiz)
 	if err := insertQuery.ExecRelease(); err != nil {
 		return nil, err
 	}

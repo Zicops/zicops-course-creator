@@ -10,12 +10,18 @@ import (
 	"github.com/scylladb/gocqlx/v2/qb"
 	log "github.com/sirupsen/logrus"
 	"github.com/zicops/contracts/coursez"
+	"github.com/zicops/zicops-cass-pool/cassandra"
 	"github.com/zicops/zicops-course-creator/global"
 	"github.com/zicops/zicops-course-creator/graph/model"
 )
 
 func TopicCreate(ctx context.Context, courseID string, topic *model.TopicInput) (*model.Topic, error) {
 	log.Info("TopicCreate called")
+	session, err := cassandra.GetCassSession("coursez")
+	if err != nil {
+		return nil, err
+	}
+	global.CassSession = session
 	guid := xid.New()
 	cassandraTopic := coursez.Topic{
 		ID:          guid.String(),
@@ -43,7 +49,7 @@ func TopicCreate(ctx context.Context, courseID string, topic *model.TopicInput) 
 		cassandraTopic.UpdatedBy = *topic.UpdatedBy
 	}
 	// set course in cassandra
-	insertQuery := global.CassSession.Session.Query(coursez.TopicTable.Insert()).BindStruct(cassandraTopic)
+	insertQuery := global.CassSession.Query(coursez.TopicTable.Insert()).BindStruct(cassandraTopic)
 	if err := insertQuery.ExecRelease(); err != nil {
 		return nil, err
 	}
@@ -79,7 +85,7 @@ func TopicUpdate(ctx context.Context, topic *model.TopicInput) (*model.Topic, er
 		cassandraTopic.ModuleID = *topic.ModuleID
 	}
 	topics := []coursez.Topic{}
-	getQuery := global.CassSession.Session.Query(coursez.TopicTable.Get()).BindMap(qb.M{"id": cassandraTopic.ID})
+	getQuery := global.CassSession.Query(coursez.TopicTable.Get()).BindMap(qb.M{"id": cassandraTopic.ID})
 	if err := getQuery.SelectRelease(&topics); err != nil {
 		return nil, err
 	}
@@ -109,7 +115,7 @@ func TopicUpdate(ctx context.Context, topic *model.TopicInput) (*model.Topic, er
 	cassandraTopic.UpdatedAt = time.Now().Unix()
 	// set course in cassandra
 	upStms, uNames := coursez.TopicTable.Update(updateCols...)
-	updateQuery := global.CassSession.Session.Query(upStms, uNames).BindStruct(&cassandraTopic)
+	updateQuery := global.CassSession.Query(upStms, uNames).BindStruct(&cassandraTopic)
 	if err := updateQuery.ExecRelease(); err != nil {
 		return nil, err
 	}
