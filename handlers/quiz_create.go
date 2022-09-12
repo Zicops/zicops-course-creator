@@ -81,6 +81,7 @@ func CreateTopicQuiz(ctx context.Context, quiz *model.QuizInput) (*model.Quiz, e
 		QbID:        &cassandraQuiz.QbId,
 		QuestionID:  &cassandraQuiz.QuestionID,
 		Weightage:   &cassandraQuiz.Weightage,
+		CourseID:    quiz.CourseID,
 	}
 	return &responseModel, nil
 }
