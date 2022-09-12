@@ -22,6 +22,7 @@ func ExamScheduleCreate(ctx context.Context, exam *model.ExamScheduleInput) (*mo
 		return nil, err
 	}
 	global.CassSessioQBank = session
+	defer global.CassSessioQBank.Close()
 	guid := xid.New()
 	// prase *exam.Start to int64
 	startString := strconv.Itoa(*exam.Start)
@@ -78,6 +79,7 @@ func ExamScheduleUpdate(ctx context.Context, input *model.ExamScheduleInput) (*m
 		return nil, err
 	}
 	global.CassSessioQBank = session
+	defer global.CassSessioQBank.Close()
 	cassandraQuestionBank := qbankz.ExamSchedule{
 		ID: *input.ID,
 	}

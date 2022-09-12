@@ -22,6 +22,7 @@ func ExamCreate(ctx context.Context, exam *model.ExamInput) (*model.Exam, error)
 		return nil, err
 	}
 	global.CassSessioQBank = session
+	defer global.CassSessioQBank.Close()
 	guid := xid.New()
 	cassandraQuestionBank := qbankz.Exam{
 		ID:           guid.String(),
@@ -78,6 +79,7 @@ func ExamUpdate(ctx context.Context, input *model.ExamInput) (*model.Exam, error
 		return nil, err
 	}
 	global.CassSessioQBank = session
+	defer global.CassSessioQBank.Close()
 	cassandraQuestionBank := qbankz.Exam{
 		ID: *input.ID,
 	}

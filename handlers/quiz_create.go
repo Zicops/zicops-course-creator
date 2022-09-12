@@ -27,6 +27,7 @@ func CreateTopicQuiz(ctx context.Context, quiz *model.QuizInput) (*model.Quiz, e
 		return nil, err
 	}
 	global.CassSession = session
+	defer global.CassSession.Close()
 	cassandraQuiz := coursez.Quiz{
 		ID:        guid.String(),
 		CreatedAt: time.Now().Unix(),
@@ -100,6 +101,7 @@ func UpdateQuiz(ctx context.Context, quiz *model.QuizInput) (*model.Quiz, error)
 		return nil, err
 	}
 	global.CassSession = session
+	defer global.CassSession.Close()
 	cassandraQuiz := coursez.Quiz{
 		ID: *quiz.ID,
 	}
@@ -195,6 +197,7 @@ func UploadQuizFile(ctx context.Context, courseID string, quiz model.QuizFile) (
 		return nil, err
 	}
 	global.CassSession = session
+	defer global.CassSession.Close()
 	isSuccess := model.UploadResult{}
 	storageC := bucket.NewStorageHandler()
 	gproject := googleprojectlib.GetGoogleProjectID()
@@ -256,6 +259,7 @@ func AddMCQQuiz(ctx context.Context, quiz *model.QuizMcq) (*bool, error) {
 		return nil, err
 	}
 	global.CassSession = session
+	defer global.CassSession.Close()
 	options := make([]string, 0)
 	for _, option := range quiz.Options {
 		options = append(options, *option)
@@ -294,6 +298,7 @@ func AddQuizDescriptive(ctx context.Context, quiz *model.QuizDescriptive) (*bool
 		return nil, err
 	}
 	global.CassSession = session
+	defer global.CassSession.Close()
 	cassandraQuiz := coursez.QuizDescriptive{
 		QuizId:   *quiz.QuizID,
 		IsActive: true,

@@ -23,6 +23,7 @@ func ExamInstructionsCreate(ctx context.Context, exam *model.ExamInstructionInpu
 		return nil, err
 	}
 	global.CassSessioQBank = session
+	defer global.CassSessioQBank.Close()
 	cassandraQuestionBank := qbankz.ExamInstructions{
 		ID:              guid.String(),
 		Instructions:    *exam.Instructions,
@@ -67,6 +68,7 @@ func ExamInstructionsUpdate(ctx context.Context, input *model.ExamInstructionInp
 		return nil, err
 	}
 	global.CassSessioQBank = session
+	defer global.CassSessioQBank.Close()
 	cassandraQuestionBank := qbankz.ExamInstructions{
 		ID: *input.ID,
 	}

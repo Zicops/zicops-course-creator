@@ -23,6 +23,7 @@ func QuestionSectionMap(ctx context.Context, input *model.MapSectionToBankInput)
 		return nil, err
 	}
 	global.CassSessioQBank = session
+	defer global.CassSessioQBank.Close()
 	cassandraQuestionBank := qbankz.SectionQBMapping{
 		ID:              guid.String(),
 		QBId:            *input.QbID,
@@ -73,6 +74,7 @@ func QuestionSectionMapUpdate(ctx context.Context, input *model.MapSectionToBank
 		return nil, err
 	}
 	global.CassSessioQBank = session
+	defer global.CassSessioQBank.Close()
 	cassandraQuestionBank := qbankz.SectionQBMapping{
 		ID: *input.ID,
 	}
@@ -165,6 +167,7 @@ func QuestionFixed(ctx context.Context, input *model.SectionFixedQuestionsInput)
 		return nil, err
 	}
 	global.CassSessioQBank = session
+	defer global.CassSessioQBank.Close()
 	cassandraQuestionBank := qbankz.SectionFixedQuestions{
 		ID:         guid.String(),
 		SQBId:      *input.SqbID,
@@ -205,6 +208,7 @@ func QuestionFixedUpdate(ctx context.Context, input *model.SectionFixedQuestions
 		return nil, err
 	}
 	global.CassSessioQBank = session
+	defer global.CassSessioQBank.Close()
 	cassandraQuestionBank := qbankz.SectionFixedQuestions{
 		ID: *input.ID,
 	}

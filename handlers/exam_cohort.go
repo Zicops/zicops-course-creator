@@ -23,6 +23,7 @@ func AddExamCohort(ctx context.Context, input *model.ExamCohortInput) (*model.Ex
 		return nil, err
 	}
 	global.CassSessioQBank = session
+	defer global.CassSessioQBank.Close()
 	cassandraQuestionBank := qbankz.ExamCohort{
 		ID:        guid.String(),
 		ExamID:    *input.ExamID,
@@ -61,6 +62,7 @@ func UpdateExamCohort(ctx context.Context, input *model.ExamCohortInput) (*model
 		return nil, err
 	}
 	global.CassSessioQBank = session
+	defer global.CassSessioQBank.Close()
 	cassandraQuestionBank := qbankz.ExamCohort{
 		ID: *input.ID,
 	}

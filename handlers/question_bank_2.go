@@ -29,6 +29,7 @@ func AddQuestionOptions(ctx context.Context, input *model.QuestionOptionInput) (
 		return nil, err
 	}
 	global.CassSessioQBank = session
+	defer global.CassSessioQBank.Close()
 	guid := xid.New()
 	cassandraQuestionBank := qbankz.OptionsMain{
 		ID:             guid.String(),
@@ -106,6 +107,7 @@ func UpdateQuestionOptions(ctx context.Context, input *model.QuestionOptionInput
 		return nil, err
 	}
 	global.CassSessioQBank = session
+	defer global.CassSessioQBank.Close()
 	cassandraQuestionBank := qbankz.OptionsMain{
 		ID: *input.ID,
 	}

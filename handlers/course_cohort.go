@@ -22,6 +22,7 @@ func AddCourseCohort(ctx context.Context, input *model.CourseCohortInput) (*mode
 		return nil, err
 	}
 	global.CassSessioQBank = session
+	defer global.CassSessioQBank.Close()
 	guid := xid.New()
 	cassandraQuestionBank := coursez.CourseCohortMapping{
 		ID:           guid.String(),
@@ -74,6 +75,7 @@ func UpdateCourseCohort(ctx context.Context, input *model.CourseCohortInput) (*m
 		return nil, err
 	}
 	global.CassSessioQBank = session
+	defer global.CassSessioQBank.Close()
 	cassandraQuestionBank := coursez.CourseCohortMapping{
 		ID: *input.ID,
 	}

@@ -22,6 +22,7 @@ func ChapterCreate(ctx context.Context, courseID string, chapter *model.ChapterI
 		return nil, err
 	}
 	global.CassSession = session
+	defer global.CassSession.Close()
 	guid := xid.New()
 	cassandraChapter := coursez.Chapter{
 		ID:          guid.String(),
@@ -63,6 +64,7 @@ func UpdateChapter(ctx context.Context, chapter *model.ChapterInput) (*model.Cha
 		return nil, err
 	}
 	global.CassSession = session
+	defer global.CassSession.Close()
 	if chapter.ID == nil {
 		return nil, fmt.Errorf("chapter not found")
 	}

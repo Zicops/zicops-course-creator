@@ -23,6 +23,7 @@ func QuestionPaperCreate(ctx context.Context, input *model.QuestionPaperInput) (
 		return nil, err
 	}
 	global.CassSessioQBank = session
+	defer global.CassSessioQBank.Close()
 	cassandraQuestionBank := qbankz.QuestionPaperMain{
 		ID:                guid.String(),
 		Name:              *input.Name,
@@ -75,6 +76,7 @@ func QuestionPaperUpdate(ctx context.Context, input *model.QuestionPaperInput) (
 		return nil, err
 	}
 	global.CassSessioQBank = session
+	defer global.CassSessioQBank.Close()
 	cassandraQuestionBank := qbankz.QuestionPaperMain{
 		ID: *input.ID,
 	}
@@ -172,6 +174,7 @@ func QuestionPaperSectionCreate(ctx context.Context, input *model.QuestionPaperS
 		return nil, err
 	}
 	global.CassSessioQBank = session
+	defer global.CassSessioQBank.Close()
 	cassandraQuestionBank := qbankz.SectionMain{
 		ID:              guid.String(),
 		Name:            *input.Name,
@@ -220,6 +223,7 @@ func QuestionPaperSectionUpdate(ctx context.Context, input *model.QuestionPaperS
 		return nil, err
 	}
 	global.CassSessioQBank = session
+	defer global.CassSessioQBank.Close()
 	cassandraQuestionBank := qbankz.SectionMain{
 		ID: *input.ID,
 	}
