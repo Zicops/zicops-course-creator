@@ -10,6 +10,7 @@ import (
 	"github.com/scylladb/gocqlx/v2/qb"
 	log "github.com/sirupsen/logrus"
 	"github.com/zicops/contracts/qbankz"
+	"github.com/zicops/zicops-cass-pool/cassandra"
 	"github.com/zicops/zicops-course-creator/global"
 	"github.com/zicops/zicops-course-creator/graph/model"
 )
@@ -17,6 +18,12 @@ import (
 func AddExamConfiguration(ctx context.Context, input *model.ExamConfigurationInput) (*model.ExamConfiguration, error) {
 	log.Info("ExamInstructionsCreate called")
 	guid := xid.New()
+	session, err := cassandra.GetCassSession("qbankz")
+	if err != nil {
+		return nil, err
+	}
+	global.CassSessioQBank = session
+	defer global.CassSessioQBank.Close()
 	cassandraQuestionBank := qbankz.ExamConfig{
 		ID:           guid.String(),
 		ExamID:       *input.ExamID,
@@ -30,7 +37,7 @@ func AddExamConfiguration(ctx context.Context, input *model.ExamConfigurationInp
 		ShowAnswer:   *input.ShowAnswer,
 		ShowResult:   *input.ShowResult,
 	}
-	insertQuery := global.CassSessioQBank.Session.Query(qbankz.ExamConfigTable.Insert()).BindStruct(cassandraQuestionBank)
+	insertQuery := global.CassSessioQBank.Query(qbankz.ExamConfigTable.Insert()).BindStruct(cassandraQuestionBank)
 	if err := insertQuery.ExecRelease(); err != nil {
 		return nil, err
 	}
@@ -56,11 +63,17 @@ func UpdateExamConfiguration(ctx context.Context, input *model.ExamConfiguration
 	if input.ID == nil {
 		return nil, fmt.Errorf("exam schedule id not found")
 	}
+	session, err := cassandra.GetCassSession("qbankz")
+	if err != nil {
+		return nil, err
+	}
+	global.CassSessioQBank = session
+	defer global.CassSessioQBank.Close()
 	cassandraQuestionBank := qbankz.ExamConfig{
 		ID: *input.ID,
 	}
 	banks := []qbankz.ExamConfig{}
-	getQuery := global.CassSessioQBank.Session.Query(qbankz.ExamConfigTable.Get()).BindMap(qb.M{"id": cassandraQuestionBank.ID})
+	getQuery := global.CassSessioQBank.Query(qbankz.ExamConfigTable.Get()).BindMap(qb.M{"id": cassandraQuestionBank.ID})
 	if err := getQuery.SelectRelease(&banks); err != nil {
 		return nil, err
 	}
@@ -108,7 +121,7 @@ func UpdateExamConfiguration(ctx context.Context, input *model.ExamConfiguration
 		return nil, fmt.Errorf("nothing to update")
 	}
 	upStms, uNames := qbankz.ExamConfigTable.Update(updatedCols...)
-	updateQuery := global.CassSessioQBank.Session.Query(upStms, uNames).BindStruct(&cassandraQuestionBank)
+	updateQuery := global.CassSessioQBank.Query(upStms, uNames).BindStruct(&cassandraQuestionBank)
 	if err := updateQuery.ExecRelease(); err != nil {
 		return nil, err
 	}

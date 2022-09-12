@@ -10,12 +10,19 @@ import (
 	"github.com/scylladb/gocqlx/v2/qb"
 	log "github.com/sirupsen/logrus"
 	"github.com/zicops/contracts/coursez"
+	"github.com/zicops/zicops-cass-pool/cassandra"
 	"github.com/zicops/zicops-course-creator/global"
 	"github.com/zicops/zicops-course-creator/graph/model"
 )
 
 func ChapterCreate(ctx context.Context, courseID string, chapter *model.ChapterInput) (*model.Chapter, error) {
 	log.Info("ChapterCreate called")
+	session, err := cassandra.GetCassSession("coursez")
+	if err != nil {
+		return nil, err
+	}
+	global.CassSession = session
+	defer global.CassSession.Close()
 	guid := xid.New()
 	cassandraChapter := coursez.Chapter{
 		ID:          guid.String(),
@@ -32,7 +39,7 @@ func ChapterCreate(ctx context.Context, courseID string, chapter *model.ChapterI
 		cassandraChapter.Sequence = *chapter.Sequence
 	}
 	// set course in cassandra
-	insertQuery := global.CassSession.Session.Query(coursez.ChapterTable.Insert()).BindStruct(cassandraChapter)
+	insertQuery := global.CassSession.Query(coursez.ChapterTable.Insert()).BindStruct(cassandraChapter)
 	if err := insertQuery.ExecRelease(); err != nil {
 		return nil, err
 	}
@@ -52,6 +59,12 @@ func ChapterCreate(ctx context.Context, courseID string, chapter *model.ChapterI
 
 func UpdateChapter(ctx context.Context, chapter *model.ChapterInput) (*model.Chapter, error) {
 	log.Info("ChapterUpdate called")
+	session, err := cassandra.GetCassSession("coursez")
+	if err != nil {
+		return nil, err
+	}
+	global.CassSession = session
+	defer global.CassSession.Close()
 	if chapter.ID == nil {
 		return nil, fmt.Errorf("chapter not found")
 	}
@@ -59,7 +72,7 @@ func UpdateChapter(ctx context.Context, chapter *model.ChapterInput) (*model.Cha
 		ID: *chapter.ID,
 	}
 	chapters := []coursez.Chapter{}
-	getQuery := global.CassSession.Session.Query(coursez.ChapterTable.Get()).BindMap(qb.M{"id": cassandraChapter.ID})
+	getQuery := global.CassSession.Query(coursez.ChapterTable.Get()).BindMap(qb.M{"id": cassandraChapter.ID})
 	if err := getQuery.SelectRelease(&chapters); err != nil {
 		return nil, err
 	}
@@ -87,7 +100,7 @@ func UpdateChapter(ctx context.Context, chapter *model.ChapterInput) (*model.Cha
 	cassandraChapter.UpdatedAt = time.Now().Unix()
 	updateCols = append(updateCols, "updated_at")
 	upStms, uNames := coursez.ChapterTable.Update(updateCols...)
-	updateQuery := global.CassSession.Session.Query(upStms, uNames).BindStruct(&cassandraChapter)
+	updateQuery := global.CassSession.Query(upStms, uNames).BindStruct(&cassandraChapter)
 	if err := updateQuery.ExecRelease(); err != nil {
 		return nil, err
 	}
