@@ -187,6 +187,7 @@ type TopicContent {
     id: ID
     language: String
     topicId: String
+    courseId: String
     startTime: Int
     duration: Int
     skipIntroDuration: Int

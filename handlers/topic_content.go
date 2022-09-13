@@ -87,6 +87,7 @@ func TopicContentCreate(ctx context.Context, topicID string, courseID string, to
 		TopicID:           &topicID,
 		Type:              topicConent.Type,
 		IsDefault:         topicConent.IsDefault,
+		CourseID:          &courseID,
 	}
 	return &responseModel, nil
 }
@@ -314,6 +315,7 @@ func UpdateTopicContent(ctx context.Context, topicConent *model.TopicContentInpu
 		TopicID:           topicID,
 		Type:              topicConent.Type,
 		IsDefault:         topicConent.IsDefault,
+		CourseID:          &cassandraTopicContent.CourseId,
 	}
 	return &responseModel, nil
 }
