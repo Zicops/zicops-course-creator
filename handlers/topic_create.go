@@ -67,6 +67,7 @@ func TopicCreate(ctx context.Context, courseID string, topic *model.TopicInput) 
 		ModuleID:    topic.ModuleID,
 		Sequence:    topic.Sequence,
 		CreatedBy:   topic.CreatedBy,
+		UpdatedBy:  topic.UpdatedBy,
 	}
 	return &responseModel, nil
 }
