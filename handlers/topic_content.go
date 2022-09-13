@@ -346,84 +346,93 @@ func UpdateTopicExam(ctx context.Context, exam *model.TopicExamInput) (*model.To
 func UploadTopicStaticContent(ctx context.Context, file *model.StaticContent) (*model.UploadResult, error) {
 	log.Info("UploadTopicStaticContent called")
 	isSuccess := model.UploadResult{}
-	storageC := bucket.NewStorageHandler()
-	gproject := googleprojectlib.GetGoogleProjectID()
-	err := storageC.InitializeStorageClient(ctx, gproject)
-	if err != nil {
-		log.Errorf("Failed to upload static content to course topic: %v", err.Error())
-		return &isSuccess, nil
-	}
-	baseDir := strings.TrimSuffix(file.File.Filename, filepath.Ext(file.File.Filename))
-	baseDir = strings.Split(baseDir, ".")[0]
-	// convert baseDir to cryptographic hash
-	hash := sha256.New()
-	hash.Write([]byte(baseDir))
-	hashBytes := hash.Sum(nil)
-	hashString := hex.EncodeToString(hashBytes)
-	bucketPath := *file.CourseID + "/" + *file.ContentID + "/" + hashString
-	zipPath := bucketPath + "/" + file.File.Filename
-	writer, err := storageC.UploadToGCSPub(ctx, zipPath, map[string]string{})
-	if err != nil {
-		log.Errorf("Failed to upload static content to course topic: %v", err.Error())
-		return &isSuccess, nil
-	}
-	defer writer.Close()
-	fileBuffer := bytes.NewBuffer(nil)
-	if _, err := io.Copy(fileBuffer, file.File.File); err != nil {
-		return &isSuccess, nil
-	}
-	currentBytes := fileBuffer.Bytes()
-	newReader := bytes.NewReader(currentBytes)
-	_, err = io.Copy(writer, bytes.NewReader(currentBytes))
-	if err != nil {
-		return &isSuccess, err
-	}
-	b, err := ioutil.ReadAll(newReader)
-	if err != nil {
-		return nil, err
-	}
-	zr, err := zip.NewReader(newReader, int64(len(b)))
-	if err != nil {
-		return nil, err
-	}
-	buffer := make([]byte, 32*1024)
-	for _, f := range zr.File {
-		if f.FileInfo().IsDir() {
-			continue
+	bucketPath := ""
+	getUrl := ""
+	if (file.URL == nil || *file.URL == "") && file.File != nil {
+		storageC := bucket.NewStorageHandler()
+		gproject := googleprojectlib.GetGoogleProjectID()
+		err := storageC.InitializeStorageClient(ctx, gproject)
+		if err != nil {
+			log.Errorf("Failed to upload static content to course topic: %v", err.Error())
+			return &isSuccess, nil
 		}
-		err := func() error {
-			r, err := f.Open()
-			if err != nil {
-				return err
-			}
-			defer r.Close()
-
-			filePath := filepath.Join(bucketPath, f.Name)
-			w, err := storageC.UploadToGCSPub(ctx, filePath, map[string]string{})
-			if err != nil {
-				return err
-			}
-			_, err = io.CopyBuffer(w, r, buffer)
-			if err != nil {
-				return err
-			}
-			return w.Close()
-		}()
+		baseDir := strings.TrimSuffix(file.File.Filename, filepath.Ext(file.File.Filename))
+		baseDir = strings.Split(baseDir, ".")[0]
+		// convert baseDir to cryptographic hash
+		hash := sha256.New()
+		hash.Write([]byte(baseDir))
+		hashBytes := hash.Sum(nil)
+		hashString := hex.EncodeToString(hashBytes)
+		bucketPath = *file.CourseID + "/" + *file.ContentID + "/" + hashString
+		zipPath := bucketPath + "/" + file.File.Filename
+		writer, err := storageC.UploadToGCSPub(ctx, zipPath, map[string]string{})
+		if err != nil {
+			log.Errorf("Failed to upload static content to course topic: %v", err.Error())
+			return &isSuccess, nil
+		}
+		defer writer.Close()
+		fileBuffer := bytes.NewBuffer(nil)
+		if _, err := io.Copy(fileBuffer, file.File.File); err != nil {
+			return &isSuccess, nil
+		}
+		currentBytes := fileBuffer.Bytes()
+		newReader := bytes.NewReader(currentBytes)
+		_, err = io.Copy(writer, bytes.NewReader(currentBytes))
+		if err != nil {
+			return &isSuccess, err
+		}
+		b, err := ioutil.ReadAll(newReader)
 		if err != nil {
 			return nil, err
 		}
-	}
-	currentType := strings.ToLower(strings.TrimSpace(file.Type.String()))
-	urlPath := bucketPath
-	if currentType != "" {
-		urlPath = urlPath + "/" + constants.StaticTypeMap[currentType]
+		zr, err := zip.NewReader(newReader, int64(len(b)))
+		if err != nil {
+			return nil, err
+		}
+		buffer := make([]byte, 32*1024)
+		for _, f := range zr.File {
+			if f.FileInfo().IsDir() {
+				continue
+			}
+			err := func() error {
+				r, err := f.Open()
+				if err != nil {
+					return err
+				}
+				defer r.Close()
+
+				filePath := filepath.Join(bucketPath, f.Name)
+				w, err := storageC.UploadToGCSPub(ctx, filePath, map[string]string{})
+				if err != nil {
+					return err
+				}
+				_, err = io.CopyBuffer(w, r, buffer)
+				if err != nil {
+					return err
+				}
+				return w.Close()
+			}()
+			if err != nil {
+				return nil, err
+			}
+		}
+		currentType := strings.ToLower(strings.TrimSpace(file.Type.String()))
+		urlPath := bucketPath
+		if currentType != "" {
+			urlPath = urlPath + "/" + constants.StaticTypeMap[currentType]
+		} else {
+			return nil, fmt.Errorf("type is empty or not supported")
+		}
+		getUrl = storageC.GetSignedURLForObjectPub(urlPath)
+		bucketPath = urlPath
+
 	} else {
-		return nil, fmt.Errorf("type is empty or not supported")
+		getUrl = *file.URL
 	}
-	getUrl := storageC.GetSignedURLForObjectPub(urlPath)
+
 	where := qb.Eq("id")
 	updateQB := qb.Update("coursez.topic_content").Set("topiccontentbucket").Set("url").Where(where)
-	updateQuery := updateQB.Query(*global.CassSession.Session).BindMap(qb.M{"id": file.ContentID, "topiccontentbucket": urlPath, "url": getUrl})
+	updateQuery := updateQB.Query(*global.CassSession.Session).BindMap(qb.M{"id": file.ContentID, "topiccontentbucket": bucketPath, "url": getUrl})
 	if err := updateQuery.ExecRelease(); err != nil {
 		return &isSuccess, err
 	}

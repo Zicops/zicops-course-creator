@@ -3258,7 +3258,9 @@ input StaticContent{
     file: Upload
     courseId: String
     contentId: String
+    url: String
 }
+
 # enum Type 
 enum Type {
     SCORM
@@ -18575,6 +18577,14 @@ func (ec *executionContext) unmarshalInputStaticContent(ctx context.Context, obj
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("contentId"))
 			it.ContentID, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "url":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("url"))
+			it.URL, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}

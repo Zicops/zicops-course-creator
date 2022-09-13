@@ -235,7 +235,9 @@ input StaticContent{
     file: Upload
     courseId: String
     contentId: String
+    url: String
 }
+
 # enum Type 
 enum Type {
     SCORM

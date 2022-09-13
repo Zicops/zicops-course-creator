@@ -582,6 +582,7 @@ type StaticContent struct {
 	File      *graphql.Upload `json:"file"`
 	CourseID  *string         `json:"courseId"`
 	ContentID *string         `json:"contentId"`
+	URL       *string         `json:"url"`
 }
 
 type Topic struct {
