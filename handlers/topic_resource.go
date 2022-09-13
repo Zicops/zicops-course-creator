@@ -9,6 +9,7 @@ import (
 	"github.com/rs/xid"
 	log "github.com/sirupsen/logrus"
 	"github.com/zicops/contracts/coursez"
+	"github.com/zicops/zicops-cass-pool/cassandra"
 	"github.com/zicops/zicops-course-creator/global"
 	"github.com/zicops/zicops-course-creator/graph/model"
 	"github.com/zicops/zicops-course-creator/lib/db/bucket"
@@ -18,6 +19,12 @@ import (
 func AddTopicResources(ctx context.Context, courseID string, resource *model.TopicResourceInput) (*model.UploadResult, error) {
 	log.Infof("AddTopicResources Called")
 	guid := xid.New().String()
+	session, err := cassandra.GetCassSession("coursez")
+	if err != nil {
+		return nil, err
+	}
+	global.CassSession = session
+	defer global.CassSession.Close()
 	isSuccess := model.UploadResult{}
 	getUrl := ""
 	bucketPath := ""
@@ -81,7 +88,7 @@ func AddTopicResources(ctx context.Context, courseID string, resource *model.Top
 		cassandraResource.Type = *resource.Type
 	}
 	// update course image in cassandra
-	resourceAdd := global.CassSession.Session.Query(coursez.ResourceTable.Insert()).BindStruct(cassandraResource)
+	resourceAdd := global.CassSession.Query(coursez.ResourceTable.Insert()).BindStruct(cassandraResource)
 	if err := resourceAdd.ExecRelease(); err != nil {
 		return &isSuccess, err
 	}

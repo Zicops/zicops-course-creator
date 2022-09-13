@@ -4,14 +4,14 @@ import (
 	"context"
 	"sync"
 
-	"github.com/zicops/zicops-course-creator/lib/db/cassandra"
+	gocqlx "github.com/scylladb/gocqlx/v2"
 )
 
 // some global variables commonly used
 var (
 	CTX             context.Context
-	CassSession     *cassandra.Cassandra
-	CassSessioQBank *cassandra.Cassandra
+	CassSession     *gocqlx.Session
+	CassSessioQBank *gocqlx.Session
 	Cancel          context.CancelFunc
 	WaitGroupServer sync.WaitGroup
 )

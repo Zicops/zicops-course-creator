@@ -10,6 +10,7 @@ import (
 	"github.com/scylladb/gocqlx/v2/qb"
 	log "github.com/sirupsen/logrus"
 	"github.com/zicops/contracts/coursez"
+	"github.com/zicops/zicops-cass-pool/cassandra"
 	"github.com/zicops/zicops-course-creator/global"
 	"github.com/zicops/zicops-course-creator/graph/model"
 )
@@ -17,6 +18,12 @@ import (
 func ModuleCreate(ctx context.Context, courseID string, module *model.ModuleInput) (*model.Module, error) {
 	log.Info("ModuleCreate called")
 	guid := xid.New()
+	session, err := cassandra.GetCassSession("coursez")
+	if err != nil {
+		return nil, err
+	}
+	global.CassSession = session
+	defer global.CassSession.Close()
 	cassandraModule := coursez.Module{
 		ID:          guid.String(),
 		Name:        *module.Name,
@@ -43,7 +50,7 @@ func ModuleCreate(ctx context.Context, courseID string, module *model.ModuleInpu
 		cassandraModule.SetGlobal = *module.SetGlobal
 	}
 	// set course in cassandra
-	insertQuery := global.CassSession.Session.Query(coursez.ModuleTable.Insert()).BindStruct(cassandraModule)
+	insertQuery := global.CassSession.Query(coursez.ModuleTable.Insert()).BindStruct(cassandraModule)
 	if err := insertQuery.ExecRelease(); err != nil {
 		return nil, err
 	}
@@ -66,17 +73,22 @@ func ModuleCreate(ctx context.Context, courseID string, module *model.ModuleInpu
 }
 
 func UpdateModule(ctx context.Context, module *model.ModuleInput) (*model.Module, error) {
-
 	log.Info("ModuleUpdate called")
 	if module.ID == nil {
 		return nil, fmt.Errorf("module id is required")
 	}
+	session, err := cassandra.GetCassSession("coursez")
+	if err != nil {
+		return nil, err
+	}
+	global.CassSession = session
+	defer global.CassSession.Close()
 	cassandraModule := coursez.Module{
 		ID: *module.ID,
 	}
 	// set course in cassandra
 	modules := []coursez.Module{}
-	getQuery := global.CassSession.Session.Query(coursez.ModuleTable.Get()).BindMap(qb.M{"id": cassandraModule.ID})
+	getQuery := global.CassSession.Query(coursez.ModuleTable.Get()).BindMap(qb.M{"id": cassandraModule.ID})
 	if err := getQuery.SelectRelease(&modules); err != nil {
 		return nil, err
 	}
@@ -122,7 +134,7 @@ func UpdateModule(ctx context.Context, module *model.ModuleInput) (*model.Module
 	updated := strconv.FormatInt(cassandraModule.UpdatedAt, 10)
 	created := strconv.FormatInt(cassandraModule.CreatedAt, 10)
 	upStms, uNames := coursez.ModuleTable.Update(updateCols...)
-	updateQuery := global.CassSession.Session.Query(upStms, uNames).BindStruct(&cassandraModule)
+	updateQuery := global.CassSession.Query(upStms, uNames).BindStruct(&cassandraModule)
 	if err := updateQuery.ExecRelease(); err != nil {
 		return nil, err
 	}

@@ -10,6 +10,7 @@ import (
 	"github.com/scylladb/gocqlx/v2/qb"
 	log "github.com/sirupsen/logrus"
 	"github.com/zicops/contracts/qbankz"
+	"github.com/zicops/zicops-cass-pool/cassandra"
 	"github.com/zicops/zicops-course-creator/global"
 	"github.com/zicops/zicops-course-creator/graph/model"
 )
@@ -17,6 +18,12 @@ import (
 func QuestionPaperCreate(ctx context.Context, input *model.QuestionPaperInput) (*model.QuestionPaper, error) {
 	log.Info("QuestionPaperCreate called")
 	guid := xid.New()
+	session, err := cassandra.GetCassSession("qbankz")
+	if err != nil {
+		return nil, err
+	}
+	global.CassSessioQBank = session
+	defer global.CassSessioQBank.Close()
 	cassandraQuestionBank := qbankz.QuestionPaperMain{
 		ID:                guid.String(),
 		Name:              *input.Name,
@@ -34,7 +41,7 @@ func QuestionPaperCreate(ctx context.Context, input *model.QuestionPaperInput) (
 		Status:            *input.Status,
 	}
 
-	insertQuery := global.CassSessioQBank.Session.Query(qbankz.QuestionPaperMainTable.Insert()).BindStruct(cassandraQuestionBank)
+	insertQuery := global.CassSessioQBank.Query(qbankz.QuestionPaperMainTable.Insert()).BindStruct(cassandraQuestionBank)
 	if err := insertQuery.ExecRelease(); err != nil {
 		return nil, err
 	}
@@ -64,11 +71,17 @@ func QuestionPaperUpdate(ctx context.Context, input *model.QuestionPaperInput) (
 	if input.ID == nil {
 		return nil, fmt.Errorf("question paper id not found")
 	}
+	session, err := cassandra.GetCassSession("qbankz")
+	if err != nil {
+		return nil, err
+	}
+	global.CassSessioQBank = session
+	defer global.CassSessioQBank.Close()
 	cassandraQuestionBank := qbankz.QuestionPaperMain{
 		ID: *input.ID,
 	}
 	banks := []qbankz.QuestionPaperMain{}
-	getQuery := global.CassSessioQBank.Session.Query(qbankz.QuestionPaperMainTable.Get()).BindMap(qb.M{"id": cassandraQuestionBank.ID})
+	getQuery := global.CassSessioQBank.Query(qbankz.QuestionPaperMainTable.Get()).BindMap(qb.M{"id": cassandraQuestionBank.ID})
 	if err := getQuery.SelectRelease(&banks); err != nil {
 		return nil, err
 	}
@@ -128,7 +141,7 @@ func QuestionPaperUpdate(ctx context.Context, input *model.QuestionPaperInput) (
 		return nil, fmt.Errorf("nothing to update")
 	}
 	upStms, uNames := qbankz.QuestionPaperMainTable.Update(updatedCols...)
-	updateQuery := global.CassSessioQBank.Session.Query(upStms, uNames).BindStruct(&cassandraQuestionBank)
+	updateQuery := global.CassSessioQBank.Query(upStms, uNames).BindStruct(&cassandraQuestionBank)
 	if err := updateQuery.ExecRelease(); err != nil {
 		return nil, err
 	}
@@ -156,6 +169,12 @@ func QuestionPaperUpdate(ctx context.Context, input *model.QuestionPaperInput) (
 func QuestionPaperSectionCreate(ctx context.Context, input *model.QuestionPaperSectionInput) (*model.QuestionPaperSection, error) {
 	log.Info("QuestionPaperSectionCreate called")
 	guid := xid.New()
+	session, err := cassandra.GetCassSession("qbankz")
+	if err != nil {
+		return nil, err
+	}
+	global.CassSessioQBank = session
+	defer global.CassSessioQBank.Close()
 	cassandraQuestionBank := qbankz.SectionMain{
 		ID:              guid.String(),
 		Name:            *input.Name,
@@ -171,7 +190,7 @@ func QuestionPaperSectionCreate(ctx context.Context, input *model.QuestionPaperS
 		TotalQuestions:  0,
 	}
 
-	insertQuery := global.CassSessioQBank.Session.Query(qbankz.SectionMainTable.Insert()).BindStruct(cassandraQuestionBank)
+	insertQuery := global.CassSessioQBank.Query(qbankz.SectionMainTable.Insert()).BindStruct(cassandraQuestionBank)
 	if err := insertQuery.ExecRelease(); err != nil {
 		return nil, err
 	}
@@ -199,11 +218,17 @@ func QuestionPaperSectionUpdate(ctx context.Context, input *model.QuestionPaperS
 	if input.ID == nil {
 		return nil, fmt.Errorf("section id not found")
 	}
+	session, err := cassandra.GetCassSession("qbankz")
+	if err != nil {
+		return nil, err
+	}
+	global.CassSessioQBank = session
+	defer global.CassSessioQBank.Close()
 	cassandraQuestionBank := qbankz.SectionMain{
 		ID: *input.ID,
 	}
 	banks := []qbankz.SectionMain{}
-	getQuery := global.CassSessioQBank.Session.Query(qbankz.SectionMainTable.Get()).BindMap(qb.M{"id": cassandraQuestionBank.ID})
+	getQuery := global.CassSessioQBank.Query(qbankz.SectionMainTable.Get()).BindMap(qb.M{"id": cassandraQuestionBank.ID})
 	if err := getQuery.SelectRelease(&banks); err != nil {
 		return nil, err
 	}
@@ -256,7 +281,7 @@ func QuestionPaperSectionUpdate(ctx context.Context, input *model.QuestionPaperS
 		return nil, fmt.Errorf("nothing to update")
 	}
 	upStms, uNames := qbankz.SectionMainTable.Update(updatedCols...)
-	updateQuery := global.CassSessioQBank.Session.Query(upStms, uNames).BindStruct(&cassandraQuestionBank)
+	updateQuery := global.CassSessioQBank.Query(upStms, uNames).BindStruct(&cassandraQuestionBank)
 	if err := updateQuery.ExecRelease(); err != nil {
 		return nil, err
 	}
