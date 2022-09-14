@@ -36,3 +36,24 @@ zcServiceAccount:
   credential:
     dir: /var/run/secrets/zicops-cc
     file: zicops-cc.json
+
+zcCertAstra:
+  name: zdevastracert
+  secret: zdevastracert
+  cert:
+    dir: /var/run/secrets/zdevastracert
+    file: cert
+
+zcCertCAAstra:
+  name: zdevastracertca
+  secret: zdevastracertca
+  cert:
+    dir: /var/run/secrets/zdevastracertca
+    file: ca.crt
+
+zcAstraKey:
+  name: zdevastrakey
+  secret: zdevastrakey
+  key:
+    dir: /var/run/secrets/zdevastrakey
+    file: key

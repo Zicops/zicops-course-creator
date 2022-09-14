@@ -24,6 +24,9 @@ spec:
     spec:
       containers:
         {{ $zcbcred := printf "%s/%s" .Values.zcServiceAccount.credential.dir .Values.zcServiceAccount.credential.file }}
+        {{ $zcbcert := printf "%s/%s" .Values.zcCertAstra.cert.dir .Values.zcCertAstra.cert.file }}
+        {{ $zcbcertca := printf "%s/%s" .Values.zcCertCAAstra.cert.dir .Values.zcCertCAAstra.cert.file }}
+        {{ $zcbkey := printf "%s/%s" .Values.zcAstraKey.key.dir .Values.zcAstraKey.key.file }}
         - name: {{ .Chart.Name }}-asp
           image: "{{ .Values.asp.repository }}:{{ .Values.asp.tag }}"
           imagePullPolicy: {{ .Values.asp.pullPolicy }}
@@ -39,6 +42,12 @@ spec:
           env:
           - name: GOOGLE_APPLICATION_CREDENTIALS
             value: {{ $zcbcred }}
+          - name: CASSANDRA_CERT
+            value: {{ $zcbcert }}
+          - name: CASSANDRA_CA
+            value: {{ $zcbcertca }}
+          - name: CASSANDRA_KEY
+            value: {{ $zcbkey }}
           ports:
             - name: http-server-cc
               containerPort: {{ .Values.asp.port }}
@@ -57,22 +66,35 @@ spec:
           volumeMounts:
           - name: zicops-cc
             mountPath: {{ .Values.zcServiceAccount.credential.dir | quote }}
-            readOnly: true   
+            readOnly: true
+          - name: zdevastracert
+            mountPath: {{ .Values.zcCertAstra.cert.dir | quote }}
+            readOnly: true
+          - name: zdevastracertca
+            mountPath: {{ .Values.zcCertCAAstra.cert.dir | quote }}
+            readOnly: true
+          - name: zdevastrakey
+            mountPath: {{ .Values.zcAstraKey.key.dir | quote }}
+            readOnly: true
           env:
           - name: PORT
             value: {{ .Values.image.port | quote }}
           - name: GOOGLE_APPLICATION_CREDENTIALS
             value: {{ $zcbcred }}
           - name: CASSANDRA_HOST
-            value: "cassandra-dev1.default.svc.cluster.local"
+            value: "a74f374d-dae8-4356-9443-ae052dbe3046-asia-south1.db.astra.datastax.com"
           - name: CASSANDRA_PORT
-            value: "9042"
+            value: "29042"
           - name: CASSANDRA_USERNAME
-            value: "cassandra"
+            value: "wudagnSLTSHsgHmUdIBrTBXc"
           - name: CASSANDRA_PASSWORD
-            value: "Vauwbh2yHA"
-          - name: CASSANDRA_KEYSPACE
-            value: "coursez"   
+            value: "RmB8_,LZ_qu75j,3Eszhcc.5quNAWst7SinS5Sh16IIK,cO_CeFK-Zd2YLFkaFoBSsDnLm2YZ4w.RLLFJM6spYr12BZl6TzO722fApguJ1LfwIA,vYLsa4bF20FfRpsH"
+          - name: CASSANDRA_CERT
+            value: {{ $zcbcert }}
+          - name: CASSANDRA_CA
+            value: {{ $zcbcertca }}
+          - name: CASSANDRA_KEY
+            value: {{ $zcbkey }}
       volumes:
       - name: zicops-cc
         secret:
