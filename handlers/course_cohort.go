@@ -21,7 +21,7 @@ func AddCourseCohort(ctx context.Context, input *model.CourseCohortInput) (*mode
 	if err != nil {
 		return nil, err
 	}
-	global.CassSessioQBank = session
+	global.CassSession = session
 
 	guid := xid.New()
 	cassandraQuestionBank := coursez.CourseCohortMapping{
@@ -40,7 +40,7 @@ func AddCourseCohort(ctx context.Context, input *model.CourseCohortInput) (*mode
 		UpdatedAt:    time.Now().Unix(),
 		CohortCode:   *input.CohortCode,
 	}
-	insertQuery := global.CassSessioQBank.Query(coursez.CourseCohortTable.Insert()).BindStruct(cassandraQuestionBank)
+	insertQuery := global.CassSession.Query(coursez.CourseCohortTable.Insert()).BindStruct(cassandraQuestionBank)
 	if err := insertQuery.ExecRelease(); err != nil {
 		return nil, err
 	}
@@ -74,13 +74,13 @@ func UpdateCourseCohort(ctx context.Context, input *model.CourseCohortInput) (*m
 	if err != nil {
 		return nil, err
 	}
-	global.CassSessioQBank = session
+	global.CassSession = session
 
 	cassandraQuestionBank := coursez.CourseCohortMapping{
 		ID: *input.ID,
 	}
 	banks := []coursez.CourseCohortMapping{}
-	getQuery := global.CassSessioQBank.Query(coursez.CourseCohortTable.Get()).BindMap(qb.M{"id": cassandraQuestionBank.ID})
+	getQuery := global.CassSession.Query(coursez.CourseCohortTable.Get()).BindMap(qb.M{"id": cassandraQuestionBank.ID})
 	if err := getQuery.SelectRelease(&banks); err != nil {
 		return nil, err
 	}
@@ -140,7 +140,7 @@ func UpdateCourseCohort(ctx context.Context, input *model.CourseCohortInput) (*m
 		return nil, fmt.Errorf("nothing to update")
 	}
 	upStms, uNames := coursez.CourseCohortTable.Update(updatedCols...)
-	updateQuery := global.CassSessioQBank.Query(upStms, uNames).BindStruct(&cassandraQuestionBank)
+	updateQuery := global.CassSession.Query(upStms, uNames).BindStruct(&cassandraQuestionBank)
 	if err := updateQuery.ExecRelease(); err != nil {
 		return nil, err
 	}

@@ -11,7 +11,6 @@ import (
 var (
 	CTX             context.Context
 	CassSession     *gocqlx.Session
-	CassSessioQBank *gocqlx.Session
 	Cancel          context.CancelFunc
 	WaitGroupServer sync.WaitGroup
 )

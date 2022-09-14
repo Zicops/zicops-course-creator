@@ -28,7 +28,7 @@ func AddQuestionOptions(ctx context.Context, input *model.QuestionOptionInput) (
 	if err != nil {
 		return nil, err
 	}
-	global.CassSessioQBank = session
+	global.CassSession = session
 
 	guid := xid.New()
 	cassandraQuestionBank := qbankz.OptionsMain{
@@ -72,7 +72,7 @@ func AddQuestionOptions(ctx context.Context, input *model.QuestionOptionInput) (
 		cassandraQuestionBank.Attachment = getUrl
 		cassandraQuestionBank.AttachmentBucket = bucketPath
 	}
-	insertQuery := global.CassSessioQBank.Query(qbankz.OptionsMainTable.Insert()).BindStruct(cassandraQuestionBank)
+	insertQuery := global.CassSession.Query(qbankz.OptionsMainTable.Insert()).BindStruct(cassandraQuestionBank)
 	if err := insertQuery.ExecRelease(); err != nil {
 		return nil, err
 	}
@@ -106,13 +106,13 @@ func UpdateQuestionOptions(ctx context.Context, input *model.QuestionOptionInput
 	if err != nil {
 		return nil, err
 	}
-	global.CassSessioQBank = session
+	global.CassSession = session
 
 	cassandraQuestionBank := qbankz.OptionsMain{
 		ID: *input.ID,
 	}
 	banks := []qbankz.OptionsMain{}
-	getQuery := global.CassSessioQBank.Query(qbankz.OptionsMainTable.Get()).BindMap(qb.M{"id": cassandraQuestionBank.ID})
+	getQuery := global.CassSession.Query(qbankz.OptionsMainTable.Get()).BindMap(qb.M{"id": cassandraQuestionBank.ID})
 	if err := getQuery.SelectRelease(&banks); err != nil {
 		return nil, err
 	}
@@ -187,7 +187,7 @@ func UpdateQuestionOptions(ctx context.Context, input *model.QuestionOptionInput
 		return nil, fmt.Errorf("nothing to update")
 	}
 	upStms, uNames := qbankz.OptionsMainTable.Update(updatedCols...)
-	updateQuery := global.CassSessioQBank.Query(upStms, uNames).BindStruct(&cassandraQuestionBank)
+	updateQuery := global.CassSession.Query(upStms, uNames).BindStruct(&cassandraQuestionBank)
 	if err := updateQuery.ExecRelease(); err != nil {
 		return nil, err
 	}
