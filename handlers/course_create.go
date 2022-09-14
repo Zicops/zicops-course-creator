@@ -29,7 +29,7 @@ func CourseCreator(ctx context.Context, courseInput *model.CourseInput) (*model.
 		return nil, err
 	}
 	global.CassSession = session
-	defer global.CassSession.Close()
+
 	guid := xid.New()
 	language := []string{}
 	takeaways := []string{}
@@ -199,7 +199,7 @@ func UploadCourseImage(ctx context.Context, file model.CourseFile) (*model.Uploa
 		return nil, err
 	}
 	global.CassSession = session
-	defer global.CassSession.Close()
+
 	if *file.CourseID == "" {
 		return &isSuccess, fmt.Errorf("course id is required")
 	}
@@ -251,7 +251,7 @@ func UploadCoursePreviewVideo(ctx context.Context, file model.CourseFile) (*mode
 		return nil, err
 	}
 	global.CassSession = session
-	defer global.CassSession.Close()
+
 	storageC := bucket.NewStorageHandler()
 	gproject := googleprojectlib.GetGoogleProjectID()
 	err = storageC.InitializeStorageClient(ctx, gproject)
@@ -300,7 +300,7 @@ func UploadCourseTileImage(ctx context.Context, file model.CourseFile) (*model.U
 		return nil, err
 	}
 	global.CassSession = session
-	defer global.CassSession.Close()
+
 	storageC := bucket.NewStorageHandler()
 	gproject := googleprojectlib.GetGoogleProjectID()
 	err = storageC.InitializeStorageClient(ctx, gproject)
@@ -347,7 +347,7 @@ func CourseUpdate(ctx context.Context, courseInput *model.CourseInput) (*model.C
 		return nil, err
 	}
 	global.CassSession = session
-	defer global.CassSession.Close()
+
 	// set course input in cassandra
 	courseID := *courseInput.ID
 	// get course from cassandra

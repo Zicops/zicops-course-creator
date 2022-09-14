@@ -23,7 +23,7 @@ func AddExamConfiguration(ctx context.Context, input *model.ExamConfigurationInp
 		return nil, err
 	}
 	global.CassSessioQBank = session
-	defer global.CassSessioQBank.Close()
+
 	cassandraQuestionBank := qbankz.ExamConfig{
 		ID:           guid.String(),
 		ExamID:       *input.ExamID,
@@ -68,7 +68,7 @@ func UpdateExamConfiguration(ctx context.Context, input *model.ExamConfiguration
 		return nil, err
 	}
 	global.CassSessioQBank = session
-	defer global.CassSessioQBank.Close()
+
 	cassandraQuestionBank := qbankz.ExamConfig{
 		ID: *input.ID,
 	}

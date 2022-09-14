@@ -23,7 +23,7 @@ func ModuleCreate(ctx context.Context, courseID string, module *model.ModuleInpu
 		return nil, err
 	}
 	global.CassSession = session
-	defer global.CassSession.Close()
+
 	cassandraModule := coursez.Module{
 		ID:          guid.String(),
 		Name:        *module.Name,
@@ -82,7 +82,7 @@ func UpdateModule(ctx context.Context, module *model.ModuleInput) (*model.Module
 		return nil, err
 	}
 	global.CassSession = session
-	defer global.CassSession.Close()
+
 	cassandraModule := coursez.Module{
 		ID: *module.ID,
 	}

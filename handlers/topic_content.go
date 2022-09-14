@@ -34,7 +34,7 @@ func TopicContentCreate(ctx context.Context, topicID string, courseID string, to
 		return nil, err
 	}
 	global.CassSession = session
-	defer global.CassSession.Close()
+
 	cassandraTopicContent := coursez.TopicContent{
 		ID:                 guid.String(),
 		TopicId:            topicID,
@@ -100,7 +100,7 @@ func TopicExamCreate(ctx context.Context, topicID string, courseID string, exam 
 		return nil, err
 	}
 	global.CassSession = session
-	defer global.CassSession.Close()
+
 	cassandraTopicContent := coursez.TopicExam{
 		ID:        guid.String(),
 		TopicId:   topicID,
@@ -136,7 +136,7 @@ func UploadTopicVideo(ctx context.Context, file model.TopicVideo) (*model.Upload
 		return nil, err
 	}
 	global.CassSession = session
-	defer global.CassSession.Close()
+
 	isSuccess := model.UploadResult{}
 	storageC := bucket.NewStorageHandler()
 	gproject := googleprojectlib.GetGoogleProjectID()
@@ -246,7 +246,7 @@ func UpdateTopicContent(ctx context.Context, topicConent *model.TopicContentInpu
 		return nil, err
 	}
 	global.CassSession = session
-	defer global.CassSession.Close()
+
 	cassandraTopicContent := coursez.TopicContent{
 		ID: *topicID,
 	}
@@ -331,7 +331,7 @@ func UpdateTopicExam(ctx context.Context, exam *model.TopicExamInput) (*model.To
 		return nil, err
 	}
 	global.CassSession = session
-	defer global.CassSession.Close()
+
 	cassandraTopicContent := coursez.TopicExam{
 		ID: *tExamId,
 	}
@@ -384,7 +384,7 @@ func UploadTopicStaticContent(ctx context.Context, file *model.StaticContent) (*
 		return nil, err
 	}
 	global.CassSession = session
-	defer global.CassSession.Close()
+
 	isSuccess := model.UploadResult{}
 	bucketPath := ""
 	getUrl := ""

@@ -24,7 +24,7 @@ func AddTopicResources(ctx context.Context, courseID string, resource *model.Top
 		return nil, err
 	}
 	global.CassSession = session
-	defer global.CassSession.Close()
+
 	isSuccess := model.UploadResult{}
 	getUrl := ""
 	bucketPath := ""

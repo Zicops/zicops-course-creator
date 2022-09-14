@@ -22,7 +22,7 @@ func TopicCreate(ctx context.Context, courseID string, topic *model.TopicInput) 
 		return nil, err
 	}
 	global.CassSession = session
-	defer global.CassSession.Close()
+
 	guid := xid.New()
 	cassandraTopic := coursez.Topic{
 		ID:          guid.String(),
@@ -67,7 +67,7 @@ func TopicCreate(ctx context.Context, courseID string, topic *model.TopicInput) 
 		ModuleID:    topic.ModuleID,
 		Sequence:    topic.Sequence,
 		CreatedBy:   topic.CreatedBy,
-		UpdatedBy:  topic.UpdatedBy,
+		UpdatedBy:   topic.UpdatedBy,
 	}
 	return &responseModel, nil
 }

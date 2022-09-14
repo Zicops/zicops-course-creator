@@ -17,7 +17,7 @@ func AddCategory(ctx context.Context, category []*string) (*bool, error) {
 		return nil, err
 	}
 	global.CassSession = session
-	defer global.CassSession.Close()
+
 	catgories := make([]string, len(category))
 	isSuccess := false
 	for i, c := range category {
@@ -41,7 +41,7 @@ func AddSubCategory(ctx context.Context, category []*string) (*bool, error) {
 		return nil, err
 	}
 	global.CassSession = session
-	defer global.CassSession.Close()
+
 	catgories := make([]string, len(category))
 	isSuccess := false
 	for i, c := range category {
@@ -65,7 +65,7 @@ func AddCategorySubMap(ctx context.Context, category *string, subCategory []*str
 		return nil, err
 	}
 	global.CassSession = session
-	defer global.CassSession.Close()
+
 	isSuccess := false
 	for _, subCat := range subCategory {
 		guid := xid.New()
