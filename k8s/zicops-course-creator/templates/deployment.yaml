@@ -35,10 +35,18 @@ spec:
             "--backend=http://127.0.0.1:{{ .Values.image.port }}",
             "--mode={{ .Values.asp.arg.mode }}",
           ]
-          volumeMounts:
           - name: zicops-cc
             mountPath: {{ .Values.zcServiceAccount.credential.dir | quote }}
-            readOnly: true 
+            readOnly: true
+          - name: zdevastracert
+            mountPath: {{ .Values.zcCertAstra.cert.dir | quote }}
+            readOnly: true
+          - name: zdevastracertca
+            mountPath: {{ .Values.zcCertCAAstra.cert.dir | quote }}
+            readOnly: true
+          - name: zdevastrakey
+            mountPath: {{ .Values.zcAstraKey.key.dir | quote }}
+            readOnly: true
           env:
           - name: GOOGLE_APPLICATION_CREDENTIALS
             value: {{ $zcbcred }}
@@ -99,3 +107,12 @@ spec:
       - name: zicops-cc
         secret:
           secretName: {{ .Values.zcServiceAccount.secret }}
+      - name: zdevastracert
+        secret:
+          secretName: {{ .Values.zcCertAstra.secret }}
+      - name: zdevastracertca
+        secret:
+          secretName: {{ .Values.zcCertCAAstra.secret }}
+      - name: zdevastrakey
+        secret:
+          secretName: {{ .Values.zcAstraKey.secret }}
