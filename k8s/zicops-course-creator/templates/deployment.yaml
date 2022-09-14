@@ -35,6 +35,7 @@ spec:
             "--backend=http://127.0.0.1:{{ .Values.image.port }}",
             "--mode={{ .Values.asp.arg.mode }}",
           ]
+          volumeMounts:
           - name: zicops-cc
             mountPath: {{ .Values.zcServiceAccount.credential.dir | quote }}
             readOnly: true
