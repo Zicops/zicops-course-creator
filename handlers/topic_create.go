@@ -11,7 +11,6 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/zicops/contracts/coursez"
 	"github.com/zicops/zicops-cass-pool/cassandra"
-	"github.com/zicops/zicops-course-creator/global"
 	"github.com/zicops/zicops-course-creator/graph/model"
 )
 
@@ -21,7 +20,7 @@ func TopicCreate(ctx context.Context, courseID string, topic *model.TopicInput) 
 	if err != nil {
 		return nil, err
 	}
-	global.CassSession = session
+	CassSession := session
 
 	guid := xid.New()
 	cassandraTopic := coursez.Topic{
@@ -50,7 +49,7 @@ func TopicCreate(ctx context.Context, courseID string, topic *model.TopicInput) 
 		cassandraTopic.UpdatedBy = *topic.UpdatedBy
 	}
 	// set course in cassandra
-	insertQuery := global.CassSession.Query(coursez.TopicTable.Insert()).BindStruct(cassandraTopic)
+	insertQuery := CassSession.Query(coursez.TopicTable.Insert()).BindStruct(cassandraTopic)
 	if err := insertQuery.ExecRelease(); err != nil {
 		return nil, err
 	}
@@ -77,6 +76,10 @@ func TopicUpdate(ctx context.Context, topic *model.TopicInput) (*model.Topic, er
 	if topic.ID == nil {
 		return nil, fmt.Errorf("course id is required")
 	}
+	CassSession, err := cassandra.GetCassSession("coursez")
+	if err != nil {
+		return nil, err
+	}
 	cassandraTopic := coursez.Topic{
 		ID: *topic.ID,
 	}
@@ -87,7 +90,7 @@ func TopicUpdate(ctx context.Context, topic *model.TopicInput) (*model.Topic, er
 		cassandraTopic.ModuleID = *topic.ModuleID
 	}
 	topics := []coursez.Topic{}
-	getQuery := global.CassSession.Query(coursez.TopicTable.Get()).BindMap(qb.M{"id": cassandraTopic.ID})
+	getQuery := CassSession.Query(coursez.TopicTable.Get()).BindMap(qb.M{"id": cassandraTopic.ID})
 	if err := getQuery.SelectRelease(&topics); err != nil {
 		return nil, err
 	}
@@ -117,7 +120,7 @@ func TopicUpdate(ctx context.Context, topic *model.TopicInput) (*model.Topic, er
 	cassandraTopic.UpdatedAt = time.Now().Unix()
 	// set course in cassandra
 	upStms, uNames := coursez.TopicTable.Update(updateCols...)
-	updateQuery := global.CassSession.Query(upStms, uNames).BindStruct(&cassandraTopic)
+	updateQuery := CassSession.Query(upStms, uNames).BindStruct(&cassandraTopic)
 	if err := updateQuery.ExecRelease(); err != nil {
 		return nil, err
 	}

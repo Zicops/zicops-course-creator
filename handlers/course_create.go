@@ -14,7 +14,6 @@ import (
 	"github.com/rs/xid"
 	"github.com/zicops/contracts/coursez"
 	"github.com/zicops/zicops-cass-pool/cassandra"
-	"github.com/zicops/zicops-course-creator/global"
 	"github.com/zicops/zicops-course-creator/graph/model"
 	"github.com/zicops/zicops-course-creator/lib/db/bucket"
 	"github.com/zicops/zicops-course-creator/lib/googleprojectlib"
@@ -28,7 +27,7 @@ func CourseCreator(ctx context.Context, courseInput *model.CourseInput) (*model.
 	if err != nil {
 		return nil, err
 	}
-	global.CassSession = session
+	CassSession := session
 
 	guid := xid.New()
 	language := []string{}
@@ -147,7 +146,7 @@ func CourseCreator(ctx context.Context, courseInput *model.CourseInput) (*model.
 		cassandraCourse.SubCategory = *courseInput.SubCategory
 	}
 	// set course in cassandra
-	insertQuery := global.CassSession.Query(coursez.CourseTable.Insert()).BindStruct(cassandraCourse)
+	insertQuery := CassSession.Query(coursez.CourseTable.Insert()).BindStruct(cassandraCourse)
 	if err := insertQuery.ExecRelease(); err != nil {
 		return nil, err
 	}
@@ -198,7 +197,7 @@ func UploadCourseImage(ctx context.Context, file model.CourseFile) (*model.Uploa
 	if err != nil {
 		return nil, err
 	}
-	global.CassSession = session
+	CassSession := session
 
 	if *file.CourseID == "" {
 		return &isSuccess, fmt.Errorf("course id is required")
@@ -230,7 +229,7 @@ func UploadCourseImage(ctx context.Context, file model.CourseFile) (*model.Uploa
 	// update course image in cassandra
 	where := qb.Eq("id")
 	updateQB := qb.Update("coursez.course").Set("imagebucket").Set("image").Where(where)
-	updateQuery := updateQB.Query(*global.CassSession).BindMap(qb.M{"id": file.CourseID, "imagebucket": bucketPath, "image": getUrl})
+	updateQuery := updateQB.Query(*CassSession).BindMap(qb.M{"id": file.CourseID, "imagebucket": bucketPath, "image": getUrl})
 	if err := updateQuery.ExecRelease(); err != nil {
 		return &isSuccess, err
 	}
@@ -250,7 +249,7 @@ func UploadCoursePreviewVideo(ctx context.Context, file model.CourseFile) (*mode
 	if err != nil {
 		return nil, err
 	}
-	global.CassSession = session
+	CassSession := session
 
 	storageC := bucket.NewStorageHandler()
 	gproject := googleprojectlib.GetGoogleProjectID()
@@ -279,7 +278,7 @@ func UploadCoursePreviewVideo(ctx context.Context, file model.CourseFile) (*mode
 	// update course image in cassandra
 	where := qb.Eq("id")
 	updateQB := qb.Update("coursez.course").Set("previewvideobucket").Set("previewvideo").Where(where)
-	updateQuery := updateQB.Query(*global.CassSession).BindMap(qb.M{"id": file.CourseID, "previewvideobucket": bucketPath, "previewvideo": getUrl})
+	updateQuery := updateQB.Query(*CassSession).BindMap(qb.M{"id": file.CourseID, "previewvideobucket": bucketPath, "previewvideo": getUrl})
 	if err := updateQuery.ExecRelease(); err != nil {
 		return &isSuccess, err
 	}
@@ -299,7 +298,7 @@ func UploadCourseTileImage(ctx context.Context, file model.CourseFile) (*model.U
 	if err != nil {
 		return nil, err
 	}
-	global.CassSession = session
+	CassSession := session
 
 	storageC := bucket.NewStorageHandler()
 	gproject := googleprojectlib.GetGoogleProjectID()
@@ -327,7 +326,7 @@ func UploadCourseTileImage(ctx context.Context, file model.CourseFile) (*model.U
 	getUrl := storageC.GetSignedURLForObject(bucketPath)
 	where := qb.Eq("id")
 	updateQB := qb.Update("coursez.course").Set("tileimagebucket").Set("tileimage").Where(where)
-	updateQuery := updateQB.Query(*global.CassSession).BindMap(qb.M{"id": file.CourseID, "tileimagebucket": bucketPath, "tileimage": getUrl})
+	updateQuery := updateQB.Query(*CassSession).BindMap(qb.M{"id": file.CourseID, "tileimagebucket": bucketPath, "tileimage": getUrl})
 	if err := updateQuery.ExecRelease(); err != nil {
 		return &isSuccess, err
 	}
@@ -346,7 +345,7 @@ func CourseUpdate(ctx context.Context, courseInput *model.CourseInput) (*model.C
 	if err != nil {
 		return nil, err
 	}
-	global.CassSession = session
+	CassSession := session
 
 	// set course input in cassandra
 	courseID := *courseInput.ID
@@ -355,7 +354,7 @@ func CourseUpdate(ctx context.Context, courseInput *model.CourseInput) (*model.C
 		ID: courseID,
 	}
 	courses := []coursez.Course{}
-	getQuery := global.CassSession.Query(coursez.CourseTable.Get()).BindMap(qb.M{"id": courseID})
+	getQuery := CassSession.Query(coursez.CourseTable.Get()).BindMap(qb.M{"id": courseID})
 	if err := getQuery.SelectRelease(&courses); err != nil {
 		return nil, err
 	}
@@ -518,7 +517,7 @@ func CourseUpdate(ctx context.Context, courseInput *model.CourseInput) (*model.C
 	updateCols = append(updateCols, "updated_at")
 	// set course in cassandra
 	upStms, uNames := coursez.CourseTable.Update(updateCols...)
-	updateQuery := global.CassSession.Query(upStms, uNames).BindStruct(&cassandraCourse)
+	updateQuery := CassSession.Query(upStms, uNames).BindStruct(&cassandraCourse)
 	if err := updateQuery.ExecRelease(); err != nil {
 		return nil, err
 	}

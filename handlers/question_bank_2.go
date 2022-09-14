@@ -13,7 +13,6 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/zicops/contracts/qbankz"
 	"github.com/zicops/zicops-cass-pool/cassandra"
-	"github.com/zicops/zicops-course-creator/global"
 	"github.com/zicops/zicops-course-creator/graph/model"
 	"github.com/zicops/zicops-course-creator/lib/db/bucket"
 	"github.com/zicops/zicops-course-creator/lib/googleprojectlib"
@@ -28,7 +27,7 @@ func AddQuestionOptions(ctx context.Context, input *model.QuestionOptionInput) (
 	if err != nil {
 		return nil, err
 	}
-	global.CassSession = session
+	CassSession := session
 
 	guid := xid.New()
 	cassandraQuestionBank := qbankz.OptionsMain{
@@ -72,7 +71,7 @@ func AddQuestionOptions(ctx context.Context, input *model.QuestionOptionInput) (
 		cassandraQuestionBank.Attachment = getUrl
 		cassandraQuestionBank.AttachmentBucket = bucketPath
 	}
-	insertQuery := global.CassSession.Query(qbankz.OptionsMainTable.Insert()).BindStruct(cassandraQuestionBank)
+	insertQuery := CassSession.Query(qbankz.OptionsMainTable.Insert()).BindStruct(cassandraQuestionBank)
 	if err := insertQuery.ExecRelease(); err != nil {
 		return nil, err
 	}
@@ -106,13 +105,13 @@ func UpdateQuestionOptions(ctx context.Context, input *model.QuestionOptionInput
 	if err != nil {
 		return nil, err
 	}
-	global.CassSession = session
+	CassSession := session
 
 	cassandraQuestionBank := qbankz.OptionsMain{
 		ID: *input.ID,
 	}
 	banks := []qbankz.OptionsMain{}
-	getQuery := global.CassSession.Query(qbankz.OptionsMainTable.Get()).BindMap(qb.M{"id": cassandraQuestionBank.ID})
+	getQuery := CassSession.Query(qbankz.OptionsMainTable.Get()).BindMap(qb.M{"id": cassandraQuestionBank.ID})
 	if err := getQuery.SelectRelease(&banks); err != nil {
 		return nil, err
 	}
@@ -187,7 +186,7 @@ func UpdateQuestionOptions(ctx context.Context, input *model.QuestionOptionInput
 		return nil, fmt.Errorf("nothing to update")
 	}
 	upStms, uNames := qbankz.OptionsMainTable.Update(updatedCols...)
-	updateQuery := global.CassSession.Query(upStms, uNames).BindStruct(&cassandraQuestionBank)
+	updateQuery := CassSession.Query(upStms, uNames).BindStruct(&cassandraQuestionBank)
 	if err := updateQuery.ExecRelease(); err != nil {
 		return nil, err
 	}

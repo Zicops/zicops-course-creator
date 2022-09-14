@@ -11,7 +11,6 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/zicops/contracts/qbankz"
 	"github.com/zicops/zicops-cass-pool/cassandra"
-	"github.com/zicops/zicops-course-creator/global"
 	"github.com/zicops/zicops-course-creator/graph/model"
 )
 
@@ -22,7 +21,7 @@ func ExamInstructionsCreate(ctx context.Context, exam *model.ExamInstructionInpu
 	if err != nil {
 		return nil, err
 	}
-	global.CassSession = session
+	CassSession := session
 
 	cassandraQuestionBank := qbankz.ExamInstructions{
 		ID:              guid.String(),
@@ -37,7 +36,7 @@ func ExamInstructionsCreate(ctx context.Context, exam *model.ExamInstructionInpu
 		UpdatedAt:       time.Now().Unix(),
 		IsActive:        *exam.IsActive,
 	}
-	insertQuery := global.CassSession.Query(qbankz.ExamInstructionsTable.Insert()).BindStruct(cassandraQuestionBank)
+	insertQuery := CassSession.Query(qbankz.ExamInstructionsTable.Insert()).BindStruct(cassandraQuestionBank)
 	if err := insertQuery.ExecRelease(); err != nil {
 		return nil, err
 	}
@@ -67,13 +66,13 @@ func ExamInstructionsUpdate(ctx context.Context, input *model.ExamInstructionInp
 	if err != nil {
 		return nil, err
 	}
-	global.CassSession = session
+	CassSession := session
 
 	cassandraQuestionBank := qbankz.ExamInstructions{
 		ID: *input.ID,
 	}
 	banks := []qbankz.ExamInstructions{}
-	getQuery := global.CassSession.Query(qbankz.ExamInstructionsTable.Get()).BindMap(qb.M{"id": cassandraQuestionBank.ID})
+	getQuery := CassSession.Query(qbankz.ExamInstructionsTable.Get()).BindMap(qb.M{"id": cassandraQuestionBank.ID})
 	if err := getQuery.SelectRelease(&banks); err != nil {
 		return nil, err
 	}
@@ -122,7 +121,7 @@ func ExamInstructionsUpdate(ctx context.Context, input *model.ExamInstructionInp
 		return nil, fmt.Errorf("nothing to update")
 	}
 	upStms, uNames := qbankz.ExamInstructionsTable.Update(updatedCols...)
-	updateQuery := global.CassSession.Query(upStms, uNames).BindStruct(&cassandraQuestionBank)
+	updateQuery := CassSession.Query(upStms, uNames).BindStruct(&cassandraQuestionBank)
 	if err := updateQuery.ExecRelease(); err != nil {
 		return nil, err
 	}

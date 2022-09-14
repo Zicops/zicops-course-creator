@@ -20,7 +20,6 @@ import (
 	"github.com/zicops/contracts/coursez"
 	"github.com/zicops/zicops-cass-pool/cassandra"
 	"github.com/zicops/zicops-course-creator/constants"
-	"github.com/zicops/zicops-course-creator/global"
 	"github.com/zicops/zicops-course-creator/graph/model"
 	"github.com/zicops/zicops-course-creator/lib/db/bucket"
 	"github.com/zicops/zicops-course-creator/lib/googleprojectlib"
@@ -33,7 +32,7 @@ func TopicContentCreate(ctx context.Context, topicID string, courseID string, to
 	if err != nil {
 		return nil, err
 	}
-	global.CassSession = session
+	CassSession := session
 
 	cassandraTopicContent := coursez.TopicContent{
 		ID:                 guid.String(),
@@ -69,7 +68,7 @@ func TopicContentCreate(ctx context.Context, topicID string, courseID string, to
 		cassandraTopicContent.IsDefault = *topicConent.IsDefault
 	}
 	// set course in cassandra
-	insertQuery := global.CassSession.Query(coursez.TopicContentTable.Insert()).BindStruct(cassandraTopicContent)
+	insertQuery := CassSession.Query(coursez.TopicContentTable.Insert()).BindStruct(cassandraTopicContent)
 	if err := insertQuery.ExecRelease(); err != nil {
 		return nil, err
 	}
@@ -99,7 +98,7 @@ func TopicExamCreate(ctx context.Context, topicID string, courseID string, exam 
 	if err != nil {
 		return nil, err
 	}
-	global.CassSession = session
+	CassSession := session
 
 	cassandraTopicContent := coursez.TopicExam{
 		ID:        guid.String(),
@@ -112,7 +111,7 @@ func TopicExamCreate(ctx context.Context, topicID string, courseID string, exam 
 		IsActive:  false,
 	}
 	// set course in cassandra
-	insertQuery := global.CassSession.Query(coursez.TopicExamTable.Insert()).BindStruct(cassandraTopicContent)
+	insertQuery := CassSession.Query(coursez.TopicExamTable.Insert()).BindStruct(cassandraTopicContent)
 	if err := insertQuery.ExecRelease(); err != nil {
 		return nil, err
 	}
@@ -135,7 +134,7 @@ func UploadTopicVideo(ctx context.Context, file model.TopicVideo) (*model.Upload
 	if err != nil {
 		return nil, err
 	}
-	global.CassSession = session
+	CassSession := session
 
 	isSuccess := model.UploadResult{}
 	storageC := bucket.NewStorageHandler()
@@ -168,7 +167,7 @@ func UploadTopicVideo(ctx context.Context, file model.TopicVideo) (*model.Upload
 	getUrl := storageC.GetSignedURLForObject(bucketPath)
 	where := qb.Eq("id")
 	updateQB := qb.Update("coursez.topic_content").Set("topiccontentbucket").Set("url").Where(where)
-	updateQuery := updateQB.Query(*global.CassSession).BindMap(qb.M{"id": file.ContentID, "topiccontentbucket": bucketPath, "url": getUrl})
+	updateQuery := updateQB.Query(*CassSession).BindMap(qb.M{"id": file.ContentID, "topiccontentbucket": bucketPath, "url": getUrl})
 	if err := updateQuery.ExecRelease(); err != nil {
 		return &isSuccess, err
 	}
@@ -245,13 +244,13 @@ func UpdateTopicContent(ctx context.Context, topicConent *model.TopicContentInpu
 	if err != nil {
 		return nil, err
 	}
-	global.CassSession = session
+	CassSession := session
 
 	cassandraTopicContent := coursez.TopicContent{
 		ID: *topicID,
 	}
 	topicContents := []coursez.TopicContent{}
-	getQuery := global.CassSession.Query(coursez.TopicContentTable.Get()).BindMap(qb.M{"id": cassandraTopicContent.ID})
+	getQuery := CassSession.Query(coursez.TopicContentTable.Get()).BindMap(qb.M{"id": cassandraTopicContent.ID})
 	if err := getQuery.SelectRelease(&topicContents); err != nil {
 		return nil, err
 	}
@@ -297,7 +296,7 @@ func UpdateTopicContent(ctx context.Context, topicConent *model.TopicContentInpu
 	// set course in cassandra
 
 	upStms, uNames := coursez.TopicContentTable.Update(updateCols...)
-	updateQuery := global.CassSession.Query(upStms, uNames).BindStruct(&cassandraTopicContent)
+	updateQuery := CassSession.Query(upStms, uNames).BindStruct(&cassandraTopicContent)
 	if err := updateQuery.ExecRelease(); err != nil {
 		return nil, err
 	}
@@ -330,13 +329,13 @@ func UpdateTopicExam(ctx context.Context, exam *model.TopicExamInput) (*model.To
 	if err != nil {
 		return nil, err
 	}
-	global.CassSession = session
+	CassSession := session
 
 	cassandraTopicContent := coursez.TopicExam{
 		ID: *tExamId,
 	}
 	topicExams := []coursez.TopicExam{}
-	getQuery := global.CassSession.Query(coursez.TopicExamTable.Get()).BindMap(qb.M{"id": cassandraTopicContent.ID})
+	getQuery := CassSession.Query(coursez.TopicExamTable.Get()).BindMap(qb.M{"id": cassandraTopicContent.ID})
 	if err := getQuery.SelectRelease(&topicExams); err != nil {
 		return nil, err
 	}
@@ -360,7 +359,7 @@ func UpdateTopicExam(ctx context.Context, exam *model.TopicExamInput) (*model.To
 	updateCols = append(updateCols, "updated_at")
 	cassandraTopicContent.UpdatedAt = time.Now().Unix()
 	upStms, uNames := coursez.TopicExamTable.Update(updateCols...)
-	updateQuery := global.CassSession.Query(upStms, uNames).BindStruct(&cassandraTopicContent)
+	updateQuery := CassSession.Query(upStms, uNames).BindStruct(&cassandraTopicContent)
 	if err := updateQuery.ExecRelease(); err != nil {
 		return nil, err
 	}
@@ -383,7 +382,7 @@ func UploadTopicStaticContent(ctx context.Context, file *model.StaticContent) (*
 	if err != nil {
 		return nil, err
 	}
-	global.CassSession = session
+	CassSession := session
 
 	isSuccess := model.UploadResult{}
 	bucketPath := ""
@@ -472,7 +471,7 @@ func UploadTopicStaticContent(ctx context.Context, file *model.StaticContent) (*
 
 	where := qb.Eq("id")
 	updateQB := qb.Update("coursez.topic_content").Set("topiccontentbucket").Set("url").Where(where)
-	updateQuery := updateQB.Query(*global.CassSession).BindMap(qb.M{"id": file.ContentID, "topiccontentbucket": bucketPath, "url": getUrl})
+	updateQuery := updateQB.Query(*CassSession).BindMap(qb.M{"id": file.ContentID, "topiccontentbucket": bucketPath, "url": getUrl})
 	if err := updateQuery.ExecRelease(); err != nil {
 		return &isSuccess, err
 	}

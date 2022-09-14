@@ -11,7 +11,6 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/zicops/contracts/qbankz"
 	"github.com/zicops/zicops-cass-pool/cassandra"
-	"github.com/zicops/zicops-course-creator/global"
 	"github.com/zicops/zicops-course-creator/graph/model"
 )
 
@@ -22,7 +21,7 @@ func QuestionSectionMap(ctx context.Context, input *model.MapSectionToBankInput)
 	if err != nil {
 		return nil, err
 	}
-	global.CassSession = session
+	CassSession := session
 
 	cassandraQuestionBank := qbankz.SectionQBMapping{
 		ID:              guid.String(),
@@ -40,7 +39,7 @@ func QuestionSectionMap(ctx context.Context, input *model.MapSectionToBankInput)
 		RetrievalType:   *input.RetrieveType,
 	}
 
-	insertQuery := global.CassSession.Query(qbankz.SectionQBMappingTable.Insert()).BindStruct(cassandraQuestionBank)
+	insertQuery := CassSession.Query(qbankz.SectionQBMappingTable.Insert()).BindStruct(cassandraQuestionBank)
 	if err := insertQuery.ExecRelease(); err != nil {
 		return nil, err
 	}
@@ -73,13 +72,13 @@ func QuestionSectionMapUpdate(ctx context.Context, input *model.MapSectionToBank
 	if err != nil {
 		return nil, err
 	}
-	global.CassSession = session
+	CassSession := session
 
 	cassandraQuestionBank := qbankz.SectionQBMapping{
 		ID: *input.ID,
 	}
 	banks := []qbankz.SectionQBMapping{}
-	getQuery := global.CassSession.Query(qbankz.SectionQBMappingTable.Get()).BindMap(qb.M{"id": cassandraQuestionBank.ID})
+	getQuery := CassSession.Query(qbankz.SectionQBMappingTable.Get()).BindMap(qb.M{"id": cassandraQuestionBank.ID})
 	if err := getQuery.SelectRelease(&banks); err != nil {
 		return nil, err
 	}
@@ -135,7 +134,7 @@ func QuestionSectionMapUpdate(ctx context.Context, input *model.MapSectionToBank
 		return nil, fmt.Errorf("nothing to update")
 	}
 	upStms, uNames := qbankz.SectionQBMappingTable.Update(updatedCols...)
-	updateQuery := global.CassSession.Query(upStms, uNames).BindStruct(&cassandraQuestionBank)
+	updateQuery := CassSession.Query(upStms, uNames).BindStruct(&cassandraQuestionBank)
 	if err := updateQuery.ExecRelease(); err != nil {
 		return nil, err
 	}
@@ -166,7 +165,7 @@ func QuestionFixed(ctx context.Context, input *model.SectionFixedQuestionsInput)
 	if err != nil {
 		return nil, err
 	}
-	global.CassSession = session
+	CassSession := session
 
 	cassandraQuestionBank := qbankz.SectionFixedQuestions{
 		ID:         guid.String(),
@@ -179,7 +178,7 @@ func QuestionFixed(ctx context.Context, input *model.SectionFixedQuestionsInput)
 		UpdatedAt:  time.Now().Unix(),
 	}
 
-	insertQuery := global.CassSession.Query(qbankz.SectionFixedQuestionsTable.Insert()).BindStruct(cassandraQuestionBank)
+	insertQuery := CassSession.Query(qbankz.SectionFixedQuestionsTable.Insert()).BindStruct(cassandraQuestionBank)
 	if err := insertQuery.ExecRelease(); err != nil {
 		return nil, err
 	}
@@ -207,13 +206,13 @@ func QuestionFixedUpdate(ctx context.Context, input *model.SectionFixedQuestions
 	if err != nil {
 		return nil, err
 	}
-	global.CassSession = session
+	CassSession := session
 
 	cassandraQuestionBank := qbankz.SectionFixedQuestions{
 		ID: *input.ID,
 	}
 	banks := []qbankz.SectionFixedQuestions{}
-	getQuery := global.CassSession.Query(qbankz.SectionFixedQuestionsTable.Get()).BindMap(qb.M{"id": cassandraQuestionBank.ID})
+	getQuery := CassSession.Query(qbankz.SectionFixedQuestionsTable.Get()).BindMap(qb.M{"id": cassandraQuestionBank.ID})
 	if err := getQuery.SelectRelease(&banks); err != nil {
 		return nil, err
 	}
@@ -250,7 +249,7 @@ func QuestionFixedUpdate(ctx context.Context, input *model.SectionFixedQuestions
 		return nil, fmt.Errorf("nothing to update")
 	}
 	upStms, uNames := qbankz.SectionFixedQuestionsTable.Update(updatedCols...)
-	updateQuery := global.CassSession.Query(upStms, uNames).BindStruct(&cassandraQuestionBank)
+	updateQuery := CassSession.Query(upStms, uNames).BindStruct(&cassandraQuestionBank)
 	if err := updateQuery.ExecRelease(); err != nil {
 		return nil, err
 	}

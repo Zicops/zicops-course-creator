@@ -11,7 +11,6 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/zicops/contracts/qbankz"
 	"github.com/zicops/zicops-cass-pool/cassandra"
-	"github.com/zicops/zicops-course-creator/global"
 	"github.com/zicops/zicops-course-creator/graph/model"
 )
 
@@ -22,7 +21,7 @@ func AddExamCohort(ctx context.Context, input *model.ExamCohortInput) (*model.Ex
 	if err != nil {
 		return nil, err
 	}
-	global.CassSession = session
+	CassSession := session
 
 	cassandraQuestionBank := qbankz.ExamCohort{
 		ID:        guid.String(),
@@ -34,7 +33,7 @@ func AddExamCohort(ctx context.Context, input *model.ExamCohortInput) (*model.Ex
 		UpdatedAt: time.Now().Unix(),
 		CohortID:  *input.CohortID,
 	}
-	insertQuery := global.CassSession.Query(qbankz.ExamCohortTable.Insert()).BindStruct(cassandraQuestionBank)
+	insertQuery := CassSession.Query(qbankz.ExamCohortTable.Insert()).BindStruct(cassandraQuestionBank)
 	if err := insertQuery.ExecRelease(); err != nil {
 		return nil, err
 	}
@@ -61,13 +60,13 @@ func UpdateExamCohort(ctx context.Context, input *model.ExamCohortInput) (*model
 	if err != nil {
 		return nil, err
 	}
-	global.CassSession = session
+	CassSession := session
 
 	cassandraQuestionBank := qbankz.ExamCohort{
 		ID: *input.ID,
 	}
 	banks := []qbankz.ExamCohort{}
-	getQuery := global.CassSession.Query(qbankz.ExamCohortTable.Get()).BindMap(qb.M{"id": cassandraQuestionBank.ID})
+	getQuery := CassSession.Query(qbankz.ExamCohortTable.Get()).BindMap(qb.M{"id": cassandraQuestionBank.ID})
 	if err := getQuery.SelectRelease(&banks); err != nil {
 		return nil, err
 	}
@@ -103,7 +102,7 @@ func UpdateExamCohort(ctx context.Context, input *model.ExamCohortInput) (*model
 		return nil, fmt.Errorf("nothing to update")
 	}
 	upStms, uNames := qbankz.ExamCohortTable.Update(updatedCols...)
-	updateQuery := global.CassSession.Query(upStms, uNames).BindStruct(&cassandraQuestionBank)
+	updateQuery := CassSession.Query(upStms, uNames).BindStruct(&cassandraQuestionBank)
 	if err := updateQuery.ExecRelease(); err != nil {
 		return nil, err
 	}
