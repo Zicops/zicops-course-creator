@@ -57,6 +57,12 @@ spec:
             value: {{ $zcbcertca }}
           - name: CASSANDRA_KEY
             value: {{ $zcbkey }}
+          - name: REDIS_HOST
+            value: "staging-redis-cluster.redis.svc.cluster.local"
+          - name: REDIS_PORT
+            value: "6379"
+          - name: REDIS_PASSWORD
+            value: "C6aXVndjSb"
           ports:
             - name: http-server-cc
               containerPort: {{ .Values.asp.port }}
@@ -104,6 +110,12 @@ spec:
             value: {{ $zcbcertca }}
           - name: CASSANDRA_KEY
             value: {{ $zcbkey }}
+          - name: REDIS_HOST
+            value: "staging-redis-cluster.redis.svc.cluster.local"
+          - name: REDIS_PORT
+            value: "6379"
+          - name: REDIS_PASSWORD
+            value: "C6aXVndjSb"
       volumes:
       - name: zicops-cc
         secret:
