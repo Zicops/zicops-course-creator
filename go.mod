@@ -3,7 +3,7 @@ module github.com/zicops/zicops-course-creator
 go 1.17
 
 require (
-	cloud.google.com/go/compute v1.9.0
+	cloud.google.com/go/compute v1.10.0
 	cloud.google.com/go/storage v1.26.0
 	github.com/99designs/gqlgen v0.17.17
 	github.com/gin-contrib/cors v1.4.0
@@ -15,7 +15,7 @@ require (
 	github.com/zicops/contracts v0.0.0-20220911132616-6ec3efce004e
 	github.com/zicops/zicops-cass-pool v0.0.0-20220914161023-85152a227b25
 	golang.org/x/oauth2 v0.0.0-20220909003341-f21342109be1
-	google.golang.org/api v0.95.0
+	google.golang.org/api v0.96.0
 	gopkg.in/tylerb/graceful.v1 v1.2.15
 )
 
@@ -57,12 +57,12 @@ require (
 	golang.org/x/crypto v0.0.0-20220829220503-c86fa9a7ed90 // indirect
 	golang.org/x/mod v0.6.0-dev.0.20220419223038-86c51ed26bb4 // indirect
 	golang.org/x/net v0.0.0-20220909164309-bea034e7d591 // indirect
-	golang.org/x/sys v0.0.0-20220913175220-63ea55921009 // indirect
+	golang.org/x/sys v0.0.0-20220915200043-7b5979e65e41 // indirect
 	golang.org/x/text v0.3.7 // indirect
 	golang.org/x/tools v0.1.12 // indirect
 	golang.org/x/xerrors v0.0.0-20220907171357-04be3eba64a2 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
-	google.golang.org/genproto v0.0.0-20220914142337-ca0e39ece12f // indirect
+	google.golang.org/genproto v0.0.0-20220915135415-7fd63a7952de // indirect
 	google.golang.org/grpc v1.49.0 // indirect
 	google.golang.org/protobuf v1.28.1 // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
