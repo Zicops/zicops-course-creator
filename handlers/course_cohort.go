@@ -16,7 +16,7 @@ import (
 
 func AddCourseCohort(ctx context.Context, input *model.CourseCohortInput) (*model.CourseCohort, error) {
 	log.Info("AddCourseCohort called")
-	session, err := cassandra.GetCassSession("qbankz")
+	session, err := cassandra.GetCassSession("coursez")
 	if err != nil {
 		return nil, err
 	}
@@ -69,7 +69,7 @@ func UpdateCourseCohort(ctx context.Context, input *model.CourseCohortInput) (*m
 	if input.ID == nil {
 		return nil, fmt.Errorf("course cohort id is required")
 	}
-	session, err := cassandra.GetCassSession("qbankz")
+	session, err := cassandra.GetCassSession("coursez")
 	if err != nil {
 		return nil, err
 	}
