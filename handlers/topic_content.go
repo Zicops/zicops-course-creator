@@ -236,8 +236,8 @@ func UploadTopicSubtitle(ctx context.Context, files []*model.TopicSubtitle) ([]*
 
 func UpdateTopicContent(ctx context.Context, topicConent *model.TopicContentInput) (*model.TopicContent, error) {
 	log.Info("UpdateTopicContent called")
-	topicID := topicConent.ContentID
-	if *topicID == "" {
+	contentID := topicConent.ContentID
+	if *contentID == "" {
 		return nil, fmt.Errorf("ContentID is required")
 	}
 	session, err := cassandra.GetCassSession("coursez")
@@ -247,7 +247,7 @@ func UpdateTopicContent(ctx context.Context, topicConent *model.TopicContentInpu
 	CassSession := session
 
 	cassandraTopicContent := coursez.TopicContent{
-		ID: *topicID,
+		ID: *contentID,
 	}
 	topicContents := []coursez.TopicContent{}
 	getQuery := CassSession.Query(coursez.TopicContentTable.Get()).BindMap(qb.M{"id": cassandraTopicContent.ID})
@@ -255,7 +255,7 @@ func UpdateTopicContent(ctx context.Context, topicConent *model.TopicContentInpu
 		return nil, err
 	}
 	if len(topicContents) < 1 {
-		return nil, fmt.Errorf("quiz not found")
+		return nil, fmt.Errorf("topic content not found")
 	}
 	cassandraTopicContent = topicContents[0]
 	updateCols := []string{}
@@ -303,6 +303,7 @@ func UpdateTopicContent(ctx context.Context, topicConent *model.TopicContentInpu
 	created := strconv.FormatInt(cassandraTopicContent.CreatedAt, 10)
 	updated := strconv.FormatInt(cassandraTopicContent.UpdatedAt, 10)
 	responseModel := model.TopicContent{
+		ID:                &cassandraTopicContent.ID,
 		Language:          topicConent.Language,
 		StartTime:         topicConent.StartTime,
 		CreatedAt:         &created,
@@ -311,7 +312,7 @@ func UpdateTopicContent(ctx context.Context, topicConent *model.TopicContentInpu
 		SkipIntroDuration: topicConent.SkipIntroDuration,
 		NextShowTime:      topicConent.NextShowTime,
 		FromEndTime:       topicConent.FromEndTime,
-		TopicID:           topicID,
+		TopicID:           &cassandraTopicContent.TopicId,
 		Type:              topicConent.Type,
 		IsDefault:         topicConent.IsDefault,
 		CourseID:          &cassandraTopicContent.CourseId,
