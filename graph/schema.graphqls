@@ -707,8 +707,64 @@ type CourseCohort {
     IsActive : Boolean
 }
 
+input CatMainInput {
+    id: ID
+    Name: String
+    Description: String
+    ImageUrl: String
+    Code: String
+    CreatedAt: String
+    UpdatedAt: String
+    CreatedBy: String
+    UpdatedBy: String
+    IsActive : Boolean
+}
+
+type CatMain {
+    id: ID
+    Name: String
+    Description: String
+    ImageUrl: String
+    Code: String
+    CreatedAt: String
+    UpdatedAt: String
+    CreatedBy: String
+    UpdatedBy: String
+    IsActive : Boolean
+}
+
+input SubCatMainInput {
+    id: ID
+    Name: String
+    Description: String
+    ImageUrl: String
+    Code: String
+    CatId: String
+    CreatedAt: String
+    UpdatedAt: String
+    CreatedBy: String
+    UpdatedBy: String
+    IsActive : Boolean
+}
+
+type SubCatMain {
+    id: ID
+    Name: String
+    Description: String
+    ImageUrl: String
+    Code: String
+    CatId: String
+    CreatedAt: String
+    UpdatedAt: String
+    CreatedBy: String
+    UpdatedBy: String
+    IsActive : Boolean
+}
+
 # define type mutations to add a course  using courseInput
 type Mutation{
+    addCatMain(input: [CatMainInput]): [CatMain]
+    addSubCatMain(input: [SubCatMainInput]): [SubCatMain]
     addCategories(category: [String]): Boolean
     addSubCategories(sub_category: [String]): Boolean
     addCatSubMapping(category: String, sub_category: [String]): Boolean

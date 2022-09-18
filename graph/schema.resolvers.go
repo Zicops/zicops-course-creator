@@ -12,6 +12,24 @@ import (
 	"github.com/zicops/zicops-course-creator/handlers"
 )
 
+func (r *mutationResolver) AddCatMain(ctx context.Context, input []*model.CatMainInput) ([]*model.CatMain, error) {
+	resp, err := handlers.AddCatMain(ctx, input)
+	if err != nil {
+		log.Errorf("error adding categories: %v", err)
+		return nil, err
+	}
+	return resp, nil
+}
+
+func (r *mutationResolver) AddSubCatMain(ctx context.Context, input []*model.SubCatMainInput) ([]*model.SubCatMain, error) {
+	resp, err := handlers.AddSubCatMain(ctx, input)
+	if err != nil {
+		log.Errorf("error adding sub categories: %v", err)
+		return nil, err
+	}
+	return resp, nil
+}
+
 func (r *mutationResolver) AddCategories(ctx context.Context, category []*string) (*bool, error) {
 	resp, err := handlers.AddCategory(ctx, category)
 	if err != nil {

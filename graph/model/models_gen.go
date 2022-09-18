@@ -10,6 +10,32 @@ import (
 	"github.com/99designs/gqlgen/graphql"
 )
 
+type CatMain struct {
+	ID          *string `json:"id"`
+	Name        *string `json:"Name"`
+	Description *string `json:"Description"`
+	ImageURL    *string `json:"ImageUrl"`
+	Code        *string `json:"Code"`
+	CreatedAt   *string `json:"CreatedAt"`
+	UpdatedAt   *string `json:"UpdatedAt"`
+	CreatedBy   *string `json:"CreatedBy"`
+	UpdatedBy   *string `json:"UpdatedBy"`
+	IsActive    *bool   `json:"IsActive"`
+}
+
+type CatMainInput struct {
+	ID          *string `json:"id"`
+	Name        *string `json:"Name"`
+	Description *string `json:"Description"`
+	ImageURL    *string `json:"ImageUrl"`
+	Code        *string `json:"Code"`
+	CreatedAt   *string `json:"CreatedAt"`
+	UpdatedAt   *string `json:"UpdatedAt"`
+	CreatedBy   *string `json:"CreatedBy"`
+	UpdatedBy   *string `json:"UpdatedBy"`
+	IsActive    *bool   `json:"IsActive"`
+}
+
 type Chapter struct {
 	ID          *string `json:"id"`
 	Name        *string `json:"name"`
@@ -583,6 +609,34 @@ type StaticContent struct {
 	CourseID  *string         `json:"courseId"`
 	ContentID *string         `json:"contentId"`
 	URL       *string         `json:"url"`
+}
+
+type SubCatMain struct {
+	ID          *string `json:"id"`
+	Name        *string `json:"Name"`
+	Description *string `json:"Description"`
+	ImageURL    *string `json:"ImageUrl"`
+	Code        *string `json:"Code"`
+	CatID       *string `json:"CatId"`
+	CreatedAt   *string `json:"CreatedAt"`
+	UpdatedAt   *string `json:"UpdatedAt"`
+	CreatedBy   *string `json:"CreatedBy"`
+	UpdatedBy   *string `json:"UpdatedBy"`
+	IsActive    *bool   `json:"IsActive"`
+}
+
+type SubCatMainInput struct {
+	ID          *string `json:"id"`
+	Name        *string `json:"Name"`
+	Description *string `json:"Description"`
+	ImageURL    *string `json:"ImageUrl"`
+	Code        *string `json:"Code"`
+	CatID       *string `json:"CatId"`
+	CreatedAt   *string `json:"CreatedAt"`
+	UpdatedAt   *string `json:"UpdatedAt"`
+	CreatedBy   *string `json:"CreatedBy"`
+	UpdatedBy   *string `json:"UpdatedBy"`
+	IsActive    *bool   `json:"IsActive"`
 }
 
 type Topic struct {
