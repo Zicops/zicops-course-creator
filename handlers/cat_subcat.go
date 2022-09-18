@@ -1,7 +1,9 @@
 package handlers
 
 import (
+	"bytes"
 	"context"
+	"io"
 	"strconv"
 	"time"
 
@@ -10,6 +12,8 @@ import (
 	"github.com/zicops/contracts/coursez"
 	"github.com/zicops/zicops-cass-pool/cassandra"
 	"github.com/zicops/zicops-course-creator/graph/model"
+	"github.com/zicops/zicops-course-creator/lib/db/bucket"
+	"github.com/zicops/zicops-course-creator/lib/googleprojectlib"
 )
 
 func AddCategory(ctx context.Context, category []*string) (*bool, error) {
@@ -94,11 +98,40 @@ func AddCatMain(ctx context.Context, input []*model.CatMainInput) ([]*model.CatM
 		return nil, err
 	}
 	CassSession := session
-
 	catMain := make([]*model.CatMain, len(input))
 	for i, cc := range input {
 		c := cc
 		guid := xid.New()
+		imageUrl := ""
+		imageBucket := ""
+		if c.ImageFile != nil {
+			storageC := bucket.NewStorageHandler()
+			gproject := googleprojectlib.GetGoogleProjectID()
+			err = storageC.InitializeStorageClient(ctx, gproject)
+			if err != nil {
+				log.Errorf("Failed to upload image to course: %v", err.Error())
+				continue
+			}
+			imageBucket = guid.String() + "/" + c.ImageFile.Filename
+			writer, err := storageC.UploadToGCS(ctx, imageBucket, map[string]string{})
+			if err != nil {
+				log.Errorf("Failed to upload image to course: %v", err.Error())
+				continue
+			}
+			defer writer.Close()
+			fileBuffer := bytes.NewBuffer(nil)
+			if _, err := io.Copy(fileBuffer, c.ImageFile.File); err != nil {
+				continue
+			}
+			currentBytes := fileBuffer.Bytes()
+			_, err = io.Copy(writer, bytes.NewReader(currentBytes))
+			if err != nil {
+				continue
+			}
+			imageUrl = storageC.GetSignedURLForObject(imageBucket)
+		} else if c.ImageURL != nil {
+			imageUrl = *c.ImageURL
+		}
 		cassandraCategory := coursez.CatMain{
 			ID:          guid.String(),
 			Name:        *c.Name,
@@ -109,6 +142,8 @@ func AddCatMain(ctx context.Context, input []*model.CatMainInput) ([]*model.CatM
 			CreatedBy:   *c.CreatedBy,
 			UpdatedBy:   *c.UpdatedBy,
 			IsActive:    *c.IsActive,
+			ImageBucket: imageBucket,
+			ImageURL:    imageUrl,
 		}
 		insertQuery := CassSession.Query(coursez.CatMainTable.Insert()).BindStruct(cassandraCategory)
 		if err := insertQuery.ExecRelease(); err != nil {
@@ -126,6 +161,7 @@ func AddCatMain(ctx context.Context, input []*model.CatMainInput) ([]*model.CatM
 			CreatedBy:   &cassandraCategory.CreatedBy,
 			UpdatedBy:   &cassandraCategory.UpdatedBy,
 			IsActive:    &cassandraCategory.IsActive,
+			ImageURL:    &cassandraCategory.ImageURL,
 		}
 	}
 	return catMain, nil
@@ -143,6 +179,36 @@ func AddSubCatMain(ctx context.Context, input []*model.SubCatMainInput) ([]*mode
 	for i, cc := range input {
 		c := cc
 		guid := xid.New()
+		imageUrl := ""
+		imageBucket := ""
+		if c.ImageFile != nil {
+			storageC := bucket.NewStorageHandler()
+			gproject := googleprojectlib.GetGoogleProjectID()
+			err = storageC.InitializeStorageClient(ctx, gproject)
+			if err != nil {
+				log.Errorf("Failed to upload image to course: %v", err.Error())
+				continue
+			}
+			imageBucket = guid.String() + "/" + c.ImageFile.Filename
+			writer, err := storageC.UploadToGCS(ctx, imageBucket, map[string]string{})
+			if err != nil {
+				log.Errorf("Failed to upload image to course: %v", err.Error())
+				continue
+			}
+			defer writer.Close()
+			fileBuffer := bytes.NewBuffer(nil)
+			if _, err := io.Copy(fileBuffer, c.ImageFile.File); err != nil {
+				continue
+			}
+			currentBytes := fileBuffer.Bytes()
+			_, err = io.Copy(writer, bytes.NewReader(currentBytes))
+			if err != nil {
+				continue
+			}
+			imageUrl = storageC.GetSignedURLForObject(imageBucket)
+		} else if c.ImageURL != nil {
+			imageUrl = *c.ImageURL
+		}
 		cassandraCategory := coursez.SubCatMain{
 			ID:          guid.String(),
 			Name:        *c.Name,
@@ -154,6 +220,8 @@ func AddSubCatMain(ctx context.Context, input []*model.SubCatMainInput) ([]*mode
 			UpdatedBy:   *c.UpdatedBy,
 			IsActive:    *c.IsActive,
 			ParentID:    *c.CatID,
+			ImageBucket: imageBucket,
+			ImageURL:    imageUrl,
 		}
 		insertQuery := CassSession.Query(coursez.SubCatMainTable.Insert()).BindStruct(cassandraCategory)
 		if err := insertQuery.ExecRelease(); err != nil {
@@ -172,6 +240,7 @@ func AddSubCatMain(ctx context.Context, input []*model.SubCatMainInput) ([]*mode
 			UpdatedBy:   &cassandraCategory.UpdatedBy,
 			IsActive:    &cassandraCategory.IsActive,
 			CatID:       &cassandraCategory.ParentID,
+			ImageURL:    &cassandraCategory.ImageURL,
 		}
 	}
 	return subCatMain, nil

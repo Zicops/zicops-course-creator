@@ -9,6 +9,7 @@ const (
 	RESPONSDE_JSON_ERROR  string = "error"
 	COURSES_BUCKET               = "courses-zicops-one"
 	COURSES_PUBLIC_BUCKET        = "courses-public-zicops-one"
+	ZICOPS_ASSETS_BUCKET         = "zicops-assets"
 )
 
 var (

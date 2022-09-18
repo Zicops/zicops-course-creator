@@ -3951,6 +3951,7 @@ input CatMainInput {
     CreatedBy: String
     UpdatedBy: String
     IsActive : Boolean
+    ImageFile: Upload
 }
 
 type CatMain {
@@ -3978,6 +3979,7 @@ input SubCatMainInput {
     CreatedBy: String
     UpdatedBy: String
     IsActive : Boolean
+    ImageFile: Upload
 }
 
 type SubCatMain {
@@ -17544,6 +17546,14 @@ func (ec *executionContext) unmarshalInputCatMainInput(ctx context.Context, obj 
 			if err != nil {
 				return it, err
 			}
+		case "ImageFile":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ImageFile"))
+			it.ImageFile, err = ec.unmarshalOUpload2ᚖgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚐUpload(ctx, v)
+			if err != nil {
+				return it, err
+			}
 		}
 	}
 
@@ -19862,6 +19872,14 @@ func (ec *executionContext) unmarshalInputSubCatMainInput(ctx context.Context, o
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("IsActive"))
 			it.IsActive, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "ImageFile":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ImageFile"))
+			it.ImageFile, err = ec.unmarshalOUpload2ᚖgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚐUpload(ctx, v)
 			if err != nil {
 				return it, err
 			}

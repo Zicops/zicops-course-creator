@@ -24,16 +24,17 @@ type CatMain struct {
 }
 
 type CatMainInput struct {
-	ID          *string `json:"id"`
-	Name        *string `json:"Name"`
-	Description *string `json:"Description"`
-	ImageURL    *string `json:"ImageUrl"`
-	Code        *string `json:"Code"`
-	CreatedAt   *string `json:"CreatedAt"`
-	UpdatedAt   *string `json:"UpdatedAt"`
-	CreatedBy   *string `json:"CreatedBy"`
-	UpdatedBy   *string `json:"UpdatedBy"`
-	IsActive    *bool   `json:"IsActive"`
+	ID          *string         `json:"id"`
+	Name        *string         `json:"Name"`
+	Description *string         `json:"Description"`
+	ImageURL    *string         `json:"ImageUrl"`
+	Code        *string         `json:"Code"`
+	CreatedAt   *string         `json:"CreatedAt"`
+	UpdatedAt   *string         `json:"UpdatedAt"`
+	CreatedBy   *string         `json:"CreatedBy"`
+	UpdatedBy   *string         `json:"UpdatedBy"`
+	IsActive    *bool           `json:"IsActive"`
+	ImageFile   *graphql.Upload `json:"ImageFile"`
 }
 
 type Chapter struct {
@@ -626,17 +627,18 @@ type SubCatMain struct {
 }
 
 type SubCatMainInput struct {
-	ID          *string `json:"id"`
-	Name        *string `json:"Name"`
-	Description *string `json:"Description"`
-	ImageURL    *string `json:"ImageUrl"`
-	Code        *string `json:"Code"`
-	CatID       *string `json:"CatId"`
-	CreatedAt   *string `json:"CreatedAt"`
-	UpdatedAt   *string `json:"UpdatedAt"`
-	CreatedBy   *string `json:"CreatedBy"`
-	UpdatedBy   *string `json:"UpdatedBy"`
-	IsActive    *bool   `json:"IsActive"`
+	ID          *string         `json:"id"`
+	Name        *string         `json:"Name"`
+	Description *string         `json:"Description"`
+	ImageURL    *string         `json:"ImageUrl"`
+	Code        *string         `json:"Code"`
+	CatID       *string         `json:"CatId"`
+	CreatedAt   *string         `json:"CreatedAt"`
+	UpdatedAt   *string         `json:"UpdatedAt"`
+	CreatedBy   *string         `json:"CreatedBy"`
+	UpdatedBy   *string         `json:"UpdatedBy"`
+	IsActive    *bool           `json:"IsActive"`
+	ImageFile   *graphql.Upload `json:"ImageFile"`
 }
 
 type Topic struct {

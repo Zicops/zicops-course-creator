@@ -718,6 +718,7 @@ input CatMainInput {
     CreatedBy: String
     UpdatedBy: String
     IsActive : Boolean
+    ImageFile: Upload
 }
 
 type CatMain {
@@ -745,6 +746,7 @@ input SubCatMainInput {
     CreatedBy: String
     UpdatedBy: String
     IsActive : Boolean
+    ImageFile: Upload
 }
 
 type SubCatMain {
