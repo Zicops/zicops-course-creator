@@ -112,7 +112,7 @@ func AddCatMain(ctx context.Context, input []*model.CatMainInput) ([]*model.CatM
 				log.Errorf("Failed to upload image to course: %v", err.Error())
 				continue
 			}
-			imageBucket = guid.String() + "/" + c.ImageFile.Filename
+			imageBucket = guid.String() + "/catimages/" + c.ImageFile.Filename
 			writer, err := storageC.UploadToGCS(ctx, imageBucket, map[string]string{})
 			if err != nil {
 				log.Errorf("Failed to upload image to course: %v", err.Error())
@@ -189,7 +189,7 @@ func AddSubCatMain(ctx context.Context, input []*model.SubCatMainInput) ([]*mode
 				log.Errorf("Failed to upload image to course: %v", err.Error())
 				continue
 			}
-			imageBucket = guid.String() + "/" + c.ImageFile.Filename
+			imageBucket = guid.String() + "/subcatimages/" + c.ImageFile.Filename
 			writer, err := storageC.UploadToGCS(ctx, imageBucket, map[string]string{})
 			if err != nil {
 				log.Errorf("Failed to upload image to course: %v", err.Error())
