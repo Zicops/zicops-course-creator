@@ -688,6 +688,7 @@ input CourseCohortInput {
     CreatedBy: String
     UpdatedBy: String
     IsActive : Boolean
+    ExpectedCompletion: Int 
 }
 
 type CourseCohort {
@@ -705,6 +706,7 @@ type CourseCohort {
     CreatedBy: String
     UpdatedBy: String
     IsActive : Boolean
+    ExpectedCompletion: Int
 }
 
 input CatMainInput {

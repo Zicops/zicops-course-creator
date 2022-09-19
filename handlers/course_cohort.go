@@ -21,23 +21,27 @@ func AddCourseCohort(ctx context.Context, input *model.CourseCohortInput) (*mode
 		return nil, err
 	}
 	CassSession := session
-
+	expectedComp := 0
+	if input.ExpectedCompletion != nil {
+		expectedComp = *input.ExpectedCompletion
+	}
 	guid := xid.New()
 	cassandraQuestionBank := coursez.CourseCohortMapping{
-		ID:           guid.String(),
-		CourseID:     *input.CourseID,
-		CourseType:   *input.CourseType,
-		CohortID:     *input.CohortID,
-		CourseStatus: *input.CourseStatus,
-		LspID:        *input.LspID,
-		IsMandatory:  *input.IsMandatory,
-		AddedBy:      *input.AddedBy,
-		IsActive:     *input.IsActive,
-		CreatedBy:    *input.CreatedBy,
-		UpdatedBy:    *input.UpdatedBy,
-		CreatedAt:    time.Now().Unix(),
-		UpdatedAt:    time.Now().Unix(),
-		CohortCode:   *input.CohortCode,
+		ID:                     guid.String(),
+		CourseID:               *input.CourseID,
+		CourseType:             *input.CourseType,
+		CohortID:               *input.CohortID,
+		CourseStatus:           *input.CourseStatus,
+		LspID:                  *input.LspID,
+		IsMandatory:            *input.IsMandatory,
+		AddedBy:                *input.AddedBy,
+		IsActive:               *input.IsActive,
+		CreatedBy:              *input.CreatedBy,
+		UpdatedBy:              *input.UpdatedBy,
+		CreatedAt:              time.Now().Unix(),
+		UpdatedAt:              time.Now().Unix(),
+		CohortCode:             *input.CohortCode,
+		ExpectedCompletionDays: expectedComp,
 	}
 	insertQuery := CassSession.Query(coursez.CourseCohortTable.Insert()).BindStruct(cassandraQuestionBank)
 	if err := insertQuery.ExecRelease(); err != nil {
@@ -46,20 +50,21 @@ func AddCourseCohort(ctx context.Context, input *model.CourseCohortInput) (*mode
 	created := strconv.FormatInt(cassandraQuestionBank.CreatedAt, 10)
 	updated := strconv.FormatInt(cassandraQuestionBank.UpdatedAt, 10)
 	responseModel := model.CourseCohort{
-		ID:           &cassandraQuestionBank.ID,
-		CourseID:     input.CourseID,
-		CourseType:   input.CourseType,
-		CohortID:     input.CohortID,
-		CourseStatus: input.CourseStatus,
-		LspID:        input.LspID,
-		IsMandatory:  input.IsMandatory,
-		AddedBy:      input.AddedBy,
-		IsActive:     input.IsActive,
-		CreatedBy:    input.CreatedBy,
-		UpdatedBy:    input.UpdatedBy,
-		CreatedAt:    &created,
-		UpdatedAt:    &updated,
-		CohortCode:   input.CohortCode,
+		ID:                 &cassandraQuestionBank.ID,
+		CourseID:           input.CourseID,
+		CourseType:         input.CourseType,
+		CohortID:           input.CohortID,
+		CourseStatus:       input.CourseStatus,
+		LspID:              input.LspID,
+		IsMandatory:        input.IsMandatory,
+		AddedBy:            input.AddedBy,
+		IsActive:           input.IsActive,
+		CreatedBy:          input.CreatedBy,
+		UpdatedBy:          input.UpdatedBy,
+		CreatedAt:          &created,
+		UpdatedAt:          &updated,
+		CohortCode:         input.CohortCode,
+		ExpectedCompletion: input.ExpectedCompletion,
 	}
 
 	return &responseModel, nil
@@ -132,6 +137,10 @@ func UpdateCourseCohort(ctx context.Context, input *model.CourseCohortInput) (*m
 		cassandraQuestionBank.CohortCode = *input.CohortCode
 		updatedCols = append(updatedCols, "cohort_code")
 	}
+	if input.ExpectedCompletion != nil {
+		cassandraQuestionBank.ExpectedCompletionDays = *input.ExpectedCompletion
+		updatedCols = append(updatedCols, "expected_completion_days")
+	}
 	updatedAt := time.Now().Unix()
 	cassandraQuestionBank.UpdatedAt = updatedAt
 	updatedCols = append(updatedCols, "updated_at")
@@ -146,20 +155,21 @@ func UpdateCourseCohort(ctx context.Context, input *model.CourseCohortInput) (*m
 	created := strconv.FormatInt(cassandraQuestionBank.CreatedAt, 10)
 	updated := strconv.FormatInt(cassandraQuestionBank.UpdatedAt, 10)
 	responseModel := model.CourseCohort{
-		ID:           &cassandraQuestionBank.ID,
-		CourseID:     input.CourseID,
-		CourseType:   input.CourseType,
-		CohortID:     input.CohortID,
-		CourseStatus: input.CourseStatus,
-		LspID:        input.LspID,
-		IsMandatory:  input.IsMandatory,
-		AddedBy:      input.AddedBy,
-		IsActive:     input.IsActive,
-		CreatedBy:    input.CreatedBy,
-		UpdatedBy:    input.UpdatedBy,
-		CreatedAt:    &created,
-		UpdatedAt:    &updated,
-		CohortCode:   input.CohortCode,
+		ID:                 &cassandraQuestionBank.ID,
+		CourseID:           input.CourseID,
+		CourseType:         input.CourseType,
+		CohortID:           input.CohortID,
+		CourseStatus:       input.CourseStatus,
+		LspID:              input.LspID,
+		IsMandatory:        input.IsMandatory,
+		AddedBy:            input.AddedBy,
+		IsActive:           input.IsActive,
+		CreatedBy:          input.CreatedBy,
+		UpdatedBy:          input.UpdatedBy,
+		CreatedAt:          &created,
+		UpdatedAt:          &updated,
+		CohortCode:         input.CohortCode,
+		ExpectedCompletion: input.ExpectedCompletion,
 	}
 
 	return &responseModel, nil

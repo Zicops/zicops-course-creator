@@ -95,37 +95,39 @@ type Course struct {
 }
 
 type CourseCohort struct {
-	ID           *string `json:"id"`
-	CourseID     *string `json:"CourseId"`
-	CohortID     *string `json:"CohortId"`
-	CourseType   *string `json:"CourseType"`
-	LspID        *string `json:"LspId"`
-	CohortCode   *string `json:"CohortCode"`
-	IsMandatory  *bool   `json:"isMandatory"`
-	CourseStatus *string `json:"CourseStatus"`
-	AddedBy      *string `json:"AddedBy"`
-	CreatedAt    *string `json:"CreatedAt"`
-	UpdatedAt    *string `json:"UpdatedAt"`
-	CreatedBy    *string `json:"CreatedBy"`
-	UpdatedBy    *string `json:"UpdatedBy"`
-	IsActive     *bool   `json:"IsActive"`
+	ID                 *string `json:"id"`
+	CourseID           *string `json:"CourseId"`
+	CohortID           *string `json:"CohortId"`
+	CourseType         *string `json:"CourseType"`
+	LspID              *string `json:"LspId"`
+	CohortCode         *string `json:"CohortCode"`
+	IsMandatory        *bool   `json:"isMandatory"`
+	CourseStatus       *string `json:"CourseStatus"`
+	AddedBy            *string `json:"AddedBy"`
+	CreatedAt          *string `json:"CreatedAt"`
+	UpdatedAt          *string `json:"UpdatedAt"`
+	CreatedBy          *string `json:"CreatedBy"`
+	UpdatedBy          *string `json:"UpdatedBy"`
+	IsActive           *bool   `json:"IsActive"`
+	ExpectedCompletion *int    `json:"ExpectedCompletion"`
 }
 
 type CourseCohortInput struct {
-	ID           *string `json:"id"`
-	CourseID     *string `json:"CourseId"`
-	CohortID     *string `json:"CohortId"`
-	CourseType   *string `json:"CourseType"`
-	LspID        *string `json:"LspId"`
-	CohortCode   *string `json:"CohortCode"`
-	IsMandatory  *bool   `json:"isMandatory"`
-	CourseStatus *string `json:"CourseStatus"`
-	AddedBy      *string `json:"AddedBy"`
-	CreatedAt    *string `json:"CreatedAt"`
-	UpdatedAt    *string `json:"UpdatedAt"`
-	CreatedBy    *string `json:"CreatedBy"`
-	UpdatedBy    *string `json:"UpdatedBy"`
-	IsActive     *bool   `json:"IsActive"`
+	ID                 *string `json:"id"`
+	CourseID           *string `json:"CourseId"`
+	CohortID           *string `json:"CohortId"`
+	CourseType         *string `json:"CourseType"`
+	LspID              *string `json:"LspId"`
+	CohortCode         *string `json:"CohortCode"`
+	IsMandatory        *bool   `json:"isMandatory"`
+	CourseStatus       *string `json:"CourseStatus"`
+	AddedBy            *string `json:"AddedBy"`
+	CreatedAt          *string `json:"CreatedAt"`
+	UpdatedAt          *string `json:"UpdatedAt"`
+	CreatedBy          *string `json:"CreatedBy"`
+	UpdatedBy          *string `json:"UpdatedBy"`
+	IsActive           *bool   `json:"IsActive"`
+	ExpectedCompletion *int    `json:"ExpectedCompletion"`
 }
 
 type CourseFile struct {
