@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"net/http"
@@ -82,7 +83,11 @@ func graphqlHandler() gin.HandlerFunc {
 	h := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &graph.Resolver{}}))
 
 	return func(c *gin.Context) {
-		h.ServeHTTP(c.Writer, c.Request)
+		ctxValue := c.Value("zclaims").(map[string]interface{})
+		// set ctxValue to request context
+		request := c.Request
+		requestWithValue := request.WithContext(context.WithValue(request.Context(), "zclaims", ctxValue))
+		h.ServeHTTP(c.Writer, requestWithValue)
 	}
 }
 
