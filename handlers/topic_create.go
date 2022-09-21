@@ -12,6 +12,7 @@ import (
 	"github.com/zicops/contracts/coursez"
 	"github.com/zicops/zicops-cass-pool/cassandra"
 	"github.com/zicops/zicops-course-creator/graph/model"
+	"github.com/zicops/zicops-course-creator/helpers"
 )
 
 func TopicCreate(ctx context.Context, courseID string, topic *model.TopicInput) (*model.Topic, error) {
@@ -21,7 +22,11 @@ func TopicCreate(ctx context.Context, courseID string, topic *model.TopicInput) 
 		return nil, err
 	}
 	CassSession := session
-
+	claims, err := helpers.GetClaimsFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	email_creator := claims["email"].(string)
 	guid := xid.New()
 	cassandraTopic := coursez.Topic{
 		ID:          guid.String(),
@@ -42,12 +47,11 @@ func TopicCreate(ctx context.Context, courseID string, topic *model.TopicInput) 
 	if topic.Sequence != nil {
 		cassandraTopic.Sequence = *topic.Sequence
 	}
-	if topic.CreatedBy != nil {
-		cassandraTopic.CreatedBy = *topic.CreatedBy
-	}
-	if topic.UpdatedBy != nil {
-		cassandraTopic.UpdatedBy = *topic.UpdatedBy
-	}
+
+	cassandraTopic.CreatedBy = email_creator
+
+	cassandraTopic.UpdatedBy = email_creator
+
 	// set course in cassandra
 	insertQuery := CassSession.Query(coursez.TopicTable.Insert()).BindStruct(cassandraTopic)
 	if err := insertQuery.ExecRelease(); err != nil {
@@ -80,6 +84,11 @@ func TopicUpdate(ctx context.Context, topic *model.TopicInput) (*model.Topic, er
 	if err != nil {
 		return nil, err
 	}
+	claims, err := helpers.GetClaimsFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	email_creator := claims["email"].(string)
 	cassandraTopic := coursez.Topic{
 		ID: *topic.ID,
 	}
@@ -116,6 +125,10 @@ func TopicUpdate(ctx context.Context, topic *model.TopicInput) (*model.Topic, er
 		updateCols = append(updateCols, "type")
 		cassandraTopic.Type = *topic.Type
 	}
+	if email_creator != "" {
+		updateCols = append(updateCols, "updated_by")
+		cassandraTopic.UpdatedBy = email_creator
+	}
 	updateCols = append(updateCols, "updated_at")
 	cassandraTopic.UpdatedAt = time.Now().Unix()
 	// set course in cassandra
@@ -137,6 +150,7 @@ func TopicUpdate(ctx context.Context, topic *model.TopicInput) (*model.Topic, er
 		ModuleID:    topic.ModuleID,
 		Sequence:    topic.Sequence,
 		CreatedBy:   topic.CreatedBy,
+		UpdatedBy:   topic.UpdatedBy,
 	}
 	return &responseModel, nil
 }

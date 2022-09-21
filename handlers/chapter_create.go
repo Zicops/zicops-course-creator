@@ -12,6 +12,7 @@ import (
 	"github.com/zicops/contracts/coursez"
 	"github.com/zicops/zicops-cass-pool/cassandra"
 	"github.com/zicops/zicops-course-creator/graph/model"
+	"github.com/zicops/zicops-course-creator/helpers"
 )
 
 func ChapterCreate(ctx context.Context, courseID string, chapter *model.ChapterInput) (*model.Chapter, error) {
@@ -21,7 +22,10 @@ func ChapterCreate(ctx context.Context, courseID string, chapter *model.ChapterI
 		return nil, err
 	}
 	CassSession := session
-
+	_, err = helpers.GetClaimsFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
 	guid := xid.New()
 	cassandraChapter := coursez.Chapter{
 		ID:          guid.String(),
@@ -63,7 +67,10 @@ func UpdateChapter(ctx context.Context, chapter *model.ChapterInput) (*model.Cha
 		return nil, err
 	}
 	CassSession := session
-
+	_, err = helpers.GetClaimsFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
 	if chapter.ID == nil {
 		return nil, fmt.Errorf("chapter not found")
 	}

@@ -2,6 +2,7 @@ package helpers
 
 import (
 	"context"
+	"fmt"
 	"io/ioutil"
 
 	"golang.org/x/oauth2/google"
@@ -18,4 +19,12 @@ func ReadCredentialsFile(ctx context.Context, filename string, scopes []string) 
 		return nil, nil, err
 	}
 	return creds, b, nil
+}
+
+func GetClaimsFromContext(ctx context.Context) (map[string]interface{}, error) {
+	customClaims := ctx.Value("zclaims").(map[string]interface{})
+	if customClaims == nil {
+		return make(map[string]interface{}), fmt.Errorf("custom claims not found. Unauthorized user")
+	}
+	return customClaims, nil
 }

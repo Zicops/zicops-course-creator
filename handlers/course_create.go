@@ -15,6 +15,7 @@ import (
 	"github.com/zicops/contracts/coursez"
 	"github.com/zicops/zicops-cass-pool/cassandra"
 	"github.com/zicops/zicops-course-creator/graph/model"
+	"github.com/zicops/zicops-course-creator/helpers"
 	"github.com/zicops/zicops-course-creator/lib/db/bucket"
 	"github.com/zicops/zicops-course-creator/lib/googleprojectlib"
 )
@@ -27,8 +28,13 @@ func CourseCreator(ctx context.Context, courseInput *model.CourseInput) (*model.
 	if err != nil {
 		return nil, err
 	}
-	CassSession := session
 
+	CassSession := session
+	claims, err := helpers.GetClaimsFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	email_creator := claims["email"].(string)
 	guid := xid.New()
 	language := []string{}
 	takeaways := []string{}
@@ -145,6 +151,8 @@ func CourseCreator(ctx context.Context, courseInput *model.CourseInput) (*model.
 	if courseInput.SubCategory != nil {
 		cassandraCourse.SubCategory = *courseInput.SubCategory
 	}
+	courseInput.CreatedBy = &email_creator
+	courseInput.UpdatedBy = &email_creator
 	// set course in cassandra
 	insertQuery := CassSession.Query(coursez.CourseTable.Insert()).BindStruct(cassandraCourse)
 	if err := insertQuery.ExecRelease(); err != nil {
@@ -198,7 +206,10 @@ func UploadCourseImage(ctx context.Context, file model.CourseFile) (*model.Uploa
 		return nil, err
 	}
 	CassSession := session
-
+	_, err = helpers.GetClaimsFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
 	if *file.CourseID == "" {
 		return &isSuccess, fmt.Errorf("course id is required")
 	}
@@ -250,7 +261,10 @@ func UploadCoursePreviewVideo(ctx context.Context, file model.CourseFile) (*mode
 		return nil, err
 	}
 	CassSession := session
-
+	_, err = helpers.GetClaimsFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
 	storageC := bucket.NewStorageHandler()
 	gproject := googleprojectlib.GetGoogleProjectID()
 	err = storageC.InitializeStorageClient(ctx, gproject)
@@ -299,7 +313,10 @@ func UploadCourseTileImage(ctx context.Context, file model.CourseFile) (*model.U
 		return nil, err
 	}
 	CassSession := session
-
+	_, err = helpers.GetClaimsFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
 	storageC := bucket.NewStorageHandler()
 	gproject := googleprojectlib.GetGoogleProjectID()
 	err = storageC.InitializeStorageClient(ctx, gproject)
@@ -346,7 +363,11 @@ func CourseUpdate(ctx context.Context, courseInput *model.CourseInput) (*model.C
 		return nil, err
 	}
 	CassSession := session
-
+	claims, err := helpers.GetClaimsFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	email_creator := claims["email"].(string)
 	// set course input in cassandra
 	courseID := *courseInput.ID
 	// get course from cassandra
@@ -486,9 +507,9 @@ func CourseUpdate(ctx context.Context, courseInput *model.CourseInput) (*model.C
 		updateCols = append(updateCols, "created_by")
 		cassandraCourse.CreatedBy = *courseInput.CreatedBy
 	}
-	if courseInput.UpdatedBy != nil {
+	if email_creator != "" {
 		updateCols = append(updateCols, "updated_by")
-		cassandraCourse.UpdatedBy = *courseInput.UpdatedBy
+		cassandraCourse.UpdatedBy = email_creator
 	}
 	if courseInput.Type != nil {
 		updateCols = append(updateCols, "type")

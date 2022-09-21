@@ -12,6 +12,7 @@ import (
 	"github.com/zicops/contracts/coursez"
 	"github.com/zicops/zicops-cass-pool/cassandra"
 	"github.com/zicops/zicops-course-creator/graph/model"
+	"github.com/zicops/zicops-course-creator/helpers"
 	"github.com/zicops/zicops-course-creator/lib/db/bucket"
 	"github.com/zicops/zicops-course-creator/lib/googleprojectlib"
 )
@@ -93,6 +94,11 @@ func AddCategorySubMap(ctx context.Context, category *string, subCategory []*str
 
 func AddCatMain(ctx context.Context, input []*model.CatMainInput) ([]*model.CatMain, error) {
 	log.Infof("AddCatMain called")
+	claims, err := helpers.GetClaimsFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	email_creator := claims["email"].(string)
 	session, err := cassandra.GetCassSession("coursez")
 	if err != nil {
 		return nil, err
@@ -139,8 +145,8 @@ func AddCatMain(ctx context.Context, input []*model.CatMainInput) ([]*model.CatM
 			Code:        *c.Code,
 			CreatedAt:   time.Now().Unix(),
 			UpdatedAt:   time.Now().Unix(),
-			CreatedBy:   *c.CreatedBy,
-			UpdatedBy:   *c.UpdatedBy,
+			CreatedBy:   email_creator,
+			UpdatedBy:   email_creator,
 			IsActive:    *c.IsActive,
 			ImageBucket: imageBucket,
 			ImageURL:    imageUrl,
@@ -168,6 +174,11 @@ func AddCatMain(ctx context.Context, input []*model.CatMainInput) ([]*model.CatM
 }
 
 func AddSubCatMain(ctx context.Context, input []*model.SubCatMainInput) ([]*model.SubCatMain, error) {
+	claims, err := helpers.GetClaimsFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	email_creator := claims["email"].(string)
 	log.Infof("AddSubCatMain called")
 	session, err := cassandra.GetCassSession("coursez")
 	if err != nil {
@@ -216,8 +227,8 @@ func AddSubCatMain(ctx context.Context, input []*model.SubCatMainInput) ([]*mode
 			Code:        *c.Code,
 			CreatedAt:   time.Now().Unix(),
 			UpdatedAt:   time.Now().Unix(),
-			CreatedBy:   *c.CreatedBy,
-			UpdatedBy:   *c.UpdatedBy,
+			CreatedBy:   email_creator,
+			UpdatedBy:   email_creator,
 			IsActive:    *c.IsActive,
 			ParentID:    *c.CatID,
 			ImageBucket: imageBucket,

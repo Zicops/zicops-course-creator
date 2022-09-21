@@ -14,6 +14,7 @@ import (
 	"github.com/zicops/contracts/qbankz"
 	"github.com/zicops/zicops-cass-pool/cassandra"
 	"github.com/zicops/zicops-course-creator/graph/model"
+	"github.com/zicops/zicops-course-creator/helpers"
 	"github.com/zicops/zicops-course-creator/lib/db/bucket"
 	"github.com/zicops/zicops-course-creator/lib/googleprojectlib"
 )
@@ -26,7 +27,11 @@ func QuestionBankCreate(ctx context.Context, input *model.QuestionBankInput) (*m
 		return nil, err
 	}
 	CassSession := session
-
+	claims, err := helpers.GetClaimsFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	email_creator := claims["email"].(string)
 	cassandraQuestionBank := qbankz.QuestionBankMain{
 		ID:          guid.String(),
 		Name:        *input.Name,
@@ -36,8 +41,8 @@ func QuestionBankCreate(ctx context.Context, input *model.QuestionBankInput) (*m
 		IsActive:    *input.IsActive,
 		IsDefault:   *input.IsDefault,
 		Owner:       *input.Owner,
-		CreatedBy:   *input.CreatedBy,
-		UpdatedBy:   *input.UpdatedBy,
+		CreatedBy:   email_creator,
+		UpdatedBy:   email_creator,
 		CreatedAt:   time.Now().Unix(),
 		UpdatedAt:   time.Now().Unix(),
 	}
@@ -74,7 +79,11 @@ func QuestionBankUpdate(ctx context.Context, input *model.QuestionBankInput) (*m
 		return nil, err
 	}
 	CassSession := session
-
+	claims, err := helpers.GetClaimsFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	email_creator := claims["email"].(string)
 	cassandraQuestionBank := qbankz.QuestionBankMain{
 		ID: *input.ID,
 	}
@@ -116,8 +125,8 @@ func QuestionBankUpdate(ctx context.Context, input *model.QuestionBankInput) (*m
 		cassandraQuestionBank.Owner = *input.Owner
 		updatedCols = append(updatedCols, "owner")
 	}
-	if input.UpdatedBy != nil {
-		cassandraQuestionBank.UpdatedBy = *input.UpdatedBy
+	if email_creator != "" {
+		cassandraQuestionBank.UpdatedBy = email_creator
 		updatedCols = append(updatedCols, "updated_by")
 	}
 	if input.CreatedBy != nil {
@@ -164,7 +173,11 @@ func AddQuestionBankQuestion(ctx context.Context, input *model.QuestionBankQuest
 		return nil, err
 	}
 	CassSession := session
-
+	claims, err := helpers.GetClaimsFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	email_creator := claims["email"].(string)
 	guid := xid.New()
 	getUrl := ""
 	cassandraQuestionBank := qbankz.QuestionMain{
@@ -177,8 +190,8 @@ func AddQuestionBankQuestion(ctx context.Context, input *model.QuestionBankQuest
 		Hint:           *input.Hint,
 		Status:         *input.Status,
 		AttachmentType: *input.AttachmentType,
-		CreatedBy:      *input.CreatedBy,
-		UpdatedBy:      *input.UpdatedBy,
+		CreatedBy:      email_creator,
+		UpdatedBy:      email_creator,
 		CreatedAt:      time.Now().Unix(),
 		UpdatedAt:      time.Now().Unix(),
 	}
@@ -248,7 +261,11 @@ func UpdateQuestionBankQuestion(ctx context.Context, input *model.QuestionBankQu
 		return nil, err
 	}
 	CassSession := session
-
+	claims, err := helpers.GetClaimsFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	email_creator := claims["email"].(string)
 	cassandraQuestionBank := qbankz.QuestionMain{
 		ID: *input.ID,
 	}
@@ -294,8 +311,8 @@ func UpdateQuestionBankQuestion(ctx context.Context, input *model.QuestionBankQu
 		cassandraQuestionBank.CreatedBy = *input.CreatedBy
 		updatedCols = append(updatedCols, "created_by")
 	}
-	if input.UpdatedBy != nil {
-		cassandraQuestionBank.UpdatedBy = *input.UpdatedBy
+	if email_creator != "" {
+		cassandraQuestionBank.UpdatedBy = email_creator
 		updatedCols = append(updatedCols, "updated_by")
 	}
 	if input.QbmID != nil {

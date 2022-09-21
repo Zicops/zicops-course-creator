@@ -12,6 +12,7 @@ import (
 	"github.com/zicops/contracts/qbankz"
 	"github.com/zicops/zicops-cass-pool/cassandra"
 	"github.com/zicops/zicops-course-creator/graph/model"
+	"github.com/zicops/zicops-course-creator/helpers"
 )
 
 func AddExamConfiguration(ctx context.Context, input *model.ExamConfigurationInput) (*model.ExamConfiguration, error) {
@@ -22,13 +23,17 @@ func AddExamConfiguration(ctx context.Context, input *model.ExamConfigurationInp
 		return nil, err
 	}
 	CassSession := session
-
+	claims, err := helpers.GetClaimsFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	email_creator := claims["email"].(string)
 	cassandraQuestionBank := qbankz.ExamConfig{
 		ID:           guid.String(),
 		ExamID:       *input.ExamID,
 		IsActive:     *input.IsActive,
-		CreatedBy:    *input.CreatedBy,
-		UpdatedBy:    *input.UpdatedBy,
+		CreatedBy:    email_creator,
+		UpdatedBy:    email_creator,
 		CreatedAt:    time.Now().Unix(),
 		UpdatedAt:    time.Now().Unix(),
 		Shuffle:      *input.Shuffle,
@@ -67,7 +72,11 @@ func UpdateExamConfiguration(ctx context.Context, input *model.ExamConfiguration
 		return nil, err
 	}
 	CassSession := session
-
+	claims, err := helpers.GetClaimsFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	email_creator := claims["email"].(string)
 	cassandraQuestionBank := qbankz.ExamConfig{
 		ID: *input.ID,
 	}
@@ -109,8 +118,8 @@ func UpdateExamConfiguration(ctx context.Context, input *model.ExamConfiguration
 		cassandraQuestionBank.CreatedBy = *input.CreatedBy
 		updatedCols = append(updatedCols, "created_by")
 	}
-	if input.UpdatedBy != nil {
-		cassandraQuestionBank.UpdatedBy = *input.UpdatedBy
+	if email_creator != "" {
+		cassandraQuestionBank.UpdatedBy = email_creator
 		updatedCols = append(updatedCols, "updated_by")
 	}
 	updatedAt := time.Now().Unix()

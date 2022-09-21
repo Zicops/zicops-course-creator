@@ -12,10 +12,16 @@ import (
 	"github.com/zicops/contracts/coursez"
 	"github.com/zicops/zicops-cass-pool/cassandra"
 	"github.com/zicops/zicops-course-creator/graph/model"
+	"github.com/zicops/zicops-course-creator/helpers"
 )
 
 func AddCourseCohort(ctx context.Context, input *model.CourseCohortInput) (*model.CourseCohort, error) {
 	log.Info("AddCourseCohort called")
+	claims, err := helpers.GetClaimsFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	email_creator := claims["email"].(string)
 	session, err := cassandra.GetCassSession("coursez")
 	if err != nil {
 		return nil, err
@@ -36,8 +42,8 @@ func AddCourseCohort(ctx context.Context, input *model.CourseCohortInput) (*mode
 		IsMandatory:            *input.IsMandatory,
 		AddedBy:                *input.AddedBy,
 		IsActive:               *input.IsActive,
-		CreatedBy:              *input.CreatedBy,
-		UpdatedBy:              *input.UpdatedBy,
+		CreatedBy:              email_creator,
+		UpdatedBy:              email_creator,
 		CreatedAt:              time.Now().Unix(),
 		UpdatedAt:              time.Now().Unix(),
 		CohortCode:             *input.CohortCode,
@@ -78,6 +84,12 @@ func UpdateCourseCohort(ctx context.Context, input *model.CourseCohortInput) (*m
 	if err != nil {
 		return nil, err
 	}
+	log.Info("AddCourseCohort called")
+	claims, err := helpers.GetClaimsFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	email_creator := claims["email"].(string)
 	CassSession := session
 
 	cassandraQuestionBank := coursez.CourseCohortMapping{
@@ -109,8 +121,8 @@ func UpdateCourseCohort(ctx context.Context, input *model.CourseCohortInput) (*m
 		cassandraQuestionBank.CreatedBy = *input.CreatedBy
 		updatedCols = append(updatedCols, "created_by")
 	}
-	if input.UpdatedBy != nil {
-		cassandraQuestionBank.UpdatedBy = *input.UpdatedBy
+	if email_creator != "" {
+		cassandraQuestionBank.UpdatedBy = email_creator
 		updatedCols = append(updatedCols, "updated_by")
 	}
 	if input.CourseStatus != nil {

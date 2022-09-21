@@ -12,6 +12,7 @@ import (
 	"github.com/zicops/contracts/qbankz"
 	"github.com/zicops/zicops-cass-pool/cassandra"
 	"github.com/zicops/zicops-course-creator/graph/model"
+	"github.com/zicops/zicops-course-creator/helpers"
 )
 
 func QuestionSectionMap(ctx context.Context, input *model.MapSectionToBankInput) (*model.SectionQBMapping, error) {
@@ -22,14 +23,18 @@ func QuestionSectionMap(ctx context.Context, input *model.MapSectionToBankInput)
 		return nil, err
 	}
 	CassSession := session
-
+	claims, err := helpers.GetClaimsFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	email_creator := claims["email"].(string)
 	cassandraQuestionBank := qbankz.SectionQBMapping{
 		ID:              guid.String(),
 		QBId:            *input.QbID,
 		SectionID:       *input.SectionID,
 		IsActive:        *input.IsActive,
-		CreatedBy:       *input.CreatedBy,
-		UpdatedBy:       *input.UpdatedBy,
+		CreatedBy:       email_creator,
+		UpdatedBy:       email_creator,
 		CreatedAt:       time.Now().Unix(),
 		UpdatedAt:       time.Now().Unix(),
 		DifficultyLevel: *input.DifficultyLevel,
@@ -73,7 +78,11 @@ func QuestionSectionMapUpdate(ctx context.Context, input *model.MapSectionToBank
 		return nil, err
 	}
 	CassSession := session
-
+	claims, err := helpers.GetClaimsFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	email_creator := claims["email"].(string)
 	cassandraQuestionBank := qbankz.SectionQBMapping{
 		ID: *input.ID,
 	}
@@ -91,8 +100,8 @@ func QuestionSectionMapUpdate(ctx context.Context, input *model.MapSectionToBank
 		cassandraQuestionBank.IsActive = *input.IsActive
 		updatedCols = append(updatedCols, "is_active")
 	}
-	if input.UpdatedBy != nil {
-		cassandraQuestionBank.UpdatedBy = *input.UpdatedBy
+	if email_creator != "" {
+		cassandraQuestionBank.UpdatedBy = email_creator
 		updatedCols = append(updatedCols, "updated_by")
 	}
 	if input.CreatedBy != nil {
@@ -166,14 +175,18 @@ func QuestionFixed(ctx context.Context, input *model.SectionFixedQuestionsInput)
 		return nil, err
 	}
 	CassSession := session
-
+	claims, err := helpers.GetClaimsFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	email_creator := claims["email"].(string)
 	cassandraQuestionBank := qbankz.SectionFixedQuestions{
 		ID:         guid.String(),
 		SQBId:      *input.SqbID,
 		QuestionID: *input.QuestionID,
 		IsActive:   *input.IsActive,
-		CreatedBy:  *input.CreatedBy,
-		UpdatedBy:  *input.UpdatedBy,
+		CreatedBy:  email_creator,
+		UpdatedBy:  email_creator,
 		CreatedAt:  time.Now().Unix(),
 		UpdatedAt:  time.Now().Unix(),
 	}
@@ -207,7 +220,11 @@ func QuestionFixedUpdate(ctx context.Context, input *model.SectionFixedQuestions
 		return nil, err
 	}
 	CassSession := session
-
+	claims, err := helpers.GetClaimsFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	email_creator := claims["email"].(string)
 	cassandraQuestionBank := qbankz.SectionFixedQuestions{
 		ID: *input.ID,
 	}
@@ -225,8 +242,8 @@ func QuestionFixedUpdate(ctx context.Context, input *model.SectionFixedQuestions
 		cassandraQuestionBank.IsActive = *input.IsActive
 		updatedCols = append(updatedCols, "is_active")
 	}
-	if input.UpdatedBy != nil {
-		cassandraQuestionBank.UpdatedBy = *input.UpdatedBy
+	if email_creator != "" {
+		cassandraQuestionBank.UpdatedBy = email_creator
 		updatedCols = append(updatedCols, "updated_by")
 	}
 	if input.CreatedBy != nil {

@@ -11,6 +11,7 @@ import (
 	"github.com/zicops/contracts/coursez"
 	"github.com/zicops/zicops-cass-pool/cassandra"
 	"github.com/zicops/zicops-course-creator/graph/model"
+	"github.com/zicops/zicops-course-creator/helpers"
 	"github.com/zicops/zicops-course-creator/lib/db/bucket"
 	"github.com/zicops/zicops-course-creator/lib/googleprojectlib"
 )
@@ -23,7 +24,11 @@ func AddTopicResources(ctx context.Context, courseID string, resource *model.Top
 		return nil, err
 	}
 	CassSession := session
-
+	claims, err := helpers.GetClaimsFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	email_creator := claims["email"].(string)
 	isSuccess := model.UploadResult{}
 	getUrl := ""
 	bucketPath := ""
@@ -62,14 +67,8 @@ func AddTopicResources(ctx context.Context, courseID string, resource *model.Top
 	if resource.Name != nil {
 		sourceName = *resource.Name
 	}
-	createdBy := ""
-	if resource.CreatedBy != nil {
-		createdBy = *resource.CreatedBy
-	}
-	updatedBy := ""
-	if resource.UpdatedBy != nil {
-		updatedBy = *resource.UpdatedBy
-	}
+	createdBy := email_creator
+	updatedBy := email_creator
 	cassandraResource := coursez.Resource{
 		ID:         guid,
 		Name:       sourceName,

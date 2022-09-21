@@ -21,6 +21,7 @@ import (
 	"github.com/zicops/zicops-cass-pool/cassandra"
 	"github.com/zicops/zicops-course-creator/constants"
 	"github.com/zicops/zicops-course-creator/graph/model"
+	"github.com/zicops/zicops-course-creator/helpers"
 	"github.com/zicops/zicops-course-creator/lib/db/bucket"
 	"github.com/zicops/zicops-course-creator/lib/googleprojectlib"
 )
@@ -33,7 +34,10 @@ func TopicContentCreate(ctx context.Context, topicID string, courseID string, to
 		return nil, err
 	}
 	CassSession := session
-
+	_, err = helpers.GetClaimsFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
 	cassandraTopicContent := coursez.TopicContent{
 		ID:                 guid.String(),
 		TopicId:            topicID,
@@ -99,7 +103,10 @@ func TopicExamCreate(ctx context.Context, topicID string, courseID string, exam 
 		return nil, err
 	}
 	CassSession := session
-
+	_, err = helpers.GetClaimsFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
 	cassandraTopicContent := coursez.TopicExam{
 		ID:        guid.String(),
 		TopicId:   topicID,
@@ -135,7 +142,10 @@ func UploadTopicVideo(ctx context.Context, file model.TopicVideo) (*model.Upload
 		return nil, err
 	}
 	CassSession := session
-
+	_, err = helpers.GetClaimsFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
 	isSuccess := model.UploadResult{}
 	storageC := bucket.NewStorageHandler()
 	gproject := googleprojectlib.GetGoogleProjectID()
@@ -179,7 +189,10 @@ func UploadTopicVideo(ctx context.Context, file model.TopicVideo) (*model.Upload
 
 func UploadTopicSubtitle(ctx context.Context, files []*model.TopicSubtitle) ([]*model.UploadResultSubtitles, error) {
 	log.Info("UploadTopicSubtitle called")
-
+	_, err := helpers.GetClaimsFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
 	isSuccess := []*model.UploadResultSubtitles{}
 	for _, file := range files {
 		isLocalSuccess := model.UploadResultSubtitles{}
@@ -245,7 +258,10 @@ func UpdateTopicContent(ctx context.Context, topicConent *model.TopicContentInpu
 		return nil, err
 	}
 	CassSession := session
-
+	_, err = helpers.GetClaimsFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
 	cassandraTopicContent := coursez.TopicContent{
 		ID: *contentID,
 	}
@@ -331,7 +347,10 @@ func UpdateTopicExam(ctx context.Context, exam *model.TopicExamInput) (*model.To
 		return nil, err
 	}
 	CassSession := session
-
+	_, err = helpers.GetClaimsFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
 	cassandraTopicContent := coursez.TopicExam{
 		ID: *tExamId,
 	}
@@ -384,7 +403,10 @@ func UploadTopicStaticContent(ctx context.Context, file *model.StaticContent) (*
 		return nil, err
 	}
 	CassSession := session
-
+	_, err = helpers.GetClaimsFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
 	isSuccess := model.UploadResult{}
 	bucketPath := ""
 	getUrl := ""

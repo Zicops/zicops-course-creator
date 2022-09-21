@@ -12,6 +12,7 @@ import (
 	"github.com/zicops/contracts/coursez"
 	"github.com/zicops/zicops-cass-pool/cassandra"
 	"github.com/zicops/zicops-course-creator/graph/model"
+	"github.com/zicops/zicops-course-creator/helpers"
 )
 
 func ModuleCreate(ctx context.Context, courseID string, module *model.ModuleInput) (*model.Module, error) {
@@ -22,7 +23,10 @@ func ModuleCreate(ctx context.Context, courseID string, module *model.ModuleInpu
 		return nil, err
 	}
 	CassSession := session
-
+	_, err = helpers.GetClaimsFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
 	cassandraModule := coursez.Module{
 		ID:          guid.String(),
 		Name:        *module.Name,
@@ -81,7 +85,10 @@ func UpdateModule(ctx context.Context, module *model.ModuleInput) (*model.Module
 		return nil, err
 	}
 	CassSession := session
-
+	_, err = helpers.GetClaimsFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
 	cassandraModule := coursez.Module{
 		ID: *module.ID,
 	}
