@@ -6,6 +6,7 @@ require (
 	cloud.google.com/go/compute v1.10.0
 	cloud.google.com/go/storage v1.26.0
 	github.com/99designs/gqlgen v0.17.20
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/gin-contrib/cors v1.4.0
 	github.com/gin-gonic/gin v1.8.1
 	github.com/rs/xid v1.4.0
