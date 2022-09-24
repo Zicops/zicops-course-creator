@@ -9,7 +9,7 @@ maxSurge: 1
 
 image:
   repository: gcr.io/zicops-one/zicops-course-creator
-  tag: ${GITHUB_SHA}
+  tag: staging
   pullPolicy: Always
   health: /healthz
   port: 8090
