@@ -3,13 +3,12 @@ name: Docker Image CI
 on:
   push:
     branches: [ staging ]
-  pull_request:
-    branches: [ staging ]
 env:
   PROJECT_ID: ${{ secrets.GKE_PROJECT }}
-  GKE_CLUSTER: zicops-one    # TODO: update to cluster name
-  GKE_ZONE: asia-southeast1-a   # TODO: update to cluster zone
+  GKE_CLUSTER: zicops-production-cost-one
+  GKE_ZONE: asia-south1-a
   SERVICE_NAME: zicops-course-creator
+  NAMESPACE: staging
 jobs:
 
   build:
@@ -44,9 +43,9 @@ jobs:
     - name: Install Helm
       run: |
         curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
-    - name: Deploy to zicops-one
+    - name: Deploy to zicops-production-1
       run: |
         gcloud container clusters get-credentials $GKE_CLUSTER \
           --zone $GKE_ZONE \
           --project $PROJECT_ID
-        helm upgrade zicops-course-creator k8s/zicops-course-creator --install --wait --atomic
+        helm upgrade -n $NAMESPACE zicops-course-creator k8s/zicops-course-creator --install --wait --atomic
