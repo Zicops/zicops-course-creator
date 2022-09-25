@@ -58,11 +58,11 @@ spec:
           - name: CASSANDRA_KEY
             value: {{ $zcbkey }}
           - name: REDIS_HOST
-            value: "prod-redis-cluster.redis.svc.cluster.local"
+            value: "staging-redis-cluster.redis.svc.cluster.local"
           - name: REDIS_PORT
             value: "6379"
           - name: REDIS_PASSWORD
-            value: "AI2GIErdjD"
+            value: "C6aXVndjSb"
           ports:
             - name: http-server-cc
               containerPort: {{ .Values.asp.port }}
@@ -97,13 +97,13 @@ spec:
           - name: GOOGLE_APPLICATION_CREDENTIALS
             value: {{ $zcbcred }}
           - name: CASSANDRA_HOST
-            value: "3adcf077-0f2e-447a-b901-4b7b77b8e78d-asia-south1.db.astra.datastax.com"
+            value: "a74f374d-dae8-4356-9443-ae052dbe3046-asia-south1.db.astra.datastax.com"
           - name: CASSANDRA_PORT
             value: "29042"
           - name: CASSANDRA_USERNAME
-            value: "oNMMDhfoAmdhhaNMWajICmnk"
+            value: "wudagnSLTSHsgHmUdIBrTBXc"
           - name: CASSANDRA_PASSWORD
-            value: "Ah0_7-ZCiOlC+J+8vTtC,T-a,36IW0cQvHY0Km3AhPQeWxrKJpjvGJ,34UZhMGsn93uBQz5Yle_j6ZTDdi0+IW7lZjB9f.wK8bLZBOWyTraZLB-B.P.Dkljqw0j2QnZE"
+            value: "RmB8_,LZ_qu75j,3Eszhcc.5quNAWst7SinS5Sh16IIK,cO_CeFK-Zd2YLFkaFoBSsDnLm2YZ4w.RLLFJM6spYr12BZl6TzO722fApguJ1LfwIA,vYLsa4bF20FfRpsH"
           - name: CASSANDRA_CERT
             value: {{ $zcbcert }}
           - name: CASSANDRA_CA
@@ -111,11 +111,11 @@ spec:
           - name: CASSANDRA_KEY
             value: {{ $zcbkey }}
           - name: REDIS_HOST
-            value: "prod-redis-cluster.redis.svc.cluster.local"
+            value: "staging-redis-cluster.redis.svc.cluster.local"
           - name: REDIS_PORT
             value: "6379"
           - name: REDIS_PASSWORD
-            value: "AI2GIErdjD"
+            value: "C6aXVndjSb"
       volumes:
       - name: zicops-cc
         secret:
