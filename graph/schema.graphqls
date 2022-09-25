@@ -13,6 +13,7 @@ input sub_categories_input {
 type Course{
     id: ID
     name: String
+    lspId: String
     description: String
     summary: String
     instructor: String
@@ -59,6 +60,7 @@ enum Status {
 input CourseInput{
     id: ID    
     name: String
+    lspId: String
     description: String
     summary: String
     instructor: String
