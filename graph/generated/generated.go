@@ -91,6 +91,7 @@ type ComplexityRoot struct {
 		Prequisites        func(childComplexity int) int
 		PreviewVideo       func(childComplexity int) int
 		PublishDate        func(childComplexity int) int
+		Publisher          func(childComplexity int) int
 		QaRequired         func(childComplexity int) int
 		RelatedSkills      func(childComplexity int) int
 		Status             func(childComplexity int) int
@@ -835,6 +836,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Course.PublishDate(childComplexity), true
+
+	case "Course.publisher":
+		if e.complexity.Course.Publisher == nil {
+			break
+		}
+
+		return e.complexity.Course.Publisher(childComplexity), true
 
 	case "Course.qa_required":
 		if e.complexity.Course.QaRequired == nil {
@@ -3263,6 +3271,7 @@ type Course{
     id: ID
     name: String
     lspId: String
+    publisher: String
     description: String
     summary: String
     instructor: String
@@ -3310,6 +3319,7 @@ input CourseInput{
     id: ID    
     name: String
     lspId: String
+    publisher: String
     description: String
     summary: String
     instructor: String
@@ -5710,6 +5720,38 @@ func (ec *executionContext) _Course_lspId(ctx context.Context, field graphql.Col
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.LspID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Course_publisher(ctx context.Context, field graphql.CollectedField, obj *model.Course) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Course",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Publisher, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -17906,6 +17948,14 @@ func (ec *executionContext) unmarshalInputCourseInput(ctx context.Context, obj i
 			if err != nil {
 				return it, err
 			}
+		case "publisher":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("publisher"))
+			it.Publisher, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
 		case "description":
 			var err error
 
@@ -20641,6 +20691,13 @@ func (ec *executionContext) _Course(ctx context.Context, sel ast.SelectionSet, o
 		case "lspId":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Course_lspId(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+		case "publisher":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Course_publisher(ctx, field, obj)
 			}
 
 			out.Values[i] = innerFunc(ctx)

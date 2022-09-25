@@ -89,6 +89,7 @@ func CourseCreator(ctx context.Context, courseInput *model.CourseInput) (*model.
 		ID:                 guid.String(),
 		Name:               *courseInput.Name,
 		LspID:              *courseInput.LspID,
+		Publisher:          *courseInput.Publisher,
 		Description:        *courseInput.Description,
 		Image:              "https://storage.googleapis.com/zicops.com/school-board-ge1701ca8f_640.jpg",
 		PreviewVideo:       "https://storage.googleapis.com/zicops.com/school-board-ge1701ca8f_640.jpg",
@@ -164,6 +165,7 @@ func CourseCreator(ctx context.Context, courseInput *model.CourseInput) (*model.
 	responseModel := model.Course{
 		ID:                 &cassandraCourse.ID,
 		LspID:              &cassandraCourse.LspID,
+		Publisher:          &cassandraCourse.Publisher,
 		Name:               courseInput.Name,
 		Description:        courseInput.Description,
 		Summary:            courseInput.Summary,
@@ -541,6 +543,10 @@ func CourseUpdate(ctx context.Context, courseInput *model.CourseInput) (*model.C
 		updateCols = append(updateCols, "lsp_id")
 		cassandraCourse.LspID = *courseInput.LspID
 	}
+	if courseInput.Publisher != nil {
+		updateCols = append(updateCols, "publisher")
+		cassandraCourse.Publisher = *courseInput.Publisher
+	}
 	updateCols = append(updateCols, "updated_at")
 	// set course in cassandra
 	upStms, uNames := coursez.CourseTable.Update(updateCols...)
@@ -554,6 +560,7 @@ func CourseUpdate(ctx context.Context, courseInput *model.CourseInput) (*model.C
 		ID:                 &cassandraCourse.ID,
 		Name:               courseInput.Name,
 		LspID:              &cassandraCourse.LspID,
+		Publisher:          &cassandraCourse.Publisher,
 		Description:        courseInput.Description,
 		Summary:            courseInput.Summary,
 		Instructor:         courseInput.Instructor,
