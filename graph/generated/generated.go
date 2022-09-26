@@ -232,7 +232,7 @@ type ComplexityRoot struct {
 		AddSectionFixedQuestions    func(childComplexity int, input *model.SectionFixedQuestionsInput) int
 		AddSubCatMain               func(childComplexity int, input []*model.SubCatMainInput) int
 		AddSubCategories            func(childComplexity int, subCategory []*string) int
-		AddTopicContent             func(childComplexity int, topicID *string, courseID *string, topicContent *model.TopicContentInput) int
+		AddTopicContent             func(childComplexity int, topicID *string, courseID *string, moduleID *string, topicContent *model.TopicContentInput) int
 		AddTopicExam                func(childComplexity int, topicID *string, courseID *string, exam *model.TopicExamInput) int
 		CreateQuestionBank          func(childComplexity int, input *model.QuestionBankInput) int
 		MapSectionToBank            func(childComplexity int, input *model.MapSectionToBankInput) int
@@ -254,7 +254,7 @@ type ComplexityRoot struct {
 		UpdateQuiz                  func(childComplexity int, quiz *model.QuizInput) int
 		UpdateSectionFixedQuestions func(childComplexity int, input *model.SectionFixedQuestionsInput) int
 		UpdateSectionToBank         func(childComplexity int, input *model.MapSectionToBankInput) int
-		UpdateTopicContent          func(childComplexity int, topicContent *model.TopicContentInput) int
+		UpdateTopicContent          func(childComplexity int, topicContent *model.TopicContentInput, moduleID *string) int
 		UpdateTopicExam             func(childComplexity int, exam *model.TopicExamInput) int
 		UploadCourseImage           func(childComplexity int, file *model.CourseFile) int
 		UploadCoursePreviewVideo    func(childComplexity int, file *model.CourseFile) int
@@ -480,10 +480,10 @@ type MutationResolver interface {
 	UpdateCourseChapter(ctx context.Context, chapter *model.ChapterInput) (*model.Chapter, error)
 	AddCourseTopic(ctx context.Context, courseID *string, topic *model.TopicInput) (*model.Topic, error)
 	UpdateCourseTopic(ctx context.Context, topic *model.TopicInput) (*model.Topic, error)
-	AddTopicContent(ctx context.Context, topicID *string, courseID *string, topicContent *model.TopicContentInput) (*model.TopicContent, error)
+	AddTopicContent(ctx context.Context, topicID *string, courseID *string, moduleID *string, topicContent *model.TopicContentInput) (*model.TopicContent, error)
 	AddTopicExam(ctx context.Context, topicID *string, courseID *string, exam *model.TopicExamInput) (*model.TopicExam, error)
 	UpdateTopicExam(ctx context.Context, exam *model.TopicExamInput) (*model.TopicExam, error)
-	UpdateTopicContent(ctx context.Context, topicContent *model.TopicContentInput) (*model.TopicContent, error)
+	UpdateTopicContent(ctx context.Context, topicContent *model.TopicContentInput, moduleID *string) (*model.TopicContent, error)
 	UploadTopicContentVideo(ctx context.Context, file *model.TopicVideo) (*model.UploadResult, error)
 	UploadTopicContentSubtitle(ctx context.Context, file []*model.TopicSubtitle) ([]*model.UploadResultSubtitles, error)
 	UploadTopicStaticContent(ctx context.Context, file *model.StaticContent) (*model.UploadResult, error)
@@ -1781,7 +1781,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.AddTopicContent(childComplexity, args["topicId"].(*string), args["courseId"].(*string), args["topicContent"].(*model.TopicContentInput)), true
+		return e.complexity.Mutation.AddTopicContent(childComplexity, args["topicId"].(*string), args["courseId"].(*string), args["moduleId"].(*string), args["topicContent"].(*model.TopicContentInput)), true
 
 	case "Mutation.addTopicExam":
 		if e.complexity.Mutation.AddTopicExam == nil {
@@ -2045,7 +2045,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.UpdateTopicContent(childComplexity, args["topicContent"].(*model.TopicContentInput)), true
+		return e.complexity.Mutation.UpdateTopicContent(childComplexity, args["topicContent"].(*model.TopicContentInput), args["moduleId"].(*string)), true
 
 	case "Mutation.updateTopicExam":
 		if e.complexity.Mutation.UpdateTopicExam == nil {
@@ -4044,10 +4044,10 @@ type Mutation{
     updateCourseChapter(chapter: ChapterInput): Chapter
     addCourseTopic(courseId: String, topic: TopicInput): Topic
     updateCourseTopic(topic: TopicInput): Topic
-    addTopicContent(topicId: String, courseId:String, topicContent: TopicContentInput): TopicContent
+    addTopicContent(topicId: String, courseId:String, moduleId: String, topicContent: TopicContentInput): TopicContent
     addTopicExam(topicId: String, courseId:String, exam: TopicExamInput): TopicExam
     updateTopicExam(exam: TopicExamInput): TopicExam
-    updateTopicContent(topicContent: TopicContentInput): TopicContent
+    updateTopicContent(topicContent: TopicContentInput, moduleId: String): TopicContent
     uploadTopicContentVideo(file: TopicVideo): UploadResult
     uploadTopicContentSubtitle(file: [TopicSubtitle]): [UploadResultSubtitles]
     uploadTopicStaticContent(file: StaticContent): UploadResult
@@ -4495,15 +4495,24 @@ func (ec *executionContext) field_Mutation_addTopicContent_args(ctx context.Cont
 		}
 	}
 	args["courseId"] = arg1
-	var arg2 *model.TopicContentInput
-	if tmp, ok := rawArgs["topicContent"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("topicContent"))
-		arg2, err = ec.unmarshalOTopicContentInput2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐTopicContentInput(ctx, tmp)
+	var arg2 *string
+	if tmp, ok := rawArgs["moduleId"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("moduleId"))
+		arg2, err = ec.unmarshalOString2ᚖstring(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["topicContent"] = arg2
+	args["moduleId"] = arg2
+	var arg3 *model.TopicContentInput
+	if tmp, ok := rawArgs["topicContent"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("topicContent"))
+		arg3, err = ec.unmarshalOTopicContentInput2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐTopicContentInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["topicContent"] = arg3
 	return args, nil
 }
 
@@ -4852,6 +4861,15 @@ func (ec *executionContext) field_Mutation_updateTopicContent_args(ctx context.C
 		}
 	}
 	args["topicContent"] = arg0
+	var arg1 *string
+	if tmp, ok := rawArgs["moduleId"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("moduleId"))
+		arg1, err = ec.unmarshalOString2ᚖstring(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["moduleId"] = arg1
 	return args, nil
 }
 
@@ -10094,7 +10112,7 @@ func (ec *executionContext) _Mutation_addTopicContent(ctx context.Context, field
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().AddTopicContent(rctx, args["topicId"].(*string), args["courseId"].(*string), args["topicContent"].(*model.TopicContentInput))
+		return ec.resolvers.Mutation().AddTopicContent(rctx, args["topicId"].(*string), args["courseId"].(*string), args["moduleId"].(*string), args["topicContent"].(*model.TopicContentInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -10211,7 +10229,7 @@ func (ec *executionContext) _Mutation_updateTopicContent(ctx context.Context, fi
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().UpdateTopicContent(rctx, args["topicContent"].(*model.TopicContentInput))
+		return ec.resolvers.Mutation().UpdateTopicContent(rctx, args["topicContent"].(*model.TopicContentInput), args["moduleId"].(*string))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
