@@ -61,6 +61,7 @@ type Course struct {
 	ID                 *string          `json:"id"`
 	Name               *string          `json:"name"`
 	LspID              *string          `json:"lspId"`
+	Publisher          *string          `json:"publisher"`
 	Description        *string          `json:"description"`
 	Summary            *string          `json:"summary"`
 	Instructor         *string          `json:"instructor"`
@@ -140,6 +141,7 @@ type CourseInput struct {
 	ID                 *string               `json:"id"`
 	Name               *string               `json:"name"`
 	LspID              *string               `json:"lspId"`
+	Publisher          *string               `json:"publisher"`
 	Description        *string               `json:"description"`
 	Summary            *string               `json:"summary"`
 	Instructor         *string               `json:"instructor"`
