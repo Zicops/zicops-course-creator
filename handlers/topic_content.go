@@ -56,6 +56,9 @@ func TopicContentCreate(ctx context.Context, topicID string, courseID string, mo
 		if err := getModuleQuery.SelectRelease(&mod); err != nil {
 			return nil, err
 		}
+		if len(mod) == 0 {
+			return nil, fmt.Errorf("module not found")
+		}
 		newDuration := *topicConent.Duration + mod[0].Duration
 		queryStr := fmt.Sprintf("UPDATE coursez.module SET duration=%d WHERE id='%s'", newDuration, *moduleID)
 		updateQ := CassSession.Query(queryStr, nil)
@@ -68,6 +71,9 @@ func TopicContentCreate(ctx context.Context, topicID string, courseID string, mo
 		getCourseQuery := CassSession.Query(coursez.CourseTable.Get()).BindMap(qb.M{"id": cassandraTopicContent.CourseId})
 		if err := getCourseQuery.SelectRelease(&course); err != nil {
 			return nil, err
+		}
+		if len(course) == 0 {
+			return nil, fmt.Errorf("course not found")
 		}
 		newDuration := course[0].Duration - cassandraTopicContent.Duration + *topicConent.Duration
 		queryStr := fmt.Sprintf("UPDATE coursez.course SET duration=%d WHERE id='%s'", newDuration, cassandraTopicContent.CourseId)
@@ -343,6 +349,9 @@ func UpdateTopicContent(ctx context.Context, topicConent *model.TopicContentInpu
 		if err := getModuleQuery.SelectRelease(&mod); err != nil {
 			return nil, err
 		}
+		if len(mod) < 1 {
+			return nil, fmt.Errorf("module not found")
+		}
 		newDuration := mod[0].Duration - cassandraTopicContent.Duration + *topicConent.Duration
 		queryStr := fmt.Sprintf("UPDATE coursez.module SET duration=%d WHERE id='%s'", newDuration, *moduleId)
 		updateQ := CassSession.Query(queryStr, nil)
@@ -355,6 +364,9 @@ func UpdateTopicContent(ctx context.Context, topicConent *model.TopicContentInpu
 		getCourseQuery := CassSession.Query(coursez.CourseTable.Get()).BindMap(qb.M{"id": cassandraTopicContent.CourseId})
 		if err := getCourseQuery.SelectRelease(&course); err != nil {
 			return nil, err
+		}
+		if len(course) < 1 {
+			return nil, fmt.Errorf("course not found")
 		}
 		newDuration := course[0].Duration - cassandraTopicContent.Duration + *topicConent.Duration
 		queryStr := fmt.Sprintf("UPDATE coursez.course SET duration=%d WHERE id='%s'", newDuration, cassandraTopicContent.CourseId)
