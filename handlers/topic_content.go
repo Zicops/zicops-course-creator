@@ -51,14 +51,26 @@ func TopicContentCreate(ctx context.Context, topicID string, courseID string, mo
 		IsActive:           false,
 	}
 	if moduleID != nil && topicConent.Duration != nil {
-		queryStr := fmt.Sprintf("UPDATE coursez.module SET duration=duration+%d WHERE id='%s'", *topicConent.Duration, *moduleID)
+		mod := []coursez.Module{}
+		getModuleQuery := CassSession.Query(coursez.ModuleTable.Get()).BindMap(qb.M{"id": *moduleID})
+		if err := getModuleQuery.SelectRelease(&mod); err != nil {
+			return nil, err
+		}
+		newDuration := *topicConent.Duration + mod[0].Duration
+		queryStr := fmt.Sprintf("UPDATE coursez.module SET duration=%d WHERE id='%s'", newDuration, *moduleID)
 		updateQ := CassSession.Query(queryStr, nil)
 		if err := updateQ.ExecRelease(); err != nil {
 			return nil, err
 		}
 	}
 	if topicConent.Duration != nil && cassandraTopicContent.CourseId != "" {
-		queryStr := fmt.Sprintf("UPDATE coursez.course SET duration=duration+%d WHERE id='%s'", *topicConent.Duration, cassandraTopicContent.CourseId)
+		course := []coursez.Course{}
+		getCourseQuery := CassSession.Query(coursez.CourseTable.Get()).BindMap(qb.M{"id": cassandraTopicContent.CourseId})
+		if err := getCourseQuery.SelectRelease(&course); err != nil {
+			return nil, err
+		}
+		newDuration := course[0].Duration - cassandraTopicContent.Duration + *topicConent.Duration
+		queryStr := fmt.Sprintf("UPDATE coursez.course SET duration=%d WHERE id='%s'", newDuration, cassandraTopicContent.CourseId)
 		updateQ := CassSession.Query(queryStr, nil)
 		if err := updateQ.ExecRelease(); err != nil {
 			return nil, err
@@ -326,14 +338,26 @@ func UpdateTopicContent(ctx context.Context, topicConent *model.TopicContentInpu
 	}
 	// set course in cassandra
 	if moduleId != nil && topicConent.Duration != nil {
-		queryStr := fmt.Sprintf("UPDATE coursez.module SET duration=duration-%d+%d WHERE id='%s'", cassandraTopicContent.Duration, *topicConent.Duration, *moduleId)
+		mod := []coursez.Module{}
+		getModuleQuery := CassSession.Query(coursez.ModuleTable.Get()).BindMap(qb.M{"id": *moduleId})
+		if err := getModuleQuery.SelectRelease(&mod); err != nil {
+			return nil, err
+		}
+		newDuration := mod[0].Duration - cassandraTopicContent.Duration + *topicConent.Duration
+		queryStr := fmt.Sprintf("UPDATE coursez.module SET duration=%d WHERE id='%s'", newDuration, *moduleId)
 		updateQ := CassSession.Query(queryStr, nil)
 		if err := updateQ.ExecRelease(); err != nil {
 			return nil, err
 		}
 	}
 	if cassandraTopicContent.CourseId != "" && topicConent.Duration != nil {
-		queryStr := fmt.Sprintf("UPDATE coursez.course SET duration=duration-%d+%d WHERE id='%s'", cassandraTopicContent.Duration, *topicConent.Duration, cassandraTopicContent.CourseId)
+		course := []coursez.Course{}
+		getCourseQuery := CassSession.Query(coursez.CourseTable.Get()).BindMap(qb.M{"id": cassandraTopicContent.CourseId})
+		if err := getCourseQuery.SelectRelease(&course); err != nil {
+			return nil, err
+		}
+		newDuration := course[0].Duration - cassandraTopicContent.Duration + *topicConent.Duration
+		queryStr := fmt.Sprintf("UPDATE coursez.course SET duration=%d WHERE id='%s'", newDuration, cassandraTopicContent.CourseId)
 		updateQ := CassSession.Query(queryStr, nil)
 		if err := updateQ.ExecRelease(); err != nil {
 			return nil, err
