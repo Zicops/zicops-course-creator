@@ -3,8 +3,11 @@ package handlers
 import (
 	"bytes"
 	"context"
+	"encoding/base64"
+	"fmt"
 	"io"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/rs/xid"
@@ -107,9 +110,30 @@ func AddCatMain(ctx context.Context, input []*model.CatMainInput) ([]*model.CatM
 	catMain := make([]*model.CatMain, len(input))
 	for i, cc := range input {
 		c := cc
-		guid := xid.New()
+		guid := base64.URLEncoding.EncodeToString([]byte(strings.ToLower(*c.Name)))
 		imageUrl := ""
 		imageBucket := ""
+		qryStr := fmt.Sprintf(`SELECT * from coursez.cat_main where id='%s'`, guid)
+		getCats := func() (banks []coursez.CatMain, err error) {
+			q := CassSession.Query(qryStr, nil)
+			defer q.Release()
+			iter := q.Iter()
+			return banks, iter.Select(&banks)
+		}
+		cats, err := getCats()
+		currentLspIds := []string{}
+		if err == nil && len(cats) > 0 {
+			currentSavedCat := cats[0]
+			if c.LspID != nil {
+				currentLspIds = append(currentLspIds, *c.LspID)
+			} else {
+				currentLspIds = currentSavedCat.LspIDs
+			}
+		} else {
+			if c.LspID != nil {
+				currentLspIds = append(currentLspIds, *c.LspID)
+			}
+		}
 		if c.ImageFile != nil {
 			storageC := bucket.NewStorageHandler()
 			gproject := googleprojectlib.GetGoogleProjectID()
@@ -118,7 +142,7 @@ func AddCatMain(ctx context.Context, input []*model.CatMainInput) ([]*model.CatM
 				log.Errorf("Failed to upload image to course: %v", err.Error())
 				continue
 			}
-			imageBucket = guid.String() + "/catimages/" + c.ImageFile.Filename
+			imageBucket = guid + "/catimages/" + c.ImageFile.Filename
 			writer, err := storageC.UploadToGCS(ctx, imageBucket, map[string]string{})
 			if err != nil {
 				log.Errorf("Failed to upload image to course: %v", err.Error())
@@ -139,7 +163,7 @@ func AddCatMain(ctx context.Context, input []*model.CatMainInput) ([]*model.CatM
 			imageUrl = *c.ImageURL
 		}
 		cassandraCategory := coursez.CatMain{
-			ID:          guid.String(),
+			ID:          guid,
 			Name:        *c.Name,
 			Description: *c.Description,
 			Code:        *c.Code,
@@ -150,6 +174,7 @@ func AddCatMain(ctx context.Context, input []*model.CatMainInput) ([]*model.CatM
 			IsActive:    *c.IsActive,
 			ImageBucket: imageBucket,
 			ImageURL:    imageUrl,
+			LspIDs:      currentLspIds,
 		}
 		insertQuery := CassSession.Query(coursez.CatMainTable.Insert()).BindStruct(cassandraCategory)
 		if err := insertQuery.ExecRelease(); err != nil {
@@ -168,6 +193,7 @@ func AddCatMain(ctx context.Context, input []*model.CatMainInput) ([]*model.CatM
 			UpdatedBy:   &cassandraCategory.UpdatedBy,
 			IsActive:    &cassandraCategory.IsActive,
 			ImageURL:    &cassandraCategory.ImageURL,
+			LspID:       c.LspID,
 		}
 	}
 	return catMain, nil
@@ -189,9 +215,30 @@ func AddSubCatMain(ctx context.Context, input []*model.SubCatMainInput) ([]*mode
 	subCatMain := make([]*model.SubCatMain, len(input))
 	for i, cc := range input {
 		c := cc
-		guid := xid.New()
+		guid := base64.URLEncoding.EncodeToString([]byte(strings.ToLower(*c.Name)))
 		imageUrl := ""
 		imageBucket := ""
+		qryStr := fmt.Sprintf(`SELECT * from coursez.sub_cat_main where id='%s'`, guid)
+		getCats := func() (banks []coursez.SubCatMain, err error) {
+			q := CassSession.Query(qryStr, nil)
+			defer q.Release()
+			iter := q.Iter()
+			return banks, iter.Select(&banks)
+		}
+		cats, err := getCats()
+		currentLspIds := []string{}
+		if err == nil && len(cats) > 0 {
+			currentSavedCat := cats[0]
+			if c.LspID != nil {
+				currentLspIds = append(currentLspIds, *c.LspID)
+			} else {
+				currentLspIds = currentSavedCat.LspIDs
+			}
+		} else {
+			if c.LspID != nil {
+				currentLspIds = append(currentLspIds, *c.LspID)
+			}
+		}
 		if c.ImageFile != nil {
 			storageC := bucket.NewStorageHandler()
 			gproject := googleprojectlib.GetGoogleProjectID()
@@ -200,7 +247,7 @@ func AddSubCatMain(ctx context.Context, input []*model.SubCatMainInput) ([]*mode
 				log.Errorf("Failed to upload image to course: %v", err.Error())
 				continue
 			}
-			imageBucket = guid.String() + "/subcatimages/" + c.ImageFile.Filename
+			imageBucket = guid + "/subcatimages/" + c.ImageFile.Filename
 			writer, err := storageC.UploadToGCS(ctx, imageBucket, map[string]string{})
 			if err != nil {
 				log.Errorf("Failed to upload image to course: %v", err.Error())
@@ -221,7 +268,7 @@ func AddSubCatMain(ctx context.Context, input []*model.SubCatMainInput) ([]*mode
 			imageUrl = *c.ImageURL
 		}
 		cassandraCategory := coursez.SubCatMain{
-			ID:          guid.String(),
+			ID:          guid,
 			Name:        *c.Name,
 			Description: *c.Description,
 			Code:        *c.Code,
@@ -233,6 +280,7 @@ func AddSubCatMain(ctx context.Context, input []*model.SubCatMainInput) ([]*mode
 			ParentID:    *c.CatID,
 			ImageBucket: imageBucket,
 			ImageURL:    imageUrl,
+			LspIDs:      currentLspIds,
 		}
 		insertQuery := CassSession.Query(coursez.SubCatMainTable.Insert()).BindStruct(cassandraCategory)
 		if err := insertQuery.ExecRelease(); err != nil {
@@ -252,6 +300,7 @@ func AddSubCatMain(ctx context.Context, input []*model.SubCatMainInput) ([]*mode
 			IsActive:    &cassandraCategory.IsActive,
 			CatID:       &cassandraCategory.ParentID,
 			ImageURL:    &cassandraCategory.ImageURL,
+			LspID:       c.LspID,
 		}
 	}
 	return subCatMain, nil

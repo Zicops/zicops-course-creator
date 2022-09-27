@@ -49,6 +49,7 @@ type ComplexityRoot struct {
 		ID          func(childComplexity int) int
 		ImageURL    func(childComplexity int) int
 		IsActive    func(childComplexity int) int
+		LspID       func(childComplexity int) int
 		Name        func(childComplexity int) int
 		UpdatedAt   func(childComplexity int) int
 		UpdatedBy   func(childComplexity int) int
@@ -400,6 +401,7 @@ type ComplexityRoot struct {
 		ID          func(childComplexity int) int
 		ImageURL    func(childComplexity int) int
 		IsActive    func(childComplexity int) int
+		LspID       func(childComplexity int) int
 		Name        func(childComplexity int) int
 		UpdatedAt   func(childComplexity int) int
 		UpdatedBy   func(childComplexity int) int
@@ -584,6 +586,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.CatMain.IsActive(childComplexity), true
+
+	case "CatMain.LspId":
+		if e.complexity.CatMain.LspID == nil {
+			break
+		}
+
+		return e.complexity.CatMain.LspID(childComplexity), true
 
 	case "CatMain.Name":
 		if e.complexity.CatMain.Name == nil {
@@ -2897,6 +2906,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.SubCatMain.IsActive(childComplexity), true
 
+	case "SubCatMain.LspId":
+		if e.complexity.SubCatMain.LspID == nil {
+			break
+		}
+
+		return e.complexity.SubCatMain.LspID(childComplexity), true
+
 	case "SubCatMain.Name":
 		if e.complexity.SubCatMain.Name == nil {
 			break
@@ -3982,6 +3998,7 @@ input CatMainInput {
     UpdatedBy: String
     IsActive : Boolean
     ImageFile: Upload
+    LspId: String
 }
 
 type CatMain {
@@ -3995,6 +4012,7 @@ type CatMain {
     CreatedBy: String
     UpdatedBy: String
     IsActive : Boolean
+    LspId: String
 }
 
 input SubCatMainInput {
@@ -4010,6 +4028,7 @@ input SubCatMainInput {
     UpdatedBy: String
     IsActive : Boolean
     ImageFile: Upload
+    LspId: String
 }
 
 type SubCatMain {
@@ -4024,6 +4043,7 @@ type SubCatMain {
     CreatedBy: String
     UpdatedBy: String
     IsActive : Boolean
+    LspId: String
 }
 
 # define type mutations to add a course  using courseInput
@@ -5397,6 +5417,38 @@ func (ec *executionContext) _CatMain_IsActive(ctx context.Context, field graphql
 	res := resTmp.(*bool)
 	fc.Result = res
 	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _CatMain_LspId(ctx context.Context, field graphql.CollectedField, obj *model.CatMain) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "CatMain",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.LspID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Chapter_id(ctx context.Context, field graphql.CollectedField, obj *model.Chapter) (ret graphql.Marshaler) {
@@ -15167,6 +15219,38 @@ func (ec *executionContext) _SubCatMain_IsActive(ctx context.Context, field grap
 	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _SubCatMain_LspId(ctx context.Context, field graphql.CollectedField, obj *model.SubCatMain) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "SubCatMain",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.LspID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _Topic_id(ctx context.Context, field graphql.CollectedField, obj *model.Topic) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -17698,6 +17782,14 @@ func (ec *executionContext) unmarshalInputCatMainInput(ctx context.Context, obj 
 			if err != nil {
 				return it, err
 			}
+		case "LspId":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("LspId"))
+			it.LspID, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
 		}
 	}
 
@@ -20051,6 +20143,14 @@ func (ec *executionContext) unmarshalInputSubCatMainInput(ctx context.Context, o
 			if err != nil {
 				return it, err
 			}
+		case "LspId":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("LspId"))
+			it.LspID, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
 		}
 	}
 
@@ -20590,6 +20690,13 @@ func (ec *executionContext) _CatMain(ctx context.Context, sel ast.SelectionSet, 
 		case "IsActive":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._CatMain_IsActive(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+		case "LspId":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._CatMain_LspId(ctx, field, obj)
 			}
 
 			out.Values[i] = innerFunc(ctx)
@@ -23079,6 +23186,13 @@ func (ec *executionContext) _SubCatMain(ctx context.Context, sel ast.SelectionSe
 		case "IsActive":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._SubCatMain_IsActive(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+		case "LspId":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._SubCatMain_LspId(ctx, field, obj)
 			}
 
 			out.Values[i] = innerFunc(ctx)
