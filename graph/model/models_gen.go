@@ -21,6 +21,7 @@ type CatMain struct {
 	CreatedBy   *string `json:"CreatedBy"`
 	UpdatedBy   *string `json:"UpdatedBy"`
 	IsActive    *bool   `json:"IsActive"`
+	LspID       *string `json:"LspId"`
 }
 
 type CatMainInput struct {
@@ -35,6 +36,7 @@ type CatMainInput struct {
 	UpdatedBy   *string         `json:"UpdatedBy"`
 	IsActive    *bool           `json:"IsActive"`
 	ImageFile   *graphql.Upload `json:"ImageFile"`
+	LspID       *string         `json:"LspId"`
 }
 
 type Chapter struct {
@@ -630,6 +632,7 @@ type SubCatMain struct {
 	CreatedBy   *string `json:"CreatedBy"`
 	UpdatedBy   *string `json:"UpdatedBy"`
 	IsActive    *bool   `json:"IsActive"`
+	LspID       *string `json:"LspId"`
 }
 
 type SubCatMainInput struct {
@@ -645,6 +648,7 @@ type SubCatMainInput struct {
 	UpdatedBy   *string         `json:"UpdatedBy"`
 	IsActive    *bool           `json:"IsActive"`
 	ImageFile   *graphql.Upload `json:"ImageFile"`
+	LspID       *string         `json:"LspId"`
 }
 
 type Topic struct {

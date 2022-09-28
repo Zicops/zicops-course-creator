@@ -725,6 +725,7 @@ input CatMainInput {
     UpdatedBy: String
     IsActive : Boolean
     ImageFile: Upload
+    LspId: String
 }
 
 type CatMain {
@@ -738,6 +739,7 @@ type CatMain {
     CreatedBy: String
     UpdatedBy: String
     IsActive : Boolean
+    LspId: String
 }
 
 input SubCatMainInput {
@@ -753,6 +755,7 @@ input SubCatMainInput {
     UpdatedBy: String
     IsActive : Boolean
     ImageFile: Upload
+    LspId: String
 }
 
 type SubCatMain {
@@ -767,6 +770,7 @@ type SubCatMain {
     CreatedBy: String
     UpdatedBy: String
     IsActive : Boolean
+    LspId: String
 }
 
 # define type mutations to add a course  using courseInput
@@ -787,10 +791,10 @@ type Mutation{
     updateCourseChapter(chapter: ChapterInput): Chapter
     addCourseTopic(courseId: String, topic: TopicInput): Topic
     updateCourseTopic(topic: TopicInput): Topic
-    addTopicContent(topicId: String, courseId:String, topicContent: TopicContentInput): TopicContent
+    addTopicContent(topicId: String, courseId:String, moduleId: String, topicContent: TopicContentInput): TopicContent
     addTopicExam(topicId: String, courseId:String, exam: TopicExamInput): TopicExam
     updateTopicExam(exam: TopicExamInput): TopicExam
-    updateTopicContent(topicContent: TopicContentInput): TopicContent
+    updateTopicContent(topicContent: TopicContentInput, moduleId: String): TopicContent
     uploadTopicContentVideo(file: TopicVideo): UploadResult
     uploadTopicContentSubtitle(file: [TopicSubtitle]): [UploadResultSubtitles]
     uploadTopicStaticContent(file: StaticContent): UploadResult

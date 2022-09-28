@@ -26,7 +26,7 @@ import (
 	"github.com/zicops/zicops-course-creator/lib/googleprojectlib"
 )
 
-func TopicContentCreate(ctx context.Context, topicID string, courseID string, topicConent *model.TopicContentInput) (*model.TopicContent, error) {
+func TopicContentCreate(ctx context.Context, topicID string, courseID string, moduleID *string, topicConent *model.TopicContentInput) (*model.TopicContent, error) {
 	log.Info("TopicContentCreate called")
 	guid := xid.New()
 	session, err := cassandra.GetCassSession("coursez")
@@ -50,6 +50,39 @@ func TopicContentCreate(ctx context.Context, topicID string, courseID string, to
 		SubtitleFile:       "",
 		IsActive:           false,
 	}
+	if moduleID != nil && topicConent.Duration != nil {
+		mod := []coursez.Module{}
+		getModuleQuery := CassSession.Query(coursez.ModuleTable.Get()).BindMap(qb.M{"id": *moduleID})
+		if err := getModuleQuery.SelectRelease(&mod); err != nil {
+			return nil, err
+		}
+		if len(mod) == 0 {
+			return nil, fmt.Errorf("module not found")
+		}
+		newDuration := *topicConent.Duration + mod[0].Duration
+		queryStr := fmt.Sprintf("UPDATE coursez.module SET duration=%d WHERE id='%s'", newDuration, *moduleID)
+		updateQ := CassSession.Query(queryStr, nil)
+		if err := updateQ.ExecRelease(); err != nil {
+			return nil, err
+		}
+	}
+	if topicConent.Duration != nil && cassandraTopicContent.CourseId != "" {
+		course := []coursez.Course{}
+		getCourseQuery := CassSession.Query(coursez.CourseTable.Get()).BindMap(qb.M{"id": cassandraTopicContent.CourseId})
+		if err := getCourseQuery.SelectRelease(&course); err != nil {
+			return nil, err
+		}
+		if len(course) == 0 {
+			return nil, fmt.Errorf("course not found")
+		}
+		newDuration := course[0].Duration - cassandraTopicContent.Duration + *topicConent.Duration
+		queryStr := fmt.Sprintf("UPDATE coursez.course SET duration=%d WHERE id='%s'", newDuration, cassandraTopicContent.CourseId)
+		updateQ := CassSession.Query(queryStr, nil)
+		if err := updateQ.ExecRelease(); err != nil {
+			return nil, err
+		}
+	}
+
 	if topicConent.StartTime != nil {
 		cassandraTopicContent.StartTime = *topicConent.StartTime
 	}
@@ -247,7 +280,7 @@ func UploadTopicSubtitle(ctx context.Context, files []*model.TopicSubtitle) ([]*
 	return isSuccess, nil
 }
 
-func UpdateTopicContent(ctx context.Context, topicConent *model.TopicContentInput) (*model.TopicContent, error) {
+func UpdateTopicContent(ctx context.Context, topicConent *model.TopicContentInput, moduleId *string) (*model.TopicContent, error) {
 	log.Info("UpdateTopicContent called")
 	contentID := topicConent.ContentID
 	if *contentID == "" {
@@ -310,6 +343,38 @@ func UpdateTopicContent(ctx context.Context, topicConent *model.TopicContentInpu
 		cassandraTopicContent.IsDefault = *topicConent.IsDefault
 	}
 	// set course in cassandra
+	if moduleId != nil && topicConent.Duration != nil {
+		mod := []coursez.Module{}
+		getModuleQuery := CassSession.Query(coursez.ModuleTable.Get()).BindMap(qb.M{"id": *moduleId})
+		if err := getModuleQuery.SelectRelease(&mod); err != nil {
+			return nil, err
+		}
+		if len(mod) < 1 {
+			return nil, fmt.Errorf("module not found")
+		}
+		newDuration := mod[0].Duration - cassandraTopicContent.Duration + *topicConent.Duration
+		queryStr := fmt.Sprintf("UPDATE coursez.module SET duration=%d WHERE id='%s'", newDuration, *moduleId)
+		updateQ := CassSession.Query(queryStr, nil)
+		if err := updateQ.ExecRelease(); err != nil {
+			return nil, err
+		}
+	}
+	if cassandraTopicContent.CourseId != "" && topicConent.Duration != nil {
+		course := []coursez.Course{}
+		getCourseQuery := CassSession.Query(coursez.CourseTable.Get()).BindMap(qb.M{"id": cassandraTopicContent.CourseId})
+		if err := getCourseQuery.SelectRelease(&course); err != nil {
+			return nil, err
+		}
+		if len(course) < 1 {
+			return nil, fmt.Errorf("course not found")
+		}
+		newDuration := course[0].Duration - cassandraTopicContent.Duration + *topicConent.Duration
+		queryStr := fmt.Sprintf("UPDATE coursez.course SET duration=%d WHERE id='%s'", newDuration, cassandraTopicContent.CourseId)
+		updateQ := CassSession.Query(queryStr, nil)
+		if err := updateQ.ExecRelease(); err != nil {
+			return nil, err
+		}
+	}
 
 	upStms, uNames := coursez.TopicContentTable.Update(updateCols...)
 	updateQuery := CassSession.Query(upStms, uNames).BindStruct(&cassandraTopicContent)
