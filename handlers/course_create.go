@@ -86,7 +86,7 @@ func CourseCreator(ctx context.Context, courseInput *model.CourseInput) (*model.
 		active = *courseInput.IsActive
 	}
 	cassandraCourse := coursez.Course{
-		ID:                 guid.String() + *courseInput.LspID,
+		ID:                 guid.String(),
 		Name:               *courseInput.Name,
 		LspID:              *courseInput.LspID,
 		Publisher:          *courseInput.Publisher,
