@@ -107,7 +107,6 @@ func AddCatMain(ctx context.Context, input []*model.CatMainInput) ([]*model.CatM
 		return nil, err
 	}
 	CassSession := session
-	lspId := claims["lsp_id"].(string)
 	catMain := make([]*model.CatMain, len(input))
 	for i, cc := range input {
 		c := cc
@@ -139,7 +138,7 @@ func AddCatMain(ctx context.Context, input []*model.CatMainInput) ([]*model.CatM
 			imageBucket = guid + "/catimages/" + c.ImageFile.Filename
 			storageC := bucket.NewStorageHandler()
 			gproject := googleprojectlib.GetGoogleProjectID()
-			err = storageC.InitializeStorageClient(ctx, gproject, lspId)
+			err = storageC.InitializeStorageClient(ctx, gproject, "coursez-catimages")
 			if err != nil {
 				log.Errorf("Failed to upload image to course: %v", err.Error())
 				continue
@@ -206,7 +205,6 @@ func AddSubCatMain(ctx context.Context, input []*model.SubCatMainInput) ([]*mode
 		return nil, err
 	}
 	email_creator := claims["email"].(string)
-	lspId := claims["lsp_id"].(string)
 	log.Infof("AddSubCatMain called")
 	session, err := cassandra.GetCassSession("coursez")
 	if err != nil {
@@ -244,7 +242,7 @@ func AddSubCatMain(ctx context.Context, input []*model.SubCatMainInput) ([]*mode
 		if c.ImageFile != nil {
 			storageC := bucket.NewStorageHandler()
 			gproject := googleprojectlib.GetGoogleProjectID()
-			err = storageC.InitializeStorageClient(ctx, gproject, lspId)
+			err = storageC.InitializeStorageClient(ctx, gproject, "coursez-catimages")
 			if err != nil {
 				log.Errorf("Failed to upload image to course: %v", err.Error())
 				continue

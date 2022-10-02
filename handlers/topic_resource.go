@@ -86,6 +86,7 @@ func AddTopicResources(ctx context.Context, courseID string, resource *model.Top
 		UpdatedAt:  time.Now().Unix(),
 		CreatedBy:  createdBy,
 		UpdatedBy:  updatedBy,
+		LspId:      lspId,
 	}
 	if resource.Type != nil {
 		cassandraResource.Type = *resource.Type

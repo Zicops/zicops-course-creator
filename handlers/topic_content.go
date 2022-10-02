@@ -34,10 +34,11 @@ func TopicContentCreate(ctx context.Context, topicID string, courseID string, mo
 		return nil, err
 	}
 	CassSession := session
-	_, err = helpers.GetClaimsFromContext(ctx)
+	claims, err := helpers.GetClaimsFromContext(ctx)
 	if err != nil {
 		return nil, err
 	}
+	lspID := claims["lsp_id"].(string)
 	cassandraTopicContent := coursez.TopicContent{
 		ID:                 guid.String(),
 		TopicId:            topicID,
@@ -49,6 +50,7 @@ func TopicContentCreate(ctx context.Context, topicID string, courseID string, mo
 		Url:                "",
 		SubtitleFile:       "",
 		IsActive:           false,
+		LspId:              lspID,
 	}
 	if moduleID != nil && topicConent.Duration != nil {
 		mod := []coursez.Module{}
@@ -136,10 +138,11 @@ func TopicExamCreate(ctx context.Context, topicID string, courseID string, exam 
 		return nil, err
 	}
 	CassSession := session
-	_, err = helpers.GetClaimsFromContext(ctx)
+	claims, err := helpers.GetClaimsFromContext(ctx)
 	if err != nil {
 		return nil, err
 	}
+	lspID := claims["lsp_id"].(string)
 	cassandraTopicContent := coursez.TopicExam{
 		ID:        guid.String(),
 		TopicId:   topicID,
@@ -149,6 +152,7 @@ func TopicExamCreate(ctx context.Context, topicID string, courseID string, exam 
 		CreatedAt: time.Now().Unix(),
 		UpdatedAt: time.Now().Unix(),
 		IsActive:  false,
+		LspId:     lspID,
 	}
 	// set course in cassandra
 	insertQuery := CassSession.Query(coursez.TopicExamTable.Insert()).BindStruct(cassandraTopicContent)

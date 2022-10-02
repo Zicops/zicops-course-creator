@@ -22,10 +22,11 @@ func ChapterCreate(ctx context.Context, courseID string, chapter *model.ChapterI
 		return nil, err
 	}
 	CassSession := session
-	_, err = helpers.GetClaimsFromContext(ctx)
+	claims, err := helpers.GetClaimsFromContext(ctx)
 	if err != nil {
 		return nil, err
 	}
+	lspID := claims["lsp_id"].(string)
 	guid := xid.New()
 	cassandraChapter := coursez.Chapter{
 		ID:          guid.String(),
@@ -34,6 +35,7 @@ func ChapterCreate(ctx context.Context, courseID string, chapter *model.ChapterI
 		CreatedAt:   time.Now().Unix(),
 		UpdatedAt:   time.Now().Unix(),
 		CourseID:    courseID,
+		LspID:       lspID,
 	}
 	if chapter.ModuleID != nil {
 		cassandraChapter.ModuleID = *chapter.ModuleID
