@@ -84,6 +84,8 @@ func graphqlHandler() gin.HandlerFunc {
 
 	return func(c *gin.Context) {
 		ctxValue := c.Value("zclaims").(map[string]interface{})
+		lspID := ctxValue["tenant"].(string)
+		ctxValue["lsp_id"] = lspID
 		// set ctxValue to request context
 		request := c.Request
 		requestWithValue := request.WithContext(context.WithValue(request.Context(), "zclaims", ctxValue))

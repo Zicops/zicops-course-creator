@@ -86,7 +86,7 @@ func CourseCreator(ctx context.Context, courseInput *model.CourseInput) (*model.
 		active = *courseInput.IsActive
 	}
 	cassandraCourse := coursez.Course{
-		ID:                 guid.String() + *courseInput.LspID,
+		ID:                 guid.String(),
 		Name:               *courseInput.Name,
 		LspID:              *courseInput.LspID,
 		Publisher:          *courseInput.Publisher,
@@ -210,16 +210,17 @@ func UploadCourseImage(ctx context.Context, file model.CourseFile) (*model.Uploa
 		return nil, err
 	}
 	CassSession := session
-	_, err = helpers.GetClaimsFromContext(ctx)
+	claims, err := helpers.GetClaimsFromContext(ctx)
 	if err != nil {
 		return nil, err
 	}
+	lspID := claims["lsp_id"].(string)
 	if *file.CourseID == "" {
 		return &isSuccess, fmt.Errorf("course id is required")
 	}
 	storageC := bucket.NewStorageHandler()
 	gproject := googleprojectlib.GetGoogleProjectID()
-	err = storageC.InitializeStorageClient(ctx, gproject)
+	err = storageC.InitializeStorageClient(ctx, gproject, lspID)
 	if err != nil {
 		log.Errorf("Failed to upload image to course: %v", err.Error())
 		return &isSuccess, nil
@@ -265,13 +266,20 @@ func UploadCoursePreviewVideo(ctx context.Context, file model.CourseFile) (*mode
 		return nil, err
 	}
 	CassSession := session
-	_, err = helpers.GetClaimsFromContext(ctx)
+	claims, err := helpers.GetClaimsFromContext(ctx)
 	if err != nil {
 		return nil, err
 	}
+	lspID := claims["lsp_id"].(string)
+	if lspID == "" {
+		return &isSuccess, fmt.Errorf("lsp id is required")
+	}
+	if *file.CourseID == "" {
+		return &isSuccess, fmt.Errorf("course id is required")
+	}
 	storageC := bucket.NewStorageHandler()
 	gproject := googleprojectlib.GetGoogleProjectID()
-	err = storageC.InitializeStorageClient(ctx, gproject)
+	err = storageC.InitializeStorageClient(ctx, gproject, lspID)
 	if err != nil {
 		log.Errorf("Failed to upload image to course: %v", err.Error())
 		return &isSuccess, nil
@@ -317,13 +325,17 @@ func UploadCourseTileImage(ctx context.Context, file model.CourseFile) (*model.U
 		return nil, err
 	}
 	CassSession := session
-	_, err = helpers.GetClaimsFromContext(ctx)
+	claims, err := helpers.GetClaimsFromContext(ctx)
 	if err != nil {
 		return nil, err
 	}
+	lspID := claims["lsp_id"].(string)
+	if lspID == "" {
+		return &isSuccess, fmt.Errorf("lsp id is required")
+	}
 	storageC := bucket.NewStorageHandler()
 	gproject := googleprojectlib.GetGoogleProjectID()
-	err = storageC.InitializeStorageClient(ctx, gproject)
+	err = storageC.InitializeStorageClient(ctx, gproject, lspID)
 	if err != nil {
 		log.Errorf("Failed to upload image to course: %v", err.Error())
 		return &isSuccess, nil

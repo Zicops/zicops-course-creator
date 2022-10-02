@@ -26,7 +26,7 @@ func NewStorageHandler() *Client {
 }
 
 // InitializeStorageClient ...........
-func (sc *Client) InitializeStorageClient(ctx context.Context, projectID string) error {
+func (sc *Client) InitializeStorageClient(ctx context.Context, projectID string, bucket string) error {
 	serviceAccountZicops := os.Getenv("GOOGLE_APPLICATION_CREDENTIALS")
 	if serviceAccountZicops == "" {
 		return fmt.Errorf("failed to get right credentials for course creator")
@@ -45,7 +45,7 @@ func (sc *Client) InitializeStorageClient(ctx context.Context, projectID string)
 	}
 	sc.client = client
 	sc.projectID = projectID
-	sc.bucket, _ = sc.CreateBucket(ctx, constants.COURSES_BUCKET)
+	sc.bucket, _ = sc.CreateBucket(ctx, bucket)
 	sc.bucketPublic, _ = sc.CreateBucketPublic(ctx, constants.COURSES_PUBLIC_BUCKET)
 	return nil
 }
