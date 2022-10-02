@@ -177,6 +177,10 @@ func AddQuestionBankQuestion(ctx context.Context, input *model.QuestionBankQuest
 	if err != nil {
 		return nil, err
 	}
+	lspID := claims["lsp_id"].(string)
+	if lspID == "" {
+		return nil, fmt.Errorf("lsp id not found")
+	}
 	email_creator := claims["email"].(string)
 	guid := xid.New()
 	getUrl := ""
@@ -199,7 +203,7 @@ func AddQuestionBankQuestion(ctx context.Context, input *model.QuestionBankQuest
 		bucketPath := "question_banks/" + cassandraQuestionBank.QbmId + "/" + cassandraQuestionBank.ID + "/" + input.File.Filename
 		storageC := bucket.NewStorageHandler()
 		gproject := googleprojectlib.GetGoogleProjectID()
-		err := storageC.InitializeStorageClient(ctx, gproject)
+		err := storageC.InitializeStorageClient(ctx, gproject, lspID)
 		if err != nil {
 			log.Errorf("Failed to upload video to course topic: %v", err.Error())
 			return nil, err
@@ -265,6 +269,10 @@ func UpdateQuestionBankQuestion(ctx context.Context, input *model.QuestionBankQu
 	if err != nil {
 		return nil, err
 	}
+	lspID := claims["lsp_id"].(string)
+	if lspID == "" {
+		return nil, fmt.Errorf("lsp id not found")
+	}
 	email_creator := claims["email"].(string)
 	cassandraQuestionBank := qbankz.QuestionMain{
 		ID: *input.ID,
@@ -326,7 +334,7 @@ func UpdateQuestionBankQuestion(ctx context.Context, input *model.QuestionBankQu
 		bucketPath := "question_banks/" + cassandraQuestionBank.QbmId + "/" + cassandraQuestionBank.ID + "/" + input.File.Filename
 		storageC := bucket.NewStorageHandler()
 		gproject := googleprojectlib.GetGoogleProjectID()
-		err := storageC.InitializeStorageClient(ctx, gproject)
+		err := storageC.InitializeStorageClient(ctx, gproject, lspID)
 		if err != nil {
 			log.Errorf("Failed to upload video to course topic: %v", err.Error())
 			return nil, err

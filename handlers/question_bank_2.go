@@ -33,6 +33,10 @@ func AddQuestionOptions(ctx context.Context, input *model.QuestionOptionInput) (
 	if err != nil {
 		return nil, err
 	}
+	lspID := claims["lsp_id"].(string)
+	if lspID == "" {
+		return nil, fmt.Errorf("lsp id not found")
+	}
 	email_creator := claims["email"].(string)
 	guid := xid.New()
 	cassandraQuestionBank := qbankz.OptionsMain{
@@ -52,7 +56,7 @@ func AddQuestionOptions(ctx context.Context, input *model.QuestionOptionInput) (
 		bucketPath := "question_banks/" + cassandraQuestionBank.QmId + "/" + cassandraQuestionBank.ID + "/" + input.File.Filename
 		storageC := bucket.NewStorageHandler()
 		gproject := googleprojectlib.GetGoogleProjectID()
-		err := storageC.InitializeStorageClient(ctx, gproject)
+		err := storageC.InitializeStorageClient(ctx, gproject, lspID)
 		if err != nil {
 			log.Errorf("Failed to upload question option: %v", err.Error())
 			return nil, err
@@ -116,6 +120,10 @@ func UpdateQuestionOptions(ctx context.Context, input *model.QuestionOptionInput
 		return nil, err
 	}
 	email_creator := claims["email"].(string)
+	lspID := claims["lsp_id"].(string)
+	if lspID == "" {
+		return nil, fmt.Errorf("lsp id not found")
+	}
 	cassandraQuestionBank := qbankz.OptionsMain{
 		ID: *input.ID,
 	}
@@ -165,7 +173,7 @@ func UpdateQuestionOptions(ctx context.Context, input *model.QuestionOptionInput
 		bucketPath := "question_banks/" + cassandraQuestionBank.QmId + "/" + cassandraQuestionBank.ID + "/" + input.File.Filename
 		storageC := bucket.NewStorageHandler()
 		gproject := googleprojectlib.GetGoogleProjectID()
-		err := storageC.InitializeStorageClient(ctx, gproject)
+		err := storageC.InitializeStorageClient(ctx, gproject, lspID)
 		if err != nil {
 			log.Errorf("Failed to update options: %v", err.Error())
 			return nil, err

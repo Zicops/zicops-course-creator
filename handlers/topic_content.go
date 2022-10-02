@@ -175,14 +175,18 @@ func UploadTopicVideo(ctx context.Context, file model.TopicVideo) (*model.Upload
 		return nil, err
 	}
 	CassSession := session
-	_, err = helpers.GetClaimsFromContext(ctx)
+	claims, err := helpers.GetClaimsFromContext(ctx)
 	if err != nil {
 		return nil, err
+	}
+	lspId := claims["lsp_id"].(string)
+	if lspId == "" {
+		return nil, fmt.Errorf("lsp_id is empty")
 	}
 	isSuccess := model.UploadResult{}
 	storageC := bucket.NewStorageHandler()
 	gproject := googleprojectlib.GetGoogleProjectID()
-	err = storageC.InitializeStorageClient(ctx, gproject)
+	err = storageC.InitializeStorageClient(ctx, gproject, lspId)
 	if err != nil {
 		log.Errorf("Failed to upload video to course topic: %v", err.Error())
 		return &isSuccess, nil
@@ -222,11 +226,15 @@ func UploadTopicVideo(ctx context.Context, file model.TopicVideo) (*model.Upload
 
 func UploadTopicSubtitle(ctx context.Context, files []*model.TopicSubtitle) ([]*model.UploadResultSubtitles, error) {
 	log.Info("UploadTopicSubtitle called")
-	_, err := helpers.GetClaimsFromContext(ctx)
+	claims, err := helpers.GetClaimsFromContext(ctx)
 	if err != nil {
 		return nil, err
 	}
 	isSuccess := []*model.UploadResultSubtitles{}
+	lspId := claims["lsp_id"].(string)
+	if lspId == "" {
+		return nil, fmt.Errorf("lsp_id is empty")
+	}
 	for _, file := range files {
 		isLocalSuccess := model.UploadResultSubtitles{}
 		isLocal := false
@@ -234,7 +242,7 @@ func UploadTopicSubtitle(ctx context.Context, files []*model.TopicSubtitle) ([]*
 		isLocalSuccess.URL = nil
 		storageC := bucket.NewStorageHandler()
 		gproject := googleprojectlib.GetGoogleProjectID()
-		err := storageC.InitializeStorageClient(ctx, gproject)
+		err := storageC.InitializeStorageClient(ctx, gproject, lspId)
 		if err != nil {
 			log.Errorf("Failed to upload subtitle to course topic: %v", err.Error())
 			isSuccess = append(isSuccess, &isLocalSuccess)
@@ -468,9 +476,13 @@ func UploadTopicStaticContent(ctx context.Context, file *model.StaticContent) (*
 		return nil, err
 	}
 	CassSession := session
-	_, err = helpers.GetClaimsFromContext(ctx)
+	claims, err := helpers.GetClaimsFromContext(ctx)
 	if err != nil {
 		return nil, err
+	}
+	lspId := claims["lsp_id"].(string)
+	if lspId == "" {
+		return nil, fmt.Errorf("lsp_id is empty")
 	}
 	isSuccess := model.UploadResult{}
 	bucketPath := ""
@@ -478,7 +490,7 @@ func UploadTopicStaticContent(ctx context.Context, file *model.StaticContent) (*
 	if (file.URL == nil || *file.URL == "") && file.File != nil {
 		storageC := bucket.NewStorageHandler()
 		gproject := googleprojectlib.GetGoogleProjectID()
-		err := storageC.InitializeStorageClient(ctx, gproject)
+		err := storageC.InitializeStorageClient(ctx, gproject, lspId)
 		if err != nil {
 			log.Errorf("Failed to upload static content to course topic: %v", err.Error())
 			return &isSuccess, nil

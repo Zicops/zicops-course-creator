@@ -3,6 +3,7 @@ package handlers
 import (
 	"bytes"
 	"context"
+	"fmt"
 	"io"
 	"time"
 
@@ -28,6 +29,10 @@ func AddTopicResources(ctx context.Context, courseID string, resource *model.Top
 	if err != nil {
 		return nil, err
 	}
+	lspId := claims["lsp_id"].(string)
+	if lspId == "" {
+		return nil, fmt.Errorf("lsp_id is empty")
+	}
 	email_creator := claims["email"].(string)
 	isSuccess := model.UploadResult{}
 	getUrl := ""
@@ -35,7 +40,7 @@ func AddTopicResources(ctx context.Context, courseID string, resource *model.Top
 	if resource.URL == nil {
 		storageC := bucket.NewStorageHandler()
 		gproject := googleprojectlib.GetGoogleProjectID()
-		err := storageC.InitializeStorageClient(ctx, gproject)
+		err := storageC.InitializeStorageClient(ctx, gproject, lspId)
 		if err != nil {
 			log.Errorf("Failed to upload video to course topic: %v", err.Error())
 			return &isSuccess, nil

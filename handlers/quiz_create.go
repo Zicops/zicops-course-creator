@@ -204,14 +204,18 @@ func UploadQuizFile(ctx context.Context, courseID string, quiz model.QuizFile) (
 		return nil, err
 	}
 	CassSession := session
-	_, err = helpers.GetClaimsFromContext(ctx)
+	claims, err := helpers.GetClaimsFromContext(ctx)
 	if err != nil {
 		return nil, err
+	}
+	lspID := claims["lsp_id"].(string)
+	if lspID == "" {
+		return nil, fmt.Errorf("lsp id not found")
 	}
 	isSuccess := model.UploadResult{}
 	storageC := bucket.NewStorageHandler()
 	gproject := googleprojectlib.GetGoogleProjectID()
-	err = storageC.InitializeStorageClient(ctx, gproject)
+	err = storageC.InitializeStorageClient(ctx, gproject, lspID)
 	if err != nil {
 		log.Errorf("Failed to upload video to course topic: %v", err.Error())
 		return &isSuccess, nil
