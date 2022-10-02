@@ -27,6 +27,7 @@ func TopicCreate(ctx context.Context, courseID string, topic *model.TopicInput) 
 		return nil, err
 	}
 	email_creator := claims["email"].(string)
+	lspId := claims["lsp_id"].(string)
 	guid := xid.New()
 	cassandraTopic := coursez.Topic{
 		ID:          guid.String(),
@@ -37,6 +38,7 @@ func TopicCreate(ctx context.Context, courseID string, topic *model.TopicInput) 
 		UpdatedAt:   time.Now().Unix(),
 		CourseID:    courseID,
 		IsActive:    true,
+		LspID:       lspId,
 	}
 	if topic.ChapterID != nil {
 		cassandraTopic.ChapterID = *topic.ChapterID

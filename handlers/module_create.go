@@ -23,10 +23,11 @@ func ModuleCreate(ctx context.Context, courseID string, module *model.ModuleInpu
 		return nil, err
 	}
 	CassSession := session
-	_, err = helpers.GetClaimsFromContext(ctx)
+	claims, err := helpers.GetClaimsFromContext(ctx)
 	if err != nil {
 		return nil, err
 	}
+	lspID := claims["lsp_id"].(string)
 	cassandraModule := coursez.Module{
 		ID:          guid.String(),
 		Name:        *module.Name,
@@ -36,6 +37,7 @@ func ModuleCreate(ctx context.Context, courseID string, module *model.ModuleInpu
 		IsChapter:   *module.IsChapter,
 		CourseID:    courseID,
 		IsActive:    false,
+		LspID:       lspID,
 	}
 	if module.Owner != nil {
 		cassandraModule.Owner = *module.Owner

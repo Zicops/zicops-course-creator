@@ -27,15 +27,17 @@ func CreateTopicQuiz(ctx context.Context, quiz *model.QuizInput) (*model.Quiz, e
 		return nil, err
 	}
 	CassSession := session
-	_, err = helpers.GetClaimsFromContext(ctx)
+	claims, err := helpers.GetClaimsFromContext(ctx)
 	if err != nil {
 		return nil, err
 	}
+	lspID := claims["lsp_id"].(string)
 	cassandraQuiz := coursez.Quiz{
 		ID:        guid.String(),
 		CreatedAt: time.Now().Unix(),
 		UpdatedAt: time.Now().Unix(),
 		IsActive:  true,
+		LspID:     lspID,
 	}
 	if quiz.Name != nil {
 		cassandraQuiz.Name = *quiz.Name
@@ -245,6 +247,7 @@ func UploadQuizFile(ctx context.Context, courseID string, quiz model.QuizFile) (
 		BucketPath: bucketPath,
 		Path:       getUrl,
 		IsActive:   true,
+		LspId:      lspID,
 	}
 	if quiz.Type != nil {
 		cassandraQuizFile.Type = *quiz.Type
@@ -273,10 +276,11 @@ func AddMCQQuiz(ctx context.Context, quiz *model.QuizMcq) (*bool, error) {
 		return nil, err
 	}
 	CassSession := session
-	_, err = helpers.GetClaimsFromContext(ctx)
+	claims, err := helpers.GetClaimsFromContext(ctx)
 	if err != nil {
 		return nil, err
 	}
+	lspID := claims["lsp_id"].(string)
 
 	options := make([]string, 0)
 	for _, option := range quiz.Options {
@@ -286,6 +290,7 @@ func AddMCQQuiz(ctx context.Context, quiz *model.QuizMcq) (*bool, error) {
 		QuizId:   *quiz.QuizID,
 		Options:  options,
 		IsActive: true,
+		LspId:    lspID,
 	}
 	if quiz.Question != nil {
 		cassandraQuiz.Question = *quiz.Question
@@ -316,13 +321,15 @@ func AddQuizDescriptive(ctx context.Context, quiz *model.QuizDescriptive) (*bool
 		return nil, err
 	}
 	CassSession := session
-	_, err = helpers.GetClaimsFromContext(ctx)
+	claims, err := helpers.GetClaimsFromContext(ctx)
 	if err != nil {
 		return nil, err
 	}
+	lspID := claims["lsp_id"].(string)
 	cassandraQuiz := coursez.QuizDescriptive{
 		QuizId:   *quiz.QuizID,
 		IsActive: true,
+		LspId:    lspID,
 	}
 	if quiz.Question != nil {
 		cassandraQuiz.Question = *quiz.Question
