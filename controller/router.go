@@ -86,7 +86,7 @@ func graphqlHandler() gin.HandlerFunc {
 		ctxValue := c.Value("zclaims").(map[string]interface{})
 		lspIdInt := ctxValue["tenant"]
 		lspID := "d8685567-cdae-4ee0-a80e-c187848a760e"
-		if lspIdInt != nil {
+		if lspIdInt != nil && lspID != "" {
 			lspID = lspIdInt.(string)
 		}
 		ctxValue["lsp_id"] = lspID
