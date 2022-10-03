@@ -246,7 +246,7 @@ func UploadCourseImage(ctx context.Context, file model.CourseFile) (*model.Uploa
 	where := qb.Eq("id")
 	whereActive := qb.Eq("is_active")
 	whereLspID := qb.Eq("lsp_id")
-	updateQB := qb.Update("coursez.course").Set("imagebucket").Set("image").Where(where).Where(whereActive).Where(whereLspID).Where(whereActive)
+	updateQB := qb.Update("coursez.course").Set("imagebucket").Set("image").Where(where).Where(whereActive).Where(whereLspID)
 	updateQuery := updateQB.Query(*CassSession).BindMap(qb.M{"id": file.CourseID, "imagebucket": bucketPath, "image": getUrl, "lsp_id": lspID, "is_active": true})
 	if err := updateQuery.ExecRelease(); err != nil {
 		return &isSuccess, err
