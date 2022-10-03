@@ -557,10 +557,6 @@ func CourseUpdate(ctx context.Context, courseInput *model.CourseInput) (*model.C
 		updateCols = append(updateCols, "is_active")
 		cassandraCourse.IsActive = *courseInput.IsActive
 	}
-	if courseInput.LspID != nil {
-		updateCols = append(updateCols, "lsp_id")
-		cassandraCourse.LspID = *courseInput.LspID
-	}
 	if courseInput.Publisher != nil {
 		updateCols = append(updateCols, "publisher")
 		cassandraCourse.Publisher = *courseInput.Publisher
