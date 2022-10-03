@@ -562,7 +562,7 @@ func CourseUpdate(ctx context.Context, courseInput *model.CourseInput) (*model.C
 	updateCols = append(updateCols, "updated_at")
 	// set course in cassandra
 	upStms, uNames := coursez.CourseTable.Update(updateCols...)
-	updateQuery := CassSession.Query(upStms, uNames).BindStruct(&cassandraCourse)
+	updateQuery := CassSession.Query(upStms, uNames).BindMap(qb.M{"id": cassandraCourse.ID, "lsp_id": cassandraCourse.LspID, "is_active": cassandraCourse.IsActive})
 	if err := updateQuery.ExecRelease(); err != nil {
 		return nil, err
 	}
