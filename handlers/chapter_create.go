@@ -35,7 +35,7 @@ func ChapterCreate(ctx context.Context, courseID string, chapter *model.ChapterI
 		CreatedAt:   time.Now().Unix(),
 		UpdatedAt:   time.Now().Unix(),
 		CourseID:    courseID,
-		LspID:       lspID,
+		LspId:       lspID,
 	}
 	if chapter.ModuleID != nil {
 		cassandraChapter.ModuleID = *chapter.ModuleID

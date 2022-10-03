@@ -43,7 +43,7 @@ func ExamScheduleCreate(ctx context.Context, exam *model.ExamScheduleInput) (*mo
 	}
 	cassandraQuestionBank := qbankz.ExamSchedule{
 		ID:         guid.String(),
-		LspID:      lspID,
+		LspId:      lspID,
 		ExamID:     *exam.ExamID,
 		IsActive:   *exam.IsActive,
 		CreatedBy:  email_creator,

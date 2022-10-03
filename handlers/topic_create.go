@@ -38,7 +38,7 @@ func TopicCreate(ctx context.Context, courseID string, topic *model.TopicInput) 
 		UpdatedAt:   time.Now().Unix(),
 		CourseID:    courseID,
 		IsActive:    true,
-		LspID:       lspId,
+		LspId:       lspId,
 	}
 	if topic.ChapterID != nil {
 		cassandraTopic.ChapterID = *topic.ChapterID

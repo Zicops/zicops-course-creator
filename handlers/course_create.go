@@ -88,7 +88,7 @@ func CourseCreator(ctx context.Context, courseInput *model.CourseInput) (*model.
 	cassandraCourse := coursez.Course{
 		ID:                 guid.String(),
 		Name:               *courseInput.Name,
-		LspID:              *courseInput.LspID,
+		LspId:              *courseInput.LspID,
 		Publisher:          *courseInput.Publisher,
 		Description:        *courseInput.Description,
 		Image:              "https://storage.googleapis.com/zicops.com/school-board-ge1701ca8f_640.jpg",
@@ -164,7 +164,7 @@ func CourseCreator(ctx context.Context, courseInput *model.CourseInput) (*model.
 	created := strconv.FormatInt(cassandraCourse.CreatedAt, 10)
 	responseModel := model.Course{
 		ID:                 &cassandraCourse.ID,
-		LspID:              &cassandraCourse.LspID,
+		LspID:              &cassandraCourse.LspId,
 		Publisher:          &cassandraCourse.Publisher,
 		Name:               courseInput.Name,
 		Description:        courseInput.Description,
@@ -573,7 +573,7 @@ func CourseUpdate(ctx context.Context, courseInput *model.CourseInput) (*model.C
 	responseModel := model.Course{
 		ID:                 &cassandraCourse.ID,
 		Name:               courseInput.Name,
-		LspID:              &cassandraCourse.LspID,
+		LspID:              &cassandraCourse.LspId,
 		Publisher:          &cassandraCourse.Publisher,
 		Description:        courseInput.Description,
 		Summary:            courseInput.Summary,

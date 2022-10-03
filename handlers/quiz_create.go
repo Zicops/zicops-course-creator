@@ -37,7 +37,7 @@ func CreateTopicQuiz(ctx context.Context, quiz *model.QuizInput) (*model.Quiz, e
 		CreatedAt: time.Now().Unix(),
 		UpdatedAt: time.Now().Unix(),
 		IsActive:  true,
-		LspID:     lspID,
+		LspId:     lspID,
 	}
 	if quiz.Name != nil {
 		cassandraQuiz.Name = *quiz.Name

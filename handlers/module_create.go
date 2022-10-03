@@ -37,7 +37,7 @@ func ModuleCreate(ctx context.Context, courseID string, module *model.ModuleInpu
 		IsChapter:   *module.IsChapter,
 		CourseID:    courseID,
 		IsActive:    false,
-		LspID:       lspID,
+		LspId:       lspID,
 	}
 	if module.Owner != nil {
 		cassandraModule.Owner = *module.Owner

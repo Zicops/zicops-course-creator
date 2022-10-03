@@ -38,7 +38,7 @@ func AddCourseCohort(ctx context.Context, input *model.CourseCohortInput) (*mode
 		CourseType:             *input.CourseType,
 		CohortID:               *input.CohortID,
 		CourseStatus:           *input.CourseStatus,
-		LspID:                  *input.LspID,
+		LspId:                  *input.LspID,
 		IsMandatory:            *input.IsMandatory,
 		AddedBy:                *input.AddedBy,
 		IsActive:               *input.IsActive,
@@ -138,7 +138,7 @@ func UpdateCourseCohort(ctx context.Context, input *model.CourseCohortInput) (*m
 		updatedCols = append(updatedCols, "is_mandatory")
 	}
 	if input.LspID != nil {
-		cassandraQuestionBank.LspID = *input.LspID
+		cassandraQuestionBank.LspId = *input.LspID
 		updatedCols = append(updatedCols, "lsp_id")
 	}
 	if input.AddedBy != nil {

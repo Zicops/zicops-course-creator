@@ -44,7 +44,7 @@ func QuestionPaperCreate(ctx context.Context, input *model.QuestionPaperInput) (
 		SectionWise:       *input.SectionWise,
 		SuggestedDuration: *input.SuggestedDuration,
 		Status:            *input.Status,
-		LspID:             lspID,
+		LspId:             lspID,
 	}
 
 	insertQuery := CassSession.Query(qbankz.QuestionPaperMainTable.Insert()).BindStruct(cassandraQuestionBank)
