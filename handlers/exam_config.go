@@ -27,6 +27,7 @@ func AddExamConfiguration(ctx context.Context, input *model.ExamConfigurationInp
 	if err != nil {
 		return nil, err
 	}
+	lspID := claims["lsp_id"].(string)
 	email_creator := claims["email"].(string)
 	cassandraQuestionBank := qbankz.ExamConfig{
 		ID:           guid.String(),
@@ -40,6 +41,7 @@ func AddExamConfiguration(ctx context.Context, input *model.ExamConfigurationInp
 		DisplayHints: *input.DisplayHints,
 		ShowAnswer:   *input.ShowAnswer,
 		ShowResult:   *input.ShowResult,
+		LspID:        lspID,
 	}
 	insertQuery := CassSession.Query(qbankz.ExamConfigTable.Insert()).BindStruct(cassandraQuestionBank)
 	if err := insertQuery.ExecRelease(); err != nil {

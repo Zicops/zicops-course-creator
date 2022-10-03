@@ -28,6 +28,7 @@ func QuestionSectionMap(ctx context.Context, input *model.MapSectionToBankInput)
 		return nil, err
 	}
 	email_creator := claims["email"].(string)
+	lspID := claims["lsp_id"].(string)
 	cassandraQuestionBank := qbankz.SectionQBMapping{
 		ID:              guid.String(),
 		QBId:            *input.QbID,
@@ -42,6 +43,7 @@ func QuestionSectionMap(ctx context.Context, input *model.MapSectionToBankInput)
 		QuestionType:    *input.QuestionType,
 		QuestionMarks:   *input.QuestionMarks,
 		RetrievalType:   *input.RetrieveType,
+		LspID:           lspID,
 	}
 
 	insertQuery := CassSession.Query(qbankz.SectionQBMappingTable.Insert()).BindStruct(cassandraQuestionBank)
@@ -180,6 +182,7 @@ func QuestionFixed(ctx context.Context, input *model.SectionFixedQuestionsInput)
 		return nil, err
 	}
 	email_creator := claims["email"].(string)
+	lspID := claims["lsp_id"].(string)
 	cassandraQuestionBank := qbankz.SectionFixedQuestions{
 		ID:         guid.String(),
 		SQBId:      *input.SqbID,
@@ -189,6 +192,7 @@ func QuestionFixed(ctx context.Context, input *model.SectionFixedQuestionsInput)
 		UpdatedBy:  email_creator,
 		CreatedAt:  time.Now().Unix(),
 		UpdatedAt:  time.Now().Unix(),
+		LspID:      lspID,
 	}
 
 	insertQuery := CassSession.Query(qbankz.SectionFixedQuestionsTable.Insert()).BindStruct(cassandraQuestionBank)
