@@ -242,7 +242,9 @@ func UploadQuizFile(ctx context.Context, courseID string, quiz model.QuizFile) (
 		return &isSuccess, err
 	}
 	getUrl := storageC.GetSignedURLForObject(bucketPath)
+	guid := xid.New()
 	cassandraQuizFile := coursez.QuizFile{
+		ID:         guid.String(),
 		QuizId:     *quiz.QuizID,
 		BucketPath: bucketPath,
 		Path:       getUrl,
@@ -286,7 +288,9 @@ func AddMCQQuiz(ctx context.Context, quiz *model.QuizMcq) (*bool, error) {
 	for _, option := range quiz.Options {
 		options = append(options, *option)
 	}
+	guid := xid.New()
 	cassandraQuiz := coursez.QuizMcq{
+		ID:       guid.String(),
 		QuizId:   *quiz.QuizID,
 		Options:  options,
 		IsActive: true,
@@ -326,7 +330,9 @@ func AddQuizDescriptive(ctx context.Context, quiz *model.QuizDescriptive) (*bool
 		return nil, err
 	}
 	lspID := claims["lsp_id"].(string)
+	guid := xid.New()
 	cassandraQuiz := coursez.QuizDescriptive{
+		ID:       guid.String(),
 		QuizId:   *quiz.QuizID,
 		IsActive: true,
 		LspId:    lspID,
