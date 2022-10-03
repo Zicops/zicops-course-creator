@@ -54,7 +54,7 @@ func TopicContentCreate(ctx context.Context, topicID string, courseID string, mo
 	}
 	if moduleID != nil && topicConent.Duration != nil {
 		mod := []coursez.Module{}
-		getModuleQuery := CassSession.Query(coursez.ModuleTable.Get()).BindMap(qb.M{"id": *moduleID})
+		getModuleQuery := CassSession.Query(coursez.ModuleTable.Get()).BindMap(qb.M{"id": *moduleID, "lsp_id": lspID, "is_active": true})
 		if err := getModuleQuery.SelectRelease(&mod); err != nil {
 			return nil, err
 		}
@@ -70,7 +70,7 @@ func TopicContentCreate(ctx context.Context, topicID string, courseID string, mo
 	}
 	if topicConent.Duration != nil && cassandraTopicContent.CourseId != "" {
 		course := []coursez.Course{}
-		getCourseQuery := CassSession.Query(coursez.CourseTable.Get()).BindMap(qb.M{"id": cassandraTopicContent.CourseId})
+		getCourseQuery := CassSession.Query(coursez.CourseTable.Get()).BindMap(qb.M{"id": cassandraTopicContent.CourseId, "lsp_id": lspID, "is_active": true})
 		if err := getCourseQuery.SelectRelease(&course); err != nil {
 			return nil, err
 		}
@@ -305,15 +305,16 @@ func UpdateTopicContent(ctx context.Context, topicConent *model.TopicContentInpu
 		return nil, err
 	}
 	CassSession := session
-	_, err = helpers.GetClaimsFromContext(ctx)
+	claims, err := helpers.GetClaimsFromContext(ctx)
 	if err != nil {
 		return nil, err
 	}
+	lspID := claims["lsp_id"].(string)
 	cassandraTopicContent := coursez.TopicContent{
 		ID: *contentID,
 	}
 	topicContents := []coursez.TopicContent{}
-	getQuery := CassSession.Query(coursez.TopicContentTable.Get()).BindMap(qb.M{"id": cassandraTopicContent.ID})
+	getQuery := CassSession.Query(coursez.TopicContentTable.Get()).BindMap(qb.M{"id": cassandraTopicContent.ID, "lsp_id": lspID, "is_active": true})
 	if err := getQuery.SelectRelease(&topicContents); err != nil {
 		return nil, err
 	}
@@ -359,7 +360,7 @@ func UpdateTopicContent(ctx context.Context, topicConent *model.TopicContentInpu
 	// set course in cassandra
 	if moduleId != nil && topicConent.Duration != nil {
 		mod := []coursez.Module{}
-		getModuleQuery := CassSession.Query(coursez.ModuleTable.Get()).BindMap(qb.M{"id": *moduleId})
+		getModuleQuery := CassSession.Query(coursez.ModuleTable.Get()).BindMap(qb.M{"id": *moduleId, "lsp_id": lspID, "is_active": true})
 		if err := getModuleQuery.SelectRelease(&mod); err != nil {
 			return nil, err
 		}
@@ -375,7 +376,7 @@ func UpdateTopicContent(ctx context.Context, topicConent *model.TopicContentInpu
 	}
 	if cassandraTopicContent.CourseId != "" && topicConent.Duration != nil {
 		course := []coursez.Course{}
-		getCourseQuery := CassSession.Query(coursez.CourseTable.Get()).BindMap(qb.M{"id": cassandraTopicContent.CourseId})
+		getCourseQuery := CassSession.Query(coursez.CourseTable.Get()).BindMap(qb.M{"id": cassandraTopicContent.CourseId, "lsp_id": lspID, "is_active": true})
 		if err := getCourseQuery.SelectRelease(&course); err != nil {
 			return nil, err
 		}
@@ -426,15 +427,16 @@ func UpdateTopicExam(ctx context.Context, exam *model.TopicExamInput) (*model.To
 		return nil, err
 	}
 	CassSession := session
-	_, err = helpers.GetClaimsFromContext(ctx)
+	claims, err := helpers.GetClaimsFromContext(ctx)
 	if err != nil {
 		return nil, err
 	}
+	lspID := claims["lsp_id"].(string)
 	cassandraTopicContent := coursez.TopicExam{
 		ID: *tExamId,
 	}
 	topicExams := []coursez.TopicExam{}
-	getQuery := CassSession.Query(coursez.TopicExamTable.Get()).BindMap(qb.M{"id": cassandraTopicContent.ID})
+	getQuery := CassSession.Query(coursez.TopicExamTable.Get()).BindMap(qb.M{"id": cassandraTopicContent.ID, "lsp_id": lspID, "is_active": true})
 	if err := getQuery.SelectRelease(&topicExams); err != nil {
 		return nil, err
 	}

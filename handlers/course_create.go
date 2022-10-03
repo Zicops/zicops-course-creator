@@ -390,6 +390,7 @@ func CourseUpdate(ctx context.Context, courseInput *model.CourseInput) (*model.C
 		return nil, err
 	}
 	email_creator := claims["email"].(string)
+	lspId := claims["lsp_id"].(string)
 	// set course input in cassandra
 	courseID := *courseInput.ID
 	// get course from cassandra
@@ -397,7 +398,7 @@ func CourseUpdate(ctx context.Context, courseInput *model.CourseInput) (*model.C
 		ID: courseID,
 	}
 	courses := []coursez.Course{}
-	getQuery := CassSession.Query(coursez.CourseTable.Get()).BindMap(qb.M{"id": courseID})
+	getQuery := CassSession.Query(coursez.CourseTable.Get()).BindMap(qb.M{"id": courseID, "lsp_id": lspId, "is_active": true})
 	if err := getQuery.SelectRelease(&courses); err != nil {
 		return nil, err
 	}

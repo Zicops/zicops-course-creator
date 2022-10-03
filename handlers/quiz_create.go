@@ -107,16 +107,17 @@ func UpdateQuiz(ctx context.Context, quiz *model.QuizInput) (*model.Quiz, error)
 		return nil, err
 	}
 	CassSession := session
-	_, err = helpers.GetClaimsFromContext(ctx)
+	claims, err := helpers.GetClaimsFromContext(ctx)
 	if err != nil {
 		return nil, err
 	}
+	lspId := claims["lsp_id"].(string)
 	cassandraQuiz := coursez.Quiz{
 		ID: *quiz.ID,
 	}
 	// set course in cassandra
 	quizes := []coursez.Quiz{}
-	getQuery := CassSession.Query(coursez.QuizTable.Get()).BindMap(qb.M{"id": cassandraQuiz.ID})
+	getQuery := CassSession.Query(coursez.QuizTable.Get()).BindMap(qb.M{"id": cassandraQuiz.ID, "lsp_id": lspId, "is_active": true})
 	if err := getQuery.SelectRelease(&quizes); err != nil {
 		return nil, err
 	}

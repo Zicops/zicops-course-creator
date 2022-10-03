@@ -90,13 +90,14 @@ func UpdateCourseCohort(ctx context.Context, input *model.CourseCohortInput) (*m
 		return nil, err
 	}
 	email_creator := claims["email"].(string)
+	lspId := claims["lsp_id"].(string)
 	CassSession := session
 
 	cassandraQuestionBank := coursez.CourseCohortMapping{
 		ID: *input.ID,
 	}
 	banks := []coursez.CourseCohortMapping{}
-	getQuery := CassSession.Query(coursez.CourseCohortTable.Get()).BindMap(qb.M{"id": cassandraQuestionBank.ID})
+	getQuery := CassSession.Query(coursez.CourseCohortTable.Get()).BindMap(qb.M{"id": cassandraQuestionBank.ID, "lsp_id": lspId, "is_active": true})
 	if err := getQuery.SelectRelease(&banks); err != nil {
 		return nil, err
 	}
