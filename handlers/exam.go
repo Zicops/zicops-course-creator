@@ -26,6 +26,7 @@ func ExamCreate(ctx context.Context, exam *model.ExamInput) (*model.Exam, error)
 	if err != nil {
 		return nil, err
 	}
+	lspID := claims["lsp_id"].(string)
 	email_creator := claims["email"].(string)
 	guid := xid.New()
 	cassandraQuestionBank := qbankz.Exam{
@@ -45,6 +46,7 @@ func ExamCreate(ctx context.Context, exam *model.ExamInput) (*model.Exam, error)
 		ScheduleType: *exam.ScheduleType,
 		Duration:     *exam.Duration,
 		Status:       *exam.Status,
+		LSPID:        lspID,
 	}
 
 	insertQuery := CassSession.Query(qbankz.ExamTable.Insert()).BindStruct(cassandraQuestionBank)

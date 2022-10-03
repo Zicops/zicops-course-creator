@@ -50,6 +50,7 @@ func AddQuestionOptions(ctx context.Context, input *model.QuestionOptionInput) (
 		UpdatedBy:      email_creator,
 		CreatedAt:      time.Now().Unix(),
 		UpdatedAt:      time.Now().Unix(),
+		LspId:          lspID,
 	}
 	getUrl := ""
 	if input.File != nil {

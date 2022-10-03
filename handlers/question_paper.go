@@ -27,6 +27,7 @@ func QuestionPaperCreate(ctx context.Context, input *model.QuestionPaperInput) (
 	if err != nil {
 		return nil, err
 	}
+	lspID := claims["lsp_id"].(string)
 	email_creator := claims["email"].(string)
 	cassandraQuestionBank := qbankz.QuestionPaperMain{
 		ID:                guid.String(),
@@ -43,6 +44,7 @@ func QuestionPaperCreate(ctx context.Context, input *model.QuestionPaperInput) (
 		SectionWise:       *input.SectionWise,
 		SuggestedDuration: *input.SuggestedDuration,
 		Status:            *input.Status,
+		LspID:             lspID,
 	}
 
 	insertQuery := CassSession.Query(qbankz.QuestionPaperMainTable.Insert()).BindStruct(cassandraQuestionBank)
@@ -187,6 +189,7 @@ func QuestionPaperSectionCreate(ctx context.Context, input *model.QuestionPaperS
 		return nil, err
 	}
 	email_creator := claims["email"].(string)
+	lspID := claims["lsp_id"].(string)
 	cassandraQuestionBank := qbankz.SectionMain{
 		ID:              guid.String(),
 		Name:            *input.Name,
@@ -200,6 +203,7 @@ func QuestionPaperSectionCreate(ctx context.Context, input *model.QuestionPaperS
 		QPID:            *input.QpID,
 		Type:            "",
 		TotalQuestions:  0,
+		LSPID:           lspID,
 	}
 
 	insertQuery := CassSession.Query(qbankz.SectionMainTable.Insert()).BindStruct(cassandraQuestionBank)

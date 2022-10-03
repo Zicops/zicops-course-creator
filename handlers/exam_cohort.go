@@ -27,6 +27,7 @@ func AddExamCohort(ctx context.Context, input *model.ExamCohortInput) (*model.Ex
 	if err != nil {
 		return nil, err
 	}
+	lspID := claims["lsp_id"].(string)
 	email_creator := claims["email"].(string)
 	cassandraQuestionBank := qbankz.ExamCohort{
 		ID:        guid.String(),
@@ -37,6 +38,7 @@ func AddExamCohort(ctx context.Context, input *model.ExamCohortInput) (*model.Ex
 		CreatedAt: time.Now().Unix(),
 		UpdatedAt: time.Now().Unix(),
 		CohortID:  *input.CohortID,
+		LspID:     lspID,
 	}
 	insertQuery := CassSession.Query(qbankz.ExamCohortTable.Insert()).BindStruct(cassandraQuestionBank)
 	if err := insertQuery.ExecRelease(); err != nil {

@@ -31,6 +31,7 @@ func QuestionBankCreate(ctx context.Context, input *model.QuestionBankInput) (*m
 	if err != nil {
 		return nil, err
 	}
+	lspID := claims["lsp_id"].(string)
 	email_creator := claims["email"].(string)
 	cassandraQuestionBank := qbankz.QuestionBankMain{
 		ID:          guid.String(),
@@ -45,6 +46,7 @@ func QuestionBankCreate(ctx context.Context, input *model.QuestionBankInput) (*m
 		UpdatedBy:   email_creator,
 		CreatedAt:   time.Now().Unix(),
 		UpdatedAt:   time.Now().Unix(),
+		LspID:       lspID,
 	}
 
 	insertQuery := CassSession.Query(qbankz.QuestionBankMainTable.Insert()).BindStruct(cassandraQuestionBank)
@@ -198,6 +200,7 @@ func AddQuestionBankQuestion(ctx context.Context, input *model.QuestionBankQuest
 		UpdatedBy:      email_creator,
 		CreatedAt:      time.Now().Unix(),
 		UpdatedAt:      time.Now().Unix(),
+		LspId:          lspID,
 	}
 	if input.File != nil {
 		bucketPath := "question_banks/" + cassandraQuestionBank.QbmId + "/" + cassandraQuestionBank.ID + "/" + input.File.Filename
