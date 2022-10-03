@@ -244,8 +244,10 @@ func UploadCourseImage(ctx context.Context, file model.CourseFile) (*model.Uploa
 	getUrl := storageC.GetSignedURLForObject(bucketPath)
 	// update course image in cassandra
 	where := qb.Eq("id")
-	updateQB := qb.Update("coursez.course").Set("imagebucket").Set("image").Where(where)
-	updateQuery := updateQB.Query(*CassSession).BindMap(qb.M{"id": file.CourseID, "imagebucket": bucketPath, "image": getUrl})
+	whereActive := qb.Eq("is_active")
+	whereLspID := qb.Eq("lsp_id")
+	updateQB := qb.Update("coursez.course").Set("imagebucket").Set("image").Where(where).Where(whereActive).Where(whereLspID).Where(whereActive)
+	updateQuery := updateQB.Query(*CassSession).BindMap(qb.M{"id": file.CourseID, "imagebucket": bucketPath, "image": getUrl, "lsp_id": lspID, "is_active": true})
 	if err := updateQuery.ExecRelease(); err != nil {
 		return &isSuccess, err
 	}
@@ -303,8 +305,10 @@ func UploadCoursePreviewVideo(ctx context.Context, file model.CourseFile) (*mode
 	getUrl := storageC.GetSignedURLForObject(bucketPath)
 	// update course image in cassandra
 	where := qb.Eq("id")
-	updateQB := qb.Update("coursez.course").Set("previewvideobucket").Set("previewvideo").Where(where)
-	updateQuery := updateQB.Query(*CassSession).BindMap(qb.M{"id": file.CourseID, "previewvideobucket": bucketPath, "previewvideo": getUrl})
+	whereActive := qb.Eq("is_active")
+	whereLspID := qb.Eq("lsp_id")
+	updateQB := qb.Update("coursez.course").Set("previewvideobucket").Set("previewvideo").Where(where).Where(whereActive).Where(whereLspID)
+	updateQuery := updateQB.Query(*CassSession).BindMap(qb.M{"id": file.CourseID, "previewvideobucket": bucketPath, "previewvideo": getUrl, "lsp_id": lspID, "is_active": true})
 	if err := updateQuery.ExecRelease(); err != nil {
 		return &isSuccess, err
 	}
@@ -358,8 +362,10 @@ func UploadCourseTileImage(ctx context.Context, file model.CourseFile) (*model.U
 	}
 	getUrl := storageC.GetSignedURLForObject(bucketPath)
 	where := qb.Eq("id")
-	updateQB := qb.Update("coursez.course").Set("tileimagebucket").Set("tileimage").Where(where)
-	updateQuery := updateQB.Query(*CassSession).BindMap(qb.M{"id": file.CourseID, "tileimagebucket": bucketPath, "tileimage": getUrl})
+	whereActive := qb.Eq("is_active")
+	whereLspID := qb.Eq("lsp_id")
+	updateQB := qb.Update("coursez.course").Set("tileimagebucket").Set("tileimage").Where(where).Where(whereActive).Where(whereLspID)
+	updateQuery := updateQB.Query(*CassSession).BindMap(qb.M{"id": file.CourseID, "tileimagebucket": bucketPath, "tileimage": getUrl, "lsp_id": lspID, "is_active": true})
 	if err := updateQuery.ExecRelease(); err != nil {
 		return &isSuccess, err
 	}
@@ -562,7 +568,7 @@ func CourseUpdate(ctx context.Context, courseInput *model.CourseInput) (*model.C
 	updateCols = append(updateCols, "updated_at")
 	// set course in cassandra
 	upStms, uNames := coursez.CourseTable.Update(updateCols...)
-	updateQuery := CassSession.Query(upStms, uNames).BindMap(qb.M{"id": cassandraCourse.ID, "lsp_id": cassandraCourse.LspID, "is_active": cassandraCourse.IsActive})
+	updateQuery := CassSession.Query(upStms, uNames).BindStruct(cassandraCourse)
 	if err := updateQuery.ExecRelease(); err != nil {
 		return nil, err
 	}

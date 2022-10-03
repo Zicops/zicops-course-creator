@@ -217,8 +217,10 @@ func UploadTopicVideo(ctx context.Context, file model.TopicVideo) (*model.Upload
 	}
 	getUrl := storageC.GetSignedURLForObject(bucketPath)
 	where := qb.Eq("id")
-	updateQB := qb.Update("coursez.topic_content").Set("topiccontentbucket").Set("url").Where(where)
-	updateQuery := updateQB.Query(*CassSession).BindMap(qb.M{"id": file.ContentID, "topiccontentbucket": bucketPath, "url": getUrl})
+	whereActive := qb.Eq("is_active")
+	whereLspID := qb.Eq("lsp_id")
+	updateQB := qb.Update("coursez.topic_content").Set("topiccontentbucket").Set("url").Where(where).Where(whereActive).Where(whereLspID)
+	updateQuery := updateQB.Query(*CassSession).BindMap(qb.M{"id": file.ContentID, "topiccontentbucket": bucketPath, "url": getUrl, "lsp_id": lspId, "is_active": true})
 	if err := updateQuery.ExecRelease(); err != nil {
 		return &isSuccess, err
 	}
@@ -574,8 +576,10 @@ func UploadTopicStaticContent(ctx context.Context, file *model.StaticContent) (*
 	}
 
 	where := qb.Eq("id")
-	updateQB := qb.Update("coursez.topic_content").Set("topiccontentbucket").Set("url").Where(where)
-	updateQuery := updateQB.Query(*CassSession).BindMap(qb.M{"id": file.ContentID, "topiccontentbucket": bucketPath, "url": getUrl})
+	whereActive := qb.Eq("is_active")
+	whereLspID := qb.Eq("lsp_id")
+	updateQB := qb.Update("coursez.topic_content").Set("topiccontentbucket").Set("url").Where(where).Where(whereActive).Where(whereLspID)
+	updateQuery := updateQB.Query(*CassSession).BindMap(qb.M{"id": file.ContentID, "topiccontentbucket": bucketPath, "url": getUrl, "lsp_id": lspId, "is_active": true})
 	if err := updateQuery.ExecRelease(); err != nil {
 		return &isSuccess, err
 	}
