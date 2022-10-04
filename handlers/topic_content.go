@@ -49,7 +49,7 @@ func TopicContentCreate(ctx context.Context, topicID string, courseID string, mo
 		TopicContentBucket: "",
 		Url:                "",
 		SubtitleFile:       "",
-		IsActive:           false,
+		IsActive:           true,
 		LspId:              lspID,
 	}
 	if moduleID != nil && topicConent.Duration != nil {
