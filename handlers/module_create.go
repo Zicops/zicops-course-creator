@@ -36,8 +36,8 @@ func ModuleCreate(ctx context.Context, courseID string, module *model.ModuleInpu
 		UpdatedAt:   time.Now().Unix(),
 		IsChapter:   *module.IsChapter,
 		CourseID:    courseID,
-		IsActive:    false,
-		LspID:       lspID,
+		IsActive:    true,
+		LspId:       lspID,
 	}
 	if module.Owner != nil {
 		cassandraModule.Owner = *module.Owner
@@ -87,16 +87,17 @@ func UpdateModule(ctx context.Context, module *model.ModuleInput) (*model.Module
 		return nil, err
 	}
 	CassSession := session
-	_, err = helpers.GetClaimsFromContext(ctx)
+	claims, err := helpers.GetClaimsFromContext(ctx)
 	if err != nil {
 		return nil, err
 	}
+	lspId := claims["lsp_id"].(string)
 	cassandraModule := coursez.Module{
 		ID: *module.ID,
 	}
 	// set course in cassandra
 	modules := []coursez.Module{}
-	getQuery := CassSession.Query(coursez.ModuleTable.Get()).BindMap(qb.M{"id": cassandraModule.ID})
+	getQuery := CassSession.Query(coursez.ModuleTable.Get()).BindMap(qb.M{"id": cassandraModule.ID, "lsp_id": lspId, "is_active": true})
 	if err := getQuery.SelectRelease(&modules); err != nil {
 		return nil, err
 	}

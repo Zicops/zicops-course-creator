@@ -35,7 +35,7 @@ func ChapterCreate(ctx context.Context, courseID string, chapter *model.ChapterI
 		CreatedAt:   time.Now().Unix(),
 		UpdatedAt:   time.Now().Unix(),
 		CourseID:    courseID,
-		LspID:       lspID,
+		LspId:       lspID,
 	}
 	if chapter.ModuleID != nil {
 		cassandraChapter.ModuleID = *chapter.ModuleID
@@ -69,10 +69,11 @@ func UpdateChapter(ctx context.Context, chapter *model.ChapterInput) (*model.Cha
 		return nil, err
 	}
 	CassSession := session
-	_, err = helpers.GetClaimsFromContext(ctx)
+	claims, err := helpers.GetClaimsFromContext(ctx)
 	if err != nil {
 		return nil, err
 	}
+	lspId := claims["lsp_id"].(string)
 	if chapter.ID == nil {
 		return nil, fmt.Errorf("chapter not found")
 	}
@@ -80,7 +81,7 @@ func UpdateChapter(ctx context.Context, chapter *model.ChapterInput) (*model.Cha
 		ID: *chapter.ID,
 	}
 	chapters := []coursez.Chapter{}
-	getQuery := CassSession.Query(coursez.ChapterTable.Get()).BindMap(qb.M{"id": cassandraChapter.ID})
+	getQuery := CassSession.Query(coursez.ChapterTable.Get()).BindMap(qb.M{"id": cassandraChapter.ID, "lsp_id": lspId, "is_active": true})
 	if err := getQuery.SelectRelease(&chapters); err != nil {
 		return nil, err
 	}

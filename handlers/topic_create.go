@@ -38,7 +38,7 @@ func TopicCreate(ctx context.Context, courseID string, topic *model.TopicInput) 
 		UpdatedAt:   time.Now().Unix(),
 		CourseID:    courseID,
 		IsActive:    true,
-		LspID:       lspId,
+		LspId:       lspId,
 	}
 	if topic.ChapterID != nil {
 		cassandraTopic.ChapterID = *topic.ChapterID
@@ -91,6 +91,7 @@ func TopicUpdate(ctx context.Context, topic *model.TopicInput) (*model.Topic, er
 		return nil, err
 	}
 	email_creator := claims["email"].(string)
+	lspID := claims["lsp_id"].(string)
 	cassandraTopic := coursez.Topic{
 		ID: *topic.ID,
 	}
@@ -101,7 +102,7 @@ func TopicUpdate(ctx context.Context, topic *model.TopicInput) (*model.Topic, er
 		cassandraTopic.ModuleID = *topic.ModuleID
 	}
 	topics := []coursez.Topic{}
-	getQuery := CassSession.Query(coursez.TopicTable.Get()).BindMap(qb.M{"id": cassandraTopic.ID})
+	getQuery := CassSession.Query(coursez.TopicTable.Get()).BindMap(qb.M{"id": cassandraTopic.ID, "lsp_id": lspID, "is_active": true})
 	if err := getQuery.SelectRelease(&topics); err != nil {
 		return nil, err
 	}

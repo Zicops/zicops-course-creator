@@ -41,7 +41,7 @@ func AddExamConfiguration(ctx context.Context, input *model.ExamConfigurationInp
 		DisplayHints: *input.DisplayHints,
 		ShowAnswer:   *input.ShowAnswer,
 		ShowResult:   *input.ShowResult,
-		LspID:        lspID,
+		LspId:        lspID,
 	}
 	insertQuery := CassSession.Query(qbankz.ExamConfigTable.Insert()).BindStruct(cassandraQuestionBank)
 	if err := insertQuery.ExecRelease(); err != nil {

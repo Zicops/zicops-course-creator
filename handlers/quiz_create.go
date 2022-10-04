@@ -37,7 +37,7 @@ func CreateTopicQuiz(ctx context.Context, quiz *model.QuizInput) (*model.Quiz, e
 		CreatedAt: time.Now().Unix(),
 		UpdatedAt: time.Now().Unix(),
 		IsActive:  true,
-		LspID:     lspID,
+		LspId:     lspID,
 	}
 	if quiz.Name != nil {
 		cassandraQuiz.Name = *quiz.Name
@@ -107,16 +107,17 @@ func UpdateQuiz(ctx context.Context, quiz *model.QuizInput) (*model.Quiz, error)
 		return nil, err
 	}
 	CassSession := session
-	_, err = helpers.GetClaimsFromContext(ctx)
+	claims, err := helpers.GetClaimsFromContext(ctx)
 	if err != nil {
 		return nil, err
 	}
+	lspId := claims["lsp_id"].(string)
 	cassandraQuiz := coursez.Quiz{
 		ID: *quiz.ID,
 	}
 	// set course in cassandra
 	quizes := []coursez.Quiz{}
-	getQuery := CassSession.Query(coursez.QuizTable.Get()).BindMap(qb.M{"id": cassandraQuiz.ID})
+	getQuery := CassSession.Query(coursez.QuizTable.Get()).BindMap(qb.M{"id": cassandraQuiz.ID, "lsp_id": lspId, "is_active": true})
 	if err := getQuery.SelectRelease(&quizes); err != nil {
 		return nil, err
 	}
@@ -242,7 +243,9 @@ func UploadQuizFile(ctx context.Context, courseID string, quiz model.QuizFile) (
 		return &isSuccess, err
 	}
 	getUrl := storageC.GetSignedURLForObject(bucketPath)
+	guid := xid.New()
 	cassandraQuizFile := coursez.QuizFile{
+		ID:         guid.String(),
 		QuizId:     *quiz.QuizID,
 		BucketPath: bucketPath,
 		Path:       getUrl,
@@ -286,7 +289,9 @@ func AddMCQQuiz(ctx context.Context, quiz *model.QuizMcq) (*bool, error) {
 	for _, option := range quiz.Options {
 		options = append(options, *option)
 	}
+	guid := xid.New()
 	cassandraQuiz := coursez.QuizMcq{
+		ID:       guid.String(),
 		QuizId:   *quiz.QuizID,
 		Options:  options,
 		IsActive: true,
@@ -326,7 +331,9 @@ func AddQuizDescriptive(ctx context.Context, quiz *model.QuizDescriptive) (*bool
 		return nil, err
 	}
 	lspID := claims["lsp_id"].(string)
+	guid := xid.New()
 	cassandraQuiz := coursez.QuizDescriptive{
+		ID:       guid.String(),
 		QuizId:   *quiz.QuizID,
 		IsActive: true,
 		LspId:    lspID,

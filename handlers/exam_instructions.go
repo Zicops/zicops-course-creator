@@ -41,7 +41,7 @@ func ExamInstructionsCreate(ctx context.Context, exam *model.ExamInstructionInpu
 		CreatedAt:       time.Now().Unix(),
 		UpdatedAt:       time.Now().Unix(),
 		IsActive:        *exam.IsActive,
-		LspID:           lspID,
+		LspId:           lspID,
 	}
 	insertQuery := CassSession.Query(qbankz.ExamInstructionsTable.Insert()).BindStruct(cassandraQuestionBank)
 	if err := insertQuery.ExecRelease(); err != nil {

@@ -46,7 +46,7 @@ func QuestionBankCreate(ctx context.Context, input *model.QuestionBankInput) (*m
 		UpdatedBy:   email_creator,
 		CreatedAt:   time.Now().Unix(),
 		UpdatedAt:   time.Now().Unix(),
-		LspID:       lspID,
+		LspId:       lspID,
 	}
 
 	insertQuery := CassSession.Query(qbankz.QuestionBankMainTable.Insert()).BindStruct(cassandraQuestionBank)

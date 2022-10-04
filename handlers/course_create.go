@@ -35,6 +35,7 @@ func CourseCreator(ctx context.Context, courseInput *model.CourseInput) (*model.
 		return nil, err
 	}
 	email_creator := claims["email"].(string)
+	lspId := claims["lsp_id"].(string)
 	guid := xid.New()
 	language := []string{}
 	takeaways := []string{}
@@ -81,14 +82,14 @@ func CourseCreator(ctx context.Context, courseInput *model.CourseInput) (*model.
 		subCats = append(subCats, subC)
 		subCatsRes = append(subCatsRes, &subCR)
 	}
-	active := false
+	active := true
 	if courseInput.IsActive != nil {
 		active = *courseInput.IsActive
 	}
 	cassandraCourse := coursez.Course{
 		ID:                 guid.String(),
 		Name:               *courseInput.Name,
-		LspID:              *courseInput.LspID,
+		LspId:              lspId,
 		Publisher:          *courseInput.Publisher,
 		Description:        *courseInput.Description,
 		Image:              "https://storage.googleapis.com/zicops.com/school-board-ge1701ca8f_640.jpg",
@@ -164,7 +165,7 @@ func CourseCreator(ctx context.Context, courseInput *model.CourseInput) (*model.
 	created := strconv.FormatInt(cassandraCourse.CreatedAt, 10)
 	responseModel := model.Course{
 		ID:                 &cassandraCourse.ID,
-		LspID:              &cassandraCourse.LspID,
+		LspID:              &lspId,
 		Publisher:          &cassandraCourse.Publisher,
 		Name:               courseInput.Name,
 		Description:        courseInput.Description,
@@ -243,11 +244,10 @@ func UploadCourseImage(ctx context.Context, file model.CourseFile) (*model.Uploa
 	}
 	getUrl := storageC.GetSignedURLForObject(bucketPath)
 	// update course image in cassandra
-	where := qb.Eq("id")
-	updateQB := qb.Update("coursez.course").Set("imagebucket").Set("image").Where(where)
-	updateQuery := updateQB.Query(*CassSession).BindMap(qb.M{"id": file.CourseID, "imagebucket": bucketPath, "image": getUrl})
-	if err := updateQuery.ExecRelease(); err != nil {
-		return &isSuccess, err
+	updateQuery := fmt.Sprintf("UPDATE coursez.course SET imagebucket='%s', image='%s' WHERE id='%s' AND lsp_id='%s' AND is_active=true", bucketPath, getUrl, *file.CourseID, lspID)
+	updateQ := CassSession.Query(updateQuery, nil)
+	if err := updateQ.ExecRelease(); err != nil {
+		return nil, err
 	}
 	isSuccessRes := true
 	isSuccess.Success = &isSuccessRes
@@ -302,11 +302,10 @@ func UploadCoursePreviewVideo(ctx context.Context, file model.CourseFile) (*mode
 	}
 	getUrl := storageC.GetSignedURLForObject(bucketPath)
 	// update course image in cassandra
-	where := qb.Eq("id")
-	updateQB := qb.Update("coursez.course").Set("previewvideobucket").Set("previewvideo").Where(where)
-	updateQuery := updateQB.Query(*CassSession).BindMap(qb.M{"id": file.CourseID, "previewvideobucket": bucketPath, "previewvideo": getUrl})
-	if err := updateQuery.ExecRelease(); err != nil {
-		return &isSuccess, err
+	updateQuery := fmt.Sprintf("UPDATE coursez.course SET previewvideobucket='%s', previewvideo='%s' WHERE id='%s' AND lsp_id='%s' AND is_active=true", bucketPath, getUrl, *file.CourseID, lspID)
+	updateQ := CassSession.Query(updateQuery, nil)
+	if err := updateQ.ExecRelease(); err != nil {
+		return nil, err
 	}
 	isSuccessRes := true
 	isSuccess.Success = &isSuccessRes
@@ -357,11 +356,10 @@ func UploadCourseTileImage(ctx context.Context, file model.CourseFile) (*model.U
 		return &isSuccess, err
 	}
 	getUrl := storageC.GetSignedURLForObject(bucketPath)
-	where := qb.Eq("id")
-	updateQB := qb.Update("coursez.course").Set("tileimagebucket").Set("tileimage").Where(where)
-	updateQuery := updateQB.Query(*CassSession).BindMap(qb.M{"id": file.CourseID, "tileimagebucket": bucketPath, "tileimage": getUrl})
-	if err := updateQuery.ExecRelease(); err != nil {
-		return &isSuccess, err
+	updateQuery := fmt.Sprintf("UPDATE coursez.course SET tileimagebucket='%s', tileimage='%s' WHERE id='%s' AND lsp_id='%s' AND is_active=true", bucketPath, getUrl, *file.CourseID, lspID)
+	updateQ := CassSession.Query(updateQuery, nil)
+	if err := updateQ.ExecRelease(); err != nil {
+		return nil, err
 	}
 	isSuccessRes := true
 	isSuccess.Success = &isSuccessRes
@@ -384,6 +382,7 @@ func CourseUpdate(ctx context.Context, courseInput *model.CourseInput) (*model.C
 		return nil, err
 	}
 	email_creator := claims["email"].(string)
+	lspId := claims["lsp_id"].(string)
 	// set course input in cassandra
 	courseID := *courseInput.ID
 	// get course from cassandra
@@ -391,7 +390,7 @@ func CourseUpdate(ctx context.Context, courseInput *model.CourseInput) (*model.C
 		ID: courseID,
 	}
 	courses := []coursez.Course{}
-	getQuery := CassSession.Query(coursez.CourseTable.Get()).BindMap(qb.M{"id": courseID})
+	getQuery := CassSession.Query(coursez.CourseTable.Get()).BindMap(qb.M{"id": courseID, "lsp_id": lspId, "is_active": true})
 	if err := getQuery.SelectRelease(&courses); err != nil {
 		return nil, err
 	}
@@ -547,14 +546,6 @@ func CourseUpdate(ctx context.Context, courseInput *model.CourseInput) (*model.C
 		updateCols = append(updateCols, "quality_control_check_reqd")
 		cassandraCourse.QARequired = *courseInput.QaRequired
 	}
-	if courseInput.IsActive != nil {
-		updateCols = append(updateCols, "is_active")
-		cassandraCourse.IsActive = *courseInput.IsActive
-	}
-	if courseInput.LspID != nil {
-		updateCols = append(updateCols, "lsp_id")
-		cassandraCourse.LspID = *courseInput.LspID
-	}
 	if courseInput.Publisher != nil {
 		updateCols = append(updateCols, "publisher")
 		cassandraCourse.Publisher = *courseInput.Publisher
@@ -562,7 +553,7 @@ func CourseUpdate(ctx context.Context, courseInput *model.CourseInput) (*model.C
 	updateCols = append(updateCols, "updated_at")
 	// set course in cassandra
 	upStms, uNames := coursez.CourseTable.Update(updateCols...)
-	updateQuery := CassSession.Query(upStms, uNames).BindStruct(&cassandraCourse)
+	updateQuery := CassSession.Query(upStms, uNames).BindStruct(cassandraCourse)
 	if err := updateQuery.ExecRelease(); err != nil {
 		return nil, err
 	}
@@ -571,7 +562,7 @@ func CourseUpdate(ctx context.Context, courseInput *model.CourseInput) (*model.C
 	responseModel := model.Course{
 		ID:                 &cassandraCourse.ID,
 		Name:               courseInput.Name,
-		LspID:              &cassandraCourse.LspID,
+		LspID:              &cassandraCourse.LspId,
 		Publisher:          &cassandraCourse.Publisher,
 		Description:        courseInput.Description,
 		Summary:            courseInput.Summary,

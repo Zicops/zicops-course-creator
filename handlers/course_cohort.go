@@ -38,7 +38,7 @@ func AddCourseCohort(ctx context.Context, input *model.CourseCohortInput) (*mode
 		CourseType:             *input.CourseType,
 		CohortID:               *input.CohortID,
 		CourseStatus:           *input.CourseStatus,
-		LspID:                  *input.LspID,
+		LspId:                  *input.LspID,
 		IsMandatory:            *input.IsMandatory,
 		AddedBy:                *input.AddedBy,
 		IsActive:               *input.IsActive,
@@ -90,13 +90,14 @@ func UpdateCourseCohort(ctx context.Context, input *model.CourseCohortInput) (*m
 		return nil, err
 	}
 	email_creator := claims["email"].(string)
+	lspId := claims["lsp_id"].(string)
 	CassSession := session
 
 	cassandraQuestionBank := coursez.CourseCohortMapping{
 		ID: *input.ID,
 	}
 	banks := []coursez.CourseCohortMapping{}
-	getQuery := CassSession.Query(coursez.CourseCohortTable.Get()).BindMap(qb.M{"id": cassandraQuestionBank.ID})
+	getQuery := CassSession.Query(coursez.CourseCohortTable.Get()).BindMap(qb.M{"id": cassandraQuestionBank.ID, "lsp_id": lspId, "is_active": true})
 	if err := getQuery.SelectRelease(&banks); err != nil {
 		return nil, err
 	}
@@ -138,7 +139,7 @@ func UpdateCourseCohort(ctx context.Context, input *model.CourseCohortInput) (*m
 		updatedCols = append(updatedCols, "is_mandatory")
 	}
 	if input.LspID != nil {
-		cassandraQuestionBank.LspID = *input.LspID
+		cassandraQuestionBank.LspId = *input.LspID
 		updatedCols = append(updatedCols, "lsp_id")
 	}
 	if input.AddedBy != nil {

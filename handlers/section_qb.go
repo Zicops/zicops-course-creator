@@ -43,7 +43,7 @@ func QuestionSectionMap(ctx context.Context, input *model.MapSectionToBankInput)
 		QuestionType:    *input.QuestionType,
 		QuestionMarks:   *input.QuestionMarks,
 		RetrievalType:   *input.RetrieveType,
-		LspID:           lspID,
+		LspId:           lspID,
 	}
 
 	insertQuery := CassSession.Query(qbankz.SectionQBMappingTable.Insert()).BindStruct(cassandraQuestionBank)
@@ -192,7 +192,7 @@ func QuestionFixed(ctx context.Context, input *model.SectionFixedQuestionsInput)
 		UpdatedBy:  email_creator,
 		CreatedAt:  time.Now().Unix(),
 		UpdatedAt:  time.Now().Unix(),
-		LspID:      lspID,
+		LspId:      lspID,
 	}
 
 	insertQuery := CassSession.Query(qbankz.SectionFixedQuestionsTable.Insert()).BindStruct(cassandraQuestionBank)
