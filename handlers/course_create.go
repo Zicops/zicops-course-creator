@@ -45,7 +45,7 @@ func CourseCreator(ctx context.Context, courseInput *model.CourseInput) (*model.
 	mustFor := []string{}
 	relatedSkills := []string{}
 	approvers := []string{}
-	subCats := make([]string, 0)
+	subCats := make([]coursez.SubCat, 0)	
 	subCatsRes := make([]*model.SubCategories, 0)
 
 	for _, lang := range courseInput.Language {
@@ -79,7 +79,7 @@ func CourseCreator(ctx context.Context, courseInput *model.CourseInput) (*model.
 		subC.Rank = *subCat.Rank
 		subCR.Name = subCat.Name
 		subCR.Rank = subCat.Rank
-		subCats = append(subCats, subC.Name)
+		subCats = append(subCats, subC)
 		subCatsRes = append(subCatsRes, &subCR)
 	}
 	active := false
@@ -416,7 +416,7 @@ func CourseUpdate(ctx context.Context, courseInput *model.CourseInput) (*model.C
 	mustFor := []string{}
 	relatedSkills := []string{}
 	approvers := []string{}
-	subCats := make([]string, 0)
+	subCats := make([]coursez.SubCat, 0)	
 	subCatsRes := make([]*model.SubCategories, 0)
 
 	for _, lang := range courseInput.Language {
@@ -450,7 +450,7 @@ func CourseUpdate(ctx context.Context, courseInput *model.CourseInput) (*model.C
 		subC.Rank = *subCat.Rank
 		subCR.Name = subCat.Name
 		subCR.Rank = subCat.Rank
-		subCats = append(subCats, subC.Name)
+		subCats = append(subCats, subC)
 		subCatsRes = append(subCatsRes, &subCR)
 	}
 	// update cassandraCourse with input
