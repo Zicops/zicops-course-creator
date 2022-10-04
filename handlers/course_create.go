@@ -35,6 +35,7 @@ func CourseCreator(ctx context.Context, courseInput *model.CourseInput) (*model.
 		return nil, err
 	}
 	email_creator := claims["email"].(string)
+	lspId := claims["lsp_id"].(string)
 	guid := xid.New()
 	language := []string{}
 	takeaways := []string{}
@@ -88,7 +89,7 @@ func CourseCreator(ctx context.Context, courseInput *model.CourseInput) (*model.
 	cassandraCourse := coursez.Course{
 		ID:                 guid.String(),
 		Name:               *courseInput.Name,
-		LspId:              *courseInput.LspID,
+		LspId:              lspId,
 		Publisher:          *courseInput.Publisher,
 		Description:        *courseInput.Description,
 		Image:              "https://storage.googleapis.com/zicops.com/school-board-ge1701ca8f_640.jpg",
@@ -164,7 +165,7 @@ func CourseCreator(ctx context.Context, courseInput *model.CourseInput) (*model.
 	created := strconv.FormatInt(cassandraCourse.CreatedAt, 10)
 	responseModel := model.Course{
 		ID:                 &cassandraCourse.ID,
-		LspID:              &cassandraCourse.LspId,
+		LspID:              &lspId,
 		Publisher:          &cassandraCourse.Publisher,
 		Name:               courseInput.Name,
 		Description:        courseInput.Description,
