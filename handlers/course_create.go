@@ -82,7 +82,7 @@ func CourseCreator(ctx context.Context, courseInput *model.CourseInput) (*model.
 		subCats = append(subCats, subC)
 		subCatsRes = append(subCatsRes, &subCR)
 	}
-	active := false
+	active := true
 	if courseInput.IsActive != nil {
 		active = *courseInput.IsActive
 	}

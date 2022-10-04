@@ -36,7 +36,7 @@ func ModuleCreate(ctx context.Context, courseID string, module *model.ModuleInpu
 		UpdatedAt:   time.Now().Unix(),
 		IsChapter:   *module.IsChapter,
 		CourseID:    courseID,
-		IsActive:    false,
+		IsActive:    true,
 		LspId:       lspID,
 	}
 	if module.Owner != nil {

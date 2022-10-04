@@ -151,7 +151,7 @@ func TopicExamCreate(ctx context.Context, topicID string, courseID string, exam 
 		Language:  *exam.Language,
 		CreatedAt: time.Now().Unix(),
 		UpdatedAt: time.Now().Unix(),
-		IsActive:  false,
+		IsActive:  true,
 		LspId:     lspID,
 	}
 	// set course in cassandra
