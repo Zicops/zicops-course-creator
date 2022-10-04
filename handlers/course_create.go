@@ -554,10 +554,6 @@ func CourseUpdate(ctx context.Context, courseInput *model.CourseInput) (*model.C
 		updateCols = append(updateCols, "quality_control_check_reqd")
 		cassandraCourse.QARequired = *courseInput.QaRequired
 	}
-	if courseInput.IsActive != nil {
-		updateCols = append(updateCols, "is_active")
-		cassandraCourse.IsActive = *courseInput.IsActive
-	}
 	if courseInput.Publisher != nil {
 		updateCols = append(updateCols, "publisher")
 		cassandraCourse.Publisher = *courseInput.Publisher
