@@ -45,7 +45,7 @@ func CourseCreator(ctx context.Context, courseInput *model.CourseInput) (*model.
 	mustFor := []string{}
 	relatedSkills := []string{}
 	approvers := []string{}
-	subCats := make([]coursez.SubCat, 0)	
+	subCats := make([]coursez.SubCat, 0)
 	subCatsRes := make([]*model.SubCategories, 0)
 
 	for _, lang := range courseInput.Language {
@@ -244,13 +244,10 @@ func UploadCourseImage(ctx context.Context, file model.CourseFile) (*model.Uploa
 	}
 	getUrl := storageC.GetSignedURLForObject(bucketPath)
 	// update course image in cassandra
-	where := qb.Eq("id")
-	whereActive := qb.Eq("is_active")
-	whereLspID := qb.Eq("lsp_id")
-	updateQB := qb.Update("coursez.course").Set("imagebucket").Set("image").Where(where).Where(whereActive).Where(whereLspID)
-	updateQuery := updateQB.Query(*CassSession).BindMap(qb.M{"id": file.CourseID, "imagebucket": bucketPath, "image": getUrl, "lsp_id": lspID, "is_active": true})
-	if err := updateQuery.ExecRelease(); err != nil {
-		return &isSuccess, err
+	updateQuery := fmt.Sprintf("UPDATE coursez.course SET imagebucket='%s', image='%s' WHERE id='%s' AND lsp_id='%s' AND is_active=true", bucketPath, getUrl, *file.CourseID, lspID)
+	updateQ := CassSession.Query(updateQuery, nil)
+	if err := updateQ.ExecRelease(); err != nil {
+		return nil, err
 	}
 	isSuccessRes := true
 	isSuccess.Success = &isSuccessRes
@@ -305,13 +302,10 @@ func UploadCoursePreviewVideo(ctx context.Context, file model.CourseFile) (*mode
 	}
 	getUrl := storageC.GetSignedURLForObject(bucketPath)
 	// update course image in cassandra
-	where := qb.Eq("id")
-	whereActive := qb.Eq("is_active")
-	whereLspID := qb.Eq("lsp_id")
-	updateQB := qb.Update("coursez.course").Set("previewvideobucket").Set("previewvideo").Where(where).Where(whereActive).Where(whereLspID)
-	updateQuery := updateQB.Query(*CassSession).BindMap(qb.M{"id": file.CourseID, "previewvideobucket": bucketPath, "previewvideo": getUrl, "lsp_id": lspID, "is_active": true})
-	if err := updateQuery.ExecRelease(); err != nil {
-		return &isSuccess, err
+	updateQuery := fmt.Sprintf("UPDATE coursez.course SET previewvideobucket='%s', previewvideo='%s' WHERE id='%s' AND lsp_id='%s' AND is_active=true", bucketPath, getUrl, *file.CourseID, lspID)
+	updateQ := CassSession.Query(updateQuery, nil)
+	if err := updateQ.ExecRelease(); err != nil {
+		return nil, err
 	}
 	isSuccessRes := true
 	isSuccess.Success = &isSuccessRes
@@ -362,13 +356,10 @@ func UploadCourseTileImage(ctx context.Context, file model.CourseFile) (*model.U
 		return &isSuccess, err
 	}
 	getUrl := storageC.GetSignedURLForObject(bucketPath)
-	where := qb.Eq("id")
-	whereActive := qb.Eq("is_active")
-	whereLspID := qb.Eq("lsp_id")
-	updateQB := qb.Update("coursez.course").Set("tileimagebucket").Set("tileimage").Where(where).Where(whereActive).Where(whereLspID)
-	updateQuery := updateQB.Query(*CassSession).BindMap(qb.M{"id": file.CourseID, "tileimagebucket": bucketPath, "tileimage": getUrl, "lsp_id": lspID, "is_active": true})
-	if err := updateQuery.ExecRelease(); err != nil {
-		return &isSuccess, err
+	updateQuery := fmt.Sprintf("UPDATE coursez.course SET tileimagebucket='%s', tileimage='%s' WHERE id='%s' AND lsp_id='%s' AND is_active=true", bucketPath, getUrl, *file.CourseID, lspID)
+	updateQ := CassSession.Query(updateQuery, nil)
+	if err := updateQ.ExecRelease(); err != nil {
+		return nil, err
 	}
 	isSuccessRes := true
 	isSuccess.Success = &isSuccessRes
@@ -416,7 +407,7 @@ func CourseUpdate(ctx context.Context, courseInput *model.CourseInput) (*model.C
 	mustFor := []string{}
 	relatedSkills := []string{}
 	approvers := []string{}
-	subCats := make([]coursez.SubCat, 0)	
+	subCats := make([]coursez.SubCat, 0)
 	subCatsRes := make([]*model.SubCategories, 0)
 
 	for _, lang := range courseInput.Language {

@@ -216,13 +216,10 @@ func UploadTopicVideo(ctx context.Context, file model.TopicVideo) (*model.Upload
 		return &isSuccess, err
 	}
 	getUrl := storageC.GetSignedURLForObject(bucketPath)
-	where := qb.Eq("id")
-	whereActive := qb.Eq("is_active")
-	whereLspID := qb.Eq("lsp_id")
-	updateQB := qb.Update("coursez.topic_content").Set("topiccontentbucket").Set("url").Where(where).Where(whereActive).Where(whereLspID)
-	updateQuery := updateQB.Query(*CassSession).BindMap(qb.M{"id": file.ContentID, "topiccontentbucket": bucketPath, "url": getUrl, "lsp_id": lspId, "is_active": true})
-	if err := updateQuery.ExecRelease(); err != nil {
-		return &isSuccess, err
+	updateQuery := fmt.Sprintf("UPDATE coursez.topic_content SET topiccontentbucket='%s', url='%s' WHERE id='%s' AND lsp_id='%s' AND is_active=true", bucketPath, getUrl, *file.ContentID, lspId)
+	updateQ := CassSession.Query(updateQuery, nil)
+	if err := updateQ.ExecRelease(); err != nil {
+		return nil, err
 	}
 	isSuccessRes := true
 	isSuccess.Success = &isSuccessRes
@@ -577,13 +574,10 @@ func UploadTopicStaticContent(ctx context.Context, file *model.StaticContent) (*
 		getUrl = *file.URL
 	}
 
-	where := qb.Eq("id")
-	whereActive := qb.Eq("is_active")
-	whereLspID := qb.Eq("lsp_id")
-	updateQB := qb.Update("coursez.topic_content").Set("topiccontentbucket").Set("url").Where(where).Where(whereActive).Where(whereLspID)
-	updateQuery := updateQB.Query(*CassSession).BindMap(qb.M{"id": file.ContentID, "topiccontentbucket": bucketPath, "url": getUrl, "lsp_id": lspId, "is_active": true})
-	if err := updateQuery.ExecRelease(); err != nil {
-		return &isSuccess, err
+	updateQuery := fmt.Sprintf("UPDATE coursez.topic_content SET topiccontentbucket='%s', url='%s' WHERE id='%s' AND lsp_id='%s' AND is_active=true", bucketPath, getUrl, *file.ContentID, lspId)
+	updateQ := CassSession.Query(updateQuery, nil)
+	if err := updateQ.ExecRelease(); err != nil {
+		return nil, err
 	}
 	isSuccessRes := true
 	isSuccess.Success = &isSuccessRes
