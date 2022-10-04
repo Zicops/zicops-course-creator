@@ -62,7 +62,7 @@ func TopicContentCreate(ctx context.Context, topicID string, courseID string, mo
 			return nil, fmt.Errorf("module not found")
 		}
 		newDuration := *topicConent.Duration + mod[0].Duration
-		queryStr := fmt.Sprintf("UPDATE coursez.module SET duration=%d WHERE id='%s'", newDuration, *moduleID)
+		queryStr := fmt.Sprintf("UPDATE coursez.module SET duration=%d WHERE id='%s' and lsp_id='%s' and is_active=true", newDuration, *moduleID, lspID)
 		updateQ := CassSession.Query(queryStr, nil)
 		if err := updateQ.ExecRelease(); err != nil {
 			return nil, err
@@ -78,7 +78,7 @@ func TopicContentCreate(ctx context.Context, topicID string, courseID string, mo
 			return nil, fmt.Errorf("course not found")
 		}
 		newDuration := course[0].Duration - cassandraTopicContent.Duration + *topicConent.Duration
-		queryStr := fmt.Sprintf("UPDATE coursez.course SET duration=%d WHERE id='%s'", newDuration, cassandraTopicContent.CourseId)
+		queryStr := fmt.Sprintf("UPDATE coursez.course SET duration=%d WHERE id='%s' and lsp_id='%s' and is_active=true", newDuration, cassandraTopicContent.CourseId, lspID)
 		updateQ := CassSession.Query(queryStr, nil)
 		if err := updateQ.ExecRelease(); err != nil {
 			return nil, err
@@ -368,7 +368,7 @@ func UpdateTopicContent(ctx context.Context, topicConent *model.TopicContentInpu
 			return nil, fmt.Errorf("module not found")
 		}
 		newDuration := mod[0].Duration - cassandraTopicContent.Duration + *topicConent.Duration
-		queryStr := fmt.Sprintf("UPDATE coursez.module SET duration=%d WHERE id='%s'", newDuration, *moduleId)
+		queryStr := fmt.Sprintf("UPDATE coursez.module SET duration=%d WHERE id='%s'and lsp_id='%s' and is_active=true ", newDuration, *moduleId, lspID)
 		updateQ := CassSession.Query(queryStr, nil)
 		if err := updateQ.ExecRelease(); err != nil {
 			return nil, err
@@ -384,7 +384,7 @@ func UpdateTopicContent(ctx context.Context, topicConent *model.TopicContentInpu
 			return nil, fmt.Errorf("course not found")
 		}
 		newDuration := course[0].Duration - cassandraTopicContent.Duration + *topicConent.Duration
-		queryStr := fmt.Sprintf("UPDATE coursez.course SET duration=%d WHERE id='%s'", newDuration, cassandraTopicContent.CourseId)
+		queryStr := fmt.Sprintf("UPDATE coursez.course SET duration=%d WHERE id='%s' and lsp_id='%s' and is_active=true ", newDuration, cassandraTopicContent.CourseId, lspID)
 		updateQ := CassSession.Query(queryStr, nil)
 		if err := updateQ.ExecRelease(); err != nil {
 			return nil, err
