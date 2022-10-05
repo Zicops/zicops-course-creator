@@ -146,11 +146,6 @@ func UpdateQuestionOptions(ctx context.Context, input *model.QuestionOptionInput
 		cassandraQuestionBank.IsCorrect = *input.IsCorrect
 		updatedCols = append(updatedCols, "is_correct")
 	}
-	if input.IsActive != nil {
-		cassandraQuestionBank.IsActive = *input.IsActive
-		updatedCols = append(updatedCols, "is_active")
-	}
-
 	if input.AttachmentType != nil {
 		cassandraQuestionBank.AttachmentType = *input.AttachmentType
 		updatedCols = append(updatedCols, "attachment_type")

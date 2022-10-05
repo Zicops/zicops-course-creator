@@ -95,10 +95,6 @@ func UpdateExamCohort(ctx context.Context, input *model.ExamCohortInput) (*model
 		cassandraQuestionBank.CohortID = *input.CohortID
 		updatedCols = append(updatedCols, "cohort_id")
 	}
-	if input.IsActive != nil {
-		cassandraQuestionBank.IsActive = *input.IsActive
-		updatedCols = append(updatedCols, "is_active")
-	}
 	if input.CreatedBy != nil {
 		cassandraQuestionBank.CreatedBy = *input.CreatedBy
 		updatedCols = append(updatedCols, "created_by")

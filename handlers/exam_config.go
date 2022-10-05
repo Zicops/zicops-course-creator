@@ -97,10 +97,6 @@ func UpdateExamConfiguration(ctx context.Context, input *model.ExamConfiguration
 		cassandraQuestionBank.ExamID = *input.ExamID
 		updatedCols = append(updatedCols, "exam_id")
 	}
-	if input.IsActive != nil {
-		cassandraQuestionBank.IsActive = *input.IsActive
-		updatedCols = append(updatedCols, "is_active")
-	}
 	if input.Shuffle != nil {
 		cassandraQuestionBank.Shuffle = *input.Shuffle
 		updatedCols = append(updatedCols, "shuffle_questions")

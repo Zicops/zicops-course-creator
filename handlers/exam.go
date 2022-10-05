@@ -116,10 +116,6 @@ func ExamUpdate(ctx context.Context, input *model.ExamInput) (*model.Exam, error
 		cassandraQuestionBank.SubCategory = *input.SubCategory
 		updatedCols = append(updatedCols, "sub_category")
 	}
-	if input.IsActive != nil {
-		cassandraQuestionBank.IsActive = *input.IsActive
-		updatedCols = append(updatedCols, "is_active")
-	}
 	if email_creator != "" {
 		cassandraQuestionBank.UpdatedBy = email_creator
 		updatedCols = append(updatedCols, "updated_by")

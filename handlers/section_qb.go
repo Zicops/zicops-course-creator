@@ -99,10 +99,6 @@ func QuestionSectionMapUpdate(ctx context.Context, input *model.MapSectionToBank
 	}
 	cassandraQuestionBank = banks[0]
 	updatedCols := []string{}
-	if input.IsActive != nil {
-		cassandraQuestionBank.IsActive = *input.IsActive
-		updatedCols = append(updatedCols, "is_active")
-	}
 	if email_creator != "" {
 		cassandraQuestionBank.UpdatedBy = email_creator
 		updatedCols = append(updatedCols, "updated_by")
@@ -244,10 +240,6 @@ func QuestionFixedUpdate(ctx context.Context, input *model.SectionFixedQuestions
 	}
 	cassandraQuestionBank = banks[0]
 	updatedCols := []string{}
-	if input.IsActive != nil {
-		cassandraQuestionBank.IsActive = *input.IsActive
-		updatedCols = append(updatedCols, "is_active")
-	}
 	if email_creator != "" {
 		cassandraQuestionBank.UpdatedBy = email_creator
 		updatedCols = append(updatedCols, "updated_by")

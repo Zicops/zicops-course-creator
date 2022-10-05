@@ -116,10 +116,6 @@ func QuestionBankUpdate(ctx context.Context, input *model.QuestionBankInput) (*m
 		cassandraQuestionBank.SubCategory = *input.SubCategory
 		updatedCols = append(updatedCols, "sub_category")
 	}
-	if input.IsActive != nil {
-		cassandraQuestionBank.IsActive = *input.IsActive
-		updatedCols = append(updatedCols, "is_active")
-	}
 	if input.IsDefault != nil {
 		cassandraQuestionBank.IsDefault = *input.IsDefault
 		updatedCols = append(updatedCols, "is_default")
