@@ -202,6 +202,7 @@ func AddQuestionBankQuestion(ctx context.Context, input *model.QuestionBankQuest
 		CreatedAt:      time.Now().Unix(),
 		UpdatedAt:      time.Now().Unix(),
 		LspId:          lspID,
+		IsActive:       true,
 	}
 	if input.File != nil {
 		bucketPath := "question_banks/" + cassandraQuestionBank.QbmId + "/" + cassandraQuestionBank.ID + "/" + input.File.Filename
