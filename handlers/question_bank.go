@@ -74,7 +74,7 @@ func QuestionBankCreate(ctx context.Context, input *model.QuestionBankInput) (*m
 func QuestionBankUpdate(ctx context.Context, input *model.QuestionBankInput) (*model.QuestionBank, error) {
 	log.Info("QuestionBankUpdate called")
 	if input.ID == nil {
-		return nil, fmt.Errorf("question bank not found")
+		return nil, fmt.Errorf("provide question bank id")
 	}
 	session, err := cassandra.GetCassSession("qbankz")
 	if err != nil {
