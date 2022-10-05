@@ -129,7 +129,7 @@ func UpdateQuestionOptions(ctx context.Context, input *model.QuestionOptionInput
 		ID: *input.ID,
 	}
 	banks := []qbankz.OptionsMain{}
-	getQuery := CassSession.Query(qbankz.OptionsMainTable.Get()).BindMap(qb.M{"id": cassandraQuestionBank.ID})
+	getQuery := CassSession.Query(qbankz.OptionsMainTable.Get()).BindMap(qb.M{"id": cassandraQuestionBank.ID, "lsp_id": lspID, "is_active": true})
 	if err := getQuery.SelectRelease(&banks); err != nil {
 		return nil, err
 	}

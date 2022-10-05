@@ -87,11 +87,12 @@ func QuestionPaperUpdate(ctx context.Context, input *model.QuestionPaperInput) (
 		return nil, err
 	}
 	email_creator := claims["email"].(string)
+	lspID := claims["lsp_id"].(string)
 	cassandraQuestionBank := qbankz.QuestionPaperMain{
 		ID: *input.ID,
 	}
 	banks := []qbankz.QuestionPaperMain{}
-	getQuery := CassSession.Query(qbankz.QuestionPaperMainTable.Get()).BindMap(qb.M{"id": cassandraQuestionBank.ID})
+	getQuery := CassSession.Query(qbankz.QuestionPaperMainTable.Get()).BindMap(qb.M{"id": cassandraQuestionBank.ID, "lsp_id": lspID, "is_active": true})
 	if err := getQuery.SelectRelease(&banks); err != nil {
 		return nil, err
 	}
@@ -244,11 +245,12 @@ func QuestionPaperSectionUpdate(ctx context.Context, input *model.QuestionPaperS
 		return nil, err
 	}
 	email_creator := claims["email"].(string)
+	lspID := claims["lsp_id"].(string)
 	cassandraQuestionBank := qbankz.SectionMain{
 		ID: *input.ID,
 	}
 	banks := []qbankz.SectionMain{}
-	getQuery := CassSession.Query(qbankz.SectionMainTable.Get()).BindMap(qb.M{"id": cassandraQuestionBank.ID})
+	getQuery := CassSession.Query(qbankz.SectionMainTable.Get()).BindMap(qb.M{"id": cassandraQuestionBank.ID, "lsp_id": lspID, "is_active": true})
 	if err := getQuery.SelectRelease(&banks); err != nil {
 		return nil, err
 	}
