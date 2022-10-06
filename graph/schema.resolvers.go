@@ -5,6 +5,7 @@ package graph
 
 import (
 	"context"
+	"fmt"
 
 	log "github.com/sirupsen/logrus"
 	"github.com/zicops/zicops-course-creator/graph/generated"
@@ -21,6 +22,10 @@ func (r *mutationResolver) AddCatMain(ctx context.Context, input []*model.CatMai
 	return resp, nil
 }
 
+func (r *mutationResolver) DeleteCatMain(ctx context.Context, id *string) (*bool, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
 func (r *mutationResolver) AddSubCatMain(ctx context.Context, input []*model.SubCatMainInput) ([]*model.SubCatMain, error) {
 	resp, err := handlers.AddSubCatMain(ctx, input)
 	if err != nil {
@@ -28,6 +33,10 @@ func (r *mutationResolver) AddSubCatMain(ctx context.Context, input []*model.Sub
 		return nil, err
 	}
 	return resp, nil
+}
+
+func (r *mutationResolver) DeleteSubCatMain(ctx context.Context, id *string) (*bool, error) {
+	panic(fmt.Errorf("not implemented"))
 }
 
 func (r *mutationResolver) AddCategories(ctx context.Context, category []*string) (*bool, error) {
@@ -64,6 +73,10 @@ func (r *mutationResolver) AddCourse(ctx context.Context, course *model.CourseIn
 		return nil, err
 	}
 	return resp, nil
+}
+
+func (r *mutationResolver) DeleteCourse(ctx context.Context, id *string) (*bool, error) {
+	panic(fmt.Errorf("not implemented"))
 }
 
 func (r *mutationResolver) UpdateCourse(ctx context.Context, course *model.CourseInput) (*model.Course, error) {
@@ -111,6 +124,10 @@ func (r *mutationResolver) AddCourseModule(ctx context.Context, courseID *string
 	return resp, nil
 }
 
+func (r *mutationResolver) DeleteCourseModule(ctx context.Context, id *string) (*bool, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
 func (r *mutationResolver) UpdateCourseModule(ctx context.Context, module *model.ModuleInput) (*model.Module, error) {
 	resp, err := handlers.UpdateModule(ctx, module)
 	if err != nil {
@@ -127,6 +144,10 @@ func (r *mutationResolver) AddCourseChapter(ctx context.Context, courseID *strin
 		return nil, err
 	}
 	return resp, nil
+}
+
+func (r *mutationResolver) DeleteCourseChapter(ctx context.Context, id *string) (*bool, error) {
+	panic(fmt.Errorf("not implemented"))
 }
 
 func (r *mutationResolver) UpdateCourseChapter(ctx context.Context, chapter *model.ChapterInput) (*model.Chapter, error) {
@@ -147,6 +168,10 @@ func (r *mutationResolver) AddCourseTopic(ctx context.Context, courseID *string,
 	return resp, nil
 }
 
+func (r *mutationResolver) DeleteCourseTopic(ctx context.Context, id *string) (*bool, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
 func (r *mutationResolver) UpdateCourseTopic(ctx context.Context, topic *model.TopicInput) (*model.Topic, error) {
 	resp, err := handlers.TopicUpdate(ctx, topic)
 	if err != nil {
@@ -165,6 +190,10 @@ func (r *mutationResolver) AddTopicContent(ctx context.Context, topicID *string,
 	return resp, nil
 }
 
+func (r *mutationResolver) DeleteTopicContent(ctx context.Context, id *string) (*bool, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
 func (r *mutationResolver) AddTopicExam(ctx context.Context, topicID *string, courseID *string, exam *model.TopicExamInput) (*model.TopicExam, error) {
 	resp, err := handlers.TopicExamCreate(ctx, *topicID, *courseID, exam)
 	if err != nil {
@@ -172,6 +201,10 @@ func (r *mutationResolver) AddTopicExam(ctx context.Context, topicID *string, co
 		return nil, err
 	}
 	return resp, nil
+}
+
+func (r *mutationResolver) DeleteTopicExam(ctx context.Context, id *string) (*bool, error) {
+	panic(fmt.Errorf("not implemented"))
 }
 
 func (r *mutationResolver) UpdateTopicExam(ctx context.Context, exam *model.TopicExamInput) (*model.TopicExam, error) {
@@ -237,6 +270,10 @@ func (r *mutationResolver) UpdateQuiz(ctx context.Context, quiz *model.QuizInput
 	return resp, nil
 }
 
+func (r *mutationResolver) DeleteQuiz(ctx context.Context, id *string) (*bool, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
 func (r *mutationResolver) UploadQuizFile(ctx context.Context, courseID *string, file *model.QuizFile) (*model.UploadResult, error) {
 	resp, err := handlers.UploadQuizFile(ctx, *courseID, *file)
 	if err != nil {
@@ -273,6 +310,10 @@ func (r *mutationResolver) UploadTopicResource(ctx context.Context, courseID *st
 	return resp, nil
 }
 
+func (r *mutationResolver) DeleteTopicResource(ctx context.Context, id *string) (*bool, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
 func (r *mutationResolver) CreateQuestionBank(ctx context.Context, input *model.QuestionBankInput) (*model.QuestionBank, error) {
 	resp, err := handlers.QuestionBankCreate(ctx, input)
 	if err != nil {
@@ -289,6 +330,10 @@ func (r *mutationResolver) UpdateQuestionBank(ctx context.Context, input *model.
 		return nil, err
 	}
 	return resp, nil
+}
+
+func (r *mutationResolver) DeleteQuestionBank(ctx context.Context, id *string) (*bool, error) {
+	panic(fmt.Errorf("not implemented"))
 }
 
 func (r *mutationResolver) AddQuestionBankQuestion(ctx context.Context, input *model.QuestionBankQuestionInput) (*model.QuestionBankQuestion, error) {
@@ -309,6 +354,10 @@ func (r *mutationResolver) UpdateQuestionBankQuestion(ctx context.Context, input
 	return resp, nil
 }
 
+func (r *mutationResolver) DeleteQuestionBankQuestion(ctx context.Context, id *string) (*bool, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
 func (r *mutationResolver) AddQuestionOptions(ctx context.Context, input *model.QuestionOptionInput) (*model.QuestionOption, error) {
 	resp, err := handlers.AddQuestionOptions(ctx, input)
 	if err != nil {
@@ -325,6 +374,10 @@ func (r *mutationResolver) UpdateQuestionOptions(ctx context.Context, input *mod
 		return nil, err
 	}
 	return resp, nil
+}
+
+func (r *mutationResolver) DeleteQuestionOptions(ctx context.Context, id *string) (*bool, error) {
+	panic(fmt.Errorf("not implemented"))
 }
 
 func (r *mutationResolver) AddQuestionPaper(ctx context.Context, input *model.QuestionPaperInput) (*model.QuestionPaper, error) {
@@ -345,6 +398,10 @@ func (r *mutationResolver) UpdateQuestionPaper(ctx context.Context, input *model
 	return resp, nil
 }
 
+func (r *mutationResolver) DeleteQuestionPaper(ctx context.Context, id *string) (*bool, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
 func (r *mutationResolver) AddQuestionPaperSection(ctx context.Context, input *model.QuestionPaperSectionInput) (*model.QuestionPaperSection, error) {
 	resp, err := handlers.QuestionPaperSectionCreate(ctx, input)
 	if err != nil {
@@ -361,6 +418,10 @@ func (r *mutationResolver) UpdateQuestionPaperSection(ctx context.Context, input
 		return nil, err
 	}
 	return resp, nil
+}
+
+func (r *mutationResolver) DeleteQuestionPaperSection(ctx context.Context, id *string) (*bool, error) {
+	panic(fmt.Errorf("not implemented"))
 }
 
 func (r *mutationResolver) MapSectionToBank(ctx context.Context, input *model.MapSectionToBankInput) (*model.SectionQBMapping, error) {
@@ -381,6 +442,10 @@ func (r *mutationResolver) UpdateSectionToBank(ctx context.Context, input *model
 	return resp, nil
 }
 
+func (r *mutationResolver) DeleteSectionToBank(ctx context.Context, id *string) (*bool, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
 func (r *mutationResolver) AddSectionFixedQuestions(ctx context.Context, input *model.SectionFixedQuestionsInput) (*model.SectionFixedQuestions, error) {
 	resp, err := handlers.QuestionFixed(ctx, input)
 	if err != nil {
@@ -397,6 +462,10 @@ func (r *mutationResolver) UpdateSectionFixedQuestions(ctx context.Context, inpu
 		return nil, err
 	}
 	return resp, nil
+}
+
+func (r *mutationResolver) DeleteSectionFixedQuestions(ctx context.Context, id *string) (*bool, error) {
+	panic(fmt.Errorf("not implemented"))
 }
 
 func (r *mutationResolver) AddExam(ctx context.Context, input *model.ExamInput) (*model.Exam, error) {
@@ -417,6 +486,10 @@ func (r *mutationResolver) UpdateExam(ctx context.Context, input *model.ExamInpu
 	return resp, nil
 }
 
+func (r *mutationResolver) DeleteExam(ctx context.Context, id *string) (*bool, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
 func (r *mutationResolver) AddExamSchedule(ctx context.Context, input *model.ExamScheduleInput) (*model.ExamSchedule, error) {
 	resp, err := handlers.ExamScheduleCreate(ctx, input)
 	if err != nil {
@@ -433,6 +506,10 @@ func (r *mutationResolver) UpdateExamSchedule(ctx context.Context, input *model.
 		return nil, err
 	}
 	return resp, nil
+}
+
+func (r *mutationResolver) DeleteExamSchedule(ctx context.Context, id *string) (*bool, error) {
+	panic(fmt.Errorf("not implemented"))
 }
 
 func (r *mutationResolver) AddExamInstruction(ctx context.Context, input *model.ExamInstructionInput) (*model.ExamInstruction, error) {
@@ -453,6 +530,10 @@ func (r *mutationResolver) UpdateExamInstruction(ctx context.Context, input *mod
 	return resp, nil
 }
 
+func (r *mutationResolver) DeleteExamInstruction(ctx context.Context, id *string) (*bool, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
 func (r *mutationResolver) AddExamCohort(ctx context.Context, input *model.ExamCohortInput) (*model.ExamCohort, error) {
 	resp, err := handlers.AddExamCohort(ctx, input)
 	if err != nil {
@@ -469,6 +550,10 @@ func (r *mutationResolver) UpdateExamCohort(ctx context.Context, input *model.Ex
 		return nil, err
 	}
 	return resp, nil
+}
+
+func (r *mutationResolver) DeleteExamCohort(ctx context.Context, id *string) (*bool, error) {
+	panic(fmt.Errorf("not implemented"))
 }
 
 func (r *mutationResolver) AddExamConfiguration(ctx context.Context, input *model.ExamConfigurationInput) (*model.ExamConfiguration, error) {
@@ -489,6 +574,10 @@ func (r *mutationResolver) UpdateExamConfiguration(ctx context.Context, input *m
 	return resp, nil
 }
 
+func (r *mutationResolver) DeleteExamConfiguration(ctx context.Context, id *string) (*bool, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
 func (r *mutationResolver) AddCourseCohort(ctx context.Context, input *model.CourseCohortInput) (*model.CourseCohort, error) {
 	resp, err := handlers.AddCourseCohort(ctx, input)
 	if err != nil {
@@ -505,6 +594,10 @@ func (r *mutationResolver) UpdateCourseCohort(ctx context.Context, input *model.
 		return nil, err
 	}
 	return resp, nil
+}
+
+func (r *mutationResolver) DeleteCourseCohort(ctx context.Context, id *string) (*bool, error) {
+	panic(fmt.Errorf("not implemented"))
 }
 
 // Mutation returns generated.MutationResolver implementation.
