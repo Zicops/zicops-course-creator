@@ -3,7 +3,10 @@ package handlers
 import (
 	"context"
 	"fmt"
+	"strings"
 
+	"github.com/scylladb/gocqlx/v2/qb"
+	"github.com/zicops/contracts/coursez"
 	"github.com/zicops/zicops-cass-pool/cassandra"
 	"github.com/zicops/zicops-course-creator/helpers"
 )
@@ -61,9 +64,25 @@ func DeleteCourse(ctx context.Context, id *string) (*bool, error) {
 		return nil, err
 	}
 	lspId := claims["lsp_id"].(string)
+	courses := []coursez.Course{}
+	getQuery := CassSession.Query(coursez.CourseTable.Get()).BindMap(qb.M{"id": id, "lsp_id": lspId, "is_active": true})
+	if err := getQuery.SelectRelease(&courses); err != nil {
+		return nil, err
+	}
+	if len(courses) < 1 {
+		return nil, fmt.Errorf("course not found")
+	}
+	cassandraCourse := courses[0]
 	deleteSrt := fmt.Sprintf("DELETE FROM coursez.course WHERE id = %s AND lsp_id = '%s' AND is_active=true", *id, lspId)
 	if err := CassSession.Query(deleteSrt, nil).Exec(); err != nil {
 		return &isSuccess, err
+	}
+	if strings.ToLower(cassandraCourse.Status) == "published" {
+		cassandraCourse.IsActive = false
+		insertQuery := CassSession.Query(coursez.CourseTable.Insert()).BindStruct(&cassandraCourse)
+		if err := insertQuery.ExecRelease(); err != nil {
+			return &isSuccess, err
+		}
 	}
 	isSuccess = true
 	return &isSuccess, nil
