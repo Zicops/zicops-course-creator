@@ -73,11 +73,12 @@ func UpdateExamCohort(ctx context.Context, input *model.ExamCohortInput) (*model
 		return nil, err
 	}
 	email_creator := claims["email"].(string)
+	lspID := claims["lsp_id"].(string)
 	cassandraQuestionBank := qbankz.ExamCohort{
 		ID: *input.ID,
 	}
 	banks := []qbankz.ExamCohort{}
-	getQuery := CassSession.Query(qbankz.ExamCohortTable.Get()).BindMap(qb.M{"id": cassandraQuestionBank.ID})
+	getQuery := CassSession.Query(qbankz.ExamCohortTable.Get()).BindMap(qb.M{"id": cassandraQuestionBank.ID, "lsp_id": lspID, "is_active": true})
 	if err := getQuery.SelectRelease(&banks); err != nil {
 		return nil, err
 	}
@@ -93,10 +94,6 @@ func UpdateExamCohort(ctx context.Context, input *model.ExamCohortInput) (*model
 	if input.CohortID != nil {
 		cassandraQuestionBank.CohortID = *input.CohortID
 		updatedCols = append(updatedCols, "cohort_id")
-	}
-	if input.IsActive != nil {
-		cassandraQuestionBank.IsActive = *input.IsActive
-		updatedCols = append(updatedCols, "is_active")
 	}
 	if input.CreatedBy != nil {
 		cassandraQuestionBank.CreatedBy = *input.CreatedBy

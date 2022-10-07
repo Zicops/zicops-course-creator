@@ -74,7 +74,7 @@ func QuestionBankCreate(ctx context.Context, input *model.QuestionBankInput) (*m
 func QuestionBankUpdate(ctx context.Context, input *model.QuestionBankInput) (*model.QuestionBank, error) {
 	log.Info("QuestionBankUpdate called")
 	if input.ID == nil {
-		return nil, fmt.Errorf("question bank not found")
+		return nil, fmt.Errorf("provide question bank id")
 	}
 	session, err := cassandra.GetCassSession("qbankz")
 	if err != nil {
@@ -86,11 +86,12 @@ func QuestionBankUpdate(ctx context.Context, input *model.QuestionBankInput) (*m
 		return nil, err
 	}
 	email_creator := claims["email"].(string)
+	lspID := claims["lsp_id"].(string)
 	cassandraQuestionBank := qbankz.QuestionBankMain{
 		ID: *input.ID,
 	}
 	banks := []qbankz.QuestionBankMain{}
-	getQuery := CassSession.Query(qbankz.QuestionBankMainTable.Get()).BindMap(qb.M{"id": cassandraQuestionBank.ID})
+	getQuery := CassSession.Query(qbankz.QuestionBankMainTable.Get()).BindMap(qb.M{"id": cassandraQuestionBank.ID, "lsp_id": lspID, "is_active": true})
 	if err := getQuery.SelectRelease(&banks); err != nil {
 		return nil, err
 	}
@@ -114,10 +115,6 @@ func QuestionBankUpdate(ctx context.Context, input *model.QuestionBankInput) (*m
 	if input.SubCategory != nil {
 		cassandraQuestionBank.SubCategory = *input.SubCategory
 		updatedCols = append(updatedCols, "sub_category")
-	}
-	if input.IsActive != nil {
-		cassandraQuestionBank.IsActive = *input.IsActive
-		updatedCols = append(updatedCols, "is_active")
 	}
 	if input.IsDefault != nil {
 		cassandraQuestionBank.IsDefault = *input.IsDefault
@@ -201,6 +198,7 @@ func AddQuestionBankQuestion(ctx context.Context, input *model.QuestionBankQuest
 		CreatedAt:      time.Now().Unix(),
 		UpdatedAt:      time.Now().Unix(),
 		LspId:          lspID,
+		IsActive:       true,
 	}
 	if input.File != nil {
 		bucketPath := "question_banks/" + cassandraQuestionBank.QbmId + "/" + cassandraQuestionBank.ID + "/" + input.File.Filename
@@ -281,7 +279,7 @@ func UpdateQuestionBankQuestion(ctx context.Context, input *model.QuestionBankQu
 		ID: *input.ID,
 	}
 	banks := []qbankz.QuestionMain{}
-	getQuery := CassSession.Query(qbankz.QuestionMainTable.Get()).BindMap(qb.M{"id": cassandraQuestionBank.ID})
+	getQuery := CassSession.Query(qbankz.QuestionMainTable.Get()).BindMap(qb.M{"id": cassandraQuestionBank.ID, "lsp_id": lspID, "is_active": true})
 	if err := getQuery.SelectRelease(&banks); err != nil {
 		return nil, err
 	}

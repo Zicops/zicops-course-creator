@@ -79,11 +79,12 @@ func ExamInstructionsUpdate(ctx context.Context, input *model.ExamInstructionInp
 		return nil, err
 	}
 	email_creator := claims["email"].(string)
+	lspID := claims["lsp_id"].(string)
 	cassandraQuestionBank := qbankz.ExamInstructions{
 		ID: *input.ID,
 	}
 	banks := []qbankz.ExamInstructions{}
-	getQuery := CassSession.Query(qbankz.ExamInstructionsTable.Get()).BindMap(qb.M{"id": cassandraQuestionBank.ID})
+	getQuery := CassSession.Query(qbankz.ExamInstructionsTable.Get()).BindMap(qb.M{"id": cassandraQuestionBank.ID, "lsp_id": lspID, "is_active": true})
 	if err := getQuery.SelectRelease(&banks); err != nil {
 		return nil, err
 	}
@@ -99,10 +100,6 @@ func ExamInstructionsUpdate(ctx context.Context, input *model.ExamInstructionInp
 	if input.ExamID != nil {
 		cassandraQuestionBank.ExamID = *input.ExamID
 		updatedCols = append(updatedCols, "exam_id")
-	}
-	if input.IsActive != nil {
-		cassandraQuestionBank.IsActive = *input.IsActive
-		updatedCols = append(updatedCols, "is_active")
 	}
 
 	if email_creator != "" {

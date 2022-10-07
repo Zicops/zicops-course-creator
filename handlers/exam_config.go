@@ -79,11 +79,12 @@ func UpdateExamConfiguration(ctx context.Context, input *model.ExamConfiguration
 		return nil, err
 	}
 	email_creator := claims["email"].(string)
+	lspID := claims["lsp_id"].(string)
 	cassandraQuestionBank := qbankz.ExamConfig{
 		ID: *input.ID,
 	}
 	banks := []qbankz.ExamConfig{}
-	getQuery := CassSession.Query(qbankz.ExamConfigTable.Get()).BindMap(qb.M{"id": cassandraQuestionBank.ID})
+	getQuery := CassSession.Query(qbankz.ExamConfigTable.Get()).BindMap(qb.M{"id": cassandraQuestionBank.ID, "lsp_id": lspID, "is_active": true})
 	if err := getQuery.SelectRelease(&banks); err != nil {
 		return nil, err
 	}
@@ -95,10 +96,6 @@ func UpdateExamConfiguration(ctx context.Context, input *model.ExamConfiguration
 	if input.ExamID != nil {
 		cassandraQuestionBank.ExamID = *input.ExamID
 		updatedCols = append(updatedCols, "exam_id")
-	}
-	if input.IsActive != nil {
-		cassandraQuestionBank.IsActive = *input.IsActive
-		updatedCols = append(updatedCols, "is_active")
 	}
 	if input.Shuffle != nil {
 		cassandraQuestionBank.Shuffle = *input.Shuffle

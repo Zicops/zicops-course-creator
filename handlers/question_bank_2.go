@@ -129,7 +129,7 @@ func UpdateQuestionOptions(ctx context.Context, input *model.QuestionOptionInput
 		ID: *input.ID,
 	}
 	banks := []qbankz.OptionsMain{}
-	getQuery := CassSession.Query(qbankz.OptionsMainTable.Get()).BindMap(qb.M{"id": cassandraQuestionBank.ID})
+	getQuery := CassSession.Query(qbankz.OptionsMainTable.Get()).BindMap(qb.M{"id": cassandraQuestionBank.ID, "lsp_id": lspID, "is_active": true})
 	if err := getQuery.SelectRelease(&banks); err != nil {
 		return nil, err
 	}
@@ -146,11 +146,6 @@ func UpdateQuestionOptions(ctx context.Context, input *model.QuestionOptionInput
 		cassandraQuestionBank.IsCorrect = *input.IsCorrect
 		updatedCols = append(updatedCols, "is_correct")
 	}
-	if input.IsActive != nil {
-		cassandraQuestionBank.IsActive = *input.IsActive
-		updatedCols = append(updatedCols, "is_active")
-	}
-
 	if input.AttachmentType != nil {
 		cassandraQuestionBank.AttachmentType = *input.AttachmentType
 		updatedCols = append(updatedCols, "attachment_type")

@@ -85,11 +85,12 @@ func QuestionSectionMapUpdate(ctx context.Context, input *model.MapSectionToBank
 		return nil, err
 	}
 	email_creator := claims["email"].(string)
+	lspID := claims["lsp_id"].(string)
 	cassandraQuestionBank := qbankz.SectionQBMapping{
 		ID: *input.ID,
 	}
 	banks := []qbankz.SectionQBMapping{}
-	getQuery := CassSession.Query(qbankz.SectionQBMappingTable.Get()).BindMap(qb.M{"id": cassandraQuestionBank.ID})
+	getQuery := CassSession.Query(qbankz.SectionQBMappingTable.Get()).BindMap(qb.M{"id": cassandraQuestionBank.ID, "lsp_id": lspID, "is_active": true})
 	if err := getQuery.SelectRelease(&banks); err != nil {
 		return nil, err
 	}
@@ -98,10 +99,6 @@ func QuestionSectionMapUpdate(ctx context.Context, input *model.MapSectionToBank
 	}
 	cassandraQuestionBank = banks[0]
 	updatedCols := []string{}
-	if input.IsActive != nil {
-		cassandraQuestionBank.IsActive = *input.IsActive
-		updatedCols = append(updatedCols, "is_active")
-	}
 	if email_creator != "" {
 		cassandraQuestionBank.UpdatedBy = email_creator
 		updatedCols = append(updatedCols, "updated_by")
@@ -229,11 +226,12 @@ func QuestionFixedUpdate(ctx context.Context, input *model.SectionFixedQuestions
 		return nil, err
 	}
 	email_creator := claims["email"].(string)
+	lspID := claims["lsp_id"].(string)
 	cassandraQuestionBank := qbankz.SectionFixedQuestions{
 		ID: *input.ID,
 	}
 	banks := []qbankz.SectionFixedQuestions{}
-	getQuery := CassSession.Query(qbankz.SectionFixedQuestionsTable.Get()).BindMap(qb.M{"id": cassandraQuestionBank.ID})
+	getQuery := CassSession.Query(qbankz.SectionFixedQuestionsTable.Get()).BindMap(qb.M{"id": cassandraQuestionBank.ID, "lsp_id": lspID, "is_active": true})
 	if err := getQuery.SelectRelease(&banks); err != nil {
 		return nil, err
 	}
@@ -242,10 +240,6 @@ func QuestionFixedUpdate(ctx context.Context, input *model.SectionFixedQuestions
 	}
 	cassandraQuestionBank = banks[0]
 	updatedCols := []string{}
-	if input.IsActive != nil {
-		cassandraQuestionBank.IsActive = *input.IsActive
-		updatedCols = append(updatedCols, "is_active")
-	}
 	if email_creator != "" {
 		cassandraQuestionBank.UpdatedBy = email_creator
 		updatedCols = append(updatedCols, "updated_by")

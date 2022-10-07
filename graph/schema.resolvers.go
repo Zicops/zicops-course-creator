@@ -21,10 +21,28 @@ func (r *mutationResolver) AddCatMain(ctx context.Context, input []*model.CatMai
 	return resp, nil
 }
 
+func (r *mutationResolver) DeleteCatMain(ctx context.Context, id *string) (*bool, error) {
+	resp, err := handlers.DeleteCatMain(ctx, id)
+	if err != nil {
+		log.Errorf("error delete DeleteCatMain : %v", err)
+		return nil, err
+	}
+	return resp, nil
+}
+
 func (r *mutationResolver) AddSubCatMain(ctx context.Context, input []*model.SubCatMainInput) ([]*model.SubCatMain, error) {
 	resp, err := handlers.AddSubCatMain(ctx, input)
 	if err != nil {
 		log.Errorf("error adding sub categories: %v", err)
+		return nil, err
+	}
+	return resp, nil
+}
+
+func (r *mutationResolver) DeleteSubCatMain(ctx context.Context, id *string) (*bool, error) {
+	resp, err := handlers.DeleteSubCatMain(ctx, id)
+	if err != nil {
+		log.Errorf("error delete DeleteSubCatMain : %v", err)
 		return nil, err
 	}
 	return resp, nil
@@ -61,6 +79,15 @@ func (r *mutationResolver) AddCourse(ctx context.Context, course *model.CourseIn
 	resp, err := handlers.CourseCreator(ctx, course)
 	if err != nil {
 		log.Errorf("error creating course: %v", err)
+		return nil, err
+	}
+	return resp, nil
+}
+
+func (r *mutationResolver) DeleteCourse(ctx context.Context, id *string) (*bool, error) {
+	resp, err := handlers.DeleteCourse(ctx, id)
+	if err != nil {
+		log.Errorf("error delete DeleteCourse : %v", err)
 		return nil, err
 	}
 	return resp, nil
@@ -111,6 +138,15 @@ func (r *mutationResolver) AddCourseModule(ctx context.Context, courseID *string
 	return resp, nil
 }
 
+func (r *mutationResolver) DeleteCourseModule(ctx context.Context, id *string) (*bool, error) {
+	resp, err := handlers.DeleteCourseModule(ctx, id)
+	if err != nil {
+		log.Errorf("error delete DeleteCourseModule : %v", err)
+		return nil, err
+	}
+	return resp, nil
+}
+
 func (r *mutationResolver) UpdateCourseModule(ctx context.Context, module *model.ModuleInput) (*model.Module, error) {
 	resp, err := handlers.UpdateModule(ctx, module)
 	if err != nil {
@@ -124,6 +160,15 @@ func (r *mutationResolver) AddCourseChapter(ctx context.Context, courseID *strin
 	resp, err := handlers.ChapterCreate(ctx, *courseID, chapter)
 	if err != nil {
 		log.Errorf("error creating chapter: %v", err)
+		return nil, err
+	}
+	return resp, nil
+}
+
+func (r *mutationResolver) DeleteCourseChapter(ctx context.Context, id *string) (*bool, error) {
+	resp, err := handlers.DeleteCourseChapter(ctx, id)
+	if err != nil {
+		log.Errorf("error delete DeleteCourseChapter : %v", err)
 		return nil, err
 	}
 	return resp, nil
@@ -147,6 +192,15 @@ func (r *mutationResolver) AddCourseTopic(ctx context.Context, courseID *string,
 	return resp, nil
 }
 
+func (r *mutationResolver) DeleteCourseTopic(ctx context.Context, id *string) (*bool, error) {
+	resp, err := handlers.DeleteCourseTopic(ctx, id)
+	if err != nil {
+		log.Errorf("error delete DeleteCourseTopic : %v", err)
+		return nil, err
+	}
+	return resp, nil
+}
+
 func (r *mutationResolver) UpdateCourseTopic(ctx context.Context, topic *model.TopicInput) (*model.Topic, error) {
 	resp, err := handlers.TopicUpdate(ctx, topic)
 	if err != nil {
@@ -165,10 +219,28 @@ func (r *mutationResolver) AddTopicContent(ctx context.Context, topicID *string,
 	return resp, nil
 }
 
+func (r *mutationResolver) DeleteTopicContent(ctx context.Context, id *string) (*bool, error) {
+	resp, err := handlers.DeleteTopicContent(ctx, id)
+	if err != nil {
+		log.Errorf("error delete DeleteTopicContent : %v", err)
+		return nil, err
+	}
+	return resp, nil
+}
+
 func (r *mutationResolver) AddTopicExam(ctx context.Context, topicID *string, courseID *string, exam *model.TopicExamInput) (*model.TopicExam, error) {
 	resp, err := handlers.TopicExamCreate(ctx, *topicID, *courseID, exam)
 	if err != nil {
 		log.Errorf("error creating topic exam: %v", err)
+		return nil, err
+	}
+	return resp, nil
+}
+
+func (r *mutationResolver) DeleteTopicExam(ctx context.Context, id *string) (*bool, error) {
+	resp, err := handlers.DeleteTopicExam(ctx, id)
+	if err != nil {
+		log.Errorf("error delete DeleteTopicExam : %v", err)
 		return nil, err
 	}
 	return resp, nil
@@ -237,6 +309,15 @@ func (r *mutationResolver) UpdateQuiz(ctx context.Context, quiz *model.QuizInput
 	return resp, nil
 }
 
+func (r *mutationResolver) DeleteQuiz(ctx context.Context, id *string) (*bool, error) {
+	resp, err := handlers.DeleteQuiz(ctx, id)
+	if err != nil {
+		log.Errorf("error delete DeleteQuiz : %v", err)
+		return nil, err
+	}
+	return resp, nil
+}
+
 func (r *mutationResolver) UploadQuizFile(ctx context.Context, courseID *string, file *model.QuizFile) (*model.UploadResult, error) {
 	resp, err := handlers.UploadQuizFile(ctx, *courseID, *file)
 	if err != nil {
@@ -273,6 +354,15 @@ func (r *mutationResolver) UploadTopicResource(ctx context.Context, courseID *st
 	return resp, nil
 }
 
+func (r *mutationResolver) DeleteTopicResource(ctx context.Context, id *string) (*bool, error) {
+	resp, err := handlers.DeleteTopicResource(ctx, id)
+	if err != nil {
+		log.Errorf("error delete DeleteTopicResource : %v", err)
+		return nil, err
+	}
+	return resp, nil
+}
+
 func (r *mutationResolver) CreateQuestionBank(ctx context.Context, input *model.QuestionBankInput) (*model.QuestionBank, error) {
 	resp, err := handlers.QuestionBankCreate(ctx, input)
 	if err != nil {
@@ -286,6 +376,15 @@ func (r *mutationResolver) UpdateQuestionBank(ctx context.Context, input *model.
 	resp, err := handlers.QuestionBankUpdate(ctx, input)
 	if err != nil {
 		log.Errorf("error updating question bank: %v", err)
+		return nil, err
+	}
+	return resp, nil
+}
+
+func (r *mutationResolver) DeleteQuestionBank(ctx context.Context, id *string) (*bool, error) {
+	resp, err := handlers.DeleteQuestionBank(ctx, id)
+	if err != nil {
+		log.Errorf("error delete DeleteQuestionBank : %v", err)
 		return nil, err
 	}
 	return resp, nil
@@ -309,6 +408,15 @@ func (r *mutationResolver) UpdateQuestionBankQuestion(ctx context.Context, input
 	return resp, nil
 }
 
+func (r *mutationResolver) DeleteQuestionBankQuestion(ctx context.Context, id *string) (*bool, error) {
+	resp, err := handlers.DeleteQuestionBankQuestion(ctx, id)
+	if err != nil {
+		log.Errorf("error delete DeleteQuestionBankQuestion : %v", err)
+		return nil, err
+	}
+	return resp, nil
+}
+
 func (r *mutationResolver) AddQuestionOptions(ctx context.Context, input *model.QuestionOptionInput) (*model.QuestionOption, error) {
 	resp, err := handlers.AddQuestionOptions(ctx, input)
 	if err != nil {
@@ -322,6 +430,15 @@ func (r *mutationResolver) UpdateQuestionOptions(ctx context.Context, input *mod
 	resp, err := handlers.UpdateQuestionOptions(ctx, input)
 	if err != nil {
 		log.Errorf("error updating question option: %v", err)
+		return nil, err
+	}
+	return resp, nil
+}
+
+func (r *mutationResolver) DeleteQuestionOptions(ctx context.Context, id *string) (*bool, error) {
+	resp, err := handlers.DeleteQuestionOptions(ctx, id)
+	if err != nil {
+		log.Errorf("error delete DeleteQuestionOptions : %v", err)
 		return nil, err
 	}
 	return resp, nil
@@ -345,6 +462,15 @@ func (r *mutationResolver) UpdateQuestionPaper(ctx context.Context, input *model
 	return resp, nil
 }
 
+func (r *mutationResolver) DeleteQuestionPaper(ctx context.Context, id *string) (*bool, error) {
+	resp, err := handlers.DeleteQuestionPaper(ctx, id)
+	if err != nil {
+		log.Errorf("error delete DeleteQuestionPaper : %v", err)
+		return nil, err
+	}
+	return resp, nil
+}
+
 func (r *mutationResolver) AddQuestionPaperSection(ctx context.Context, input *model.QuestionPaperSectionInput) (*model.QuestionPaperSection, error) {
 	resp, err := handlers.QuestionPaperSectionCreate(ctx, input)
 	if err != nil {
@@ -358,6 +484,15 @@ func (r *mutationResolver) UpdateQuestionPaperSection(ctx context.Context, input
 	resp, err := handlers.QuestionPaperSectionCreate(ctx, input)
 	if err != nil {
 		log.Errorf("error updating question paper section: %v", err)
+		return nil, err
+	}
+	return resp, nil
+}
+
+func (r *mutationResolver) DeleteQuestionPaperSection(ctx context.Context, id *string) (*bool, error) {
+	resp, err := handlers.DeleteQuestionPaperSection(ctx, id)
+	if err != nil {
+		log.Errorf("error delete DeleteQuestionPaperSection : %v", err)
 		return nil, err
 	}
 	return resp, nil
@@ -381,6 +516,15 @@ func (r *mutationResolver) UpdateSectionToBank(ctx context.Context, input *model
 	return resp, nil
 }
 
+func (r *mutationResolver) DeleteSectionToBank(ctx context.Context, id *string) (*bool, error) {
+	resp, err := handlers.DeleteSectionToBank(ctx, id)
+	if err != nil {
+		log.Errorf("error delete DeleteSectionToBank : %v", err)
+		return nil, err
+	}
+	return resp, nil
+}
+
 func (r *mutationResolver) AddSectionFixedQuestions(ctx context.Context, input *model.SectionFixedQuestionsInput) (*model.SectionFixedQuestions, error) {
 	resp, err := handlers.QuestionFixed(ctx, input)
 	if err != nil {
@@ -394,6 +538,15 @@ func (r *mutationResolver) UpdateSectionFixedQuestions(ctx context.Context, inpu
 	resp, err := handlers.QuestionFixedUpdate(ctx, input)
 	if err != nil {
 		log.Errorf("error updating fixed : %v", err)
+		return nil, err
+	}
+	return resp, nil
+}
+
+func (r *mutationResolver) DeleteSectionFixedQuestions(ctx context.Context, id *string) (*bool, error) {
+	resp, err := handlers.DeleteSectionFixedQuestions(ctx, id)
+	if err != nil {
+		log.Errorf("error delete DeleteSectionFixedQuestions : %v", err)
 		return nil, err
 	}
 	return resp, nil
@@ -417,6 +570,15 @@ func (r *mutationResolver) UpdateExam(ctx context.Context, input *model.ExamInpu
 	return resp, nil
 }
 
+func (r *mutationResolver) DeleteExam(ctx context.Context, id *string) (*bool, error) {
+	resp, err := handlers.DeleteExam(ctx, id)
+	if err != nil {
+		log.Errorf("error delete DeleteExam : %v", err)
+		return nil, err
+	}
+	return resp, nil
+}
+
 func (r *mutationResolver) AddExamSchedule(ctx context.Context, input *model.ExamScheduleInput) (*model.ExamSchedule, error) {
 	resp, err := handlers.ExamScheduleCreate(ctx, input)
 	if err != nil {
@@ -430,6 +592,15 @@ func (r *mutationResolver) UpdateExamSchedule(ctx context.Context, input *model.
 	resp, err := handlers.ExamScheduleUpdate(ctx, input)
 	if err != nil {
 		log.Errorf("error updating exam schedule: %v", err)
+		return nil, err
+	}
+	return resp, nil
+}
+
+func (r *mutationResolver) DeleteExamSchedule(ctx context.Context, id *string) (*bool, error) {
+	resp, err := handlers.DeleteExamSchedule(ctx, id)
+	if err != nil {
+		log.Errorf("error delete DeleteExamSchedule : %v", err)
 		return nil, err
 	}
 	return resp, nil
@@ -453,6 +624,15 @@ func (r *mutationResolver) UpdateExamInstruction(ctx context.Context, input *mod
 	return resp, nil
 }
 
+func (r *mutationResolver) DeleteExamInstruction(ctx context.Context, id *string) (*bool, error) {
+	resp, err := handlers.DeleteExamInstruction(ctx, id)
+	if err != nil {
+		log.Errorf("error delete DeleteExamInstruction : %v", err)
+		return nil, err
+	}
+	return resp, nil
+}
+
 func (r *mutationResolver) AddExamCohort(ctx context.Context, input *model.ExamCohortInput) (*model.ExamCohort, error) {
 	resp, err := handlers.AddExamCohort(ctx, input)
 	if err != nil {
@@ -466,6 +646,15 @@ func (r *mutationResolver) UpdateExamCohort(ctx context.Context, input *model.Ex
 	resp, err := handlers.UpdateExamCohort(ctx, input)
 	if err != nil {
 		log.Errorf("error updating exam cohort : %v", err)
+		return nil, err
+	}
+	return resp, nil
+}
+
+func (r *mutationResolver) DeleteExamCohort(ctx context.Context, id *string) (*bool, error) {
+	resp, err := handlers.DeleteExamCohort(ctx, id)
+	if err != nil {
+		log.Errorf("error delete exam cohort : %v", err)
 		return nil, err
 	}
 	return resp, nil
@@ -489,6 +678,15 @@ func (r *mutationResolver) UpdateExamConfiguration(ctx context.Context, input *m
 	return resp, nil
 }
 
+func (r *mutationResolver) DeleteExamConfiguration(ctx context.Context, id *string) (*bool, error) {
+	resp, err := handlers.DeleteExamConfiguration(ctx, id)
+	if err != nil {
+		log.Errorf("error delete exam config : %v", err)
+		return nil, err
+	}
+	return resp, nil
+}
+
 func (r *mutationResolver) AddCourseCohort(ctx context.Context, input *model.CourseCohortInput) (*model.CourseCohort, error) {
 	resp, err := handlers.AddCourseCohort(ctx, input)
 	if err != nil {
@@ -502,6 +700,15 @@ func (r *mutationResolver) UpdateCourseCohort(ctx context.Context, input *model.
 	resp, err := handlers.UpdateCourseCohort(ctx, input)
 	if err != nil {
 		log.Errorf("error updating course cohort : %v", err)
+		return nil, err
+	}
+	return resp, nil
+}
+
+func (r *mutationResolver) DeleteCourseCohort(ctx context.Context, id *string) (*bool, error) {
+	resp, err := handlers.DeleteCourseCohort(ctx, id)
+	if err != nil {
+		log.Errorf("error delete course cohort : %v", err)
 		return nil, err
 	}
 	return resp, nil

@@ -776,23 +776,31 @@ type SubCatMain {
 # define type mutations to add a course  using courseInput
 type Mutation{
     addCatMain(input: [CatMainInput]): [CatMain]
+    deleteCatMain(id: ID): Boolean
     addSubCatMain(input: [SubCatMainInput]): [SubCatMain]
+    deleteSubCatMain(id: ID): Boolean
     addCategories(category: [String]): Boolean
     addSubCategories(sub_category: [String]): Boolean
     addCatSubMapping(category: String, sub_category: [String]): Boolean
     addCourse(course: CourseInput): Course
+    deleteCourse(id: ID): Boolean
     updateCourse(course: CourseInput): Course
     uploadCourseImage(file: CourseFile): UploadResult
     uploadCoursePreviewVideo(file: CourseFile): UploadResult
     uploadCourseTileImage(file: CourseFile): UploadResult
     addCourseModule(courseId: String, module: ModuleInput): Module
+    deleteCourseModule(id: ID): Boolean
     updateCourseModule(module: ModuleInput): Module
     addCourseChapter(courseId: String, chapter: ChapterInput): Chapter
+    deleteCourseChapter(id: ID): Boolean
     updateCourseChapter(chapter: ChapterInput): Chapter
     addCourseTopic(courseId: String, topic: TopicInput): Topic
+    deleteCourseTopic(id: ID): Boolean
     updateCourseTopic(topic: TopicInput): Topic
     addTopicContent(topicId: String, courseId:String, moduleId: String, topicContent: TopicContentInput): TopicContent
+    deleteTopicContent(id: ID): Boolean
     addTopicExam(topicId: String, courseId:String, exam: TopicExamInput): TopicExam
+    deleteTopicExam(id: ID): Boolean
     updateTopicExam(exam: TopicExamInput): TopicExam
     updateTopicContent(topicContent: TopicContentInput, moduleId: String): TopicContent
     uploadTopicContentVideo(file: TopicVideo): UploadResult
@@ -800,35 +808,50 @@ type Mutation{
     uploadTopicStaticContent(file: StaticContent): UploadResult
     addQuiz(quiz: QuizInput): Quiz
     updateQuiz(quiz: QuizInput): Quiz
+    deleteQuiz(id: ID): Boolean
     uploadQuizFile(courseId:String, file: QuizFile): UploadResult
     addQuizMCQ(quiz: QuizMcq): Boolean
     addQuizDescriptive(quiz: QuizDescriptive): Boolean
     uploadTopicResource(courseId:String, resource:TopicResourceInput): UploadResult
+    deleteTopicResource(id: ID): Boolean
     #################################################################################################
     createQuestionBank(input: QuestionBankInput): QuestionBank
     updateQuestionBank(input: QuestionBankInput): QuestionBank
+    deleteQuestionBank(id: ID): Boolean
     addQuestionBankQuestion(input: QuestionBankQuestionInput): QuestionBankQuestion
     updateQuestionBankQuestion(input: QuestionBankQuestionInput): QuestionBankQuestion
+    deleteQuestionBankQuestion(id: ID): Boolean
     addQuestionOptions(input: QuestionOptionInput): QuestionOption
     updateQuestionOptions(input: QuestionOptionInput): QuestionOption
+    deleteQuestionOptions(id: ID): Boolean
     addQuestionPaper(input: QuestionPaperInput): QuestionPaper
     updateQuestionPaper(input: QuestionPaperInput): QuestionPaper
+    deleteQuestionPaper(id: ID): Boolean
     addQuestionPaperSection(input: QuestionPaperSectionInput): QuestionPaperSection
     updateQuestionPaperSection(input: QuestionPaperSectionInput): QuestionPaperSection
+    deleteQuestionPaperSection(id: ID): Boolean
     mapSectionToBank(input: MapSectionToBankInput): SectionQBMapping
     updateSectionToBank(input: MapSectionToBankInput): SectionQBMapping
+    deleteSectionToBank(id: ID): Boolean
     addSectionFixedQuestions(input: SectionFixedQuestionsInput): SectionFixedQuestions
     updateSectionFixedQuestions(input: SectionFixedQuestionsInput): SectionFixedQuestions
+    deleteSectionFixedQuestions(id: ID): Boolean
     addExam(input: ExamInput): Exam
     updateExam(input: ExamInput): Exam
+    deleteExam(id: ID): Boolean
     addExamSchedule(input: ExamScheduleInput): ExamSchedule
     updateExamSchedule(input: ExamScheduleInput): ExamSchedule
+    deleteExamSchedule(id: ID): Boolean
     addExamInstruction(input: ExamInstructionInput): ExamInstruction
     updateExamInstruction(input: ExamInstructionInput): ExamInstruction
+    deleteExamInstruction(id: ID): Boolean
     addExamCohort(input: ExamCohortInput): ExamCohort
     updateExamCohort(input: ExamCohortInput): ExamCohort
+    deleteExamCohort(id: ID): Boolean
     addExamConfiguration(input: ExamConfigurationInput): ExamConfiguration
     updateExamConfiguration(input: ExamConfigurationInput): ExamConfiguration
+    deleteExamConfiguration(id: ID): Boolean
     addCourseCohort(input: CourseCohortInput): CourseCohort
     updateCourseCohort(input: CourseCohortInput): CourseCohort
+    deleteCourseCohort(id: ID): Boolean
 }
