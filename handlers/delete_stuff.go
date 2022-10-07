@@ -23,7 +23,7 @@ func DeleteCatMain(ctx context.Context, id *string) (*bool, error) {
 		return nil, err
 	}
 	lspId := claims["lsp_id"].(string)
-	deleteSrt := fmt.Sprintf("DELETE FROM coursez.cat_main WHERE id = %s AND lsp_id = '%s' AND is_active=true", *id, lspId)
+	deleteSrt := fmt.Sprintf("DELETE FROM coursez.cat_main WHERE id = '%s' AND lsp_id = '%s' AND is_active=true", *id, lspId)
 	if err := CassSession.Query(deleteSrt, nil).Exec(); err != nil {
 		return &isSuccess, err
 	}
@@ -44,7 +44,7 @@ func DeleteSubCatMain(ctx context.Context, id *string) (*bool, error) {
 		return nil, err
 	}
 	lspId := claims["lsp_id"].(string)
-	deleteSrt := fmt.Sprintf("DELETE FROM coursez.sub_cat_main WHERE id = %s AND lsp_id = '%s' AND is_active=true", *id, lspId)
+	deleteSrt := fmt.Sprintf("DELETE FROM coursez.sub_cat_main WHERE id = '%s' AND lsp_id = '%s' AND is_active=true", *id, lspId)
 	if err := CassSession.Query(deleteSrt, nil).Exec(); err != nil {
 		return &isSuccess, err
 	}
@@ -73,7 +73,7 @@ func DeleteCourse(ctx context.Context, id *string) (*bool, error) {
 		return nil, fmt.Errorf("course not found")
 	}
 	cassandraCourse := courses[0]
-	deleteSrt := fmt.Sprintf("DELETE FROM coursez.course WHERE id = %s AND lsp_id = '%s' AND is_active=true", *id, lspId)
+	deleteSrt := fmt.Sprintf("DELETE FROM coursez.course WHERE id = '%s' AND lsp_id = '%s' AND is_active=true", *id, lspId)
 	if err := CassSession.Query(deleteSrt, nil).Exec(); err != nil {
 		return &isSuccess, err
 	}
@@ -100,7 +100,7 @@ func DeleteCourseModule(ctx context.Context, id *string) (*bool, error) {
 		return nil, err
 	}
 	lspId := claims["lsp_id"].(string)
-	deleteSrt := fmt.Sprintf("DELETE FROM coursez.module WHERE id = %s AND lsp_id = '%s' AND is_active=true", *id, lspId)
+	deleteSrt := fmt.Sprintf("DELETE FROM coursez.module WHERE id = '%s' AND lsp_id = '%s' AND is_active=true", *id, lspId)
 	if err := CassSession.Query(deleteSrt, nil).Exec(); err != nil {
 		return &isSuccess, err
 	}
@@ -120,7 +120,7 @@ func DeleteCourseChapter(ctx context.Context, id *string) (*bool, error) {
 		return nil, err
 	}
 	lspId := claims["lsp_id"].(string)
-	deleteSrt := fmt.Sprintf("DELETE FROM coursez.chapter WHERE id = %s AND lsp_id = '%s' AND is_active=true", *id, lspId)
+	deleteSrt := fmt.Sprintf("DELETE FROM coursez.chapter WHERE id = '%s' AND lsp_id = '%s' AND is_active=true", *id, lspId)
 	if err := CassSession.Query(deleteSrt, nil).Exec(); err != nil {
 		return &isSuccess, err
 	}
@@ -140,7 +140,7 @@ func DeleteCourseTopic(ctx context.Context, id *string) (*bool, error) {
 		return nil, err
 	}
 	lspId := claims["lsp_id"].(string)
-	deleteSrt := fmt.Sprintf("DELETE FROM coursez.topic WHERE id = %s AND lsp_id = '%s' AND is_active=true", *id, lspId)
+	deleteSrt := fmt.Sprintf("DELETE FROM coursez.topic WHERE id = '%s' AND lsp_id = '%s' AND is_active=true", *id, lspId)
 	if err := CassSession.Query(deleteSrt, nil).Exec(); err != nil {
 		return &isSuccess, err
 	}
@@ -160,7 +160,7 @@ func DeleteTopicContent(ctx context.Context, id *string) (*bool, error) {
 		return nil, err
 	}
 	lspId := claims["lsp_id"].(string)
-	deleteSrt := fmt.Sprintf("DELETE FROM coursez.topic_content WHERE id = %s AND lsp_id = '%s' AND is_active=true", *id, lspId)
+	deleteSrt := fmt.Sprintf("DELETE FROM coursez.topic_content WHERE id = '%s' AND lsp_id = '%s' AND is_active=true", *id, lspId)
 	if err := CassSession.Query(deleteSrt, nil).Exec(); err != nil {
 		return &isSuccess, err
 	}
@@ -180,7 +180,7 @@ func DeleteTopicExam(ctx context.Context, id *string) (*bool, error) {
 		return nil, err
 	}
 	lspId := claims["lsp_id"].(string)
-	deleteSrt := fmt.Sprintf("DELETE FROM coursez.topic_exam WHERE id = %s AND lsp_id = '%s' AND is_active=true", *id, lspId)
+	deleteSrt := fmt.Sprintf("DELETE FROM coursez.topic_exam WHERE id = '%s' AND lsp_id = '%s' AND is_active=true", *id, lspId)
 	if err := CassSession.Query(deleteSrt, nil).Exec(); err != nil {
 		return &isSuccess, err
 	}
@@ -200,7 +200,7 @@ func DeleteQuiz(ctx context.Context, id *string) (*bool, error) {
 		return nil, err
 	}
 	lspId := claims["lsp_id"].(string)
-	deleteSrt := fmt.Sprintf("DELETE FROM coursez.quiz WHERE id = %s AND lsp_id = '%s' AND is_active=true", *id, lspId)
+	deleteSrt := fmt.Sprintf("DELETE FROM coursez.quiz WHERE id = '%s' AND lsp_id = '%s' AND is_active=true", *id, lspId)
 	if err := CassSession.Query(deleteSrt, nil).Exec(); err != nil {
 		return &isSuccess, err
 	}
@@ -220,7 +220,7 @@ func DeleteTopicResource(ctx context.Context, id *string) (*bool, error) {
 		return nil, err
 	}
 	lspId := claims["lsp_id"].(string)
-	deleteSrt := fmt.Sprintf("DELETE FROM coursez.resource WHERE id = %s AND lsp_id = '%s' AND is_active=true", *id, lspId)
+	deleteSrt := fmt.Sprintf("DELETE FROM coursez.resource WHERE id = '%s' AND lsp_id = '%s' AND is_active=true", *id, lspId)
 	if err := CassSession.Query(deleteSrt, nil).Exec(); err != nil {
 		return &isSuccess, err
 	}
@@ -240,7 +240,7 @@ func DeleteQuestionBank(ctx context.Context, id *string) (*bool, error) {
 		return nil, err
 	}
 	lspId := claims["lsp_id"].(string)
-	deleteSrt := fmt.Sprintf("DELETE FROM qbankz.question_bank_main WHERE id = %s AND lsp_id = '%s' AND is_active=true", *id, lspId)
+	deleteSrt := fmt.Sprintf("DELETE FROM qbankz.question_bank_main WHERE id = '%s' AND lsp_id = '%s' AND is_active=true", *id, lspId)
 	if err := CassSession.Query(deleteSrt, nil).Exec(); err != nil {
 		return &isSuccess, err
 	}
@@ -260,7 +260,7 @@ func DeleteQuestionBankQuestion(ctx context.Context, id *string) (*bool, error) 
 		return nil, err
 	}
 	lspId := claims["lsp_id"].(string)
-	deleteSrt := fmt.Sprintf("DELETE FROM qbankz.question_main WHERE id = %s AND lsp_id = '%s' AND is_active=true", *id, lspId)
+	deleteSrt := fmt.Sprintf("DELETE FROM qbankz.question_main WHERE id = '%s' AND lsp_id = '%s' AND is_active=true", *id, lspId)
 	if err := CassSession.Query(deleteSrt, nil).Exec(); err != nil {
 		return &isSuccess, err
 	}
@@ -280,7 +280,7 @@ func DeleteQuestionOptions(ctx context.Context, id *string) (*bool, error) {
 		return nil, err
 	}
 	lspId := claims["lsp_id"].(string)
-	deleteSrt := fmt.Sprintf("DELETE FROM qbankz.options_main WHERE id = %s AND lsp_id = '%s' AND is_active=true", *id, lspId)
+	deleteSrt := fmt.Sprintf("DELETE FROM qbankz.options_main WHERE id = '%s' AND lsp_id = '%s' AND is_active=true", *id, lspId)
 	if err := CassSession.Query(deleteSrt, nil).Exec(); err != nil {
 		return &isSuccess, err
 	}
@@ -300,7 +300,7 @@ func DeleteQuestionPaper(ctx context.Context, id *string) (*bool, error) {
 		return nil, err
 	}
 	lspId := claims["lsp_id"].(string)
-	deleteSrt := fmt.Sprintf("DELETE FROM qbankz.question_paper_main WHERE id = %s AND lsp_id = '%s' AND is_active=true", *id, lspId)
+	deleteSrt := fmt.Sprintf("DELETE FROM qbankz.question_paper_main WHERE id = '%s' AND lsp_id = '%s' AND is_active=true", *id, lspId)
 	if err := CassSession.Query(deleteSrt, nil).Exec(); err != nil {
 		return &isSuccess, err
 	}
@@ -320,7 +320,7 @@ func DeleteQuestionPaperSection(ctx context.Context, id *string) (*bool, error) 
 		return nil, err
 	}
 	lspId := claims["lsp_id"].(string)
-	deleteSrt := fmt.Sprintf("DELETE FROM qbankz.section_main WHERE id = %s AND lsp_id = '%s' AND is_active=true", *id, lspId)
+	deleteSrt := fmt.Sprintf("DELETE FROM qbankz.section_main WHERE id = '%s' AND lsp_id = '%s' AND is_active=true", *id, lspId)
 	if err := CassSession.Query(deleteSrt, nil).Exec(); err != nil {
 		return &isSuccess, err
 	}
@@ -340,7 +340,7 @@ func DeleteSectionToBank(ctx context.Context, id *string) (*bool, error) {
 		return nil, err
 	}
 	lspId := claims["lsp_id"].(string)
-	deleteSrt := fmt.Sprintf("DELETE FROM qbankz.section_qb_mapping WHERE id = %s AND lsp_id = '%s' AND is_active=true", *id, lspId)
+	deleteSrt := fmt.Sprintf("DELETE FROM qbankz.section_qb_mapping WHERE id = '%s' AND lsp_id = '%s' AND is_active=true", *id, lspId)
 	if err := CassSession.Query(deleteSrt, nil).Exec(); err != nil {
 		return &isSuccess, err
 	}
@@ -360,7 +360,7 @@ func DeleteSectionFixedQuestions(ctx context.Context, id *string) (*bool, error)
 		return nil, err
 	}
 	lspId := claims["lsp_id"].(string)
-	deleteSrt := fmt.Sprintf("DELETE FROM qbankz.section_fixed_questions WHERE id = %s AND lsp_id = '%s' AND is_active=true", *id, lspId)
+	deleteSrt := fmt.Sprintf("DELETE FROM qbankz.section_fixed_questions WHERE id = '%s' AND lsp_id = '%s' AND is_active=true", *id, lspId)
 	if err := CassSession.Query(deleteSrt, nil).Exec(); err != nil {
 		return &isSuccess, err
 	}
@@ -380,7 +380,7 @@ func DeleteExam(ctx context.Context, id *string) (*bool, error) {
 		return nil, err
 	}
 	lspId := claims["lsp_id"].(string)
-	deleteSrt := fmt.Sprintf("DELETE FROM qbankz.exam WHERE id = %s AND lsp_id = '%s' AND is_active=true", *id, lspId)
+	deleteSrt := fmt.Sprintf("DELETE FROM qbankz.exam WHERE id = '%s' AND lsp_id = '%s' AND is_active=true", *id, lspId)
 	if err := CassSession.Query(deleteSrt, nil).Exec(); err != nil {
 		return &isSuccess, err
 	}
@@ -400,7 +400,7 @@ func DeleteExamSchedule(ctx context.Context, id *string) (*bool, error) {
 		return nil, err
 	}
 	lspId := claims["lsp_id"].(string)
-	deleteSrt := fmt.Sprintf("DELETE FROM qbankz.exam_schedule WHERE id = %s AND lsp_id = '%s' AND is_active=true", *id, lspId)
+	deleteSrt := fmt.Sprintf("DELETE FROM qbankz.exam_schedule WHERE id = '%s' AND lsp_id = '%s' AND is_active=true", *id, lspId)
 	if err := CassSession.Query(deleteSrt, nil).Exec(); err != nil {
 		return &isSuccess, err
 	}
@@ -420,7 +420,7 @@ func DeleteExamInstruction(ctx context.Context, id *string) (*bool, error) {
 		return nil, err
 	}
 	lspId := claims["lsp_id"].(string)
-	deleteSrt := fmt.Sprintf("DELETE FROM qbankz.exam_instructions WHERE id = %s AND lsp_id = '%s' AND is_active=true", *id, lspId)
+	deleteSrt := fmt.Sprintf("DELETE FROM qbankz.exam_instructions WHERE id = '%s' AND lsp_id = '%s' AND is_active=true", *id, lspId)
 	if err := CassSession.Query(deleteSrt, nil).Exec(); err != nil {
 		return &isSuccess, err
 	}
@@ -440,7 +440,7 @@ func DeleteExamCohort(ctx context.Context, id *string) (*bool, error) {
 		return nil, err
 	}
 	lspId := claims["lsp_id"].(string)
-	deleteSrt := fmt.Sprintf("DELETE FROM qbankz.exam_cohort WHERE id = %s AND lsp_id = '%s' AND is_active=true", *id, lspId)
+	deleteSrt := fmt.Sprintf("DELETE FROM qbankz.exam_cohort WHERE id = '%s' AND lsp_id = '%s' AND is_active=true", *id, lspId)
 	if err := CassSession.Query(deleteSrt, nil).Exec(); err != nil {
 		return &isSuccess, err
 	}
@@ -460,7 +460,7 @@ func DeleteExamConfiguration(ctx context.Context, id *string) (*bool, error) {
 		return nil, err
 	}
 	lspId := claims["lsp_id"].(string)
-	deleteSrt := fmt.Sprintf("DELETE FROM qbankz.exam_config WHERE id = %s AND lsp_id = '%s' AND is_active=true", *id, lspId)
+	deleteSrt := fmt.Sprintf("DELETE FROM qbankz.exam_config WHERE id = '%s' AND lsp_id = '%s' AND is_active=true", *id, lspId)
 	if err := CassSession.Query(deleteSrt, nil).Exec(); err != nil {
 		return &isSuccess, err
 	}
@@ -480,7 +480,7 @@ func DeleteCourseCohort(ctx context.Context, id *string) (*bool, error) {
 		return nil, err
 	}
 	lspId := claims["lsp_id"].(string)
-	deleteSrt := fmt.Sprintf("DELETE FROM coursez.course_cohort_mapping WHERE id = %s AND lsp_id = '%s' AND is_active=true", *id, lspId)
+	deleteSrt := fmt.Sprintf("DELETE FROM coursez.course_cohort_mapping WHERE id = '%s' AND lsp_id = '%s' AND is_active=true", *id, lspId)
 	if err := CassSession.Query(deleteSrt, nil).Exec(); err != nil {
 		return &isSuccess, err
 	}
