@@ -5,7 +5,6 @@ package graph
 
 import (
 	"context"
-	"fmt"
 
 	log "github.com/sirupsen/logrus"
 	"github.com/zicops/zicops-course-creator/graph/generated"
@@ -23,7 +22,12 @@ func (r *mutationResolver) AddCatMain(ctx context.Context, input []*model.CatMai
 }
 
 func (r *mutationResolver) DeleteCatMain(ctx context.Context, id *string) (*bool, error) {
-	panic(fmt.Errorf("not implemented"))
+	resp, err := handlers.DeleteCatMain(ctx, id)
+	if err != nil {
+		log.Errorf("error delete DeleteCatMain : %v", err)
+		return nil, err
+	}
+	return resp, nil
 }
 
 func (r *mutationResolver) AddSubCatMain(ctx context.Context, input []*model.SubCatMainInput) ([]*model.SubCatMain, error) {
@@ -36,7 +40,12 @@ func (r *mutationResolver) AddSubCatMain(ctx context.Context, input []*model.Sub
 }
 
 func (r *mutationResolver) DeleteSubCatMain(ctx context.Context, id *string) (*bool, error) {
-	panic(fmt.Errorf("not implemented"))
+	resp, err := handlers.DeleteSubCatMain(ctx, id)
+	if err != nil {
+		log.Errorf("error delete DeleteSubCatMain : %v", err)
+		return nil, err
+	}
+	return resp, nil
 }
 
 func (r *mutationResolver) AddCategories(ctx context.Context, category []*string) (*bool, error) {
