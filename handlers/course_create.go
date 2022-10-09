@@ -141,9 +141,13 @@ func CourseCreator(ctx context.Context, courseInput *model.CourseInput) (*model.
 	}
 	if courseInput.CreatedBy != nil {
 		cassandraCourse.CreatedBy = *courseInput.CreatedBy
+	} else {
+		cassandraCourse.CreatedBy = email_creator
 	}
 	if courseInput.UpdatedBy != nil {
 		cassandraCourse.UpdatedBy = *courseInput.UpdatedBy
+	} else {
+		cassandraCourse.UpdatedBy = email_creator
 	}
 	if courseInput.Category != nil {
 		cassandraCourse.Category = *courseInput.Category
