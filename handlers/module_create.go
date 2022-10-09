@@ -42,9 +42,6 @@ func ModuleCreate(ctx context.Context, courseID string, module *model.ModuleInpu
 	if module.Owner != nil {
 		cassandraModule.Owner = *module.Owner
 	}
-	if module.Duration != nil {
-		cassandraModule.Duration = *module.Duration
-	}
 	if module.Level != nil {
 		cassandraModule.Level = *module.Level
 	}
@@ -121,10 +118,6 @@ func UpdateModule(ctx context.Context, module *model.ModuleInput) (*model.Module
 	if module.Owner != nil {
 		updateCols = append(updateCols, "owner")
 		cassandraModule.Owner = *module.Owner
-	}
-	if module.Duration != nil {
-		updateCols = append(updateCols, "duration")
-		cassandraModule.Duration = *module.Duration
 	}
 	if module.Level != nil {
 		updateCols = append(updateCols, "level")

@@ -124,9 +124,6 @@ func CourseCreator(ctx context.Context, courseInput *model.CourseInput) (*model.
 	if courseInput.Owner != nil {
 		cassandraCourse.Owner = *courseInput.Owner
 	}
-	if courseInput.Duration != nil {
-		cassandraCourse.Duration = *courseInput.Duration
-	}
 	if courseInput.PublishDate != nil {
 		cassandraCourse.PublishDate = *courseInput.PublishDate
 	}
@@ -533,10 +530,6 @@ func CourseUpdate(ctx context.Context, courseInput *model.CourseInput) (*model.C
 	if courseInput.Type != nil {
 		updateCols = append(updateCols, "type")
 		cassandraCourse.Type = *courseInput.Type
-	}
-	if courseInput.Duration != nil {
-		updateCols = append(updateCols, "duration")
-		cassandraCourse.Duration = *courseInput.Duration
 	}
 	if courseInput.IsDisplay != nil {
 		updateCols = append(updateCols, "is_display")
