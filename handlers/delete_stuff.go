@@ -18,12 +18,11 @@ func DeleteCatMain(ctx context.Context, id *string) (*bool, error) {
 	}
 	isSuccess := false
 	CassSession := session
-	claims, err := helpers.GetClaimsFromContext(ctx)
+	_, err = helpers.GetClaimsFromContext(ctx)
 	if err != nil {
 		return nil, err
 	}
-	lspId := claims["lsp_id"].(string)
-	deleteSrt := fmt.Sprintf("DELETE FROM coursez.cat_main WHERE id = '%s' AND lsp_id = '%s' AND is_active=true", *id, lspId)
+	deleteSrt := fmt.Sprintf("DELETE FROM coursez.cat_main WHERE id='%s' AND is_active=true", *id)
 	if err := CassSession.Query(deleteSrt, nil).Exec(); err != nil {
 		return &isSuccess, err
 	}
@@ -39,12 +38,12 @@ func DeleteSubCatMain(ctx context.Context, id *string) (*bool, error) {
 	}
 	isSuccess := false
 	CassSession := session
-	claims, err := helpers.GetClaimsFromContext(ctx)
+	_, err = helpers.GetClaimsFromContext(ctx)
 	if err != nil {
 		return nil, err
 	}
-	lspId := claims["lsp_id"].(string)
-	deleteSrt := fmt.Sprintf("DELETE FROM coursez.sub_cat_main WHERE id = '%s' AND lsp_id = '%s' AND is_active=true", *id, lspId)
+
+	deleteSrt := fmt.Sprintf("DELETE FROM coursez.sub_cat_main WHERE id='%s' AND is_active=true", *id)
 	if err := CassSession.Query(deleteSrt, nil).Exec(); err != nil {
 		return &isSuccess, err
 	}
@@ -100,7 +99,7 @@ func DeleteCourseModule(ctx context.Context, id *string) (*bool, error) {
 		return nil, err
 	}
 	lspId := claims["lsp_id"].(string)
-	deleteSrt := fmt.Sprintf("DELETE FROM coursez.module WHERE id = '%s' AND lsp_id = '%s' AND is_active=true", *id, lspId)
+	deleteSrt := fmt.Sprintf("DELETE FROM coursez.module WHERE id='%s' AND lsp_id='%s' AND is_active=true", *id, lspId)
 	if err := CassSession.Query(deleteSrt, nil).Exec(); err != nil {
 		return &isSuccess, err
 	}
