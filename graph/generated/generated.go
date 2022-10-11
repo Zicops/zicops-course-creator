@@ -134,6 +134,7 @@ type ComplexityRoot struct {
 		IsActive     func(childComplexity int) int
 		Name         func(childComplexity int) int
 		QpID         func(childComplexity int) int
+		QuestionIds  func(childComplexity int) int
 		ScheduleType func(childComplexity int) int
 		Status       func(childComplexity int) int
 		SubCategory  func(childComplexity int) int
@@ -1143,6 +1144,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Exam.QpID(childComplexity), true
+
+	case "Exam.QuestionIds":
+		if e.complexity.Exam.QuestionIds == nil {
+			break
+		}
+
+		return e.complexity.Exam.QuestionIds(childComplexity), true
 
 	case "Exam.ScheduleType":
 		if e.complexity.Exam.ScheduleType == nil {
@@ -4156,6 +4164,7 @@ type Exam {
     Description: String
     Code : String
     QpId: String
+    QuestionIds: [String]
     CreatedAt: String
     UpdatedAt: String
     CreatedBy: String
@@ -8187,6 +8196,38 @@ func (ec *executionContext) _Exam_QpId(ctx context.Context, field graphql.Collec
 	res := resTmp.(*string)
 	fc.Result = res
 	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Exam_QuestionIds(ctx context.Context, field graphql.CollectedField, obj *model.Exam) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Exam",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.QuestionIds, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*string)
+	fc.Result = res
+	return ec.marshalOString2ᚕᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Exam_CreatedAt(ctx context.Context, field graphql.CollectedField, obj *model.Exam) (ret graphql.Marshaler) {
@@ -22816,6 +22857,13 @@ func (ec *executionContext) _Exam(ctx context.Context, sel ast.SelectionSet, obj
 		case "QpId":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Exam_QpId(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+		case "QuestionIds":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Exam_QuestionIds(ctx, field, obj)
 			}
 
 			out.Values[i] = innerFunc(ctx)

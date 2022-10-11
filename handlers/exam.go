@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/rs/xid"
+	"github.com/scylladb/gocqlx/v2"
 	"github.com/scylladb/gocqlx/v2/qb"
 	log "github.com/sirupsen/logrus"
 	"github.com/zicops/contracts/qbankz"
@@ -29,6 +30,11 @@ func ExamCreate(ctx context.Context, exam *model.ExamInput) (*model.Exam, error)
 	lspID := claims["lsp_id"].(string)
 	email_creator := claims["email"].(string)
 	guid := xid.New()
+	qpId := *exam.QpID
+	questionsIDs, err := GetQuestionIDsFromPaperId(CassSession, ctx, lspID, qpId)
+	if err != nil {
+		return nil, err
+	}
 	cassandraQuestionBank := qbankz.Exam{
 		ID:           guid.String(),
 		Name:         *exam.Name,
@@ -47,6 +53,7 @@ func ExamCreate(ctx context.Context, exam *model.ExamInput) (*model.Exam, error)
 		Duration:     *exam.Duration,
 		Status:       *exam.Status,
 		LSPID:        lspID,
+		QuestionIDs:  questionsIDs,
 	}
 
 	insertQuery := CassSession.Query(qbankz.ExamTable.Insert()).BindStruct(cassandraQuestionBank)
@@ -155,6 +162,14 @@ func ExamUpdate(ctx context.Context, input *model.ExamInput) (*model.Exam, error
 	updatedAt := time.Now().Unix()
 	cassandraQuestionBank.UpdatedAt = updatedAt
 	updatedCols = append(updatedCols, "updated_at")
+	if input.QpID != nil && *input.QpID != "" && *input.QpID != cassandraQuestionBank.QPID {
+		questionsIDs, err := GetQuestionIDsFromPaperId(CassSession, ctx, lspID, *input.QpID)
+		if err != nil {
+			return nil, err
+		}
+		cassandraQuestionBank.QuestionIDs = questionsIDs
+		updatedCols = append(updatedCols, "question_ids")
+	}
 	if len(updatedCols) == 0 {
 		return nil, fmt.Errorf("nothing to update")
 	}
@@ -184,4 +199,37 @@ func ExamUpdate(ctx context.Context, input *model.ExamInput) (*model.Exam, error
 		Status:       input.Status,
 	}
 	return &responseModel, nil
+}
+
+func GetQuestionIDsFromPaperId(session *gocqlx.Session, ctx context.Context, lspID string, qpID string) ([]string, error) {
+	qryStr := fmt.Sprintf(`SELECT * from qbankz.section_qb_mapping where lsp_id='%s' AND is_active=true  AND qp_id='%s' ALLOW FILTERING`, lspID, qpID)
+	getSectionsMap := func() (banks []qbankz.SectionQBMapping, err error) {
+		q := session.Query(qryStr, nil)
+		defer q.Release()
+		iter := q.Iter()
+		return banks, iter.Select(&banks)
+	}
+	sectionsMap, err := getSectionsMap()
+	if err != nil {
+		return nil, err
+	}
+	questionsIDs := []string{}
+	for _, section := range sectionsMap {
+		currentSectionId := section.SectionID
+		qryStr := fmt.Sprintf(`SELECT * from qbankz.section_fixed_questions where sqb_id='%s' AND lsp_id='%s' AND is_active=true ALLOW FILTERING`, currentSectionId, lspID)
+		getQuestions := func() (banks []qbankz.SectionFixedQuestions, err error) {
+			q := session.Query(qryStr, nil)
+			defer q.Release()
+			iter := q.Iter()
+			return banks, iter.Select(&banks)
+		}
+		questions, err := getQuestions()
+		if err != nil {
+			return nil, err
+		}
+		for _, question := range questions {
+			questionsIDs = append(questionsIDs, question.QuestionID)
+		}
+	}
+	return questionsIDs, nil
 }

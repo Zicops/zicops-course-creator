@@ -177,22 +177,23 @@ type CourseInput struct {
 }
 
 type Exam struct {
-	ID           *string `json:"id"`
-	Name         *string `json:"Name"`
-	Description  *string `json:"Description"`
-	Code         *string `json:"Code"`
-	QpID         *string `json:"QpId"`
-	CreatedAt    *string `json:"CreatedAt"`
-	UpdatedAt    *string `json:"UpdatedAt"`
-	CreatedBy    *string `json:"CreatedBy"`
-	UpdatedBy    *string `json:"UpdatedBy"`
-	IsActive     *bool   `json:"IsActive"`
-	Type         *string `json:"Type"`
-	ScheduleType *string `json:"ScheduleType"`
-	Duration     *int    `json:"Duration"`
-	Status       *string `json:"Status"`
-	Category     *string `json:"Category"`
-	SubCategory  *string `json:"SubCategory"`
+	ID           *string   `json:"id"`
+	Name         *string   `json:"Name"`
+	Description  *string   `json:"Description"`
+	Code         *string   `json:"Code"`
+	QpID         *string   `json:"QpId"`
+	QuestionIds  []*string `json:"QuestionIds"`
+	CreatedAt    *string   `json:"CreatedAt"`
+	UpdatedAt    *string   `json:"UpdatedAt"`
+	CreatedBy    *string   `json:"CreatedBy"`
+	UpdatedBy    *string   `json:"UpdatedBy"`
+	IsActive     *bool     `json:"IsActive"`
+	Type         *string   `json:"Type"`
+	ScheduleType *string   `json:"ScheduleType"`
+	Duration     *int      `json:"Duration"`
+	Status       *string   `json:"Status"`
+	Category     *string   `json:"Category"`
+	SubCategory  *string   `json:"SubCategory"`
 }
 
 type ExamCohort struct {
