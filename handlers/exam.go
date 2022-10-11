@@ -202,8 +202,8 @@ func ExamUpdate(ctx context.Context, input *model.ExamInput) (*model.Exam, error
 }
 
 func GetQuestionIDsFromPaperId(session *gocqlx.Session, ctx context.Context, lspID string, qpID string) ([]string, error) {
-	qryStr := fmt.Sprintf(`SELECT * from qbankz.section_qb_mapping where lsp_id='%s' AND is_active=true  AND qp_id='%s' ALLOW FILTERING`, lspID, qpID)
-	getSectionsMap := func() (banks []qbankz.SectionQBMapping, err error) {
+	qryStr := fmt.Sprintf(`SELECT * from qbankz.section_main where lsp_id='%s' AND is_active=true  AND qp_id='%s' ALLOW FILTERING`, lspID, qpID)
+	getSectionsMap := func() (banks []qbankz.SectionMain, err error) {
 		q := session.Query(qryStr, nil)
 		defer q.Release()
 		iter := q.Iter()
@@ -215,20 +215,34 @@ func GetQuestionIDsFromPaperId(session *gocqlx.Session, ctx context.Context, lsp
 	}
 	questionsIDs := []string{}
 	for _, section := range sectionsMap {
-		currentSectionId := section.SectionID
-		qryStr := fmt.Sprintf(`SELECT * from qbankz.section_fixed_questions where sqb_id='%s' AND lsp_id='%s' AND is_active=true ALLOW FILTERING`, currentSectionId, lspID)
-		getQuestions := func() (banks []qbankz.SectionFixedQuestions, err error) {
-			q := session.Query(qryStr, nil)
+		currentSectionId := section.ID
+		sectionQbQuery := fmt.Sprintf(`SELECT * from qbankz.section_qb_mapping where lsp_id='%s' AND is_active=true  AND section_id='%s' ALLOW FILTERING`, lspID, currentSectionId)
+		getSections := func() (banks []qbankz.SectionQBMapping, err error) {
+			q := session.Query(sectionQbQuery, nil)
 			defer q.Release()
 			iter := q.Iter()
 			return banks, iter.Select(&banks)
 		}
-		questions, err := getQuestions()
+		sections, err := getSections()
 		if err != nil {
 			return nil, err
 		}
-		for _, question := range questions {
-			questionsIDs = append(questionsIDs, question.QuestionID)
+		for _, section := range sections {
+			sectionID := section.ID
+			qryStr := fmt.Sprintf(`SELECT * from qbankz.section_fixed_questions where sqb_id='%s' AND lsp_id='%s' AND is_active=true ALLOW FILTERING`, sectionID, lspID)
+			getQuestions := func() (banks []qbankz.SectionFixedQuestions, err error) {
+				q := session.Query(qryStr, nil)
+				defer q.Release()
+				iter := q.Iter()
+				return banks, iter.Select(&banks)
+			}
+			questions, err := getQuestions()
+			if err != nil {
+				return nil, err
+			}
+			for _, question := range questions {
+				questionsIDs = append(questionsIDs, question.QuestionID)
+			}
 		}
 	}
 	return questionsIDs, nil
