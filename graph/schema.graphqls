@@ -561,6 +561,7 @@ type Exam {
     Description: String
     Code : String
     QpId: String
+    QuestionIds: [String]
     CreatedAt: String
     UpdatedAt: String
     CreatedBy: String
