@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/rs/xid"
@@ -31,11 +32,18 @@ func QuestionBankCreate(ctx context.Context, input *model.QuestionBankInput) (*m
 	if err != nil {
 		return nil, err
 	}
+	words := []string{}
+	if input.Name != nil {
+		name := strings.ToLower(*input.Name)
+		wordsLocal := strings.Split(name, " ")
+		words = append(words, wordsLocal...)
+	}
 	lspID := claims["lsp_id"].(string)
 	email_creator := claims["email"].(string)
 	cassandraQuestionBank := qbankz.QuestionBankMain{
 		ID:          guid.String(),
 		Name:        *input.Name,
+		Words:       words,
 		Description: *input.Description,
 		Category:    *input.Category,
 		SubCategory: *input.SubCategory,
@@ -105,7 +113,15 @@ func QuestionBankUpdate(ctx context.Context, input *model.QuestionBankInput) (*m
 		updatedCols = append(updatedCols, "description")
 	}
 	if input.Name != nil {
+		words := []string{}
+		if input.Name != nil {
+			name := strings.ToLower(*input.Name)
+			wordsLocal := strings.Split(name, " ")
+			words = append(words, wordsLocal...)
+		}		
 		cassandraQuestionBank.Name = *input.Name
+		cassandraQuestionBank.Words = words
+		updatedCols = append(updatedCols, "words")
 		updatedCols = append(updatedCols, "name")
 	}
 	if input.Category != nil {
