@@ -90,7 +90,8 @@ func CourseCreator(ctx context.Context, courseInput *model.CourseInput) (*model.
 	words := []string{}
 	if courseInput.Name != nil {
 		name := strings.ToLower(*courseInput.Name)
-		words = strings.Split(name, " ")
+		wordsLocal := strings.Split(name, " ")
+		words = append(words, wordsLocal...)
 	}
 
 	cassandraCourse := coursez.Course{

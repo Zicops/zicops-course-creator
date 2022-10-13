@@ -113,7 +113,8 @@ func AddCatMain(ctx context.Context, input []*model.CatMainInput) ([]*model.CatM
 		words := []string{}
 		if c.Name != nil {
 			name := strings.ToLower(*c.Name)
-			words = strings.Split(name, " ")
+			wordsLocal := strings.Split(name, " ")
+			words = append(words, wordsLocal...)
 		}
 		guid := base64.URLEncoding.EncodeToString([]byte(strings.ToLower(*c.Name)))
 		imageUrl := ""
@@ -224,7 +225,8 @@ func AddSubCatMain(ctx context.Context, input []*model.SubCatMainInput) ([]*mode
 		words := []string{}
 		if c.Name != nil {
 			name := strings.ToLower(*c.Name)
-			words = strings.Split(name, " ")
+			wordsLocal := strings.Split(name, " ")
+			words = append(words, wordsLocal...)
 		}
 		guid := base64.URLEncoding.EncodeToString([]byte(strings.ToLower(*c.Name)))
 		imageUrl := ""
