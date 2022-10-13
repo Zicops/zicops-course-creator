@@ -144,10 +144,6 @@ func QuestionBankUpdate(ctx context.Context, input *model.QuestionBankInput) (*m
 		cassandraQuestionBank.UpdatedBy = email_creator
 		updatedCols = append(updatedCols, "updated_by")
 	}
-	if input.CreatedBy != nil {
-		cassandraQuestionBank.CreatedBy = *input.CreatedBy
-		updatedCols = append(updatedCols, "created_by")
-	}
 	updatedAt := time.Now().Unix()
 	cassandraQuestionBank.UpdatedAt = updatedAt
 	updatedCols = append(updatedCols, "updated_at")
@@ -331,10 +327,6 @@ func UpdateQuestionBankQuestion(ctx context.Context, input *model.QuestionBankQu
 	if input.AttachmentType != nil {
 		cassandraQuestionBank.AttachmentType = *input.AttachmentType
 		updatedCols = append(updatedCols, "attachment_type")
-	}
-	if input.CreatedBy != nil {
-		cassandraQuestionBank.CreatedBy = *input.CreatedBy
-		updatedCols = append(updatedCols, "created_by")
 	}
 	if email_creator != "" {
 		cassandraQuestionBank.UpdatedBy = email_creator

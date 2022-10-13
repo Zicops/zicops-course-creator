@@ -108,10 +108,6 @@ func ExamScheduleUpdate(ctx context.Context, input *model.ExamScheduleInput) (*m
 		cassandraQuestionBank.ExamID = *input.ExamID
 		updatedCols = append(updatedCols, "exam_id")
 	}
-	if input.CreatedBy != nil {
-		cassandraQuestionBank.CreatedBy = *input.CreatedBy
-		updatedCols = append(updatedCols, "created_by")
-	}
 	if email_creator != "" {
 		cassandraQuestionBank.UpdatedBy = email_creator
 		updatedCols = append(updatedCols, "updated_by")

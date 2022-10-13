@@ -113,10 +113,6 @@ func UpdateExamConfiguration(ctx context.Context, input *model.ExamConfiguration
 		cassandraQuestionBank.ShowResult = *input.ShowResult
 		updatedCols = append(updatedCols, "show_result")
 	}
-	if input.CreatedBy != nil {
-		cassandraQuestionBank.CreatedBy = *input.CreatedBy
-		updatedCols = append(updatedCols, "created_by")
-	}
 	if email_creator != "" {
 		cassandraQuestionBank.UpdatedBy = email_creator
 		updatedCols = append(updatedCols, "updated_by")

@@ -145,16 +145,8 @@ func CourseCreator(ctx context.Context, courseInput *model.CourseInput) (*model.
 	if courseInput.QaRequired != nil {
 		cassandraCourse.QARequired = *courseInput.QaRequired
 	}
-	if courseInput.CreatedBy != nil {
-		cassandraCourse.CreatedBy = *courseInput.CreatedBy
-	} else {
-		cassandraCourse.CreatedBy = email_creator
-	}
-	if courseInput.UpdatedBy != nil {
-		cassandraCourse.UpdatedBy = *courseInput.UpdatedBy
-	} else {
-		cassandraCourse.UpdatedBy = email_creator
-	}
+	cassandraCourse.CreatedBy = email_creator
+	cassandraCourse.UpdatedBy = email_creator
 	if courseInput.Category != nil {
 		cassandraCourse.Category = *courseInput.Category
 	}
@@ -534,10 +526,6 @@ func CourseUpdate(ctx context.Context, courseInput *model.CourseInput) (*model.C
 		cassandraCourse.ExpertiseLevel = *courseInput.ExpertiseLevel
 	}
 	cassandraCourse.UpdatedAt = time.Now().Unix()
-	if courseInput.CreatedBy != nil {
-		updateCols = append(updateCols, "created_by")
-		cassandraCourse.CreatedBy = *courseInput.CreatedBy
-	}
 	if email_creator != "" {
 		updateCols = append(updateCols, "updated_by")
 		cassandraCourse.UpdatedBy = email_creator

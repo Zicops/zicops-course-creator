@@ -158,10 +158,6 @@ func UpdateQuestionOptions(ctx context.Context, input *model.QuestionOptionInput
 		cassandraQuestionBank.QmId = *input.QmID
 		updatedCols = append(updatedCols, "qm_id")
 	}
-	if input.CreatedBy != nil {
-		cassandraQuestionBank.CreatedBy = *input.CreatedBy
-		updatedCols = append(updatedCols, "created_by")
-	}
 	updatedAt := time.Now().Unix()
 	cassandraQuestionBank.UpdatedAt = updatedAt
 	updatedCols = append(updatedCols, "updated_at")

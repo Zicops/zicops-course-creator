@@ -116,10 +116,6 @@ func TopicUpdate(ctx context.Context, topic *model.TopicInput) (*model.Topic, er
 		updateCols = append(updateCols, "sequence")
 		cassandraTopic.Sequence = *topic.Sequence
 	}
-	if topic.CreatedBy != nil {
-		updateCols = append(updateCols, "created_by")
-		cassandraTopic.CreatedBy = *topic.CreatedBy
-	}
 	if topic.Name != nil {
 		updateCols = append(updateCols, "name")
 		cassandraTopic.Name = *topic.Name

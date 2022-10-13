@@ -121,10 +121,6 @@ func QuestionPaperUpdate(ctx context.Context, input *model.QuestionPaperInput) (
 		cassandraQuestionBank.UpdatedBy = email_creator
 		updatedCols = append(updatedCols, "updated_by")
 	}
-	if input.CreatedBy != nil {
-		cassandraQuestionBank.CreatedBy = *input.CreatedBy
-		updatedCols = append(updatedCols, "created_by")
-	}
 	if input.Description != nil {
 		cassandraQuestionBank.Description = *input.Description
 		updatedCols = append(updatedCols, "description")
@@ -262,10 +258,6 @@ func QuestionPaperSectionUpdate(ctx context.Context, input *model.QuestionPaperS
 	if email_creator != "" {
 		cassandraQuestionBank.UpdatedBy = email_creator
 		updatedCols = append(updatedCols, "updated_by")
-	}
-	if input.CreatedBy != nil {
-		cassandraQuestionBank.CreatedBy = *input.CreatedBy
-		updatedCols = append(updatedCols, "created_by")
 	}
 	if input.Description != nil {
 		cassandraQuestionBank.Description = *input.Description
