@@ -103,33 +103,36 @@ func UpdateModule(ctx context.Context, module *model.ModuleInput) (*model.Module
 	}
 	cassandraModule = modules[0]
 	updateCols := []string{}
-	if module.Name != nil {
+	if module.Name != nil && cassandraModule.Name != *module.Name {
 		updateCols = append(updateCols, "name")
 		cassandraModule.Name = *module.Name
 	}
-	if module.Description != nil {
+	if module.Description != nil && cassandraModule.Description != *module.Description {
 		updateCols = append(updateCols, "description")
 		cassandraModule.Description = *module.Description
 	}
-	if module.IsChapter != nil {
+	if module.IsChapter != nil && cassandraModule.IsChapter != *module.IsChapter {
 		updateCols = append(updateCols, "ischapter")
 		cassandraModule.IsChapter = *module.IsChapter
 	}
-	if module.Owner != nil {
+	if module.Owner != nil && cassandraModule.Owner != *module.Owner {
 		updateCols = append(updateCols, "owner")
 		cassandraModule.Owner = *module.Owner
 	}
-	if module.Level != nil {
+	if module.Level != nil && cassandraModule.Level != *module.Level {
 		updateCols = append(updateCols, "level")
 		cassandraModule.Level = *module.Level
 	}
-	if module.Sequence != nil {
+	if module.Sequence != nil && cassandraModule.Sequence != *module.Sequence {
 		updateCols = append(updateCols, "sequence")
 		cassandraModule.Sequence = *module.Sequence
 	}
-	if module.SetGlobal != nil {
+	if module.SetGlobal != nil && cassandraModule.SetGlobal != *module.SetGlobal {
 		updateCols = append(updateCols, "setglobal")
 		cassandraModule.SetGlobal = *module.SetGlobal
+	}
+	if len(updateCols) == 0 {
+		return nil, fmt.Errorf("nothing to update")
 	}
 	cassandraModule.UpdatedAt = time.Now().Unix()
 	updateCols = append(updateCols, "updated_at")

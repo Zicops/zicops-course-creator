@@ -93,27 +93,27 @@ func UpdateExamConfiguration(ctx context.Context, input *model.ExamConfiguration
 	}
 	cassandraQuestionBank = banks[0]
 	updatedCols := []string{}
-	if input.ExamID != nil {
+	if input.ExamID != nil && cassandraQuestionBank.ExamID != *input.ExamID {
 		cassandraQuestionBank.ExamID = *input.ExamID
 		updatedCols = append(updatedCols, "exam_id")
 	}
-	if input.Shuffle != nil {
+	if input.Shuffle != nil && cassandraQuestionBank.Shuffle != *input.Shuffle {
 		cassandraQuestionBank.Shuffle = *input.Shuffle
 		updatedCols = append(updatedCols, "shuffle_questions")
 	}
-	if input.DisplayHints != nil {
+	if input.DisplayHints != nil && cassandraQuestionBank.DisplayHints != *input.DisplayHints {
 		cassandraQuestionBank.DisplayHints = *input.DisplayHints
 		updatedCols = append(updatedCols, "display_hints")
 	}
-	if input.ShowAnswer != nil {
+	if input.ShowAnswer != nil && cassandraQuestionBank.ShowAnswer != *input.ShowAnswer {
 		cassandraQuestionBank.ShowAnswer = *input.ShowAnswer
 		updatedCols = append(updatedCols, "show_answer")
 	}
-	if input.ShowResult != nil {
+	if input.ShowResult != nil && cassandraQuestionBank.ShowResult != *input.ShowResult {
 		cassandraQuestionBank.ShowResult = *input.ShowResult
 		updatedCols = append(updatedCols, "show_result")
 	}
-	if email_creator != "" {
+	if email_creator != "" && cassandraQuestionBank.UpdatedBy != email_creator {
 		cassandraQuestionBank.UpdatedBy = email_creator
 		updatedCols = append(updatedCols, "updated_by")
 	}

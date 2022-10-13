@@ -104,15 +104,15 @@ func ExamScheduleUpdate(ctx context.Context, input *model.ExamScheduleInput) (*m
 	}
 	cassandraQuestionBank = banks[0]
 	updatedCols := []string{}
-	if input.ExamID != nil {
+	if input.ExamID != nil && cassandraQuestionBank.ExamID != *input.ExamID {
 		cassandraQuestionBank.ExamID = *input.ExamID
 		updatedCols = append(updatedCols, "exam_id")
 	}
-	if email_creator != "" {
+	if email_creator != "" && cassandraQuestionBank.UpdatedBy != email_creator {
 		cassandraQuestionBank.UpdatedBy = email_creator
 		updatedCols = append(updatedCols, "updated_by")
 	}
-	if input.Start != nil {
+	if input.Start != nil && int(cassandraQuestionBank.Start) != *input.Start {
 		startString := strconv.Itoa(*input.Start)
 		start, err := strconv.ParseInt(startString, 10, 64)
 		if err != nil {
@@ -121,7 +121,7 @@ func ExamScheduleUpdate(ctx context.Context, input *model.ExamScheduleInput) (*m
 		cassandraQuestionBank.Start = start
 		updatedCols = append(updatedCols, "start")
 	}
-	if input.End != nil {
+	if input.End != nil && int(cassandraQuestionBank.End) != *input.End {
 		endString := strconv.Itoa(*input.End)
 		end, err := strconv.ParseInt(endString, 10, 64)
 		if err != nil {
@@ -130,7 +130,7 @@ func ExamScheduleUpdate(ctx context.Context, input *model.ExamScheduleInput) (*m
 		cassandraQuestionBank.End = end
 		updatedCols = append(updatedCols, "end")
 	}
-	if input.BufferTime != nil {
+	if input.BufferTime != nil && cassandraQuestionBank.BufferTime != *input.BufferTime {
 		cassandraQuestionBank.BufferTime = *input.BufferTime
 		updatedCols = append(updatedCols, "buffer_time")
 	}

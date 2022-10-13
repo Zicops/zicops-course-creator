@@ -87,15 +87,15 @@ func UpdateExamCohort(ctx context.Context, input *model.ExamCohortInput) (*model
 	}
 	cassandraQuestionBank = banks[0]
 	updatedCols := []string{}
-	if input.ExamID != nil {
+	if input.ExamID != nil && cassandraQuestionBank.ExamID != *input.ExamID {
 		cassandraQuestionBank.ExamID = *input.ExamID
 		updatedCols = append(updatedCols, "exam_id")
 	}
-	if input.CohortID != nil {
+	if input.CohortID != nil && cassandraQuestionBank.CohortID != *input.CohortID {
 		cassandraQuestionBank.CohortID = *input.CohortID
 		updatedCols = append(updatedCols, "cohort_id")
 	}
-	if email_creator != "" {
+	if email_creator != "" && cassandraQuestionBank.UpdatedBy != email_creator {
 		cassandraQuestionBank.UpdatedBy = email_creator
 		updatedCols = append(updatedCols, "updated_by")
 	}

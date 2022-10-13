@@ -119,7 +119,7 @@ func ExamUpdate(ctx context.Context, input *model.ExamInput) (*model.Exam, error
 	}
 	cassandraQuestionBank = banks[0]
 	updatedCols := []string{}
-	if input.Name != nil {
+	if input.Name != nil && *input.Name != cassandraQuestionBank.Name {
 		cassandraQuestionBank.Name = *input.Name
 		words := []string{}
 		if input.Name != nil {
@@ -131,49 +131,47 @@ func ExamUpdate(ctx context.Context, input *model.ExamInput) (*model.Exam, error
 		updatedCols = append(updatedCols, "words")
 		updatedCols = append(updatedCols, "name")
 	}
-	if input.Category != nil {
+	if input.Category != nil && cassandraQuestionBank.Category != *input.Category {
 		cassandraQuestionBank.Category = *input.Category
 		updatedCols = append(updatedCols, "category")
 	}
-	if input.SubCategory != nil {
+	if input.SubCategory != nil && cassandraQuestionBank.SubCategory != *input.SubCategory {
 		cassandraQuestionBank.SubCategory = *input.SubCategory
 		updatedCols = append(updatedCols, "sub_category")
 	}
-	if email_creator != "" {
+	if email_creator != "" && cassandraQuestionBank.UpdatedBy != email_creator {
 		cassandraQuestionBank.UpdatedBy = email_creator
 		updatedCols = append(updatedCols, "updated_by")
 	}
-	if input.Description != nil {
+	if input.Description != nil && cassandraQuestionBank.Description != *input.Description {
 		cassandraQuestionBank.Description = *input.Description
 		updatedCols = append(updatedCols, "description")
 	}
-	if input.Code != nil {
+	if input.Code != nil && cassandraQuestionBank.Code != *input.Code {
 		cassandraQuestionBank.Code = *input.Code
 		updatedCols = append(updatedCols, "code")
 	}
-	if input.QpID != nil {
+	if input.QpID != nil && cassandraQuestionBank.QPID != *input.QpID {
 		cassandraQuestionBank.QPID = *input.QpID
 		updatedCols = append(updatedCols, "qp_id")
 	}
-	if input.Type != nil {
+	if input.Type != nil && cassandraQuestionBank.Type != *input.Type {
 		cassandraQuestionBank.Type = *input.Type
 		updatedCols = append(updatedCols, "type")
 	}
-	if input.ScheduleType != nil {
+	if input.ScheduleType != nil && cassandraQuestionBank.ScheduleType != *input.ScheduleType {
 		cassandraQuestionBank.ScheduleType = *input.ScheduleType
 		updatedCols = append(updatedCols, "schedule_type")
 	}
-	if input.Duration != nil {
+	if input.Duration != nil && cassandraQuestionBank.Duration != *input.Duration {
 		cassandraQuestionBank.Duration = *input.Duration
 		updatedCols = append(updatedCols, "duration")
 	}
-	if input.Status != nil {
+	if input.Status != nil && cassandraQuestionBank.Status != *input.Status {
 		cassandraQuestionBank.Status = *input.Status
 		updatedCols = append(updatedCols, "status")
 	}
 	updatedAt := time.Now().Unix()
-	cassandraQuestionBank.UpdatedAt = updatedAt
-	updatedCols = append(updatedCols, "updated_at")
 	if input.QpID != nil && *input.QpID != "" && *input.QpID != cassandraQuestionBank.QPID {
 		questionsIDs, err := GetQuestionIDsFromPaperId(CassSession, ctx, lspID, *input.QpID)
 		if err != nil {
@@ -185,6 +183,8 @@ func ExamUpdate(ctx context.Context, input *model.ExamInput) (*model.Exam, error
 	if len(updatedCols) == 0 {
 		return nil, fmt.Errorf("nothing to update")
 	}
+	cassandraQuestionBank.UpdatedAt = updatedAt
+	updatedCols = append(updatedCols, "updated_at")
 	upStms, uNames := qbankz.ExamTable.Update(updatedCols...)
 	updateQuery := CassSession.Query(upStms, uNames).BindStruct(&cassandraQuestionBank)
 	if err := updateQuery.ExecRelease(); err != nil {

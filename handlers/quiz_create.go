@@ -126,49 +126,52 @@ func UpdateQuiz(ctx context.Context, quiz *model.QuizInput) (*model.Quiz, error)
 	}
 	cassandraQuiz = quizes[0]
 	updateCols := []string{}
-	if quiz.Name != nil {
+	if quiz.Name != nil && cassandraQuiz.Name != *quiz.Name {
 		updateCols = append(updateCols, "name")
 		cassandraQuiz.Name = *quiz.Name
 	}
-	if quiz.Type != nil {
+	if quiz.Type != nil && cassandraQuiz.Type != *quiz.Type {
 		updateCols = append(updateCols, "type")
 		cassandraQuiz.Type = *quiz.Type
 	}
-	if quiz.IsMandatory != nil {
+	if quiz.IsMandatory != nil && cassandraQuiz.IsMandatory != *quiz.IsMandatory {
 		updateCols = append(updateCols, "ismandatory")
 		cassandraQuiz.IsMandatory = *quiz.IsMandatory
 	}
-	if quiz.TopicID != nil {
+	if quiz.TopicID != nil && cassandraQuiz.TopicID != *quiz.TopicID {
 		updateCols = append(updateCols, "topicid")
 		cassandraQuiz.TopicID = *quiz.TopicID
 	}
-	if quiz.StartTime != nil {
+	if quiz.StartTime != nil && cassandraQuiz.StartTime != *quiz.StartTime {
 		updateCols = append(updateCols, "starttime")
 		cassandraQuiz.StartTime = *quiz.StartTime
 	}
-	if quiz.Sequence != nil {
+	if quiz.Sequence != nil && cassandraQuiz.Sequence != *quiz.Sequence {
 		updateCols = append(updateCols, "sequence")
 		cassandraQuiz.Sequence = *quiz.Sequence
 	}
-	if quiz.Category != nil {
+	if quiz.Category != nil && cassandraQuiz.Category != *quiz.Category {
 		updateCols = append(updateCols, "category")
 		cassandraQuiz.Category = *quiz.Category
 	}
-	if quiz.CourseID != nil {
+	if quiz.CourseID != nil && cassandraQuiz.CourseID != *quiz.CourseID {
 		updateCols = append(updateCols, "courseid")
 		cassandraQuiz.CourseID = *quiz.CourseID
 	}
-	if quiz.QbID != nil {
+	if quiz.QbID != nil && cassandraQuiz.QbId != *quiz.QbID {
 		updateCols = append(updateCols, "qbid")
 		cassandraQuiz.QbId = *quiz.QbID
 	}
-	if quiz.QuestionID != nil {
+	if quiz.QuestionID != nil && cassandraQuiz.QuestionID != *quiz.QuestionID {
 		updateCols = append(updateCols, "questionid")
 		cassandraQuiz.QuestionID = *quiz.QuestionID
 	}
-	if quiz.Weightage != nil {
+	if quiz.Weightage != nil && cassandraQuiz.Weightage != *quiz.Weightage {
 		updateCols = append(updateCols, "weightage")
 		cassandraQuiz.Weightage = *quiz.Weightage
+	}
+	if len(updateCols) == 0 {
+		return nil, fmt.Errorf("nothing to update")
 	}
 	updateCols = append(updateCols, "updated_at")
 	cassandraQuiz.UpdatedAt = time.Now().Unix()
