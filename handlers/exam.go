@@ -38,11 +38,8 @@ func ExamCreate(ctx context.Context, exam *model.ExamInput) (*model.Exam, error)
 	}
 	words := []string{}
 	if exam.Name != nil {
-		name := *exam.Name
-		for _, word := range name {
-			wordsLower := strings.ToLower(string(word))
-			words = append(words, wordsLower)
-		}
+		name := strings.ToLower(*exam.Name)
+		words = strings.Split(name, " ")
 	}
 	cassandraQuestionBank := qbankz.Exam{
 		ID:           guid.String(),
@@ -125,11 +122,8 @@ func ExamUpdate(ctx context.Context, input *model.ExamInput) (*model.Exam, error
 		cassandraQuestionBank.Name = *input.Name
 		words := []string{}
 		if input.Name != nil {
-			name := *input.Name
-			for _, word := range name {
-				wordsLower := strings.ToLower(string(word))
-				words = append(words, wordsLower)
-			}
+			name := strings.ToLower(*input.Name)
+			words = strings.Split(name, " ")
 		}
 		cassandraQuestionBank.Words = words
 		updatedCols = append(updatedCols, "words")

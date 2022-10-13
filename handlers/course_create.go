@@ -89,11 +89,8 @@ func CourseCreator(ctx context.Context, courseInput *model.CourseInput) (*model.
 	}
 	words := []string{}
 	if courseInput.Name != nil {
-		name := *courseInput.Name
-		for _, word := range name {
-			wordsLower := strings.ToLower(string(word))
-			words = append(words, wordsLower)
-		}
+		name := strings.ToLower(*courseInput.Name)
+		words = strings.Split(name, " ")
 	}
 
 	cassandraCourse := coursez.Course{
@@ -460,10 +457,7 @@ func CourseUpdate(ctx context.Context, courseInput *model.CourseInput) (*model.C
 	words := []string{}
 	if courseInput.Name != nil {
 		name := *courseInput.Name
-		for _, word := range name {
-			wordsLower := strings.ToLower(string(word))
-			words = append(words, wordsLower)
-		}
+		words = strings.Split(name, " ")
 		updateCols = append(updateCols, "name")
 		updateCols = append(updateCols, "words")
 		cassandraCourse.Words = words
