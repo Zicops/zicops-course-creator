@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/rs/xid"
@@ -35,9 +36,18 @@ func ExamCreate(ctx context.Context, exam *model.ExamInput) (*model.Exam, error)
 	if err != nil {
 		return nil, err
 	}
+	words := []string{}
+	if exam.Name != nil {
+		name := *exam.Name
+		for _, word := range name {
+			wordsLower := strings.ToLower(string(word))
+			words = append(words, wordsLower)
+		}
+	}
 	cassandraQuestionBank := qbankz.Exam{
 		ID:           guid.String(),
 		Name:         *exam.Name,
+		Words:        words,
 		Category:     *exam.Category,
 		SubCategory:  *exam.SubCategory,
 		IsActive:     *exam.IsActive,
@@ -113,6 +123,16 @@ func ExamUpdate(ctx context.Context, input *model.ExamInput) (*model.Exam, error
 	updatedCols := []string{}
 	if input.Name != nil {
 		cassandraQuestionBank.Name = *input.Name
+		words := []string{}
+		if input.Name != nil {
+			name := *input.Name
+			for _, word := range name {
+				wordsLower := strings.ToLower(string(word))
+				words = append(words, wordsLower)
+			}
+		}
+		cassandraQuestionBank.Words = words
+		updatedCols = append(updatedCols, "words")
 		updatedCols = append(updatedCols, "name")
 	}
 	if input.Category != nil {

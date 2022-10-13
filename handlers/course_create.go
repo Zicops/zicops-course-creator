@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/scylladb/gocqlx/v2/qb"
@@ -86,9 +87,19 @@ func CourseCreator(ctx context.Context, courseInput *model.CourseInput) (*model.
 	if courseInput.IsActive != nil {
 		active = *courseInput.IsActive
 	}
+	words := []string{}
+	if courseInput.Name != nil {
+		name := *courseInput.Name
+		for _, word := range name {
+			wordsLower := strings.ToLower(string(word))
+			words = append(words, wordsLower)
+		}
+	}
+
 	cassandraCourse := coursez.Course{
 		ID:                 guid.String(),
 		Name:               *courseInput.Name,
+		Words:              words,
 		LspId:              lspId,
 		Publisher:          *courseInput.Publisher,
 		Description:        *courseInput.Description,
@@ -446,8 +457,16 @@ func CourseUpdate(ctx context.Context, courseInput *model.CourseInput) (*model.C
 		subCatsRes = append(subCatsRes, &subCR)
 	}
 	// update cassandraCourse with input
+	words := []string{}
 	if courseInput.Name != nil {
+		name := *courseInput.Name
+		for _, word := range name {
+			wordsLower := strings.ToLower(string(word))
+			words = append(words, wordsLower)
+		}
 		updateCols = append(updateCols, "name")
+		updateCols = append(updateCols, "words")
+		cassandraCourse.Words = words
 		cassandraCourse.Name = *courseInput.Name
 	}
 	if courseInput.Description != nil {
