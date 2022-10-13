@@ -454,10 +454,9 @@ func CourseUpdate(ctx context.Context, courseInput *model.CourseInput) (*model.C
 		subCatsRes = append(subCatsRes, &subCR)
 	}
 	// update cassandraCourse with input
-	words := []string{}
 	if courseInput.Name != nil {
 		name := *courseInput.Name
-		words = strings.Split(name, " ")
+		words := strings.Split(name, " ")
 		updateCols = append(updateCols, "name")
 		updateCols = append(updateCols, "words")
 		cassandraCourse.Words = words
