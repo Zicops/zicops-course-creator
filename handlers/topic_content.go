@@ -18,6 +18,7 @@ import (
 	"github.com/scylladb/gocqlx/v2/qb"
 	log "github.com/sirupsen/logrus"
 	"github.com/zicops/contracts/coursez"
+	"github.com/zicops/contracts/qbankz"
 	"github.com/zicops/zicops-cass-pool/cassandra"
 	"github.com/zicops/zicops-course-creator/constants"
 	"github.com/zicops/zicops-course-creator/graph/model"
@@ -138,11 +139,40 @@ func TopicExamCreate(ctx context.Context, topicID string, courseID string, exam 
 		return nil, err
 	}
 	CassSession := session
+	sessionQbankz, err := cassandra.GetCassSession("qbankz")
+	if err != nil {
+		return nil, err
+	}
+	CassSessionQBank := sessionQbankz
 	claims, err := helpers.GetClaimsFromContext(ctx)
 	if err != nil {
 		return nil, err
 	}
 	lspID := claims["lsp_id"].(string)
+	exams := []qbankz.Exam{}
+	getQuery := CassSessionQBank.Query(qbankz.ExamTable.Get()).BindMap(qb.M{"id": exam.ExamID, "lsp_id": lspID, "is_active": true})
+	if err := getQuery.SelectRelease(&exams); err != nil {
+		return nil, err
+	}
+	if len(exams) == 0 {
+		return nil, fmt.Errorf("exams not found")
+	}
+	cassExam := exams[0]
+	// set duration for course
+	course := []coursez.Course{}
+	getCourseQuery := CassSession.Query(coursez.CourseTable.Get()).BindMap(qb.M{"id": courseID, "lsp_id": lspID, "is_active": true})
+	if err := getCourseQuery.SelectRelease(&course); err != nil {
+		return nil, err
+	}
+	if len(course) == 0 {
+		return nil, fmt.Errorf("course not found")
+	}
+	newDuration := course[0].Duration + cassExam.Duration
+	queryStr := fmt.Sprintf("UPDATE coursez.course SET duration=%d WHERE id='%s' and lsp_id='%s' and is_active=true", newDuration, courseID, lspID)
+	updateQ := CassSession.Query(queryStr, nil)
+	if err := updateQ.ExecRelease(); err != nil {
+		return nil, err
+	}
 	cassandraTopicContent := coursez.TopicExam{
 		ID:        guid.String(),
 		TopicId:   topicID,
@@ -452,6 +482,46 @@ func UpdateTopicExam(ctx context.Context, exam *model.TopicExamInput) (*model.To
 		cassandraTopicContent.TopicId = *exam.TopicID
 	}
 	if exam.ExamID != nil && *exam.ExamID != cassandraTopicContent.ExamId {
+		// get exam
+		sessionQbankz, err := cassandra.GetCassSession("qbankz")
+		if err != nil {
+			return nil, err
+		}
+		CassSessionQBank := sessionQbankz
+		examOld := []qbankz.Exam{}
+		getQuery := CassSessionQBank.Query(qbankz.ExamTable.Get()).BindMap(qb.M{"id": cassandraTopicContent.ExamId, "lsp_id": lspID, "is_active": true})
+		if err := getQuery.SelectRelease(&examOld); err != nil {
+			return nil, err
+		}
+		if len(examOld) < 1 {
+			return nil, fmt.Errorf("exam not found")
+		}
+		cassExam := examOld[0]
+		examsNew := []qbankz.Exam{}
+		getQuery = CassSessionQBank.Query(qbankz.ExamTable.Get()).BindMap(qb.M{"id": *exam.ExamID, "lsp_id": lspID, "is_active": true})
+		if err := getQuery.SelectRelease(&examsNew); err != nil {
+			return nil, err
+		}
+		if len(examsNew) < 1 {
+			return nil, fmt.Errorf("exam not found")
+		}
+		cassExamNew := examsNew[0]
+		// update course duration
+		course := []coursez.Course{}
+		getQuery = CassSession.Query(coursez.CourseTable.Get()).BindMap(qb.M{"id": cassandraTopicContent.CourseId, "lsp_id": lspID, "is_active": true})
+		if err := getQuery.SelectRelease(&course); err != nil {
+			return nil, err
+		}
+		if len(course) < 1 {
+			return nil, fmt.Errorf("course not found")
+		}
+		cassCourse := course[0]
+		newDuration := cassCourse.Duration - cassExam.Duration + cassExamNew.Duration
+		queryStr := fmt.Sprintf("UPDATE coursez.course SET duration=%d WHERE id='%s' and lsp_id='%s' and is_active=true", newDuration, cassandraTopicContent.CourseId, lspID)
+		updateQ := CassSession.Query(queryStr, nil)
+		if err := updateQ.ExecRelease(); err != nil {
+			return nil, err
+		}
 		updateCols = append(updateCols, "examid")
 		cassandraTopicContent.ExamId = *exam.ExamID
 	}
