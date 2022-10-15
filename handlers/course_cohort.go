@@ -106,47 +106,39 @@ func UpdateCourseCohort(ctx context.Context, input *model.CourseCohortInput) (*m
 	}
 	cassandraQuestionBank = banks[0]
 	updatedCols := []string{}
-	if input.CohortID != nil {
+	if input.CohortID != nil && cassandraQuestionBank.CohortID != *input.CohortID {
 		cassandraQuestionBank.CohortID = *input.CohortID
 		updatedCols = append(updatedCols, "cohortid")
 	}
-	if input.CourseID != nil {
+	if input.CourseID != nil && cassandraQuestionBank.CourseID != *input.CourseID {
 		cassandraQuestionBank.CourseID = *input.CourseID
 		updatedCols = append(updatedCols, "courseid")
 	}
-	if input.CreatedBy != nil {
-		cassandraQuestionBank.CreatedBy = *input.CreatedBy
-		updatedCols = append(updatedCols, "created_by")
-	}
-	if email_creator != "" {
+	if email_creator != "" && cassandraQuestionBank.UpdatedBy != email_creator {
 		cassandraQuestionBank.UpdatedBy = email_creator
 		updatedCols = append(updatedCols, "updated_by")
 	}
-	if input.CourseStatus != nil {
+	if input.CourseStatus != nil && cassandraQuestionBank.CourseStatus != *input.CourseStatus {
 		cassandraQuestionBank.CourseStatus = *input.CourseStatus
 		updatedCols = append(updatedCols, "course_status")
 	}
-	if input.CourseType != nil {
+	if input.CourseType != nil && cassandraQuestionBank.CourseType != *input.CourseType {
 		cassandraQuestionBank.CourseType = *input.CourseType
 		updatedCols = append(updatedCols, "course_type")
 	}
-	if input.IsMandatory != nil {
+	if input.IsMandatory != nil && cassandraQuestionBank.IsMandatory != *input.IsMandatory {
 		cassandraQuestionBank.IsMandatory = *input.IsMandatory
 		updatedCols = append(updatedCols, "is_mandatory")
 	}
-	if input.LspID != nil {
-		cassandraQuestionBank.LspId = *input.LspID
-		updatedCols = append(updatedCols, "lsp_id")
-	}
-	if input.AddedBy != nil {
+	if input.AddedBy != nil && cassandraQuestionBank.AddedBy != *input.AddedBy {
 		cassandraQuestionBank.AddedBy = *input.AddedBy
 		updatedCols = append(updatedCols, "added_by")
 	}
-	if input.CohortCode != nil {
+	if input.CohortCode != nil && cassandraQuestionBank.CohortCode != *input.CohortCode {
 		cassandraQuestionBank.CohortCode = *input.CohortCode
 		updatedCols = append(updatedCols, "cohort_code")
 	}
-	if input.ExpectedCompletion != nil {
+	if input.ExpectedCompletion != nil && cassandraQuestionBank.ExpectedCompletionDays != *input.ExpectedCompletion {
 		cassandraQuestionBank.ExpectedCompletionDays = *input.ExpectedCompletion
 		updatedCols = append(updatedCols, "expected_completion_days")
 	}

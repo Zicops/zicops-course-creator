@@ -121,10 +121,6 @@ func QuestionPaperUpdate(ctx context.Context, input *model.QuestionPaperInput) (
 		cassandraQuestionBank.UpdatedBy = email_creator
 		updatedCols = append(updatedCols, "updated_by")
 	}
-	if input.CreatedBy != nil {
-		cassandraQuestionBank.CreatedBy = *input.CreatedBy
-		updatedCols = append(updatedCols, "created_by")
-	}
 	if input.Description != nil {
 		cassandraQuestionBank.Description = *input.Description
 		updatedCols = append(updatedCols, "description")
@@ -255,44 +251,40 @@ func QuestionPaperSectionUpdate(ctx context.Context, input *model.QuestionPaperS
 	}
 	cassandraQuestionBank = banks[0]
 	updatedCols := []string{}
-	if input.Name != nil {
+	if input.Name != nil && cassandraQuestionBank.Name != *input.Name {
 		cassandraQuestionBank.Name = *input.Name
 		updatedCols = append(updatedCols, "name")
 	}
-	if email_creator != "" {
+	if email_creator != "" && cassandraQuestionBank.UpdatedBy != email_creator {
 		cassandraQuestionBank.UpdatedBy = email_creator
 		updatedCols = append(updatedCols, "updated_by")
 	}
-	if input.CreatedBy != nil {
-		cassandraQuestionBank.CreatedBy = *input.CreatedBy
-		updatedCols = append(updatedCols, "created_by")
-	}
-	if input.Description != nil {
+	if input.Description != nil && cassandraQuestionBank.Description != *input.Description {
 		cassandraQuestionBank.Description = *input.Description
 		updatedCols = append(updatedCols, "description")
 	}
-	if input.DifficultyLevel != nil {
+	if input.DifficultyLevel != nil && cassandraQuestionBank.DifficultyLevel != *input.DifficultyLevel {
 		cassandraQuestionBank.DifficultyLevel = *input.DifficultyLevel
 		updatedCols = append(updatedCols, "difficulty_level")
 	}
-	if input.Type != nil {
+	if input.Type != nil && cassandraQuestionBank.Type != *input.Type {
 		cassandraQuestionBank.Type = *input.Type
 		updatedCols = append(updatedCols, "type")
 	}
-	if input.TotalQuestions != nil {
+	if input.TotalQuestions != nil && cassandraQuestionBank.TotalQuestions != *input.TotalQuestions {
 		cassandraQuestionBank.TotalQuestions = *input.TotalQuestions
 		updatedCols = append(updatedCols, "total_questions")
 	}
-	if input.QpID != nil {
+	if input.QpID != nil && cassandraQuestionBank.QPID != *input.QpID {
 		cassandraQuestionBank.QPID = *input.QpID
 		updatedCols = append(updatedCols, "qp_id")
 	}
 	updatedAt := time.Now().Unix()
-	cassandraQuestionBank.UpdatedAt = updatedAt
-	updatedCols = append(updatedCols, "updated_at")
 	if len(updatedCols) == 0 {
 		return nil, fmt.Errorf("nothing to update")
 	}
+	cassandraQuestionBank.UpdatedAt = updatedAt
+	updatedCols = append(updatedCols, "updated_at")
 	upStms, uNames := qbankz.SectionMainTable.Update(updatedCols...)
 	updateQuery := CassSession.Query(upStms, uNames).BindStruct(&cassandraQuestionBank)
 	if err := updateQuery.ExecRelease(); err != nil {

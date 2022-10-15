@@ -138,33 +138,27 @@ func UpdateQuestionOptions(ctx context.Context, input *model.QuestionOptionInput
 	}
 	cassandraQuestionBank = banks[0]
 	updatedCols := []string{}
-	if input.Description != nil {
+	if input.Description != nil && *input.Description != cassandraQuestionBank.Description {
 		cassandraQuestionBank.Description = *input.Description
 		updatedCols = append(updatedCols, "description")
 	}
-	if input.IsCorrect != nil {
+	if input.IsCorrect != nil && *input.IsCorrect != cassandraQuestionBank.IsCorrect {
 		cassandraQuestionBank.IsCorrect = *input.IsCorrect
 		updatedCols = append(updatedCols, "is_correct")
 	}
-	if input.AttachmentType != nil {
+	if input.AttachmentType != nil && *input.AttachmentType != cassandraQuestionBank.AttachmentType {
 		cassandraQuestionBank.AttachmentType = *input.AttachmentType
 		updatedCols = append(updatedCols, "attachment_type")
 	}
-	if email_creator != "" {
+	if email_creator != "" && email_creator != cassandraQuestionBank.UpdatedBy {
 		cassandraQuestionBank.UpdatedBy = email_creator
 		updatedCols = append(updatedCols, "updated_by")
 	}
-	if input.QmID != nil {
+	if input.QmID != nil && *input.QmID != cassandraQuestionBank.QmId {
 		cassandraQuestionBank.QmId = *input.QmID
 		updatedCols = append(updatedCols, "qm_id")
 	}
-	if input.CreatedBy != nil {
-		cassandraQuestionBank.CreatedBy = *input.CreatedBy
-		updatedCols = append(updatedCols, "created_by")
-	}
 	updatedAt := time.Now().Unix()
-	cassandraQuestionBank.UpdatedAt = updatedAt
-	updatedCols = append(updatedCols, "updated_at")
 	if input.File != nil {
 		bucketPath := "question_banks/" + cassandraQuestionBank.QmId + "/" + cassandraQuestionBank.ID + "/" + input.File.Filename
 		storageC := bucket.NewStorageHandler()
@@ -198,6 +192,8 @@ func UpdateQuestionOptions(ctx context.Context, input *model.QuestionOptionInput
 	if len(updatedCols) == 0 {
 		return nil, fmt.Errorf("nothing to update")
 	}
+	cassandraQuestionBank.UpdatedAt = updatedAt
+	updatedCols = append(updatedCols, "updated_at")
 	upStms, uNames := qbankz.OptionsMainTable.Update(updatedCols...)
 	updateQuery := CassSession.Query(upStms, uNames).BindStruct(&cassandraQuestionBank)
 	if err := updateQuery.ExecRelease(); err != nil {

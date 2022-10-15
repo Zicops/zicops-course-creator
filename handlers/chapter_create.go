@@ -91,19 +91,19 @@ func UpdateChapter(ctx context.Context, chapter *model.ChapterInput) (*model.Cha
 	}
 	cassandraChapter = chapters[0]
 	updateCols := make([]string, 0)
-	if *chapter.Name != "" {
+	if *chapter.Name != "" && *chapter.Name != cassandraChapter.Name {
 		updateCols = append(updateCols, "name")
 		cassandraChapter.Name = *chapter.Name
 	}
-	if *chapter.Description != "" {
+	if *chapter.Description != "" && *chapter.Description != cassandraChapter.Description {
 		updateCols = append(updateCols, "description")
 		cassandraChapter.Description = *chapter.Description
 	}
-	if chapter.Sequence != nil {
+	if chapter.Sequence != nil && *chapter.Sequence != cassandraChapter.Sequence {
 		updateCols = append(updateCols, "sequence")
 		cassandraChapter.Sequence = *chapter.Sequence
 	}
-	if chapter.ModuleID != nil {
+	if chapter.ModuleID != nil && *chapter.ModuleID != cassandraChapter.ModuleID {
 		updateCols = append(updateCols, "moduleid")
 		cassandraChapter.ModuleID = *chapter.ModuleID
 	}

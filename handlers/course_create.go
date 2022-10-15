@@ -5,7 +5,9 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"reflect"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/scylladb/gocqlx/v2/qb"
@@ -86,9 +88,17 @@ func CourseCreator(ctx context.Context, courseInput *model.CourseInput) (*model.
 	if courseInput.IsActive != nil {
 		active = *courseInput.IsActive
 	}
+	words := []string{}
+	if courseInput.Name != nil {
+		name := strings.ToLower(*courseInput.Name)
+		wordsLocal := strings.Split(name, " ")
+		words = append(words, wordsLocal...)
+	}
+
 	cassandraCourse := coursez.Course{
 		ID:                 guid.String(),
 		Name:               *courseInput.Name,
+		Words:              words,
 		LspId:              lspId,
 		Publisher:          *courseInput.Publisher,
 		Description:        *courseInput.Description,
@@ -136,16 +146,8 @@ func CourseCreator(ctx context.Context, courseInput *model.CourseInput) (*model.
 	if courseInput.QaRequired != nil {
 		cassandraCourse.QARequired = *courseInput.QaRequired
 	}
-	if courseInput.CreatedBy != nil {
-		cassandraCourse.CreatedBy = *courseInput.CreatedBy
-	} else {
-		cassandraCourse.CreatedBy = email_creator
-	}
-	if courseInput.UpdatedBy != nil {
-		cassandraCourse.UpdatedBy = *courseInput.UpdatedBy
-	} else {
-		cassandraCourse.UpdatedBy = email_creator
-	}
+	cassandraCourse.CreatedBy = email_creator
+	cassandraCourse.UpdatedBy = email_creator
 	if courseInput.Category != nil {
 		cassandraCourse.Category = *courseInput.Category
 	}
@@ -446,106 +448,111 @@ func CourseUpdate(ctx context.Context, courseInput *model.CourseInput) (*model.C
 		subCatsRes = append(subCatsRes, &subCR)
 	}
 	// update cassandraCourse with input
-	if courseInput.Name != nil {
+	if courseInput.Name != nil && *courseInput.Name != cassandraCourse.Name {
+		name := *courseInput.Name
+		wordsLocal := strings.Split(name, " ")
+		words := make([]string, 0)
+		words = append(words, wordsLocal...)
 		updateCols = append(updateCols, "name")
+		updateCols = append(updateCols, "words")
+		cassandraCourse.Words = words
 		cassandraCourse.Name = *courseInput.Name
 	}
-	if courseInput.Description != nil {
+	if courseInput.Description != nil && *courseInput.Description != cassandraCourse.Description {
 		updateCols = append(updateCols, "description")
 		cassandraCourse.Description = *courseInput.Description
 	}
-	if courseInput.Summary != nil {
+	if courseInput.Summary != nil && *courseInput.Summary != cassandraCourse.Summary {
 		updateCols = append(updateCols, "summary")
 		cassandraCourse.Summary = *courseInput.Summary
 	}
-	if courseInput.Instructor != nil {
+	if courseInput.Instructor != nil && *courseInput.Instructor != cassandraCourse.Instructor {
 		updateCols = append(updateCols, "instructor")
 		cassandraCourse.Instructor = *courseInput.Instructor
 	}
-	if courseInput.Status != nil {
+	if courseInput.Status != nil && string(*courseInput.Status) != cassandraCourse.Status {
 		updateCols = append(updateCols, "status")
 		cassandraCourse.Status = (*courseInput.Status).String()
 	}
-	if courseInput.Language != nil {
+	if courseInput.Language != nil && !reflect.DeepEqual(language, cassandraCourse.Language) {
 		updateCols = append(updateCols, "language")
 		cassandraCourse.Language = language
 	}
-	if courseInput.Benefits != nil {
+	if courseInput.Benefits != nil && !reflect.DeepEqual(takeaways, cassandraCourse.Benefits) {
 		updateCols = append(updateCols, "benefits")
 		cassandraCourse.Benefits = takeaways
 	}
-	if courseInput.Outcomes != nil {
+	if courseInput.Outcomes != nil && !reflect.DeepEqual(outcomes, cassandraCourse.Outcomes) {
 		updateCols = append(updateCols, "outcomes")
 		cassandraCourse.Outcomes = outcomes
 	}
-	if courseInput.Prequisites != nil {
+	if courseInput.Prequisites != nil && !reflect.DeepEqual(prequisites, cassandraCourse.Prequisites) {
 		updateCols = append(updateCols, "prequisites")
 		cassandraCourse.Prequisites = prequisites
 	}
-	if courseInput.GoodFor != nil {
+	if courseInput.GoodFor != nil && !reflect.DeepEqual(goodFor, cassandraCourse.GoodFor) {
 		updateCols = append(updateCols, "goodfor")
 		cassandraCourse.GoodFor = goodFor
 	}
-	if courseInput.MustFor != nil {
+	if courseInput.MustFor != nil && !reflect.DeepEqual(mustFor, cassandraCourse.MustFor) {
 		updateCols = append(updateCols, "mustfor")
 		cassandraCourse.MustFor = mustFor
 	}
-	if courseInput.RelatedSkills != nil {
+	if courseInput.RelatedSkills != nil && !reflect.DeepEqual(relatedSkills, cassandraCourse.RelatedSkills) {
 		updateCols = append(updateCols, "related_skills")
 		cassandraCourse.RelatedSkills = relatedSkills
 	}
-	if courseInput.Approvers != nil {
+	if courseInput.Approvers != nil && !reflect.DeepEqual(approvers, cassandraCourse.Approvers) {
 		updateCols = append(updateCols, "approvers")
 		cassandraCourse.Approvers = approvers
 	}
-	if courseInput.Category != nil {
+	if courseInput.Category != nil && *courseInput.Category != cassandraCourse.Category {
 		updateCols = append(updateCols, "category")
 		cassandraCourse.Category = *courseInput.Category
 	}
-	if courseInput.SubCategory != nil {
+	if courseInput.SubCategory != nil && *courseInput.SubCategory != cassandraCourse.SubCategory {
 		updateCols = append(updateCols, "sub_category")
 		cassandraCourse.SubCategory = *courseInput.SubCategory
 	}
-	if courseInput.SubCategories != nil {
+	if courseInput.SubCategories != nil && !reflect.DeepEqual(subCats, cassandraCourse.SubCategories) {
 		updateCols = append(updateCols, "sub_categories")
 		cassandraCourse.SubCategories = subCats
 	}
-	if courseInput.Owner != nil {
+	if courseInput.Owner != nil && *courseInput.Owner != cassandraCourse.Owner {
 		updateCols = append(updateCols, "owner")
 		cassandraCourse.Owner = *courseInput.Owner
 	}
-	if courseInput.ExpertiseLevel != nil {
+	if courseInput.ExpertiseLevel != nil && *courseInput.ExpertiseLevel != cassandraCourse.ExpertiseLevel {
 		updateCols = append(updateCols, "expertise_level")
 		cassandraCourse.ExpertiseLevel = *courseInput.ExpertiseLevel
 	}
 	cassandraCourse.UpdatedAt = time.Now().Unix()
-	if courseInput.CreatedBy != nil {
-		updateCols = append(updateCols, "created_by")
-		cassandraCourse.CreatedBy = *courseInput.CreatedBy
-	}
-	if email_creator != "" {
+	if email_creator != "" && email_creator != cassandraCourse.UpdatedBy {
 		updateCols = append(updateCols, "updated_by")
 		cassandraCourse.UpdatedBy = email_creator
 	}
-	if courseInput.Type != nil {
+	if courseInput.Type != nil && *courseInput.Type != cassandraCourse.Type {
 		updateCols = append(updateCols, "type")
 		cassandraCourse.Type = *courseInput.Type
 	}
-	if courseInput.IsDisplay != nil {
+	if courseInput.IsDisplay != nil && *courseInput.IsDisplay != cassandraCourse.IsDisplay {
 		updateCols = append(updateCols, "is_display")
 		cassandraCourse.IsDisplay = *courseInput.IsDisplay
 	}
-	if courseInput.ExpectedCompletion != nil {
+	if courseInput.ExpectedCompletion != nil && *courseInput.ExpectedCompletion != cassandraCourse.ExpectedCompletion {
 		updateCols = append(updateCols, "expected_completion_time")
 		cassandraCourse.ExpectedCompletion = *courseInput.ExpectedCompletion
 	}
-	if courseInput.QaRequired != nil {
+	if courseInput.QaRequired != nil && *courseInput.QaRequired != cassandraCourse.QARequired {
 		updateCols = append(updateCols, "quality_control_check_reqd")
 		cassandraCourse.QARequired = *courseInput.QaRequired
 	}
-	if courseInput.Publisher != nil {
+	if courseInput.Publisher != nil && *courseInput.Publisher != cassandraCourse.Publisher {
 		updateCols = append(updateCols, "publisher")
 		cassandraCourse.Publisher = *courseInput.Publisher
+	}
+	if len(updateCols) == 0 {
+		return nil, fmt.Errorf("nothing to update")
 	}
 	updateCols = append(updateCols, "updated_at")
 	// set course in cassandra

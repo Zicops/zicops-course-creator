@@ -99,48 +99,44 @@ func QuestionSectionMapUpdate(ctx context.Context, input *model.MapSectionToBank
 	}
 	cassandraQuestionBank = banks[0]
 	updatedCols := []string{}
-	if email_creator != "" {
+	if email_creator != "" && cassandraQuestionBank.CreatedBy != email_creator {
 		cassandraQuestionBank.UpdatedBy = email_creator
 		updatedCols = append(updatedCols, "updated_by")
 	}
-	if input.CreatedBy != nil {
-		cassandraQuestionBank.CreatedBy = *input.CreatedBy
-		updatedCols = append(updatedCols, "created_by")
-	}
-	if input.DifficultyLevel != nil {
+	if input.DifficultyLevel != nil && cassandraQuestionBank.DifficultyLevel != *input.DifficultyLevel {
 		cassandraQuestionBank.DifficultyLevel = *input.DifficultyLevel
 		updatedCols = append(updatedCols, "difficulty_level")
 	}
-	if input.TotalQuestions != nil {
+	if input.TotalQuestions != nil && cassandraQuestionBank.TotalQuestions != *input.TotalQuestions {
 		cassandraQuestionBank.TotalQuestions = *input.TotalQuestions
 		updatedCols = append(updatedCols, "total_questions")
 	}
-	if input.QuestionType != nil {
+	if input.QuestionType != nil && cassandraQuestionBank.QuestionType != *input.QuestionType {
 		cassandraQuestionBank.QuestionType = *input.QuestionType
 		updatedCols = append(updatedCols, "question_type")
 	}
-	if input.QuestionMarks != nil {
+	if input.QuestionMarks != nil && cassandraQuestionBank.QuestionMarks != *input.QuestionMarks {
 		cassandraQuestionBank.QuestionMarks = *input.QuestionMarks
 		updatedCols = append(updatedCols, "question_marks")
 	}
-	if input.RetrieveType != nil {
+	if input.RetrieveType != nil && cassandraQuestionBank.RetrievalType != *input.RetrieveType {
 		cassandraQuestionBank.RetrievalType = *input.RetrieveType
 		updatedCols = append(updatedCols, "retrieval_type")
 	}
-	if input.QbID != nil {
+	if input.QbID != nil && cassandraQuestionBank.QBId != *input.QbID {
 		cassandraQuestionBank.QBId = *input.QbID
 		updatedCols = append(updatedCols, "qb_id")
 	}
-	if input.SectionID != nil {
+	if input.SectionID != nil && cassandraQuestionBank.SectionID != *input.SectionID {
 		cassandraQuestionBank.SectionID = *input.SectionID
 		updatedCols = append(updatedCols, "section_id")
 	}
 	updatedAt := time.Now().Unix()
-	cassandraQuestionBank.UpdatedAt = updatedAt
-	updatedCols = append(updatedCols, "updated_at")
 	if len(updatedCols) == 0 {
 		return nil, fmt.Errorf("nothing to update")
 	}
+	cassandraQuestionBank.UpdatedAt = updatedAt
+	updatedCols = append(updatedCols, "updated_at")
 	upStms, uNames := qbankz.SectionQBMappingTable.Update(updatedCols...)
 	updateQuery := CassSession.Query(upStms, uNames).BindStruct(&cassandraQuestionBank)
 	if err := updateQuery.ExecRelease(); err != nil {
@@ -240,29 +236,24 @@ func QuestionFixedUpdate(ctx context.Context, input *model.SectionFixedQuestions
 	}
 	cassandraQuestionBank = banks[0]
 	updatedCols := []string{}
-	if email_creator != "" {
+	if email_creator != "" && cassandraQuestionBank.UpdatedBy != email_creator {
 		cassandraQuestionBank.UpdatedBy = email_creator
 		updatedCols = append(updatedCols, "updated_by")
 	}
-	if input.CreatedBy != nil {
-		cassandraQuestionBank.CreatedBy = *input.CreatedBy
-		updatedCols = append(updatedCols, "created_by")
-	}
-	if input.SqbID != nil {
+	if input.SqbID != nil && cassandraQuestionBank.SQBId != *input.SqbID {
 		cassandraQuestionBank.SQBId = *input.SqbID
 		updatedCols = append(updatedCols, "sqb_id")
 	}
-	if input.QuestionID != nil {
+	if input.QuestionID != nil && cassandraQuestionBank.QuestionID != *input.QuestionID {
 		cassandraQuestionBank.QuestionID = *input.QuestionID
 		updatedCols = append(updatedCols, "question_id")
 	}
-
-	updatedAt := time.Now().Unix()
-	cassandraQuestionBank.UpdatedAt = updatedAt
-	updatedCols = append(updatedCols, "updated_at")
 	if len(updatedCols) == 0 {
 		return nil, fmt.Errorf("nothing to update")
 	}
+	updatedAt := time.Now().Unix()
+	cassandraQuestionBank.UpdatedAt = updatedAt
+	updatedCols = append(updatedCols, "updated_at")
 	upStms, uNames := qbankz.SectionFixedQuestionsTable.Update(updatedCols...)
 	updateQuery := CassSession.Query(upStms, uNames).BindStruct(&cassandraQuestionBank)
 	if err := updateQuery.ExecRelease(); err != nil {

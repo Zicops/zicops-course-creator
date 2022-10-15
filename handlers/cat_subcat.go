@@ -110,6 +110,12 @@ func AddCatMain(ctx context.Context, input []*model.CatMainInput) ([]*model.CatM
 	catMain := make([]*model.CatMain, len(input))
 	for i, cc := range input {
 		c := cc
+		words := []string{}
+		if c.Name != nil {
+			name := strings.ToLower(*c.Name)
+			wordsLocal := strings.Split(name, " ")
+			words = append(words, wordsLocal...)
+		}
 		guid := base64.URLEncoding.EncodeToString([]byte(strings.ToLower(*c.Name)))
 		imageUrl := ""
 		imageBucket := ""
@@ -165,6 +171,7 @@ func AddCatMain(ctx context.Context, input []*model.CatMainInput) ([]*model.CatM
 		cassandraCategory := coursez.CatMain{
 			ID:          guid,
 			Name:        *c.Name,
+			Words:       words,
 			Description: *c.Description,
 			Code:        *c.Code,
 			CreatedAt:   time.Now().Unix(),
@@ -215,6 +222,12 @@ func AddSubCatMain(ctx context.Context, input []*model.SubCatMainInput) ([]*mode
 	subCatMain := make([]*model.SubCatMain, len(input))
 	for i, cc := range input {
 		c := cc
+		words := []string{}
+		if c.Name != nil {
+			name := strings.ToLower(*c.Name)
+			wordsLocal := strings.Split(name, " ")
+			words = append(words, wordsLocal...)
+		}
 		guid := base64.URLEncoding.EncodeToString([]byte(strings.ToLower(*c.Name)))
 		imageUrl := ""
 		imageBucket := ""
@@ -270,6 +283,7 @@ func AddSubCatMain(ctx context.Context, input []*model.SubCatMainInput) ([]*mode
 		cassandraCategory := coursez.SubCatMain{
 			ID:          guid,
 			Name:        *c.Name,
+			Words:       words,
 			Description: *c.Description,
 			Code:        *c.Code,
 			CreatedAt:   time.Now().Unix(),

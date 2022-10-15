@@ -13,5 +13,10 @@ const (
 )
 
 var (
-	StaticTypeMap = map[string]string{"scorm": "story_html5.html"}
+	StaticTypeMap = map[string]string{
+		"scorm":  "story.html",
+		"cmi5":   "story.html",
+		"tincan": "story.html",
+		"html5":  "story.html",
+	}
 )

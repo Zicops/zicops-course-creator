@@ -93,32 +93,28 @@ func ExamInstructionsUpdate(ctx context.Context, input *model.ExamInstructionInp
 	}
 	cassandraQuestionBank = banks[0]
 	updatedCols := []string{}
-	if input.Instructions != nil {
+	if input.Instructions != nil && cassandraQuestionBank.Instructions != *input.Instructions {
 		cassandraQuestionBank.Instructions = *input.Instructions
 		updatedCols = append(updatedCols, "instructions")
 	}
-	if input.ExamID != nil {
+	if input.ExamID != nil && cassandraQuestionBank.ExamID != *input.ExamID {
 		cassandraQuestionBank.ExamID = *input.ExamID
 		updatedCols = append(updatedCols, "exam_id")
 	}
 
-	if email_creator != "" {
+	if email_creator != "" && cassandraQuestionBank.UpdatedBy != email_creator {
 		cassandraQuestionBank.UpdatedBy = email_creator
 		updatedCols = append(updatedCols, "updated_by")
 	}
-	if input.CreatedBy != nil {
-		cassandraQuestionBank.CreatedBy = *input.CreatedBy
-		updatedCols = append(updatedCols, "created_by")
-	}
-	if input.PassingCriteria != nil {
+	if input.PassingCriteria != nil && cassandraQuestionBank.PassingCriteria != *input.PassingCriteria {
 		cassandraQuestionBank.PassingCriteria = *input.PassingCriteria
 		updatedCols = append(updatedCols, "passing_criteria")
 	}
-	if input.NoAttempts != nil {
+	if input.NoAttempts != nil && cassandraQuestionBank.NoAttempts != *input.NoAttempts {
 		cassandraQuestionBank.NoAttempts = *input.NoAttempts
 		updatedCols = append(updatedCols, "no_attempts")
 	}
-	if input.AccessType != nil {
+	if input.AccessType != nil && cassandraQuestionBank.AccessType != *input.AccessType {
 		cassandraQuestionBank.AccessType = *input.AccessType
 		updatedCols = append(updatedCols, "access_type")
 	}

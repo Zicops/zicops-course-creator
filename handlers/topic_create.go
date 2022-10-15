@@ -108,29 +108,28 @@ func TopicUpdate(ctx context.Context, topic *model.TopicInput) (*model.Topic, er
 	}
 	cassandraTopic = topics[0]
 	updateCols := []string{}
-	if topic.Description != nil {
+	if topic.Description != nil && cassandraTopic.Description != *topic.Description {
 		updateCols = append(updateCols, "description")
 		cassandraTopic.Description = *topic.Description
 	}
-	if topic.Sequence != nil {
+	if topic.Sequence != nil && cassandraTopic.Sequence != *topic.Sequence {
 		updateCols = append(updateCols, "sequence")
 		cassandraTopic.Sequence = *topic.Sequence
 	}
-	if topic.CreatedBy != nil {
-		updateCols = append(updateCols, "created_by")
-		cassandraTopic.CreatedBy = *topic.CreatedBy
-	}
-	if topic.Name != nil {
+	if topic.Name != nil && cassandraTopic.Name != *topic.Name {
 		updateCols = append(updateCols, "name")
 		cassandraTopic.Name = *topic.Name
 	}
-	if topic.Type != nil {
+	if topic.Type != nil && cassandraTopic.Type != *topic.Type {
 		updateCols = append(updateCols, "type")
 		cassandraTopic.Type = *topic.Type
 	}
-	if email_creator != "" {
+	if email_creator != "" && cassandraTopic.UpdatedBy != email_creator {
 		updateCols = append(updateCols, "updated_by")
 		cassandraTopic.UpdatedBy = email_creator
+	}
+	if len(updateCols) == 0 {
+		return nil, fmt.Errorf("nothing to update")
 	}
 	updateCols = append(updateCols, "updated_at")
 	cassandraTopic.UpdatedAt = time.Now().Unix()
