@@ -620,7 +620,8 @@ func CourseUpdate(ctx context.Context, courseInput *model.CourseInput) (*model.C
 
 func GetCourse(ctx context.Context, courseID string, lspID string, session *gocqlx.Session) *coursez.Course {
 	courses := []coursez.Course{}
-	getQuery := session.Query(coursez.CourseTable.Get()).BindMap(qb.M{"id": courseID, "lsp_id": lspID, "is_active": true})
+	getQueryStr := fmt.Sprintf("SELECT * FROM coursez.course WHERE id='%s' and lsp_id='%s' and is_active=true", courseID, lspID)
+	getQuery := session.Query(getQueryStr, nil)
 	if err := getQuery.SelectRelease(&courses); err != nil {
 		return nil
 	}
