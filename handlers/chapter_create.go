@@ -107,6 +107,9 @@ func UpdateChapter(ctx context.Context, chapter *model.ChapterInput) (*model.Cha
 		updateCols = append(updateCols, "moduleid")
 		cassandraChapter.ModuleID = *chapter.ModuleID
 	}
+	if len(updateCols) == 0 {
+		return nil, fmt.Errorf("nothing to update")
+	}
 	cassandraChapter.UpdatedAt = time.Now().Unix()
 	updateCols = append(updateCols, "updated_at")
 	upStms, uNames := coursez.ChapterTable.Update(updateCols...)
