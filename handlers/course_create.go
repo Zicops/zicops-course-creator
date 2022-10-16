@@ -247,7 +247,8 @@ func UploadCourseImage(ctx context.Context, file model.CourseFile) (*model.Uploa
 	}
 	getUrl := storageC.GetSignedURLForObject(bucketPath)
 	// update course image in cassandra
-	updateQuery := fmt.Sprintf("UPDATE coursez.course SET imagebucket='%s', image='%s' WHERE id='%s' AND lsp_id='%s' AND is_active=true", bucketPath, getUrl, *file.CourseID, lspID)
+	createdAt := time.Now().Unix()
+	updateQuery := fmt.Sprintf("UPDATE coursez.course SET imagebucket='%s', image='%s' WHERE id='%s' AND lsp_id='%s' AND is_active=true AND created_at < %d", bucketPath, getUrl, *file.CourseID, lspID, createdAt)
 	updateQ := CassSession.Query(updateQuery, nil)
 	if err := updateQ.ExecRelease(); err != nil {
 		return nil, err
@@ -305,7 +306,8 @@ func UploadCoursePreviewVideo(ctx context.Context, file model.CourseFile) (*mode
 	}
 	getUrl := storageC.GetSignedURLForObject(bucketPath)
 	// update course image in cassandra
-	updateQuery := fmt.Sprintf("UPDATE coursez.course SET previewvideobucket='%s', previewvideo='%s' WHERE id='%s' AND lsp_id='%s' AND is_active=true", bucketPath, getUrl, *file.CourseID, lspID)
+	createdAt := time.Now().Unix()
+	updateQuery := fmt.Sprintf("UPDATE coursez.course SET previewvideobucket='%s', previewvideo='%s' WHERE id='%s' AND lsp_id='%s' AND is_active=true AND created_at < %d", bucketPath, getUrl, *file.CourseID, lspID, createdAt)
 	updateQ := CassSession.Query(updateQuery, nil)
 	if err := updateQ.ExecRelease(); err != nil {
 		return nil, err
@@ -359,7 +361,8 @@ func UploadCourseTileImage(ctx context.Context, file model.CourseFile) (*model.U
 		return &isSuccess, err
 	}
 	getUrl := storageC.GetSignedURLForObject(bucketPath)
-	updateQuery := fmt.Sprintf("UPDATE coursez.course SET tileimagebucket='%s', tileimage='%s' WHERE id='%s' AND lsp_id='%s' AND is_active=true", bucketPath, getUrl, *file.CourseID, lspID)
+	createdAt := time.Now().Unix()
+	updateQuery := fmt.Sprintf("UPDATE coursez.course SET tileimagebucket='%s', tileimage='%s' WHERE id='%s' AND lsp_id='%s' AND is_active=true AND created_at < %d", bucketPath, getUrl, *file.CourseID, lspID, createdAt)
 	updateQ := CassSession.Query(updateQuery, nil)
 	if err := updateQ.ExecRelease(); err != nil {
 		return nil, err
