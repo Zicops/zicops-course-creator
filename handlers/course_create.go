@@ -247,12 +247,13 @@ func UploadCourseImage(ctx context.Context, file model.CourseFile) (*model.Uploa
 		return &isSuccess, err
 	}
 	course := GetCourse(ctx, *file.CourseID, lspID, CassSession)
-	if course == nil {
+	if course == nil || course.ID == "" {
 		return &isSuccess, fmt.Errorf("course not found")
 	}
 	getUrl := storageC.GetSignedURLForObject(bucketPath)
 	// update course image in cassandra
 	updateQuery := fmt.Sprintf("UPDATE coursez.course SET imagebucket='%s', image='%s' WHERE id='%s' AND lsp_id='%s' AND is_active=true AND created_at=%d ", bucketPath, getUrl, *file.CourseID, lspID, course.CreatedAt)
+	log.Infof("update query: %s", updateQuery)
 	updateQ := CassSession.Query(updateQuery, nil)
 	if err := updateQ.ExecRelease(); err != nil {
 		return nil, err
@@ -625,5 +626,6 @@ func GetCourse(ctx context.Context, courseID string, lspID string, session *gocq
 	if err := getQuery.SelectRelease(&courses); err != nil {
 		return nil
 	}
+	log.Infof("courses: %v", courses)
 	return &courses[0]
 }
