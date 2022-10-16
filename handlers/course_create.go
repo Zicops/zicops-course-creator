@@ -11,7 +11,6 @@ import (
 	"time"
 
 	"github.com/scylladb/gocqlx/v2"
-	"github.com/scylladb/gocqlx/v2/qb"
 	log "github.com/sirupsen/logrus"
 
 	"github.com/rs/xid"
@@ -407,16 +406,8 @@ func CourseUpdate(ctx context.Context, courseInput *model.CourseInput) (*model.C
 	cassandraCourse := coursez.Course{
 		ID: courseID,
 	}
-	courses := []coursez.Course{}
-	getQuery := CassSession.Query(coursez.CourseTable.Get()).BindMap(qb.M{"id": courseID, "lsp_id": lspId, "is_active": true})
-	if err := getQuery.SelectRelease(&courses); err != nil {
-		return nil, err
-	}
-	if len(courses) < 1 {
-		return nil, fmt.Errorf("course not found")
-	}
+	cassandraCourse = *GetCourse(ctx, courseID, lspId, CassSession)
 	updateCols := make([]string, 0)
-	cassandraCourse = courses[0]
 	language := []string{}
 	takeaways := []string{}
 	outcomes := []string{}
@@ -626,6 +617,5 @@ func GetCourse(ctx context.Context, courseID string, lspID string, session *gocq
 	if err := getQuery.SelectRelease(&courses); err != nil {
 		return nil
 	}
-	log.Infof("courses: %v", courses)
 	return &courses[0]
 }
