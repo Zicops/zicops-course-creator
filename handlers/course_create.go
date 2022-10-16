@@ -253,7 +253,7 @@ func UploadCourseImage(ctx context.Context, file model.CourseFile) (*model.Uploa
 	getUrl := storageC.GetSignedURLForObject(bucketPath)
 	// update course image in cassandra
 	updateQuery := fmt.Sprintf("UPDATE coursez.course SET imagebucket='%s', image='%s' WHERE id='%s' AND lsp_id='%s' AND is_active=true AND created_at=%d ", bucketPath, getUrl, *file.CourseID, lspID, course.CreatedAt)
-	log.Infof("update query: %s", updateQuery)
+	log.Errorf("update query: %s", updateQuery)
 	updateQ := CassSession.Query(updateQuery, nil)
 	if err := updateQ.ExecRelease(); err != nil {
 		return nil, err
