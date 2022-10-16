@@ -28,14 +28,14 @@ jobs:
       run: 'gcloud info'
     - name: Build the Docker image
       run: |-
-        docker build -t gcr.io/$PROJECT_ID/$SERVICE_NAME:staging --build-arg GO_MODULES_TOKEN=${{secrets.GO_MODULES_TOKEN}} .
+        docker build -t gcr.io/$PROJECT_ID/$SERVICE_NAME:${GITHUB_SHA} --build-arg GO_MODULES_TOKEN=${{secrets.GO_MODULES_TOKEN}} .
     - name: add latest tag
       run: |-
-        docker tag gcr.io/$PROJECT_ID/$SERVICE_NAME:staging gcr.io/$PROJECT_ID/$SERVICE_NAME:latest    
+        docker tag gcr.io/$PROJECT_ID/$SERVICE_NAME:${GITHUB_SHA} gcr.io/$PROJECT_ID/$SERVICE_NAME:latest    
     - run: |
         gcloud auth configure-docker -q
     - name: Push image to GCP
-      run: docker push gcr.io/$PROJECT_ID/$SERVICE_NAME:staging
+      run: docker push gcr.io/$PROJECT_ID/$SERVICE_NAME:${GITHUB_SHA}
     - name: Push image to GCP
       run: docker push gcr.io/$PROJECT_ID/$SERVICE_NAME:latest
     - name: replace environment variable in values.yaml
