@@ -97,7 +97,7 @@ spec:
           - name: GOOGLE_APPLICATION_CREDENTIALS
             value: {{ $zcbcred }}
           - name: CASSANDRA_HOST
-            value: "dbdev-cassandra.default.svc.cluster.local:9042"
+            value: "dbdev-cassandra.default.svc.cluster.local"
           - name: CASSANDRA_PORT
             value: "9042"
           - name: CASSANDRA_USERNAME
