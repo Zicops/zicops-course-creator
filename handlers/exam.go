@@ -31,7 +31,7 @@ func ExamCreate(ctx context.Context, exam *model.ExamInput) (*model.Exam, error)
 	email_creator := claims["email"].(string)
 	guid := xid.New()
 	qpId := *exam.QpID
-	questionsIDs, err := GetQuestionIDsFromPaperId(CassSession, ctx, lspID, qpId)
+	questionsIDs, total_count, err := GetQuestionIDsFromPaperId(CassSession, ctx, lspID, qpId)
 	if err != nil {
 		return nil, err
 	}
@@ -61,6 +61,7 @@ func ExamCreate(ctx context.Context, exam *model.ExamInput) (*model.Exam, error)
 		Status:       *exam.Status,
 		LSPID:        lspID,
 		QuestionIDs:  questionsIDs,
+		TotalCount:   total_count,
 	}
 
 	insertQuery := CassSession.Query(qbankz.ExamTable.Insert()).BindStruct(cassandraQuestionBank)
@@ -161,12 +162,14 @@ func ExamUpdate(ctx context.Context, input *model.ExamInput) (*model.Exam, error
 	}
 	updatedAt := time.Now().Unix()
 	if input.QpID != nil && *input.QpID != "" && *input.QpID != cassandraQuestionBank.QPID {
-		questionsIDs, err := GetQuestionIDsFromPaperId(CassSession, ctx, lspID, *input.QpID)
+		questionsIDs, total_count,  err := GetQuestionIDsFromPaperId(CassSession, ctx, lspID, *input.QpID)
 		if err != nil {
 			return nil, err
 		}
 		cassandraQuestionBank.QuestionIDs = questionsIDs
 		updatedCols = append(updatedCols, "question_ids")
+		cassandraQuestionBank.TotalCount = total_count
+		updatedCols = append(updatedCols, "total_count")
 	}
 	if len(updatedCols) > 0 {
 		cassandraQuestionBank.UpdatedAt = updatedAt
@@ -200,7 +203,7 @@ func ExamUpdate(ctx context.Context, input *model.ExamInput) (*model.Exam, error
 	return &responseModel, nil
 }
 
-func GetQuestionIDsFromPaperId(session *gocqlx.Session, ctx context.Context, lspID string, qpID string) ([]string, error) {
+func GetQuestionIDsFromPaperId(session *gocqlx.Session, ctx context.Context, lspID string, qpID string) ([]string, int, error) {
 	qryStr := fmt.Sprintf(`SELECT * from qbankz.section_main where lsp_id='%s' AND is_active=true  AND qp_id='%s' ALLOW FILTERING`, lspID, qpID)
 	getSectionsMap := func() (banks []qbankz.SectionMain, err error) {
 		q := session.Query(qryStr, nil)
@@ -210,9 +213,10 @@ func GetQuestionIDsFromPaperId(session *gocqlx.Session, ctx context.Context, lsp
 	}
 	sectionsMap, err := getSectionsMap()
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 	questionsIDs := []string{}
+	totalCountQs := 0
 	for _, section := range sectionsMap {
 		currentSectionId := section.ID
 		sectionQbQuery := fmt.Sprintf(`SELECT * from qbankz.section_qb_mapping where lsp_id='%s' AND is_active=true  AND section_id='%s' ALLOW FILTERING`, lspID, currentSectionId)
@@ -224,10 +228,11 @@ func GetQuestionIDsFromPaperId(session *gocqlx.Session, ctx context.Context, lsp
 		}
 		sections, err := getSections()
 		if err != nil {
-			return nil, err
+			return nil, totalCountQs, err
 		}
 		for _, section := range sections {
 			sectionID := section.ID
+			totalCountQs += section.TotalQuestions
 			qryStr := fmt.Sprintf(`SELECT * from qbankz.section_fixed_questions where sqb_id='%s' AND lsp_id='%s' AND is_active=true ALLOW FILTERING`, sectionID, lspID)
 			getQuestions := func() (banks []qbankz.SectionFixedQuestions, err error) {
 				q := session.Query(qryStr, nil)
@@ -237,14 +242,14 @@ func GetQuestionIDsFromPaperId(session *gocqlx.Session, ctx context.Context, lsp
 			}
 			questions, err := getQuestions()
 			if err != nil {
-				return nil, err
+				return nil, totalCountQs, err
 			}
 			for _, question := range questions {
 				questionsIDs = append(questionsIDs, question.QuestionID)
 			}
 		}
 	}
-	return questionsIDs, nil
+	return questionsIDs, totalCountQs, nil
 }
 
 func GetExam(ctx context.Context, courseID string, lspID string, session *gocqlx.Session) *qbankz.Exam {
