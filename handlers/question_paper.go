@@ -258,7 +258,7 @@ func QuestionPaperSectionUpdate(ctx context.Context, input *model.QuestionPaperS
 		updatedCols = append(updatedCols, "qp_id")
 	}
 	updatedAt := time.Now().Unix()
-	if len(updatedCols) == 0 {
+	if len(updatedCols) > 0 {
 		cassandraQuestionBank.UpdatedAt = updatedAt
 		updatedCols = append(updatedCols, "updated_at")
 		upStms, uNames := qbankz.SectionMainTable.Update(updatedCols...)
