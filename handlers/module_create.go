@@ -119,18 +119,18 @@ func UpdateModule(ctx context.Context, module *model.ModuleInput) (*model.Module
 		updateCols = append(updateCols, "setglobal")
 		cassandraModule.SetGlobal = *module.SetGlobal
 	}
-	if len(updateCols) == 0 {
-		return nil, fmt.Errorf("nothing to update")
+	if len(updateCols) > 0 {
+
+		cassandraModule.UpdatedAt = time.Now().Unix()
+		updateCols = append(updateCols, "updated_at")
+		upStms, uNames := coursez.ModuleTable.Update(updateCols...)
+		updateQuery := CassSession.Query(upStms, uNames).BindStruct(&cassandraModule)
+		if err := updateQuery.ExecRelease(); err != nil {
+			return nil, err
+		}
 	}
-	cassandraModule.UpdatedAt = time.Now().Unix()
-	updateCols = append(updateCols, "updated_at")
 	updated := strconv.FormatInt(cassandraModule.UpdatedAt, 10)
 	created := strconv.FormatInt(cassandraModule.CreatedAt, 10)
-	upStms, uNames := coursez.ModuleTable.Update(updateCols...)
-	updateQuery := CassSession.Query(upStms, uNames).BindStruct(&cassandraModule)
-	if err := updateQuery.ExecRelease(); err != nil {
-		return nil, err
-	}
 	responseModel := model.Module{
 		ID:          &cassandraModule.ID,
 		Name:        module.Name,

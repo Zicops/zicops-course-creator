@@ -123,16 +123,15 @@ func TopicUpdate(ctx context.Context, topic *model.TopicInput) (*model.Topic, er
 		updateCols = append(updateCols, "updated_by")
 		cassandraTopic.UpdatedBy = email_creator
 	}
-	if len(updateCols) == 0 {
-		return nil, fmt.Errorf("nothing to update")
-	}
-	updateCols = append(updateCols, "updated_at")
-	cassandraTopic.UpdatedAt = time.Now().Unix()
-	// set course in cassandra
-	upStms, uNames := coursez.TopicTable.Update(updateCols...)
-	updateQuery := CassSession.Query(upStms, uNames).BindStruct(&cassandraTopic)
-	if err := updateQuery.ExecRelease(); err != nil {
-		return nil, err
+	if len(updateCols) > 0 {
+		updateCols = append(updateCols, "updated_at")
+		cassandraTopic.UpdatedAt = time.Now().Unix()
+		// set course in cassandra
+		upStms, uNames := coursez.TopicTable.Update(updateCols...)
+		updateQuery := CassSession.Query(upStms, uNames).BindStruct(&cassandraTopic)
+		if err := updateQuery.ExecRelease(); err != nil {
+			return nil, err
+		}
 	}
 	created := strconv.FormatInt(cassandraTopic.CreatedAt, 10)
 	responseModel := model.Topic{

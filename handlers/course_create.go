@@ -557,15 +557,16 @@ func CourseUpdate(ctx context.Context, courseInput *model.CourseInput) (*model.C
 		updateCols = append(updateCols, "publisher")
 		cassandraCourse.Publisher = *courseInput.Publisher
 	}
-	if len(updateCols) == 0 {
-		return nil, fmt.Errorf("nothing to update")
-	}
-	updateCols = append(updateCols, "updated_at")
-	// set course in cassandra
-	upStms, uNames := coursez.CourseTable.Update(updateCols...)
-	updateQuery := CassSession.Query(upStms, uNames).BindStruct(cassandraCourse)
-	if err := updateQuery.ExecRelease(); err != nil {
-		return nil, err
+	if len(updateCols) > 0 {
+		updatedAt := time.Now().Unix()
+		cassandraCourse.UpdatedAt = updatedAt
+		updateCols = append(updateCols, "updated_at")
+		// set course in cassandra
+		upStms, uNames := coursez.CourseTable.Update(updateCols...)
+		updateQuery := CassSession.Query(upStms, uNames).BindStruct(cassandraCourse)
+		if err := updateQuery.ExecRelease(); err != nil {
+			return nil, err
+		}
 	}
 	updated := strconv.FormatInt(cassandraCourse.UpdatedAt, 10)
 	created := strconv.FormatInt(cassandraCourse.CreatedAt, 10)

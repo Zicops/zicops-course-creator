@@ -158,16 +158,15 @@ func UpdateQuiz(ctx context.Context, quiz *model.QuizInput) (*model.Quiz, error)
 		updateCols = append(updateCols, "weightage")
 		cassandraQuiz.Weightage = *quiz.Weightage
 	}
-	if len(updateCols) == 0 {
-		return nil, fmt.Errorf("nothing to update")
-	}
-	updateCols = append(updateCols, "updated_at")
-	cassandraQuiz.UpdatedAt = time.Now().Unix()
-	// update quiz in cassandra
-	upStms, uNames := coursez.QuizTable.Update(updateCols...)
-	updateQuery := CassSession.Query(upStms, uNames).BindStruct(&cassandraQuiz)
-	if err := updateQuery.ExecRelease(); err != nil {
-		return nil, err
+	if len(updateCols) > 0 {
+		updateCols = append(updateCols, "updated_at")
+		cassandraQuiz.UpdatedAt = time.Now().Unix()
+		// update quiz in cassandra
+		upStms, uNames := coursez.QuizTable.Update(updateCols...)
+		updateQuery := CassSession.Query(upStms, uNames).BindStruct(&cassandraQuiz)
+		if err := updateQuery.ExecRelease(); err != nil {
+			return nil, err
+		}
 	}
 	created := strconv.FormatInt(cassandraQuiz.CreatedAt, 10)
 	updated := strconv.FormatInt(cassandraQuiz.UpdatedAt, 10)

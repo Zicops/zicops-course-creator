@@ -365,15 +365,14 @@ func UpdateTopicContent(ctx context.Context, topicConent *model.TopicContentInpu
 		updateCols = append(updateCols, "is_default")
 		cassandraTopicContent.IsDefault = *topicConent.IsDefault
 	}
-	if len(updateCols) == 0 {
-		return nil, fmt.Errorf("nothing to update")
-	}
-	updateCols = append(updateCols, "updated_at")
-	cassandraTopicContent.UpdatedAt = time.Now().Unix()
-	upStms, uNames := coursez.TopicContentTable.Update(updateCols...)
-	updateQuery := CassSession.Query(upStms, uNames).BindStruct(&cassandraTopicContent)
-	if err := updateQuery.ExecRelease(); err != nil {
-		return nil, err
+	if len(updateCols) > 0 {
+		updateCols = append(updateCols, "updated_at")
+		cassandraTopicContent.UpdatedAt = time.Now().Unix()
+		upStms, uNames := coursez.TopicContentTable.Update(updateCols...)
+		updateQuery := CassSession.Query(upStms, uNames).BindStruct(&cassandraTopicContent)
+		if err := updateQuery.ExecRelease(); err != nil {
+			return nil, err
+		}
 	}
 	created := strconv.FormatInt(cassandraTopicContent.CreatedAt, 10)
 	updated := strconv.FormatInt(cassandraTopicContent.UpdatedAt, 10)
@@ -441,15 +440,14 @@ func UpdateTopicExam(ctx context.Context, exam *model.TopicExamInput) (*model.To
 		updateCols = append(updateCols, "examid")
 		cassandraTopicContent.ExamId = *exam.ExamID
 	}
-	if len(updateCols) == 0 {
-		return nil, fmt.Errorf("nothing to update")
-	}
-	updateCols = append(updateCols, "updated_at")
-	cassandraTopicContent.UpdatedAt = time.Now().Unix()
-	upStms, uNames := coursez.TopicExamTable.Update(updateCols...)
-	updateQuery := CassSession.Query(upStms, uNames).BindStruct(&cassandraTopicContent)
-	if err := updateQuery.ExecRelease(); err != nil {
-		return nil, err
+	if len(updateCols) > 0 {
+		updateCols = append(updateCols, "updated_at")
+		cassandraTopicContent.UpdatedAt = time.Now().Unix()
+		upStms, uNames := coursez.TopicExamTable.Update(updateCols...)
+		updateQuery := CassSession.Query(upStms, uNames).BindStruct(&cassandraTopicContent)
+		if err := updateQuery.ExecRelease(); err != nil {
+			return nil, err
+		}
 	}
 	created := strconv.FormatInt(cassandraTopicContent.CreatedAt, 10)
 	updated := strconv.FormatInt(cassandraTopicContent.UpdatedAt, 10)
