@@ -138,6 +138,7 @@ type ComplexityRoot struct {
 		ScheduleType func(childComplexity int) int
 		Status       func(childComplexity int) int
 		SubCategory  func(childComplexity int) int
+		TotalCount   func(childComplexity int) int
 		Type         func(childComplexity int) int
 		UpdatedAt    func(childComplexity int) int
 		UpdatedBy    func(childComplexity int) int
@@ -1172,6 +1173,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Exam.SubCategory(childComplexity), true
+
+	case "Exam.TotalCount":
+		if e.complexity.Exam.TotalCount == nil {
+			break
+		}
+
+		return e.complexity.Exam.TotalCount(childComplexity), true
 
 	case "Exam.Type":
 		if e.complexity.Exam.Type == nil {
@@ -4176,6 +4184,7 @@ type Exam {
     Status: String
     Category: String
     SubCategory: String
+    TotalCount: Int
 }
 
 input ExamScheduleInput {
@@ -8580,6 +8589,38 @@ func (ec *executionContext) _Exam_SubCategory(ctx context.Context, field graphql
 	res := resTmp.(*string)
 	fc.Result = res
 	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Exam_TotalCount(ctx context.Context, field graphql.CollectedField, obj *model.Exam) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Exam",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.TotalCount, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*int)
+	fc.Result = res
+	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _ExamCohort_id(ctx context.Context, field graphql.CollectedField, obj *model.ExamCohort) (ret graphql.Marshaler) {
@@ -22941,6 +22982,13 @@ func (ec *executionContext) _Exam(ctx context.Context, sel ast.SelectionSet, obj
 		case "SubCategory":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Exam_SubCategory(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+		case "TotalCount":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Exam_TotalCount(ctx, field, obj)
 			}
 
 			out.Values[i] = innerFunc(ctx)

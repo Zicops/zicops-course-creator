@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/rs/xid"
-	"github.com/scylladb/gocqlx/v2/qb"
+	"github.com/scylladb/gocqlx/v2"
 	log "github.com/sirupsen/logrus"
 	"github.com/zicops/contracts/qbankz"
 	"github.com/zicops/zicops-cass-pool/cassandra"
@@ -80,18 +80,7 @@ func UpdateExamConfiguration(ctx context.Context, input *model.ExamConfiguration
 	}
 	email_creator := claims["email"].(string)
 	lspID := claims["lsp_id"].(string)
-	cassandraQuestionBank := qbankz.ExamConfig{
-		ID: *input.ID,
-	}
-	banks := []qbankz.ExamConfig{}
-	getQuery := CassSession.Query(qbankz.ExamConfigTable.Get()).BindMap(qb.M{"id": cassandraQuestionBank.ID, "lsp_id": lspID, "is_active": true})
-	if err := getQuery.SelectRelease(&banks); err != nil {
-		return nil, err
-	}
-	if len(banks) == 0 {
-		return nil, fmt.Errorf("exams not found")
-	}
-	cassandraQuestionBank = banks[0]
+	cassandraQuestionBank := *GetExamConfig(ctx, *input.ID, lspID, CassSession)
 	updatedCols := []string{}
 	if input.ExamID != nil && cassandraQuestionBank.ExamID != *input.ExamID {
 		cassandraQuestionBank.ExamID = *input.ExamID
@@ -117,16 +106,16 @@ func UpdateExamConfiguration(ctx context.Context, input *model.ExamConfiguration
 		cassandraQuestionBank.UpdatedBy = email_creator
 		updatedCols = append(updatedCols, "updated_by")
 	}
-	updatedAt := time.Now().Unix()
-	cassandraQuestionBank.UpdatedAt = updatedAt
-	updatedCols = append(updatedCols, "updated_at")
-	if len(updatedCols) == 0 {
-		return nil, fmt.Errorf("nothing to update")
-	}
-	upStms, uNames := qbankz.ExamConfigTable.Update(updatedCols...)
-	updateQuery := CassSession.Query(upStms, uNames).BindStruct(&cassandraQuestionBank)
-	if err := updateQuery.ExecRelease(); err != nil {
-		return nil, err
+
+	if len(updatedCols) > 0 {
+		updatedAt := time.Now().Unix()
+		cassandraQuestionBank.UpdatedAt = updatedAt
+		updatedCols = append(updatedCols, "updated_at")
+		upStms, uNames := qbankz.ExamConfigTable.Update(updatedCols...)
+		updateQuery := CassSession.Query(upStms, uNames).BindStruct(&cassandraQuestionBank)
+		if err := updateQuery.ExecRelease(); err != nil {
+			return nil, err
+		}
 	}
 	created := strconv.FormatInt(cassandraQuestionBank.CreatedAt, 10)
 	updated := strconv.FormatInt(cassandraQuestionBank.UpdatedAt, 10)
@@ -144,4 +133,14 @@ func UpdateExamConfiguration(ctx context.Context, input *model.ExamConfiguration
 		ShowResult:   input.ShowResult,
 	}
 	return &responseModel, nil
+}
+
+func GetExamConfig(ctx context.Context, id string, lspID string, session *gocqlx.Session) *qbankz.ExamConfig {
+	chapters := []qbankz.ExamConfig{}
+	getQueryStr := fmt.Sprintf("SELECT * FROM qbankz.exam_config WHERE id='%s' and lsp_id='%s' and is_active=true", id, lspID)
+	getQuery := session.Query(getQueryStr, nil)
+	if err := getQuery.SelectRelease(&chapters); err != nil {
+		return nil
+	}
+	return &chapters[0]
 }

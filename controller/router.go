@@ -21,7 +21,6 @@ import (
 func CCRouter() (*gin.Engine, error) {
 	restRouter := gin.Default()
 	// configure cors as needed for FE/BE interactions: For now defaults
-
 	configCors := cors.DefaultConfig()
 	configCors.AllowAllOrigins = true
 	configCors.AllowHeaders = []string{"Origin", "Content-Length", "Content-Type", "Authorization"}

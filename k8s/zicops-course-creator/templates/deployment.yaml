@@ -52,11 +52,11 @@ spec:
           - name: GOOGLE_APPLICATION_CREDENTIALS
             value: {{ $zcbcred }}
           - name: CASSANDRA_CERT
-            value: {{ $zcbcert }}
+            value: ""
           - name: CASSANDRA_CA
-            value: {{ $zcbcertca }}
+            value: ""
           - name: CASSANDRA_KEY
-            value: {{ $zcbkey }}
+            value: ""
           - name: REDIS_HOST
             value: "staging-redis-cluster.redis.svc.cluster.local"
           - name: REDIS_PORT
@@ -97,19 +97,19 @@ spec:
           - name: GOOGLE_APPLICATION_CREDENTIALS
             value: {{ $zcbcred }}
           - name: CASSANDRA_HOST
-            value: "a74f374d-dae8-4356-9443-ae052dbe3046-asia-south1.db.astra.datastax.com"
+            value: "dbdev-cassandra.default.svc.cluster.local:9042"
           - name: CASSANDRA_PORT
-            value: "29042"
+            value: "9042"
           - name: CASSANDRA_USERNAME
-            value: "wudagnSLTSHsgHmUdIBrTBXc"
+            value: "cassandra"
           - name: CASSANDRA_PASSWORD
-            value: "RmB8_,LZ_qu75j,3Eszhcc.5quNAWst7SinS5Sh16IIK,cO_CeFK-Zd2YLFkaFoBSsDnLm2YZ4w.RLLFJM6spYr12BZl6TzO722fApguJ1LfwIA,vYLsa4bF20FfRpsH"
+            value: "lExbGbVh2r"
           - name: CASSANDRA_CERT
-            value: {{ $zcbcert }}
+            value: ""
           - name: CASSANDRA_CA
-            value: {{ $zcbcertca }}
+            value: ""
           - name: CASSANDRA_KEY
-            value: {{ $zcbkey }}
+            value: ""
           - name: REDIS_HOST
             value: "staging-redis-cluster.redis.svc.cluster.local"
           - name: REDIS_PORT

@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/rs/xid"
-	"github.com/scylladb/gocqlx/v2/qb"
+	"github.com/scylladb/gocqlx/v2"
 	log "github.com/sirupsen/logrus"
 	"github.com/zicops/contracts/coursez"
 	"github.com/zicops/zicops-cass-pool/cassandra"
@@ -89,19 +89,7 @@ func UpdateModule(ctx context.Context, module *model.ModuleInput) (*model.Module
 		return nil, err
 	}
 	lspId := claims["lsp_id"].(string)
-	cassandraModule := coursez.Module{
-		ID: *module.ID,
-	}
-	// set course in cassandra
-	modules := []coursez.Module{}
-	getQuery := CassSession.Query(coursez.ModuleTable.Get()).BindMap(qb.M{"id": cassandraModule.ID, "lsp_id": lspId, "is_active": true})
-	if err := getQuery.SelectRelease(&modules); err != nil {
-		return nil, err
-	}
-	if len(modules) < 1 {
-		return nil, fmt.Errorf("module not found")
-	}
-	cassandraModule = modules[0]
+	cassandraModule := *GetModule(ctx, *module.ID, lspId, CassSession)
 	updateCols := []string{}
 	if module.Name != nil && cassandraModule.Name != *module.Name {
 		updateCols = append(updateCols, "name")
@@ -131,18 +119,18 @@ func UpdateModule(ctx context.Context, module *model.ModuleInput) (*model.Module
 		updateCols = append(updateCols, "setglobal")
 		cassandraModule.SetGlobal = *module.SetGlobal
 	}
-	if len(updateCols) == 0 {
-		return nil, fmt.Errorf("nothing to update")
+	if len(updateCols) > 0 {
+
+		cassandraModule.UpdatedAt = time.Now().Unix()
+		updateCols = append(updateCols, "updated_at")
+		upStms, uNames := coursez.ModuleTable.Update(updateCols...)
+		updateQuery := CassSession.Query(upStms, uNames).BindStruct(&cassandraModule)
+		if err := updateQuery.ExecRelease(); err != nil {
+			return nil, err
+		}
 	}
-	cassandraModule.UpdatedAt = time.Now().Unix()
-	updateCols = append(updateCols, "updated_at")
 	updated := strconv.FormatInt(cassandraModule.UpdatedAt, 10)
 	created := strconv.FormatInt(cassandraModule.CreatedAt, 10)
-	upStms, uNames := coursez.ModuleTable.Update(updateCols...)
-	updateQuery := CassSession.Query(upStms, uNames).BindStruct(&cassandraModule)
-	if err := updateQuery.ExecRelease(); err != nil {
-		return nil, err
-	}
 	responseModel := model.Module{
 		ID:          &cassandraModule.ID,
 		Name:        module.Name,
@@ -158,4 +146,14 @@ func UpdateModule(ctx context.Context, module *model.ModuleInput) (*model.Module
 		SetGlobal:   module.SetGlobal,
 	}
 	return &responseModel, nil
+}
+
+func GetModule(ctx context.Context, courseID string, lspID string, session *gocqlx.Session) *coursez.Module {
+	chapters := []coursez.Module{}
+	getQueryStr := fmt.Sprintf("SELECT * FROM coursez.module WHERE id='%s' and lsp_id='%s' and is_active=true", courseID, lspID)
+	getQuery := session.Query(getQueryStr, nil)
+	if err := getQuery.SelectRelease(&chapters); err != nil {
+		return nil
+	}
+	return &chapters[0]
 }

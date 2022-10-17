@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/rs/xid"
-	"github.com/scylladb/gocqlx/v2/qb"
+	"github.com/scylladb/gocqlx/v2"
 	log "github.com/sirupsen/logrus"
 	"github.com/zicops/contracts/qbankz"
 	"github.com/zicops/zicops-cass-pool/cassandra"
@@ -86,18 +86,7 @@ func QuestionSectionMapUpdate(ctx context.Context, input *model.MapSectionToBank
 	}
 	email_creator := claims["email"].(string)
 	lspID := claims["lsp_id"].(string)
-	cassandraQuestionBank := qbankz.SectionQBMapping{
-		ID: *input.ID,
-	}
-	banks := []qbankz.SectionQBMapping{}
-	getQuery := CassSession.Query(qbankz.SectionQBMappingTable.Get()).BindMap(qb.M{"id": cassandraQuestionBank.ID, "lsp_id": lspID, "is_active": true})
-	if err := getQuery.SelectRelease(&banks); err != nil {
-		return nil, err
-	}
-	if len(banks) == 0 {
-		return nil, fmt.Errorf("question bank not found")
-	}
-	cassandraQuestionBank = banks[0]
+	cassandraQuestionBank := *GetSecQBMap(ctx, *input.ID, lspID, CassSession)
 	updatedCols := []string{}
 	if email_creator != "" && cassandraQuestionBank.CreatedBy != email_creator {
 		cassandraQuestionBank.UpdatedBy = email_creator
@@ -132,15 +121,14 @@ func QuestionSectionMapUpdate(ctx context.Context, input *model.MapSectionToBank
 		updatedCols = append(updatedCols, "section_id")
 	}
 	updatedAt := time.Now().Unix()
-	if len(updatedCols) == 0 {
-		return nil, fmt.Errorf("nothing to update")
-	}
-	cassandraQuestionBank.UpdatedAt = updatedAt
-	updatedCols = append(updatedCols, "updated_at")
-	upStms, uNames := qbankz.SectionQBMappingTable.Update(updatedCols...)
-	updateQuery := CassSession.Query(upStms, uNames).BindStruct(&cassandraQuestionBank)
-	if err := updateQuery.ExecRelease(); err != nil {
-		return nil, err
+	if len(updatedCols) > 0 {
+		cassandraQuestionBank.UpdatedAt = updatedAt
+		updatedCols = append(updatedCols, "updated_at")
+		upStms, uNames := qbankz.SectionQBMappingTable.Update(updatedCols...)
+		updateQuery := CassSession.Query(upStms, uNames).BindStruct(&cassandraQuestionBank)
+		if err := updateQuery.ExecRelease(); err != nil {
+			return nil, err
+		}
 	}
 	created := strconv.FormatInt(cassandraQuestionBank.CreatedAt, 10)
 	updated := strconv.FormatInt(cassandraQuestionBank.UpdatedAt, 10)
@@ -223,18 +211,7 @@ func QuestionFixedUpdate(ctx context.Context, input *model.SectionFixedQuestions
 	}
 	email_creator := claims["email"].(string)
 	lspID := claims["lsp_id"].(string)
-	cassandraQuestionBank := qbankz.SectionFixedQuestions{
-		ID: *input.ID,
-	}
-	banks := []qbankz.SectionFixedQuestions{}
-	getQuery := CassSession.Query(qbankz.SectionFixedQuestionsTable.Get()).BindMap(qb.M{"id": cassandraQuestionBank.ID, "lsp_id": lspID, "is_active": true})
-	if err := getQuery.SelectRelease(&banks); err != nil {
-		return nil, err
-	}
-	if len(banks) == 0 {
-		return nil, fmt.Errorf("question bank not found")
-	}
-	cassandraQuestionBank = banks[0]
+	cassandraQuestionBank := *GetSecFixedQs(ctx, *input.ID, lspID, CassSession)
 	updatedCols := []string{}
 	if email_creator != "" && cassandraQuestionBank.UpdatedBy != email_creator {
 		cassandraQuestionBank.UpdatedBy = email_creator
@@ -248,16 +225,15 @@ func QuestionFixedUpdate(ctx context.Context, input *model.SectionFixedQuestions
 		cassandraQuestionBank.QuestionID = *input.QuestionID
 		updatedCols = append(updatedCols, "question_id")
 	}
-	if len(updatedCols) == 0 {
-		return nil, fmt.Errorf("nothing to update")
-	}
-	updatedAt := time.Now().Unix()
-	cassandraQuestionBank.UpdatedAt = updatedAt
-	updatedCols = append(updatedCols, "updated_at")
-	upStms, uNames := qbankz.SectionFixedQuestionsTable.Update(updatedCols...)
-	updateQuery := CassSession.Query(upStms, uNames).BindStruct(&cassandraQuestionBank)
-	if err := updateQuery.ExecRelease(); err != nil {
-		return nil, err
+	if len(updatedCols) > 0 {
+		updatedAt := time.Now().Unix()
+		cassandraQuestionBank.UpdatedAt = updatedAt
+		updatedCols = append(updatedCols, "updated_at")
+		upStms, uNames := qbankz.SectionFixedQuestionsTable.Update(updatedCols...)
+		updateQuery := CassSession.Query(upStms, uNames).BindStruct(&cassandraQuestionBank)
+		if err := updateQuery.ExecRelease(); err != nil {
+			return nil, err
+		}
 	}
 	created := strconv.FormatInt(cassandraQuestionBank.CreatedAt, 10)
 	updated := strconv.FormatInt(cassandraQuestionBank.UpdatedAt, 10)
@@ -272,4 +248,24 @@ func QuestionFixedUpdate(ctx context.Context, input *model.SectionFixedQuestions
 		QuestionID: input.QuestionID,
 	}
 	return &responseModel, nil
+}
+
+func GetSecQBMap(ctx context.Context, courseID string, lspID string, session *gocqlx.Session) *qbankz.SectionQBMapping {
+	chapters := []qbankz.SectionQBMapping{}
+	getQueryStr := fmt.Sprintf("SELECT * FROM qbankz.section_qb_mapping WHERE id='%s' and lsp_id='%s' and is_active=true", courseID, lspID)
+	getQuery := session.Query(getQueryStr, nil)
+	if err := getQuery.SelectRelease(&chapters); err != nil {
+		return nil
+	}
+	return &chapters[0]
+}
+
+func GetSecFixedQs(ctx context.Context, courseID string, lspID string, session *gocqlx.Session) *qbankz.SectionFixedQuestions {
+	chapters := []qbankz.SectionFixedQuestions{}
+	getQueryStr := fmt.Sprintf("SELECT * FROM qbankz.section_fixed_questions WHERE id='%s' and lsp_id='%s' and is_active=true", courseID, lspID)
+	getQuery := session.Query(getQueryStr, nil)
+	if err := getQuery.SelectRelease(&chapters); err != nil {
+		return nil
+	}
+	return &chapters[0]
 }

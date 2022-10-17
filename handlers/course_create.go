@@ -10,7 +10,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/scylladb/gocqlx/v2/qb"
+	"github.com/scylladb/gocqlx/v2"
 	log "github.com/sirupsen/logrus"
 
 	"github.com/rs/xid"
@@ -245,9 +245,14 @@ func UploadCourseImage(ctx context.Context, file model.CourseFile) (*model.Uploa
 	if err != nil {
 		return &isSuccess, err
 	}
+	course := GetCourse(ctx, *file.CourseID, lspID, CassSession)
+	if course == nil || course.ID == "" {
+		return &isSuccess, fmt.Errorf("course not found")
+	}
 	getUrl := storageC.GetSignedURLForObject(bucketPath)
 	// update course image in cassandra
-	updateQuery := fmt.Sprintf("UPDATE coursez.course SET imagebucket='%s', image='%s' WHERE id='%s' AND lsp_id='%s' AND is_active=true", bucketPath, getUrl, *file.CourseID, lspID)
+	updateQuery := fmt.Sprintf("UPDATE coursez.course SET imagebucket='%s', image='%s' WHERE id='%s' AND lsp_id='%s' AND is_active=true AND created_at=%d ", bucketPath, getUrl, *file.CourseID, lspID, course.CreatedAt)
+	log.Errorf("update query: %s", updateQuery)
 	updateQ := CassSession.Query(updateQuery, nil)
 	if err := updateQ.ExecRelease(); err != nil {
 		return nil, err
@@ -280,6 +285,10 @@ func UploadCoursePreviewVideo(ctx context.Context, file model.CourseFile) (*mode
 	if *file.CourseID == "" {
 		return &isSuccess, fmt.Errorf("course id is required")
 	}
+	course := GetCourse(ctx, *file.CourseID, lspID, CassSession)
+	if course == nil {
+		return &isSuccess, fmt.Errorf("course not found")
+	}
 	storageC := bucket.NewStorageHandler()
 	gproject := googleprojectlib.GetGoogleProjectID()
 	err = storageC.InitializeStorageClient(ctx, gproject, lspID)
@@ -305,7 +314,7 @@ func UploadCoursePreviewVideo(ctx context.Context, file model.CourseFile) (*mode
 	}
 	getUrl := storageC.GetSignedURLForObject(bucketPath)
 	// update course image in cassandra
-	updateQuery := fmt.Sprintf("UPDATE coursez.course SET previewvideobucket='%s', previewvideo='%s' WHERE id='%s' AND lsp_id='%s' AND is_active=true", bucketPath, getUrl, *file.CourseID, lspID)
+	updateQuery := fmt.Sprintf("UPDATE coursez.course SET previewvideobucket='%s', previewvideo='%s' WHERE id='%s' AND lsp_id='%s' AND is_active=true AND created_at=%d", bucketPath, getUrl, *file.CourseID, lspID, course.CreatedAt)
 	updateQ := CassSession.Query(updateQuery, nil)
 	if err := updateQ.ExecRelease(); err != nil {
 		return nil, err
@@ -335,6 +344,7 @@ func UploadCourseTileImage(ctx context.Context, file model.CourseFile) (*model.U
 	if lspID == "" {
 		return &isSuccess, fmt.Errorf("lsp id is required")
 	}
+
 	storageC := bucket.NewStorageHandler()
 	gproject := googleprojectlib.GetGoogleProjectID()
 	err = storageC.InitializeStorageClient(ctx, gproject, lspID)
@@ -358,8 +368,12 @@ func UploadCourseTileImage(ctx context.Context, file model.CourseFile) (*model.U
 	if err != nil {
 		return &isSuccess, err
 	}
+	course := GetCourse(ctx, *file.CourseID, lspID, CassSession)
+	if course == nil {
+		return &isSuccess, fmt.Errorf("course not found")
+	}
 	getUrl := storageC.GetSignedURLForObject(bucketPath)
-	updateQuery := fmt.Sprintf("UPDATE coursez.course SET tileimagebucket='%s', tileimage='%s' WHERE id='%s' AND lsp_id='%s' AND is_active=true", bucketPath, getUrl, *file.CourseID, lspID)
+	updateQuery := fmt.Sprintf("UPDATE coursez.course SET tileimagebucket='%s', tileimage='%s' WHERE id='%s' AND lsp_id='%s' AND is_active=true AND created_at=%d", bucketPath, getUrl, *file.CourseID, lspID, course.CreatedAt)
 	updateQ := CassSession.Query(updateQuery, nil)
 	if err := updateQ.ExecRelease(); err != nil {
 		return nil, err
@@ -392,16 +406,8 @@ func CourseUpdate(ctx context.Context, courseInput *model.CourseInput) (*model.C
 	cassandraCourse := coursez.Course{
 		ID: courseID,
 	}
-	courses := []coursez.Course{}
-	getQuery := CassSession.Query(coursez.CourseTable.Get()).BindMap(qb.M{"id": courseID, "lsp_id": lspId, "is_active": true})
-	if err := getQuery.SelectRelease(&courses); err != nil {
-		return nil, err
-	}
-	if len(courses) < 1 {
-		return nil, fmt.Errorf("course not found")
-	}
+	cassandraCourse = *GetCourse(ctx, courseID, lspId, CassSession)
 	updateCols := make([]string, 0)
-	cassandraCourse = courses[0]
 	language := []string{}
 	takeaways := []string{}
 	outcomes := []string{}
@@ -450,7 +456,6 @@ func CourseUpdate(ctx context.Context, courseInput *model.CourseInput) (*model.C
 	// update cassandraCourse with input
 	if courseInput.Name != nil && *courseInput.Name != cassandraCourse.Name {
 		name := *courseInput.Name
-		name = strings.ToLower(name)
 		wordsLocal := strings.Split(name, " ")
 		words := make([]string, 0)
 		words = append(words, wordsLocal...)
@@ -552,15 +557,16 @@ func CourseUpdate(ctx context.Context, courseInput *model.CourseInput) (*model.C
 		updateCols = append(updateCols, "publisher")
 		cassandraCourse.Publisher = *courseInput.Publisher
 	}
-	if len(updateCols) == 0 {
-		return nil, fmt.Errorf("nothing to update")
-	}
-	updateCols = append(updateCols, "updated_at")
-	// set course in cassandra
-	upStms, uNames := coursez.CourseTable.Update(updateCols...)
-	updateQuery := CassSession.Query(upStms, uNames).BindStruct(cassandraCourse)
-	if err := updateQuery.ExecRelease(); err != nil {
-		return nil, err
+	if len(updateCols) > 0 {
+		updatedAt := time.Now().Unix()
+		cassandraCourse.UpdatedAt = updatedAt
+		updateCols = append(updateCols, "updated_at")
+		// set course in cassandra
+		upStms, uNames := coursez.CourseTable.Update(updateCols...)
+		updateQuery := CassSession.Query(upStms, uNames).BindStruct(cassandraCourse)
+		if err := updateQuery.ExecRelease(); err != nil {
+			return nil, err
+		}
 	}
 	updated := strconv.FormatInt(cassandraCourse.UpdatedAt, 10)
 	created := strconv.FormatInt(cassandraCourse.CreatedAt, 10)
@@ -603,4 +609,14 @@ func CourseUpdate(ctx context.Context, courseInput *model.CourseInput) (*model.C
 		IsActive:           courseInput.IsActive,
 	}
 	return &responseModel, nil
+}
+
+func GetCourse(ctx context.Context, courseID string, lspID string, session *gocqlx.Session) *coursez.Course {
+	courses := []coursez.Course{}
+	getQueryStr := fmt.Sprintf("SELECT * FROM coursez.course WHERE id='%s' and lsp_id='%s' and is_active=true", courseID, lspID)
+	getQuery := session.Query(getQueryStr, nil)
+	if err := getQuery.SelectRelease(&courses); err != nil {
+		return nil
+	}
+	return &courses[0]
 }
