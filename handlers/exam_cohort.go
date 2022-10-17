@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/rs/xid"
-	"github.com/scylladb/gocqlx/v2/qb"
+	"github.com/scylladb/gocqlx/v2"
 	log "github.com/sirupsen/logrus"
 	"github.com/zicops/contracts/qbankz"
 	"github.com/zicops/zicops-cass-pool/cassandra"
@@ -74,18 +74,7 @@ func UpdateExamCohort(ctx context.Context, input *model.ExamCohortInput) (*model
 	}
 	email_creator := claims["email"].(string)
 	lspID := claims["lsp_id"].(string)
-	cassandraQuestionBank := qbankz.ExamCohort{
-		ID: *input.ID,
-	}
-	banks := []qbankz.ExamCohort{}
-	getQuery := CassSession.Query(qbankz.ExamCohortTable.Get()).BindMap(qb.M{"id": cassandraQuestionBank.ID, "lsp_id": lspID, "is_active": true})
-	if err := getQuery.SelectRelease(&banks); err != nil {
-		return nil, err
-	}
-	if len(banks) == 0 {
-		return nil, fmt.Errorf("exams not found")
-	}
-	cassandraQuestionBank = banks[0]
+	cassandraQuestionBank := *GetExamCohort(ctx, *input.ID, lspID, CassSession)
 	updatedCols := []string{}
 	if input.ExamID != nil && cassandraQuestionBank.ExamID != *input.ExamID {
 		cassandraQuestionBank.ExamID = *input.ExamID
@@ -123,4 +112,14 @@ func UpdateExamCohort(ctx context.Context, input *model.ExamCohortInput) (*model
 		CohortID:  input.CohortID,
 	}
 	return &responseModel, nil
+}
+
+func GetExamCohort(ctx context.Context, courseID string, lspID string, session *gocqlx.Session) *qbankz.ExamCohort {
+	chapters := []qbankz.ExamCohort{}
+	getQueryStr := fmt.Sprintf("SELECT * FROM qbankz.exam_cohort WHERE id='%s' and lsp_id='%s' and is_active=true", courseID, lspID)
+	getQuery := session.Query(getQueryStr, nil)
+	if err := getQuery.SelectRelease(&chapters); err != nil {
+		return nil
+	}
+	return &chapters[0]
 }

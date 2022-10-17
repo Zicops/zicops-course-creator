@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/rs/xid"
-	"github.com/scylladb/gocqlx/v2/qb"
+	"github.com/scylladb/gocqlx/v2"
 	log "github.com/sirupsen/logrus"
 	"github.com/zicops/contracts/qbankz"
 	"github.com/zicops/zicops-cass-pool/cassandra"
@@ -80,18 +80,7 @@ func ExamInstructionsUpdate(ctx context.Context, input *model.ExamInstructionInp
 	}
 	email_creator := claims["email"].(string)
 	lspID := claims["lsp_id"].(string)
-	cassandraQuestionBank := qbankz.ExamInstructions{
-		ID: *input.ID,
-	}
-	banks := []qbankz.ExamInstructions{}
-	getQuery := CassSession.Query(qbankz.ExamInstructionsTable.Get()).BindMap(qb.M{"id": cassandraQuestionBank.ID, "lsp_id": lspID, "is_active": true})
-	if err := getQuery.SelectRelease(&banks); err != nil {
-		return nil, err
-	}
-	if len(banks) == 0 {
-		return nil, fmt.Errorf("exams not found")
-	}
-	cassandraQuestionBank = banks[0]
+	cassandraQuestionBank := *GetExamInstructions(ctx, *input.ID, lspID, CassSession)
 	updatedCols := []string{}
 	if input.Instructions != nil && cassandraQuestionBank.Instructions != *input.Instructions {
 		cassandraQuestionBank.Instructions = *input.Instructions
@@ -145,4 +134,14 @@ func ExamInstructionsUpdate(ctx context.Context, input *model.ExamInstructionInp
 		CreatedBy:       input.CreatedBy,
 	}
 	return &responseModel, nil
+}
+
+func GetExamInstructions(ctx context.Context, id string, lspID string, session *gocqlx.Session) *qbankz.ExamInstructions {
+	chapters := []qbankz.ExamInstructions{}
+	getQueryStr := fmt.Sprintf("SELECT * FROM qbankz.exam_instructions WHERE id='%s' and lsp_id='%s' and is_active=true", id, lspID)
+	getQuery := session.Query(getQueryStr, nil)
+	if err := getQuery.SelectRelease(&chapters); err != nil {
+		return nil
+	}
+	return &chapters[0]
 }

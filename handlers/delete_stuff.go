@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/scylladb/gocqlx/v2/qb"
 	"github.com/zicops/contracts/coursez"
 	"github.com/zicops/zicops-cass-pool/cassandra"
 	"github.com/zicops/zicops-course-creator/helpers"
@@ -53,7 +52,7 @@ func DeleteSubCatMain(ctx context.Context, id *string) (*bool, error) {
 
 func DeleteCourse(ctx context.Context, id *string) (*bool, error) {
 	session, err := cassandra.GetCassSession("coursez")
-	if err != nil {
+	if err != nil || id == nil {
 		return nil, err
 	}
 	isSuccess := false
@@ -63,15 +62,7 @@ func DeleteCourse(ctx context.Context, id *string) (*bool, error) {
 		return nil, err
 	}
 	lspId := claims["lsp_id"].(string)
-	courses := []coursez.Course{}
-	getQuery := CassSession.Query(coursez.CourseTable.Get()).BindMap(qb.M{"id": id, "lsp_id": lspId, "is_active": true})
-	if err := getQuery.SelectRelease(&courses); err != nil {
-		return nil, err
-	}
-	if len(courses) < 1 {
-		return nil, fmt.Errorf("course not found")
-	}
-	cassandraCourse := courses[0]
+	cassandraCourse := GetCourse(ctx, *id, lspId, CassSession)
 	deleteSrt := fmt.Sprintf("DELETE FROM coursez.course WHERE id = '%s' AND lsp_id = '%s' AND is_active=true", *id, lspId)
 	if err := CassSession.Query(deleteSrt, nil).Exec(); err != nil {
 		return &isSuccess, err

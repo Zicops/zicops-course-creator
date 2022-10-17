@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/rs/xid"
-	"github.com/scylladb/gocqlx/v2/qb"
+	"github.com/scylladb/gocqlx/v2"
 	log "github.com/sirupsen/logrus"
 	"github.com/zicops/contracts/coursez"
 	"github.com/zicops/zicops-cass-pool/cassandra"
@@ -101,12 +101,7 @@ func TopicUpdate(ctx context.Context, topic *model.TopicInput) (*model.Topic, er
 	if topic.ModuleID != nil {
 		cassandraTopic.ModuleID = *topic.ModuleID
 	}
-	topics := []coursez.Topic{}
-	getQuery := CassSession.Query(coursez.TopicTable.Get()).BindMap(qb.M{"id": cassandraTopic.ID, "lsp_id": lspID, "is_active": true})
-	if err := getQuery.SelectRelease(&topics); err != nil {
-		return nil, err
-	}
-	cassandraTopic = topics[0]
+	cassandraTopic = *GetTopic(ctx, cassandraTopic.ID, lspID, CassSession)
 	updateCols := []string{}
 	if topic.Description != nil && cassandraTopic.Description != *topic.Description {
 		updateCols = append(updateCols, "description")
@@ -155,4 +150,14 @@ func TopicUpdate(ctx context.Context, topic *model.TopicInput) (*model.Topic, er
 		UpdatedBy:   topic.UpdatedBy,
 	}
 	return &responseModel, nil
+}
+
+func GetTopic(ctx context.Context, courseID string, lspID string, session *gocqlx.Session) *coursez.Topic {
+	chapters := []coursez.Topic{}
+	getQueryStr := fmt.Sprintf("SELECT * FROM coursez.topic WHERE id='%s' and lsp_id='%s' and is_active=true", courseID, lspID)
+	getQuery := session.Query(getQueryStr, nil)
+	if err := getQuery.SelectRelease(&chapters); err != nil {
+		return nil
+	}
+	return &chapters[0]
 }

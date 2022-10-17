@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/rs/xid"
-	"github.com/scylladb/gocqlx/v2/qb"
+	"github.com/scylladb/gocqlx/v2"
 	log "github.com/sirupsen/logrus"
 	"github.com/zicops/contracts/coursez"
 	"github.com/zicops/zicops-cass-pool/cassandra"
@@ -81,15 +81,7 @@ func UpdateChapter(ctx context.Context, chapter *model.ChapterInput) (*model.Cha
 	cassandraChapter := coursez.Chapter{
 		ID: *chapter.ID,
 	}
-	chapters := []coursez.Chapter{}
-	getQuery := CassSession.Query(coursez.ChapterTable.Get()).BindMap(qb.M{"id": cassandraChapter.ID, "lsp_id": lspId, "is_active": true})
-	if err := getQuery.SelectRelease(&chapters); err != nil {
-		return nil, err
-	}
-	if len(chapters) < 1 {
-		return nil, fmt.Errorf("chapter not found")
-	}
-	cassandraChapter = chapters[0]
+	cassandraChapter = *GetChapter(ctx, cassandraChapter.ID, lspId, CassSession)
 	updateCols := make([]string, 0)
 	if *chapter.Name != "" && *chapter.Name != cassandraChapter.Name {
 		updateCols = append(updateCols, "name")
@@ -129,4 +121,14 @@ func UpdateChapter(ctx context.Context, chapter *model.ChapterInput) (*model.Cha
 		Sequence:    &cassandraChapter.Sequence,
 	}
 	return &responseModel, nil
+}
+
+func GetChapter(ctx context.Context, courseID string, lspID string, session *gocqlx.Session) *coursez.Chapter {
+	chapters := []coursez.Chapter{}
+	getQueryStr := fmt.Sprintf("SELECT * FROM coursez.chapter WHERE id='%s' and lsp_id='%s' and is_active=true", courseID, lspID)
+	getQuery := session.Query(getQueryStr, nil)
+	if err := getQuery.SelectRelease(&chapters); err != nil {
+		return nil
+	}
+	return &chapters[0]
 }

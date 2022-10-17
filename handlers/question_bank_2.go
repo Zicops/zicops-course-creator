@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/rs/xid"
-	"github.com/scylladb/gocqlx/v2/qb"
+	"github.com/scylladb/gocqlx/v2"
 	log "github.com/sirupsen/logrus"
 	"github.com/zicops/contracts/qbankz"
 	"github.com/zicops/zicops-cass-pool/cassandra"
@@ -125,18 +125,7 @@ func UpdateQuestionOptions(ctx context.Context, input *model.QuestionOptionInput
 	if lspID == "" {
 		return nil, fmt.Errorf("lsp id not found")
 	}
-	cassandraQuestionBank := qbankz.OptionsMain{
-		ID: *input.ID,
-	}
-	banks := []qbankz.OptionsMain{}
-	getQuery := CassSession.Query(qbankz.OptionsMainTable.Get()).BindMap(qb.M{"id": cassandraQuestionBank.ID, "lsp_id": lspID, "is_active": true})
-	if err := getQuery.SelectRelease(&banks); err != nil {
-		return nil, err
-	}
-	if len(banks) == 0 {
-		return nil, fmt.Errorf("question bank not found")
-	}
-	cassandraQuestionBank = banks[0]
+	cassandraQuestionBank := *GetOptionsMain(ctx, *input.ID, lspID, CassSession)
 	updatedCols := []string{}
 	if input.Description != nil && *input.Description != cassandraQuestionBank.Description {
 		cassandraQuestionBank.Description = *input.Description
@@ -215,4 +204,14 @@ func UpdateQuestionOptions(ctx context.Context, input *model.QuestionOptionInput
 		Attachment:     &cassandraQuestionBank.Attachment,
 	}
 	return &responseModel, nil
+}
+
+func GetOptionsMain(ctx context.Context, courseID string, lspID string, session *gocqlx.Session) *qbankz.OptionsMain {
+	chapters := []qbankz.OptionsMain{}
+	getQueryStr := fmt.Sprintf("SELECT * FROM qbankz.options_main WHERE id='%s' and lsp_id='%s' and is_active=true", courseID, lspID)
+	getQuery := session.Query(getQueryStr, nil)
+	if err := getQuery.SelectRelease(&chapters); err != nil {
+		return nil
+	}
+	return &chapters[0]
 }

@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/rs/xid"
-	"github.com/scylladb/gocqlx/v2/qb"
+	"github.com/scylladb/gocqlx/v2"
 	log "github.com/sirupsen/logrus"
 	"github.com/zicops/contracts/coursez"
 	"github.com/zicops/zicops-cass-pool/cassandra"
@@ -112,19 +112,7 @@ func UpdateQuiz(ctx context.Context, quiz *model.QuizInput) (*model.Quiz, error)
 		return nil, err
 	}
 	lspId := claims["lsp_id"].(string)
-	cassandraQuiz := coursez.Quiz{
-		ID: *quiz.ID,
-	}
-	// set course in cassandra
-	quizes := []coursez.Quiz{}
-	getQuery := CassSession.Query(coursez.QuizTable.Get()).BindMap(qb.M{"id": cassandraQuiz.ID, "lsp_id": lspId, "is_active": true})
-	if err := getQuery.SelectRelease(&quizes); err != nil {
-		return nil, err
-	}
-	if len(quizes) < 1 {
-		return nil, fmt.Errorf("quiz not found")
-	}
-	cassandraQuiz = quizes[0]
+	cassandraQuiz := *GetQuiz(ctx, *quiz.ID, lspId, CassSession)
 	updateCols := []string{}
 	if quiz.Name != nil && cassandraQuiz.Name != *quiz.Name {
 		updateCols = append(updateCols, "name")
@@ -357,4 +345,14 @@ func AddQuizDescriptive(ctx context.Context, quiz *model.QuizDescriptive) (*bool
 	}
 	isSuccess := true
 	return &isSuccess, nil
+}
+
+func GetQuiz(ctx context.Context, courseID string, lspID string, session *gocqlx.Session) *coursez.Quiz {
+	chapters := []coursez.Quiz{}
+	getQueryStr := fmt.Sprintf("SELECT * FROM coursez.quiz WHERE id='%s' and lsp_id='%s' and is_active=true", courseID, lspID)
+	getQuery := session.Query(getQueryStr, nil)
+	if err := getQuery.SelectRelease(&chapters); err != nil {
+		return nil
+	}
+	return &chapters[0]
 }

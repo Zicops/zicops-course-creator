@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/rs/xid"
-	"github.com/scylladb/gocqlx/v2/qb"
+	"github.com/scylladb/gocqlx/v2"
 	log "github.com/sirupsen/logrus"
 	"github.com/zicops/contracts/coursez"
 	"github.com/zicops/zicops-cass-pool/cassandra"
@@ -92,19 +92,7 @@ func UpdateCourseCohort(ctx context.Context, input *model.CourseCohortInput) (*m
 	email_creator := claims["email"].(string)
 	lspId := claims["lsp_id"].(string)
 	CassSession := session
-
-	cassandraQuestionBank := coursez.CourseCohortMapping{
-		ID: *input.ID,
-	}
-	banks := []coursez.CourseCohortMapping{}
-	getQuery := CassSession.Query(coursez.CourseCohortTable.Get()).BindMap(qb.M{"id": cassandraQuestionBank.ID, "lsp_id": lspId, "is_active": true})
-	if err := getQuery.SelectRelease(&banks); err != nil {
-		return nil, err
-	}
-	if len(banks) == 0 {
-		return nil, fmt.Errorf("course cohorts not found")
-	}
-	cassandraQuestionBank = banks[0]
+	cassandraQuestionBank := *GetCourseCohort(ctx, *input.ID, lspId, CassSession)
 	updatedCols := []string{}
 	if input.CohortID != nil && cassandraQuestionBank.CohortID != *input.CohortID {
 		cassandraQuestionBank.CohortID = *input.CohortID
@@ -174,4 +162,14 @@ func UpdateCourseCohort(ctx context.Context, input *model.CourseCohortInput) (*m
 	}
 
 	return &responseModel, nil
+}
+
+func GetCourseCohort(ctx context.Context, courseID string, lspID string, session *gocqlx.Session) *coursez.CourseCohortMapping {
+	chapters := []coursez.CourseCohortMapping{}
+	getQueryStr := fmt.Sprintf("SELECT * FROM coursez.course_cohort_mapping WHERE id='%s' and lsp_id='%s' and is_active=true", courseID, lspID)
+	getQuery := session.Query(getQueryStr, nil)
+	if err := getQuery.SelectRelease(&chapters); err != nil {
+		return nil
+	}
+	return &chapters[0]
 }
