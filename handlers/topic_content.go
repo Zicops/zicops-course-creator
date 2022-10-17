@@ -58,7 +58,7 @@ func TopicContentCreate(ctx context.Context, topicID string, courseID string, mo
 			return nil, fmt.Errorf("module not found")
 		}
 		newDuration := *topicConent.Duration + mod.Duration
-		queryStr := fmt.Sprintf("UPDATE coursez.module SET duration=%d WHERE id='%s' and lsp_id='%s' and is_active=true", newDuration, *moduleID, lspID)
+		queryStr := fmt.Sprintf("UPDATE coursez.module SET duration=%d WHERE id='%s' and lsp_id='%s' and is_active=true AND created_at=%d", newDuration, *moduleID, lspID, mod.CreatedAt)
 		updateQ := CassSession.Query(queryStr, nil)
 		if err := updateQ.ExecRelease(); err != nil {
 			return nil, err
@@ -70,7 +70,7 @@ func TopicContentCreate(ctx context.Context, topicID string, courseID string, mo
 			return nil, fmt.Errorf("course not found")
 		}
 		newDuration := course.Duration - cassandraTopicContent.Duration + *topicConent.Duration
-		queryStr := fmt.Sprintf("UPDATE coursez.course SET duration=%d WHERE id='%s' and lsp_id='%s' and is_active=true", newDuration, cassandraTopicContent.CourseId, lspID)
+		queryStr := fmt.Sprintf("UPDATE coursez.course SET duration=%d WHERE id='%s' and lsp_id='%s' and is_active=true and created_at=%d", newDuration, cassandraTopicContent.CourseId, lspID, course.CreatedAt)
 		updateQ := CassSession.Query(queryStr, nil)
 		if err := updateQ.ExecRelease(); err != nil {
 			return nil, err
@@ -143,7 +143,7 @@ func TopicExamCreate(ctx context.Context, topicID string, courseID string, exam 
 	cassExam := GetExam(ctx, *exam.ExamID, lspID, CassSessionQBank)
 	course := GetCourse(ctx, courseID, lspID, CassSession)
 	newDuration := course.Duration + cassExam.Duration
-	queryStr := fmt.Sprintf("UPDATE coursez.course SET duration=%d WHERE id='%s' and lsp_id='%s' and is_active=true", newDuration, courseID, lspID)
+	queryStr := fmt.Sprintf("UPDATE coursez.course SET duration=%d WHERE id='%s' and lsp_id='%s' and is_active=true and created_at=%d", newDuration, courseID, lspID, course.CreatedAt)
 	updateQ := CassSession.Query(queryStr, nil)
 	if err := updateQ.ExecRelease(); err != nil {
 		return nil, err
@@ -221,7 +221,8 @@ func UploadTopicVideo(ctx context.Context, file model.TopicVideo) (*model.Upload
 		return &isSuccess, err
 	}
 	getUrl := storageC.GetSignedURLForObject(bucketPath)
-	updateQuery := fmt.Sprintf("UPDATE coursez.topic_content SET topiccontentbucket='%s', url='%s' WHERE id='%s' AND lsp_id='%s' AND is_active=true", bucketPath, getUrl, *file.ContentID, lspId)
+	topicContent := GetTopicContent(ctx, *file.ContentID, lspId, CassSession)
+	updateQuery := fmt.Sprintf("UPDATE coursez.topic_content SET topiccontentbucket='%s', url='%s' WHERE id='%s' AND lsp_id='%s' AND is_active=true and created_at=%d", bucketPath, getUrl, topicContent.ID, topicContent.LspId, topicContent.CreatedAt)
 	updateQ := CassSession.Query(updateQuery, nil)
 	if err := updateQ.ExecRelease(); err != nil {
 		return nil, err
@@ -320,7 +321,7 @@ func UpdateTopicContent(ctx context.Context, topicConent *model.TopicContentInpu
 		if moduleId != nil && topicConent.Duration != nil {
 			mod := GetModule(ctx, *moduleId, lspID, CassSession)
 			newDuration := mod.Duration - cassandraTopicContent.Duration + *topicConent.Duration
-			queryStr := fmt.Sprintf("UPDATE coursez.module SET duration=%d WHERE id='%s'and lsp_id='%s' and is_active=true ", newDuration, *moduleId, lspID)
+			queryStr := fmt.Sprintf("UPDATE coursez.module SET duration=%d WHERE id='%s'and lsp_id='%s' and is_active=true and created_at=%d", newDuration, *moduleId, lspID, mod.CreatedAt)
 			updateQ := CassSession.Query(queryStr, nil)
 			if err := updateQ.ExecRelease(); err != nil {
 				return nil, err
@@ -329,7 +330,7 @@ func UpdateTopicContent(ctx context.Context, topicConent *model.TopicContentInpu
 		if cassandraTopicContent.CourseId != "" && topicConent.Duration != nil {
 			course := GetCourse(ctx, cassandraTopicContent.CourseId, lspID, CassSession)
 			newDuration := course.Duration - cassandraTopicContent.Duration + *topicConent.Duration
-			queryStr := fmt.Sprintf("UPDATE coursez.course SET duration=%d WHERE id='%s' and lsp_id='%s' and is_active=true ", newDuration, cassandraTopicContent.CourseId, lspID)
+			queryStr := fmt.Sprintf("UPDATE coursez.course SET duration=%d WHERE id='%s' and lsp_id='%s' and is_active=true and created_at=%d", newDuration, cassandraTopicContent.CourseId, lspID, course.CreatedAt)
 			updateQ := CassSession.Query(queryStr, nil)
 			if err := updateQ.ExecRelease(); err != nil {
 				return nil, err
@@ -432,7 +433,7 @@ func UpdateTopicExam(ctx context.Context, exam *model.TopicExamInput) (*model.To
 		// update course duration
 		cassCourse := GetCourse(ctx, cassandraTopicContent.CourseId, lspID, CassSession)
 		newDuration := cassCourse.Duration - cassExam.Duration + cassExamNew.Duration
-		queryStr := fmt.Sprintf("UPDATE coursez.course SET duration=%d WHERE id='%s' and lsp_id='%s' and is_active=true", newDuration, cassandraTopicContent.CourseId, lspID)
+		queryStr := fmt.Sprintf("UPDATE coursez.course SET duration=%d WHERE id='%s' and lsp_id='%s' and is_active=true and created_at=%d", newDuration, cassandraTopicContent.CourseId, lspID, cassCourse.CreatedAt)
 		updateQ := CassSession.Query(queryStr, nil)
 		if err := updateQ.ExecRelease(); err != nil {
 			return nil, err
@@ -562,8 +563,8 @@ func UploadTopicStaticContent(ctx context.Context, file *model.StaticContent) (*
 	} else {
 		getUrl = *file.URL
 	}
-
-	updateQuery := fmt.Sprintf("UPDATE coursez.topic_content SET topiccontentbucket='%s', url='%s' WHERE id='%s' AND lsp_id='%s' AND is_active=true", bucketPath, getUrl, *file.ContentID, lspId)
+	topicContent := GetTopicContent(ctx, *file.ContentID, lspId, CassSession)
+	updateQuery := fmt.Sprintf("UPDATE coursez.topic_content SET topiccontentbucket='%s', url='%s' WHERE id='%s' AND lsp_id='%s' AND is_active=true and created_at=%d", bucketPath, getUrl, *file.ContentID, lspId, topicContent.CreatedAt)
 	updateQ := CassSession.Query(updateQuery, nil)
 	if err := updateQ.ExecRelease(); err != nil {
 		return nil, err
