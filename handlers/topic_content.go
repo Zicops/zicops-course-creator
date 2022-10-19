@@ -513,6 +513,10 @@ func UploadTopicStaticContent(ctx context.Context, file *model.StaticContent) (*
 		if err != nil {
 			return &isSuccess, err
 		}
+		err = writer.Close()
+		if err != nil {
+			return &isSuccess, err
+		}
 		b, err := ioutil.ReadAll(newReader)
 		if err != nil {
 			return nil, err

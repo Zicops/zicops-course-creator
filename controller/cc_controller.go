@@ -45,6 +45,8 @@ func serverHTTPRoutes(ctx context.Context, httpAddress string, handler http.Hand
 		Server: &http.Server{
 			Addr:    httpAddress,
 			Handler: handler,
+			WriteTimeout: 50 * time.Second,
+			ReadTimeout:  50 * time.Second,
 		},
 	}
 	stopChannel := serverGrace.StopChan()
