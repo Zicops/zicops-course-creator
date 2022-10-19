@@ -8,6 +8,7 @@ import (
 	"strconv"
 
 	"github.com/99designs/gqlgen/graphql/handler"
+	"github.com/99designs/gqlgen/graphql/handler/transport"
 	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -80,7 +81,11 @@ func graphqlHandler() gin.HandlerFunc {
 	// NewExecutableSchema and Config are in the generated.go file
 	// Resolver is in the resolver.go file
 	h := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &graph.Resolver{}}))
-
+	var mb int64 = 1 << 20
+	h.AddTransport(transport.MultipartForm{
+		MaxMemory:     32 * mb,
+		MaxUploadSize: 100 * mb,
+	})
 	return func(c *gin.Context) {
 		ctxValue := c.Value("zclaims").(map[string]interface{})
 		lspIdInt := ctxValue["tenant"]
