@@ -532,6 +532,7 @@ func UploadTopicStaticContent(ctx context.Context, file *model.StaticContent) (*
 			err := func() error {
 				r, err := f.Open()
 				if err != nil {
+					log.Errorf("Failed to open file: %v", err.Error())
 					return err
 				}
 				defer r.Close()
@@ -539,11 +540,12 @@ func UploadTopicStaticContent(ctx context.Context, file *model.StaticContent) (*
 				filePath := filepath.Join(bucketPath, f.Name)
 				w, err := storageC.UploadToGCSPub(ctx, filePath, map[string]string{})
 				if err != nil {
+					log.Errorf("Failed to upload file: %v", err.Error())
 					return err
 				}
 				_, err = io.Copy(w, r)
 				if err != nil {
-					return err
+					log.Errorf("Failed to copy file: %v", err.Error())
 				}
 				return w.Close()
 			}()
