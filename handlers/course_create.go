@@ -385,7 +385,7 @@ func UploadCourseTileImage(ctx context.Context, file model.CourseFile) (*model.U
 }
 
 func CourseUpdate(ctx context.Context, courseInput *model.CourseInput) (*model.Course, error) {
-	log.Info("CourseUpdater called")
+	log.Info("CourseUpdate called")
 	if courseInput.ID == nil {
 		return nil, fmt.Errorf("course id is required")
 	}

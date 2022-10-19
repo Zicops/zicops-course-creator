@@ -12,6 +12,7 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/rs/xid"
@@ -496,58 +497,52 @@ func UploadTopicStaticContent(ctx context.Context, file *model.StaticContent) (*
 		hashBytes := hash.Sum(nil)
 		hashString := hex.EncodeToString(hashBytes)
 		bucketPath = *file.CourseID + "/" + *file.ContentID + "/" + hashString
-		zipPath := bucketPath + "/" + file.File.Filename
-		writer, err := storageC.UploadToGCSPub(ctx, zipPath, map[string]string{})
-		if err != nil {
-			log.Errorf("Failed to upload static content to course topic: %v", err.Error())
-			return &isSuccess, nil
-		}
-		defer writer.Close()
-		fileBuffer := bytes.NewBuffer(nil)
-		if _, err := io.Copy(fileBuffer, file.File.File); err != nil {
-			return &isSuccess, nil
-		}
-		currentBytes := fileBuffer.Bytes()
-		newReader := bytes.NewReader(currentBytes)
-		_, err = io.Copy(writer, bytes.NewReader(currentBytes))
-		if err != nil {
-			return &isSuccess, err
-		}
-		b, err := ioutil.ReadAll(newReader)
+		// upload file to bucket
+		b, err := ioutil.ReadAll(file.File.File)
 		if err != nil {
 			return nil, err
 		}
+		newReader := bytes.NewReader(b)
+
 		zr, err := zip.NewReader(newReader, int64(len(b)))
 		if err != nil {
 			return nil, err
 		}
-		buffer := make([]byte, 32*1024)
+		// go routine to upload files to bucket
+		var wg sync.WaitGroup
 		for _, f := range zr.File {
-			if f.FileInfo().IsDir() {
-				continue
-			}
-			err := func() error {
-				r, err := f.Open()
-				if err != nil {
-					return err
+			wg.Add(1)
+			go func(f *zip.File) {
+				defer wg.Done()
+				if f.FileInfo().IsDir() {
+					return
 				}
-				defer r.Close()
+				err := func() error {
+					r, err := f.Open()
+					if err != nil {
+						log.Errorf("Failed to open file: %v", err.Error())
+						return err
+					}
+					defer r.Close()
 
-				filePath := filepath.Join(bucketPath, f.Name)
-				w, err := storageC.UploadToGCSPub(ctx, filePath, map[string]string{})
+					filePath := filepath.Join(bucketPath, f.Name)
+					w, err := storageC.UploadToGCSPub(ctx, filePath, map[string]string{})
+					if err != nil {
+						log.Errorf("Failed to upload file: %v", err.Error())
+						return err
+					}
+					_, err = io.Copy(w, r)
+					if err != nil {
+						log.Errorf("Failed to copy file: %v", err.Error())
+					}
+					return w.Close()
+				}()
 				if err != nil {
-					return err
+					log.Errorf("Failed to upload static content to course topic: %v", err.Error())
 				}
-				_, err = io.CopyBuffer(w, r, buffer)
-				if err != nil {
-					return err
-				}
-				return w.Close()
-			}()
-			if err != nil {
-				return nil, err
-			}
+			}(f)
 		}
+		wg.Wait()
 		currentType := strings.ToLower(strings.TrimSpace(file.Type.String()))
 		urlPath := bucketPath
 		if currentType != "" {
