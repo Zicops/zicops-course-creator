@@ -525,7 +525,6 @@ func UploadTopicStaticContent(ctx context.Context, file *model.StaticContent) (*
 		if err != nil {
 			return nil, err
 		}
-		buffer := make([]byte, 32*1024)
 		for _, f := range zr.File {
 			if f.FileInfo().IsDir() {
 				continue
@@ -542,14 +541,14 @@ func UploadTopicStaticContent(ctx context.Context, file *model.StaticContent) (*
 				if err != nil {
 					return err
 				}
-				_, err = io.CopyBuffer(w, r, buffer)
+				_, err = io.Copy(w, r)
 				if err != nil {
 					return err
 				}
 				return w.Close()
 			}()
 			if err != nil {
-				return nil, err
+				log.Errorf("Failed to upload static content to course topic: %v", err.Error())
 			}
 		}
 		currentType := strings.ToLower(strings.TrimSpace(file.Type.String()))
