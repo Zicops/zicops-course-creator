@@ -83,7 +83,7 @@ func graphqlHandler() gin.HandlerFunc {
 	h := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &graph.Resolver{}}))
 	var mb int64 = 1 << 20
 	h.AddTransport(transport.MultipartForm{
-		MaxMemory:     32 * mb,
+		MaxMemory:     100 * mb,
 		MaxUploadSize: 100 * mb,
 	})
 	return func(c *gin.Context) {
