@@ -40,10 +40,14 @@ func TopicContentCreate(ctx context.Context, topicID string, courseID string, mo
 		return nil, err
 	}
 	lspID := claims["lsp_id"].(string)
+	if moduleID == nil {
+		return nil, fmt.Errorf("moduleID is nil")
+	}
 	cassandraTopicContent := coursez.TopicContent{
 		ID:                 guid.String(),
 		TopicId:            topicID,
 		CourseId:           courseID,
+		ModuleId:           *moduleID,
 		Language:           *topicConent.Language,
 		CreatedAt:          time.Now().Unix(),
 		UpdatedAt:          time.Now().Unix(),
