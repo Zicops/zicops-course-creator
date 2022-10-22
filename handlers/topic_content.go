@@ -40,10 +40,14 @@ func TopicContentCreate(ctx context.Context, topicID string, courseID string, mo
 		return nil, err
 	}
 	lspID := claims["lsp_id"].(string)
+	if moduleID == nil {
+		return nil, fmt.Errorf("moduleID is nil")
+	}
 	cassandraTopicContent := coursez.TopicContent{
 		ID:                 guid.String(),
 		TopicId:            topicID,
 		CourseId:           courseID,
+		ModuleId:           *moduleID,
 		Language:           *topicConent.Language,
 		CreatedAt:          time.Now().Unix(),
 		UpdatedAt:          time.Now().Unix(),
@@ -504,7 +508,7 @@ func UploadTopicStaticContent(ctx context.Context, file *model.StaticContent) (*
 		}
 		newReader := bytes.NewReader(b)
 
-		zr, err := zip.NewReader(newReader, int64(len(b)))
+		zr, err := zip.NewReader(newReader, newReader.Size())
 		if err != nil {
 			return nil, err
 		}
@@ -514,14 +518,10 @@ func UploadTopicStaticContent(ctx context.Context, file *model.StaticContent) (*
 			wg.Add(1)
 			go func(f *zip.File) {
 				defer wg.Done()
-				if f.FileInfo().IsDir() {
-					return
-				}
 				err := func() error {
 					r, err := f.Open()
 					if err != nil {
 						log.Errorf("Failed to open file: %v", err.Error())
-						return err
 					}
 					defer r.Close()
 
@@ -529,13 +529,16 @@ func UploadTopicStaticContent(ctx context.Context, file *model.StaticContent) (*
 					w, err := storageC.UploadToGCSPub(ctx, filePath, map[string]string{})
 					if err != nil {
 						log.Errorf("Failed to upload file: %v", err.Error())
-						return err
 					}
 					_, err = io.Copy(w, r)
 					if err != nil {
 						log.Errorf("Failed to copy file: %v", err.Error())
 					}
-					return w.Close()
+					err = w.Close()
+					if err != nil {
+						log.Errorf("Failed to close file: %v", err.Error())
+					}
+					return nil
 				}()
 				if err != nil {
 					log.Errorf("Failed to upload static content to course topic: %v", err.Error())
