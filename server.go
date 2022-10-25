@@ -39,7 +39,7 @@ func main() {
 	}
 	bootUPErrors := make(chan error, 1)
 	go monitorSystem(cancel, bootUPErrors)
-	go checkAndInitCassandraSession()
+	//go checkAndInitCassandraSession()
 	controller.CCBackendController(ctx, port, bootUPErrors)
 	err = <-bootUPErrors
 	if err != nil {
