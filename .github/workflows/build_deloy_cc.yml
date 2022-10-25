@@ -2,7 +2,7 @@ name: Docker Image CI
 
 on:
   push:
-    branches: [ staging ]
+    branches: [ main ]
 env:
   PROJECT_ID: ${{ secrets.GKE_PROJECT }}
   GKE_CLUSTER: zicops-production-cost-one
