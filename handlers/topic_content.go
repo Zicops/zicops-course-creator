@@ -9,12 +9,14 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"net/http"
 	"path/filepath"
 	"strconv"
 	"strings"
 	"sync"
 	"time"
 
+	"github.com/gin-gonic/gin"
 	"github.com/rs/xid"
 	"github.com/scylladb/gocqlx/v2"
 	log "github.com/sirupsen/logrus"
@@ -571,6 +573,16 @@ func UploadTopicStaticContent(ctx context.Context, file *model.StaticContent) (*
 	return &isSuccess, nil
 }
 
+func UploadStaticZipHandler(c *gin.Context) (*model.UploadResult, error) {
+	// unmarshal model.StaticContent
+	var file model.StaticContent
+	if err := c.ShouldBind(&file); err != nil {
+		log.Errorf("Failed to bind request: %v", err.Error())
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return nil, err
+	}
+	return  UploadTopicStaticContent(c, &file)
+}
 func GetTopicContent(ctx context.Context, courseID string, lspID string, session *gocqlx.Session) *coursez.TopicContent {
 	chapters := []coursez.TopicContent{}
 	getQueryStr := fmt.Sprintf("SELECT * FROM coursez.topic_content WHERE id='%s' and lsp_id='%s' and is_active=true", courseID, lspID)

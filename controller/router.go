@@ -15,6 +15,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/zicops/zicops-course-creator/graph"
 	"github.com/zicops/zicops-course-creator/graph/generated"
+	"github.com/zicops/zicops-course-creator/handlers"
 	"github.com/zicops/zicops-course-creator/lib/jwt"
 )
 
@@ -37,9 +38,31 @@ func CCRouter() (*gin.Engine, error) {
 	version1 := restRouter.Group("/api/v1")
 	version1.POST("/query", graphqlHandler())
 	version1.GET("/playql", playgroundHandler())
+	// post zip file
+	version1.POST("/uploadStaticZip", UploadStaticZipHandler)
 	return restRouter, nil
 }
 
+func UploadStaticZipHandler(c *gin.Context) {
+	ctxValue := c.Value("zclaims").(map[string]interface{})
+	lspIdInt := ctxValue["tenant"]
+	lspID := "d8685567-cdae-4ee0-a80e-c187848a760e"
+	if lspIdInt != nil && lspIdInt.(string) != "" {
+		lspID = lspIdInt.(string)
+	}
+	ctxValue["lsp_id"] = lspID
+	// set ctxValue to request context
+	request := c.Request
+	ctx := context.WithValue(request.Context(), "zclaims", ctxValue)
+	request = request.WithContext(ctx)
+	c.Request = request
+	res, err := handlers.UploadStaticZipHandler(c)
+	if err != nil {
+		ResponseError(c.Writer, http.StatusInternalServerError, err)
+		return
+	}
+	c.JSON(http.StatusOK, res)
+}
 func HealthCheckHandler(c *gin.Context) {
 	log.Debugf("HealthCheckHandler Method --> %s", c.Request.Method)
 
