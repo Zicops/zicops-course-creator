@@ -8,7 +8,7 @@ const (
 	RESPONSE_JSON_DATA    string = "data"
 	RESPONSDE_JSON_ERROR  string = "error"
 	COURSES_BUCKET               = "courses-zicops-one"
-	COURSES_PUBLIC_BUCKET        = "courses-public-zicops-one"
+	COURSES_PUBLIC_BUCKET        = "courses-public-zicops"
 	ZICOPS_ASSETS_BUCKET         = "zicops-assets"
 )
 
