@@ -1,20 +1,16 @@
 package handlers
 
 import (
-	"archive/zip"
 	"bytes"
 	"context"
 	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
-	"os"
 	"path/filepath"
 	"strconv"
 	"strings"
-	"sync"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -504,117 +500,18 @@ func UploadTopicStaticContent(ctx context.Context, file *model.StaticContent) (*
 		hashBytes := hash.Sum(nil)
 		hashString := hex.EncodeToString(hashBytes)
 		bucketPath = *file.CourseID + "/" + *file.ContentID + "/" + hashString
-		// upload file to bucket
-		// write zip file to local tmp folder
-		tmpFile, err := ioutil.TempFile("", "coursez")
-		if err != nil {
-			log.Errorf("Failed to upload static content to course topic: %v", err.Error())
-			return &isSuccess, nil
-		}
-		defer os.Remove(tmpFile.Name())
-		_, err = io.Copy(tmpFile, file.File.File)
-		if err != nil {
-			log.Errorf("Failed to upload static content to course topic: %v", err.Error())
-			return &isSuccess, nil
-		}
-		w, err := storageC.UploadToGCS(ctx, bucketPath+tmpFile.Name(), map[string]string{})
+		w, err := storageC.UploadToGCS(ctx, bucketPath+file.File.Filename, map[string]string{})
 		if err != nil {
 			log.Errorf("Failed to upload static content to course topic: %v", err.Error())
 			return &isSuccess, nil
 		}
 		// write file to bucket
-		_, err = io.Copy(w, tmpFile)
+		_, err = io.Copy(w, file.File.File)
 		if err != nil {
 			log.Errorf("Failed to upload static content to course topic: %v", err.Error())
 			return &isSuccess, nil
 		}
 		err = w.Close()
-		if err != nil {
-			log.Errorf("Failed to upload static content to course topic: %v", err.Error())
-			return &isSuccess, nil
-		}
-		// unzip file in local tmp folder
-		zipReader, err := zip.OpenReader(tmpFile.Name())
-		if err != nil {
-			log.Errorf("Failed to upload static content to course topic: %v", err.Error())
-			return &isSuccess, nil
-		}
-		defer zipReader.Close()
-		var wg sync.WaitGroup
-		for _, f := range zipReader.File {
-			wg.Add(1)
-			go func(f *zip.File) {
-				defer wg.Done()
-				rc, err := f.Open()
-				if err != nil {
-					log.Errorf("Failed to upload static content to course topic: %v", err.Error())
-				}
-				defer rc.Close()
-				// Store filename/path for returning and using later on
-				fpath := filepath.Join("/tmp", f.Name)
-				// Check for ZipSlip. More Info: http://bit.ly/2MsjAWE
-				if !strings.HasPrefix(fpath, filepath.Clean("/tmp")+"/") {
-					log.Errorf("%s: illegal file path", fpath)
-				}
-				if f.FileInfo().IsDir() {
-					// Make Folder
-					os.MkdirAll(fpath, os.ModePerm)
-					return
-				}
-				// Make File
-				if err = os.MkdirAll(filepath.Dir(fpath), os.ModePerm); err != nil {
-					log.Errorf("Failed to upload static content to course topic: %v", err.Error())
-				}
-				outFile, err := os.OpenFile(fpath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, f.Mode())
-				if err != nil {
-					log.Errorf("Failed to upload static content to course topic: %v", err.Error())
-				}
-				defer outFile.Close()
-				_, err = io.Copy(outFile, rc)
-				if err != nil {
-					log.Errorf("Failed to upload static content to course topic: %v", err.Error())
-				}
-			}(f)
-		}
-		wg.Wait()
-		// upload all files in tmp folder to bucket
-		err = filepath.Walk("/tmp", func(path string, info os.FileInfo, err error) error {
-			if err != nil {
-				log.Errorf("Failed to upload static content to course topic: %v", err.Error())
-				return err
-			}
-			if info.IsDir() {
-				return nil
-			}
-			// upload file to bucket
-			// write zip file to local tmp folder
-			tmpFile, err := os.Open(path)
-			if err != nil {
-				log.Errorf("Failed to upload static content to course topic: %v", err.Error())
-				return err
-			}
-			defer tmpFile.Close()
-			// write file to bucket
-			filePath := filepath.Join(bucketPath, path)
-			w, err := storageC.UploadToGCSPub(ctx, filePath, map[string]string{})
-			if err != nil {
-				log.Errorf("Failed to upload static content to course topic: %v", err.Error())
-				return err
-			}
-			_, err = io.Copy(w, tmpFile)
-			if err != nil {
-				log.Errorf("Failed to upload static content to course topic: %v", err.Error())
-				return err
-			}
-			defer w.Close()
-			return nil
-		})
-		if err != nil {
-			log.Errorf("Failed to upload static content to course topic: %v", err.Error())
-			return &isSuccess, nil
-		}
-		// delete tmp folder
-		err = os.RemoveAll("/tmp")
 		if err != nil {
 			log.Errorf("Failed to upload static content to course topic: %v", err.Error())
 			return &isSuccess, nil
