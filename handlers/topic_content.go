@@ -487,7 +487,7 @@ func UploadTopicStaticContent(ctx context.Context, file *model.StaticContent) (*
 	if (file.URL == nil || *file.URL == "") && file.File != nil {
 		storageC := bucket.NewStorageHandler()
 		gproject := googleprojectlib.GetGoogleProjectID()
-		err := storageC.InitializeStorageClient(ctx, gproject, lspId)
+		err := storageC.InitializeStorageClient(ctx, gproject, "static-content-private")
 		if err != nil {
 			log.Errorf("Failed to upload static content to course topic: %v", err.Error())
 			return &isSuccess, nil
@@ -500,7 +500,7 @@ func UploadTopicStaticContent(ctx context.Context, file *model.StaticContent) (*
 		hashBytes := hash.Sum(nil)
 		hashString := hex.EncodeToString(hashBytes)
 		bucketPath = *file.CourseID + "/" + *file.ContentID + "/" + hashString
-		w, err := storageC.UploadToGCS(ctx, bucketPath+file.File.Filename, map[string]string{})
+		w, err := storageC.UploadToGCS(ctx, lspId+"/"+bucketPath+file.File.Filename, map[string]string{})
 		if err != nil {
 			log.Errorf("Failed to upload static content to course topic: %v", err.Error())
 			return &isSuccess, nil
