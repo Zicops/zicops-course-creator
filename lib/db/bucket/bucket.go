@@ -139,6 +139,6 @@ func (sc *Client) GetSignedURLForObjectPub(object string) string {
 	// if err != nil {
 	// 	return ""
 	// }
-	url := "https://storage.googleapis.com/" + constants.COURSES_PUBLIC_BUCKET + "/" + object
+	url := "https://storage.googleapis.com/" + "courses-public-zicops-deploy" + "/" + object
 	return url
 }
