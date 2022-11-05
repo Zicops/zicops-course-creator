@@ -26,6 +26,7 @@ func CCRouter() (*gin.Engine, error) {
 	configCors := cors.DefaultConfig()
 	configCors.AllowAllOrigins = true
 	configCors.AllowHeaders = []string{"Origin", "Content-Length", "Content-Type", "Authorization"}
+	restRouter.MaxMultipartMemory = 200 << 20 // 200 MiB
 	restRouter.Use(cors.New(configCors))
 	restRouter.Use(func(c *gin.Context) {
 		currentRequest := c.Request
