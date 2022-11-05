@@ -1,4 +1,2 @@
 # zicops-course-creator
   
-   
-TODO

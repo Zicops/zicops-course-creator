@@ -1,19 +1,16 @@
 package handlers
 
 import (
-	"archive/zip"
 	"bytes"
 	"context"
 	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"path/filepath"
 	"strconv"
 	"strings"
-	"sync"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -490,7 +487,7 @@ func UploadTopicStaticContent(ctx context.Context, file *model.StaticContent) (*
 	if (file.URL == nil || *file.URL == "") && file.File != nil {
 		storageC := bucket.NewStorageHandler()
 		gproject := googleprojectlib.GetGoogleProjectID()
-		err := storageC.InitializeStorageClient(ctx, gproject, lspId)
+		err := storageC.InitializeStorageClient(ctx, gproject, "static-content-private")
 		if err != nil {
 			log.Errorf("Failed to upload static content to course topic: %v", err.Error())
 			return &isSuccess, nil
@@ -502,52 +499,23 @@ func UploadTopicStaticContent(ctx context.Context, file *model.StaticContent) (*
 		hash.Write([]byte(baseDir))
 		hashBytes := hash.Sum(nil)
 		hashString := hex.EncodeToString(hashBytes)
-		bucketPath = *file.CourseID + "/" + *file.ContentID + "/" + hashString
-		// upload file to bucket
-		b, err := ioutil.ReadAll(file.File.File)
+		bucketPath = lspId + "/" + *file.CourseID + "/" + *file.ContentID + "/" + hashString+"/"+file.File.Filename
+		w, err := storageC.UploadToGCS(ctx, bucketPath, map[string]string{})
 		if err != nil {
-			return nil, err
+			log.Errorf("Failed to upload static content to course topic: %v", err.Error())
+			return &isSuccess, nil
 		}
-		newReader := bytes.NewReader(b)
-
-		zr, err := zip.NewReader(newReader, newReader.Size())
+		// write file to bucket
+		_, err = io.Copy(w, file.File.File)
 		if err != nil {
-			return nil, err
+			log.Errorf("Failed to upload static content to course topic: %v", err.Error())
+			return &isSuccess, nil
 		}
-		// go routine to upload files to bucket
-		var wg sync.WaitGroup
-		for _, f := range zr.File {
-			wg.Add(1)
-			go func(f *zip.File) {
-				defer wg.Done()
-				err := func() error {
-					r, err := f.Open()
-					if err != nil {
-						log.Errorf("Failed to open file: %v", err.Error())
-					}
-					defer r.Close()
-
-					filePath := filepath.Join(bucketPath, f.Name)
-					w, err := storageC.UploadToGCSPub(ctx, filePath, map[string]string{})
-					if err != nil {
-						log.Errorf("Failed to upload file: %v", err.Error())
-					}
-					_, err = io.Copy(w, r)
-					if err != nil {
-						log.Errorf("Failed to copy file: %v", err.Error())
-					}
-					err = w.Close()
-					if err != nil {
-						log.Errorf("Failed to close file: %v", err.Error())
-					}
-					return nil
-				}()
-				if err != nil {
-					log.Errorf("Failed to upload static content to course topic: %v", err.Error())
-				}
-			}(f)
+		err = w.Close()
+		if err != nil {
+			log.Errorf("Failed to upload static content to course topic: %v", err.Error())
+			return &isSuccess, nil
 		}
-		wg.Wait()
 		currentType := strings.ToLower(strings.TrimSpace(file.Type.String()))
 		urlPath := bucketPath
 		if currentType != "" {
@@ -581,7 +549,7 @@ func UploadStaticZipHandler(c *gin.Context) (*model.UploadResult, error) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return nil, err
 	}
-	return  UploadTopicStaticContent(c, &file)
+	return UploadTopicStaticContent(c, &file)
 }
 func GetTopicContent(ctx context.Context, courseID string, lspID string, session *gocqlx.Session) *coursez.TopicContent {
 	chapters := []coursez.TopicContent{}
