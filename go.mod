@@ -6,6 +6,8 @@ require (
 	cloud.google.com/go/compute v1.10.0
 	cloud.google.com/go/storage v1.27.0
 	github.com/99designs/gqlgen v0.17.20
+	github.com/aws/aws-sdk-go-v2 v1.17.1
+	github.com/aws/aws-sdk-go-v2/service/amplify v1.11.20
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/gin-contrib/cors v1.4.0
 	github.com/gin-gonic/gin v1.8.1
@@ -24,6 +26,9 @@ require (
 	cloud.google.com/go v0.104.0 // indirect
 	cloud.google.com/go/iam v0.5.0 // indirect
 	github.com/agnivade/levenshtein v1.1.1 // indirect
+	github.com/aws/aws-sdk-go-v2/internal/configsources v1.1.25 // indirect
+	github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.4.19 // indirect
+	github.com/aws/smithy-go v1.13.4 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.2 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
 	github.com/go-playground/locales v0.14.0 // indirect
