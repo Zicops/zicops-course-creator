@@ -144,6 +144,6 @@ func DeployStatic(ctx context.Context, data StorageObjectData) (string, error) {
 	}
 	//delete zip file
 	ioutil.WriteFile("static.zip", []byte{}, 0644)
-	amplifyUrl := fmt.Sprintf("https://%s.%s.amplifyapp.com/", *ampCreateBranchOutput.Branch.BranchName, appID)
+	amplifyUrl := fmt.Sprintf("https://%s.%s.amplifyapp.com/", *ampCreateBranchOutput.Branch.BranchName, data.ContentID)
 	return amplifyUrl, nil
 }
