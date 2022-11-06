@@ -486,6 +486,10 @@ func UploadTopicStaticContent(ctx context.Context, file *model.StaticContent) (*
 	bucketPath := ""
 	getUrl := ""
 	if (file.URL == nil || *file.URL == "") && file.File != nil {
+		// check if file.File.FileName is .zip.gz
+		if !strings.Contains(file.File.Filename, ".zip.gz") {
+			return nil, fmt.Errorf("file should be .zip.gz: gzip compressed zip file")
+		}
 		storageC := bucket.NewStorageHandler()
 		gproject := googleprojectlib.GetGoogleProjectID()
 		err := storageC.InitializeStorageClient(ctx, gproject, "static-content-private")
