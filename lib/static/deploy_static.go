@@ -79,6 +79,7 @@ func DeployStatic(ctx context.Context, data StorageObjectData) (string, error) {
 	if err != nil {
 		return "", err
 	}
+	appID = *ampAppOutput.App.AppId
 	ampCreateBranchInput := amplify.CreateBranchInput{}
 	ampCreateBranchInput.AppId = ampAppOutput.App.AppId
 	ampCreateBranchInput.BranchName = aws.String("master")
