@@ -2,10 +2,8 @@ package deploy_static
 
 import (
 	"bytes"
-	"compress/gzip"
 	"context"
 	"fmt"
-	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -63,17 +61,7 @@ func DeployStatic(ctx context.Context, data StorageObjectData) (string, error) {
 		}
 		br := bytes.NewBuffer(b)
 
-		var r io.Reader
-		r, err = gzip.NewReader(br)
-		if err != nil {
-			return "", err
-		}
-		var resB bytes.Buffer
-		_, err = resB.ReadFrom(r)
-		if err != nil {
-			return "", err
-		}
-		zipBytes := resB.Bytes()
+		zipBytes := br.Bytes()
 		// write zip file to disk
 		{
 			err = ioutil.WriteFile("static.zip", zipBytes, 0644)
