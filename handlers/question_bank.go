@@ -288,7 +288,7 @@ func BulkAddQuestionBankQuestions(ctx context.Context, qbID string, qfile graphq
 		return false, err
 	}
 	for i, row := range csvData {
-		if i < 4 {
+		if i < 3 {
 			continue
 		}
 		go populateQuestionBankQuestions(ctx, row, i, qbID, email_creator, lspID, CassSession)
