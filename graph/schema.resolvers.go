@@ -6,6 +6,7 @@ package graph
 import (
 	"context"
 
+	"github.com/99designs/gqlgen/graphql"
 	log "github.com/sirupsen/logrus"
 	"github.com/zicops/zicops-course-creator/graph/generated"
 	"github.com/zicops/zicops-course-creator/graph/model"
@@ -386,6 +387,15 @@ func (r *mutationResolver) DeleteQuestionBank(ctx context.Context, id *string) (
 	if err != nil {
 		log.Errorf("error delete DeleteQuestionBank : %v", err)
 		return nil, err
+	}
+	return resp, nil
+}
+
+func (r *mutationResolver) BulkAddQuestionBankQuestions(ctx context.Context, qbID string, qfile graphql.Upload) (bool, error) {
+	resp, err := handlers.BulkAddQuestionBankQuestions(ctx, qbID, qfile)
+	if err != nil {
+		log.Errorf("error adding questions: %v", err)
+		return false, err
 	}
 	return resp, nil
 }
