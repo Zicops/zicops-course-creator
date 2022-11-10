@@ -835,6 +835,7 @@ type Mutation {
   createQuestionBank(input: QuestionBankInput): QuestionBank
   updateQuestionBank(input: QuestionBankInput): QuestionBank
   deleteQuestionBank(id: ID): Boolean
+  bulkAddQuestionBankQuestions(qbId: String!, qfile: Upload!): Boolean!
   addQuestionBankQuestion(
     input: QuestionBankQuestionInput
   ): QuestionBankQuestion

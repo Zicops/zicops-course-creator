@@ -6,8 +6,11 @@ import (
 	"errors"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/99designs/gqlgen/graphql/handler"
+	"github.com/99designs/gqlgen/graphql/handler/extension"
+	"github.com/99designs/gqlgen/graphql/handler/lru"
 	"github.com/99designs/gqlgen/graphql/handler/transport"
 	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/gin-contrib/cors"
@@ -102,15 +105,27 @@ func ResponseError(w http.ResponseWriter, httpStatusCode int, err error) {
 }
 
 func graphqlHandler() gin.HandlerFunc {
-	// NewExecutableSchema and Config are in the generated.go file
-	// Resolver is in the resolver.go file
-	h := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &graph.Resolver{}}))
-	var mb int64 = 1 << 20
-	h.AddTransport(transport.MultipartForm{
-		MaxMemory:     100 * mb,
-		MaxUploadSize: 100 * mb,
-	})
 	return func(c *gin.Context) {
+		// NewExecutableSchema and Config are in the generated.go file
+		// Resolver is in the resolver.go file
+		srv := handler.New(generated.NewExecutableSchema(generated.Config{Resolvers: &graph.Resolver{}}))
+		srv.AddTransport(transport.Websocket{
+			KeepAlivePingInterval: 10 * time.Second,
+		})
+		srv.AddTransport(transport.Options{})
+		srv.AddTransport(transport.GET{})
+		srv.AddTransport(transport.POST{})
+		cache := lru.New(1000)
+		srv.SetQueryCache(cache)
+		srv.Use(extension.Introspection{})
+		srv.Use(extension.AutomaticPersistedQuery{
+			Cache: lru.New(100),
+		})
+		var mb int64 = 1 << 20
+		srv.AddTransport(transport.MultipartForm{
+			MaxMemory:     250 * mb,
+			MaxUploadSize: 250 * mb,
+		})
 		ctxValue := c.Value("zclaims").(map[string]interface{})
 		lspIdInt := ctxValue["tenant"]
 		lspID := "d8685567-cdae-4ee0-a80e-c187848a760e"
@@ -121,7 +136,7 @@ func graphqlHandler() gin.HandlerFunc {
 		// set ctxValue to request context
 		request := c.Request
 		requestWithValue := request.WithContext(context.WithValue(request.Context(), "zclaims", ctxValue))
-		h.ServeHTTP(c.Writer, requestWithValue)
+		srv.ServeHTTP(c.Writer, requestWithValue)
 	}
 }
 

@@ -24,6 +24,7 @@ import (
 	"github.com/zicops/zicops-course-creator/helpers"
 	"github.com/zicops/zicops-course-creator/lib/db/bucket"
 	"github.com/zicops/zicops-course-creator/lib/googleprojectlib"
+	deploy_static "github.com/zicops/zicops-course-creator/lib/static"
 )
 
 func TopicContentCreate(ctx context.Context, topicID string, courseID string, moduleID *string, topicConent *model.TopicContentInput) (*model.TopicContent, error) {
@@ -485,6 +486,10 @@ func UploadTopicStaticContent(ctx context.Context, file *model.StaticContent) (*
 	bucketPath := ""
 	getUrl := ""
 	if (file.URL == nil || *file.URL == "") && file.File != nil {
+		// check if file.File.FileName is .zip.gz
+		if !strings.Contains(file.File.Filename, ".zip") {
+			return nil, fmt.Errorf("file should be .zip")
+		}
 		storageC := bucket.NewStorageHandler()
 		gproject := googleprojectlib.GetGoogleProjectID()
 		err := storageC.InitializeStorageClient(ctx, gproject, "static-content-private")
@@ -492,6 +497,12 @@ func UploadTopicStaticContent(ctx context.Context, file *model.StaticContent) (*
 			log.Errorf("Failed to upload static content to course topic: %v", err.Error())
 			return &isSuccess, nil
 		}
+		err = deploy_static.Initialize(storageC)
+		if err != nil {
+			log.Errorf("Failed to upload static content to course topic: %v", err.Error())
+			return &isSuccess, nil
+		}
+
 		baseDir := strings.TrimSuffix(file.File.Filename, filepath.Ext(file.File.Filename))
 		baseDir = strings.Split(baseDir, ".")[0]
 		// convert baseDir to cryptographic hash
@@ -499,8 +510,8 @@ func UploadTopicStaticContent(ctx context.Context, file *model.StaticContent) (*
 		hash.Write([]byte(baseDir))
 		hashBytes := hash.Sum(nil)
 		hashString := hex.EncodeToString(hashBytes)
-		bucketPath = lspId + "/" + *file.CourseID + "/" + *file.ContentID + "/" + hashString+"/"+file.File.Filename
-		w, err := storageC.UploadToGCS(ctx, bucketPath, map[string]string{})
+		bucketPath = lspId + "/" + *file.CourseID + "/" + *file.ContentID + "/" + hashString + "/"
+		w, err := storageC.UploadToGCS(ctx, bucketPath+file.File.Filename, map[string]string{})
 		if err != nil {
 			log.Errorf("Failed to upload static content to course topic: %v", err.Error())
 			return &isSuccess, nil
@@ -517,14 +528,21 @@ func UploadTopicStaticContent(ctx context.Context, file *model.StaticContent) (*
 			return &isSuccess, nil
 		}
 		currentType := strings.ToLower(strings.TrimSpace(file.Type.String()))
-		urlPath := bucketPath
+		dataStorage := deploy_static.StorageObjectData{}
+		dataStorage.Bucket = "static-content-private"
+		dataStorage.Name = bucketPath + file.File.Filename
+		dataStorage.ContentID = *file.ContentID
+		outputAmp, err := deploy_static.DeployStatic(ctx, dataStorage)
+		if err != nil {
+			log.Errorf("Failed to upload static content to course topic: %v", err.Error())
+			return &isSuccess, nil
+		}
+		getUrl = outputAmp
 		if currentType != "" {
-			urlPath = urlPath + "/" + constants.StaticTypeMap[currentType]
+			getUrl = getUrl + constants.StaticTypeMap[currentType]
 		} else {
 			return nil, fmt.Errorf("type is empty or not supported")
 		}
-		getUrl = storageC.GetSignedURLForObjectPub(urlPath)
-		bucketPath = urlPath
 
 	} else {
 		getUrl = *file.URL

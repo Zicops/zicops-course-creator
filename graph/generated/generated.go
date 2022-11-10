@@ -212,84 +212,85 @@ type ComplexityRoot struct {
 	}
 
 	Mutation struct {
-		AddCatMain                  func(childComplexity int, input []*model.CatMainInput) int
-		AddCatSubMapping            func(childComplexity int, category *string, subCategory []*string) int
-		AddCategories               func(childComplexity int, category []*string) int
-		AddCourse                   func(childComplexity int, course *model.CourseInput) int
-		AddCourseChapter            func(childComplexity int, courseID *string, chapter *model.ChapterInput) int
-		AddCourseCohort             func(childComplexity int, input *model.CourseCohortInput) int
-		AddCourseModule             func(childComplexity int, courseID *string, module *model.ModuleInput) int
-		AddCourseTopic              func(childComplexity int, courseID *string, topic *model.TopicInput) int
-		AddExam                     func(childComplexity int, input *model.ExamInput) int
-		AddExamCohort               func(childComplexity int, input *model.ExamCohortInput) int
-		AddExamConfiguration        func(childComplexity int, input *model.ExamConfigurationInput) int
-		AddExamInstruction          func(childComplexity int, input *model.ExamInstructionInput) int
-		AddExamSchedule             func(childComplexity int, input *model.ExamScheduleInput) int
-		AddQuestionBankQuestion     func(childComplexity int, input *model.QuestionBankQuestionInput) int
-		AddQuestionOptions          func(childComplexity int, input *model.QuestionOptionInput) int
-		AddQuestionPaper            func(childComplexity int, input *model.QuestionPaperInput) int
-		AddQuestionPaperSection     func(childComplexity int, input *model.QuestionPaperSectionInput) int
-		AddQuiz                     func(childComplexity int, quiz *model.QuizInput) int
-		AddQuizDescriptive          func(childComplexity int, quiz *model.QuizDescriptive) int
-		AddQuizMcq                  func(childComplexity int, quiz *model.QuizMcq) int
-		AddSectionFixedQuestions    func(childComplexity int, input *model.SectionFixedQuestionsInput) int
-		AddSubCatMain               func(childComplexity int, input []*model.SubCatMainInput) int
-		AddSubCategories            func(childComplexity int, subCategory []*string) int
-		AddTopicContent             func(childComplexity int, topicID *string, courseID *string, moduleID *string, topicContent *model.TopicContentInput) int
-		AddTopicExam                func(childComplexity int, topicID *string, courseID *string, exam *model.TopicExamInput) int
-		CreateQuestionBank          func(childComplexity int, input *model.QuestionBankInput) int
-		DeleteCatMain               func(childComplexity int, id *string) int
-		DeleteCourse                func(childComplexity int, id *string) int
-		DeleteCourseChapter         func(childComplexity int, id *string) int
-		DeleteCourseCohort          func(childComplexity int, id *string) int
-		DeleteCourseModule          func(childComplexity int, id *string) int
-		DeleteCourseTopic           func(childComplexity int, id *string) int
-		DeleteExam                  func(childComplexity int, id *string) int
-		DeleteExamCohort            func(childComplexity int, id *string) int
-		DeleteExamConfiguration     func(childComplexity int, id *string) int
-		DeleteExamInstruction       func(childComplexity int, id *string) int
-		DeleteExamSchedule          func(childComplexity int, id *string) int
-		DeleteQuestionBank          func(childComplexity int, id *string) int
-		DeleteQuestionBankQuestion  func(childComplexity int, id *string) int
-		DeleteQuestionOptions       func(childComplexity int, id *string) int
-		DeleteQuestionPaper         func(childComplexity int, id *string) int
-		DeleteQuestionPaperSection  func(childComplexity int, id *string) int
-		DeleteQuiz                  func(childComplexity int, id *string) int
-		DeleteSectionFixedQuestions func(childComplexity int, id *string) int
-		DeleteSectionToBank         func(childComplexity int, id *string) int
-		DeleteSubCatMain            func(childComplexity int, id *string) int
-		DeleteTopicContent          func(childComplexity int, id *string) int
-		DeleteTopicExam             func(childComplexity int, id *string) int
-		DeleteTopicResource         func(childComplexity int, id *string) int
-		MapSectionToBank            func(childComplexity int, input *model.MapSectionToBankInput) int
-		UpdateCourse                func(childComplexity int, course *model.CourseInput) int
-		UpdateCourseChapter         func(childComplexity int, chapter *model.ChapterInput) int
-		UpdateCourseCohort          func(childComplexity int, input *model.CourseCohortInput) int
-		UpdateCourseModule          func(childComplexity int, module *model.ModuleInput) int
-		UpdateCourseTopic           func(childComplexity int, topic *model.TopicInput) int
-		UpdateExam                  func(childComplexity int, input *model.ExamInput) int
-		UpdateExamCohort            func(childComplexity int, input *model.ExamCohortInput) int
-		UpdateExamConfiguration     func(childComplexity int, input *model.ExamConfigurationInput) int
-		UpdateExamInstruction       func(childComplexity int, input *model.ExamInstructionInput) int
-		UpdateExamSchedule          func(childComplexity int, input *model.ExamScheduleInput) int
-		UpdateQuestionBank          func(childComplexity int, input *model.QuestionBankInput) int
-		UpdateQuestionBankQuestion  func(childComplexity int, input *model.QuestionBankQuestionInput) int
-		UpdateQuestionOptions       func(childComplexity int, input *model.QuestionOptionInput) int
-		UpdateQuestionPaper         func(childComplexity int, input *model.QuestionPaperInput) int
-		UpdateQuestionPaperSection  func(childComplexity int, input *model.QuestionPaperSectionInput) int
-		UpdateQuiz                  func(childComplexity int, quiz *model.QuizInput) int
-		UpdateSectionFixedQuestions func(childComplexity int, input *model.SectionFixedQuestionsInput) int
-		UpdateSectionToBank         func(childComplexity int, input *model.MapSectionToBankInput) int
-		UpdateTopicContent          func(childComplexity int, topicContent *model.TopicContentInput, moduleID *string) int
-		UpdateTopicExam             func(childComplexity int, exam *model.TopicExamInput) int
-		UploadCourseImage           func(childComplexity int, file *model.CourseFile) int
-		UploadCoursePreviewVideo    func(childComplexity int, file *model.CourseFile) int
-		UploadCourseTileImage       func(childComplexity int, file *model.CourseFile) int
-		UploadQuizFile              func(childComplexity int, courseID *string, file *model.QuizFile) int
-		UploadTopicContentSubtitle  func(childComplexity int, file []*model.TopicSubtitle) int
-		UploadTopicContentVideo     func(childComplexity int, file *model.TopicVideo) int
-		UploadTopicResource         func(childComplexity int, courseID *string, resource *model.TopicResourceInput) int
-		UploadTopicStaticContent    func(childComplexity int, file *model.StaticContent) int
+		AddCatMain                   func(childComplexity int, input []*model.CatMainInput) int
+		AddCatSubMapping             func(childComplexity int, category *string, subCategory []*string) int
+		AddCategories                func(childComplexity int, category []*string) int
+		AddCourse                    func(childComplexity int, course *model.CourseInput) int
+		AddCourseChapter             func(childComplexity int, courseID *string, chapter *model.ChapterInput) int
+		AddCourseCohort              func(childComplexity int, input *model.CourseCohortInput) int
+		AddCourseModule              func(childComplexity int, courseID *string, module *model.ModuleInput) int
+		AddCourseTopic               func(childComplexity int, courseID *string, topic *model.TopicInput) int
+		AddExam                      func(childComplexity int, input *model.ExamInput) int
+		AddExamCohort                func(childComplexity int, input *model.ExamCohortInput) int
+		AddExamConfiguration         func(childComplexity int, input *model.ExamConfigurationInput) int
+		AddExamInstruction           func(childComplexity int, input *model.ExamInstructionInput) int
+		AddExamSchedule              func(childComplexity int, input *model.ExamScheduleInput) int
+		AddQuestionBankQuestion      func(childComplexity int, input *model.QuestionBankQuestionInput) int
+		AddQuestionOptions           func(childComplexity int, input *model.QuestionOptionInput) int
+		AddQuestionPaper             func(childComplexity int, input *model.QuestionPaperInput) int
+		AddQuestionPaperSection      func(childComplexity int, input *model.QuestionPaperSectionInput) int
+		AddQuiz                      func(childComplexity int, quiz *model.QuizInput) int
+		AddQuizDescriptive           func(childComplexity int, quiz *model.QuizDescriptive) int
+		AddQuizMcq                   func(childComplexity int, quiz *model.QuizMcq) int
+		AddSectionFixedQuestions     func(childComplexity int, input *model.SectionFixedQuestionsInput) int
+		AddSubCatMain                func(childComplexity int, input []*model.SubCatMainInput) int
+		AddSubCategories             func(childComplexity int, subCategory []*string) int
+		AddTopicContent              func(childComplexity int, topicID *string, courseID *string, moduleID *string, topicContent *model.TopicContentInput) int
+		AddTopicExam                 func(childComplexity int, topicID *string, courseID *string, exam *model.TopicExamInput) int
+		BulkAddQuestionBankQuestions func(childComplexity int, qbID string, qfile graphql.Upload) int
+		CreateQuestionBank           func(childComplexity int, input *model.QuestionBankInput) int
+		DeleteCatMain                func(childComplexity int, id *string) int
+		DeleteCourse                 func(childComplexity int, id *string) int
+		DeleteCourseChapter          func(childComplexity int, id *string) int
+		DeleteCourseCohort           func(childComplexity int, id *string) int
+		DeleteCourseModule           func(childComplexity int, id *string) int
+		DeleteCourseTopic            func(childComplexity int, id *string) int
+		DeleteExam                   func(childComplexity int, id *string) int
+		DeleteExamCohort             func(childComplexity int, id *string) int
+		DeleteExamConfiguration      func(childComplexity int, id *string) int
+		DeleteExamInstruction        func(childComplexity int, id *string) int
+		DeleteExamSchedule           func(childComplexity int, id *string) int
+		DeleteQuestionBank           func(childComplexity int, id *string) int
+		DeleteQuestionBankQuestion   func(childComplexity int, id *string) int
+		DeleteQuestionOptions        func(childComplexity int, id *string) int
+		DeleteQuestionPaper          func(childComplexity int, id *string) int
+		DeleteQuestionPaperSection   func(childComplexity int, id *string) int
+		DeleteQuiz                   func(childComplexity int, id *string) int
+		DeleteSectionFixedQuestions  func(childComplexity int, id *string) int
+		DeleteSectionToBank          func(childComplexity int, id *string) int
+		DeleteSubCatMain             func(childComplexity int, id *string) int
+		DeleteTopicContent           func(childComplexity int, id *string) int
+		DeleteTopicExam              func(childComplexity int, id *string) int
+		DeleteTopicResource          func(childComplexity int, id *string) int
+		MapSectionToBank             func(childComplexity int, input *model.MapSectionToBankInput) int
+		UpdateCourse                 func(childComplexity int, course *model.CourseInput) int
+		UpdateCourseChapter          func(childComplexity int, chapter *model.ChapterInput) int
+		UpdateCourseCohort           func(childComplexity int, input *model.CourseCohortInput) int
+		UpdateCourseModule           func(childComplexity int, module *model.ModuleInput) int
+		UpdateCourseTopic            func(childComplexity int, topic *model.TopicInput) int
+		UpdateExam                   func(childComplexity int, input *model.ExamInput) int
+		UpdateExamCohort             func(childComplexity int, input *model.ExamCohortInput) int
+		UpdateExamConfiguration      func(childComplexity int, input *model.ExamConfigurationInput) int
+		UpdateExamInstruction        func(childComplexity int, input *model.ExamInstructionInput) int
+		UpdateExamSchedule           func(childComplexity int, input *model.ExamScheduleInput) int
+		UpdateQuestionBank           func(childComplexity int, input *model.QuestionBankInput) int
+		UpdateQuestionBankQuestion   func(childComplexity int, input *model.QuestionBankQuestionInput) int
+		UpdateQuestionOptions        func(childComplexity int, input *model.QuestionOptionInput) int
+		UpdateQuestionPaper          func(childComplexity int, input *model.QuestionPaperInput) int
+		UpdateQuestionPaperSection   func(childComplexity int, input *model.QuestionPaperSectionInput) int
+		UpdateQuiz                   func(childComplexity int, quiz *model.QuizInput) int
+		UpdateSectionFixedQuestions  func(childComplexity int, input *model.SectionFixedQuestionsInput) int
+		UpdateSectionToBank          func(childComplexity int, input *model.MapSectionToBankInput) int
+		UpdateTopicContent           func(childComplexity int, topicContent *model.TopicContentInput, moduleID *string) int
+		UpdateTopicExam              func(childComplexity int, exam *model.TopicExamInput) int
+		UploadCourseImage            func(childComplexity int, file *model.CourseFile) int
+		UploadCoursePreviewVideo     func(childComplexity int, file *model.CourseFile) int
+		UploadCourseTileImage        func(childComplexity int, file *model.CourseFile) int
+		UploadQuizFile               func(childComplexity int, courseID *string, file *model.QuizFile) int
+		UploadTopicContentSubtitle   func(childComplexity int, file []*model.TopicSubtitle) int
+		UploadTopicContentVideo      func(childComplexity int, file *model.TopicVideo) int
+		UploadTopicResource          func(childComplexity int, courseID *string, resource *model.TopicResourceInput) int
+		UploadTopicStaticContent     func(childComplexity int, file *model.StaticContent) int
 	}
 
 	Query struct {
@@ -533,6 +534,7 @@ type MutationResolver interface {
 	CreateQuestionBank(ctx context.Context, input *model.QuestionBankInput) (*model.QuestionBank, error)
 	UpdateQuestionBank(ctx context.Context, input *model.QuestionBankInput) (*model.QuestionBank, error)
 	DeleteQuestionBank(ctx context.Context, id *string) (*bool, error)
+	BulkAddQuestionBankQuestions(ctx context.Context, qbID string, qfile graphql.Upload) (bool, error)
 	AddQuestionBankQuestion(ctx context.Context, input *model.QuestionBankQuestionInput) (*model.QuestionBankQuestion, error)
 	UpdateQuestionBankQuestion(ctx context.Context, input *model.QuestionBankQuestionInput) (*model.QuestionBankQuestion, error)
 	DeleteQuestionBankQuestion(ctx context.Context, id *string) (*bool, error)
@@ -1865,6 +1867,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.AddTopicExam(childComplexity, args["topicId"].(*string), args["courseId"].(*string), args["exam"].(*model.TopicExamInput)), true
+
+	case "Mutation.bulkAddQuestionBankQuestions":
+		if e.complexity.Mutation.BulkAddQuestionBankQuestions == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_bulkAddQuestionBankQuestions_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.BulkAddQuestionBankQuestions(childComplexity, args["qbId"].(string), args["qfile"].(graphql.Upload)), true
 
 	case "Mutation.createQuestionBank":
 		if e.complexity.Mutation.CreateQuestionBank == nil {
@@ -3613,860 +3627,888 @@ var sources = []*ast.Source{
 scalar Upload
 
 type sub_categories {
-    name: String
-    rank: Int
+  name: String
+  rank: Int
 }
 input sub_categories_input {
-    name: String
-    rank: Int
+  name: String
+  rank: Int
 }
 # define course type
-type Course{
-    id: ID
-    name: String
-    lspId: String
-    publisher: String
-    description: String
-    summary: String
-    instructor: String
-    image: String
-    previewVideo: String
-    tileImage: String
-    owner: String
-    duration: Int
-    expertise_level: String
-    language: [String]
-    benefits: [String]
-    outcomes: [String]
-    created_at: String
-    updated_at: String
-    type: String
-    prequisites: [String]
-    goodFor: [String]
-    mustFor: [String]
-    related_skills: [String]
-    publish_date: String
-    expiry_date: String
-    expected_completion: String
-    qa_required: Boolean
-    approvers: [String]
-    created_by: String
-    updated_by: String
-    status: Status
-    is_display: Boolean
-    category: String
-    sub_category: String
-    sub_categories: [sub_categories]
-    is_active: Boolean
+type Course {
+  id: ID
+  name: String
+  lspId: String
+  publisher: String
+  description: String
+  summary: String
+  instructor: String
+  image: String
+  previewVideo: String
+  tileImage: String
+  owner: String
+  duration: Int
+  expertise_level: String
+  language: [String]
+  benefits: [String]
+  outcomes: [String]
+  created_at: String
+  updated_at: String
+  type: String
+  prequisites: [String]
+  goodFor: [String]
+  mustFor: [String]
+  related_skills: [String]
+  publish_date: String
+  expiry_date: String
+  expected_completion: String
+  qa_required: Boolean
+  approvers: [String]
+  created_by: String
+  updated_by: String
+  status: Status
+  is_display: Boolean
+  category: String
+  sub_category: String
+  sub_categories: [sub_categories]
+  is_active: Boolean
 }
 
 enum Status {
-    SAVED
-    APPROVAL_PENDING
-    ON_HOLD
-    APPROVED
-    PUBLISHED
-    REJECTED
+  SAVED
+  APPROVAL_PENDING
+  ON_HOLD
+  APPROVED
+  PUBLISHED
+  REJECTED
 }
 
-input CourseInput{
-    id: ID    
-    name: String
-    lspId: String
-    publisher: String
-    description: String
-    summary: String
-    instructor: String
-    image: String
-    previewVideo: String
-    tileImage: String
-    owner: String
-    duration: Int
-    expertise_level: String
-    language: [String]
-    benefits: [String]
-    outcomes: [String]
-    type: String
-    prequisites: [String]
-    goodFor: [String]
-    mustFor: [String]
-    related_skills: [String]
-    publish_date: String
-    expiry_date: String
-    expected_completion: String
-    qa_required: Boolean
-    approvers: [String]
-    created_by: String
-    updated_by: String
-    status: Status
-    is_display: Boolean
-    category: String
-    sub_category: String
-    sub_categories: [sub_categories_input]
-    is_active: Boolean
+input CourseInput {
+  id: ID
+  name: String
+  lspId: String
+  publisher: String
+  description: String
+  summary: String
+  instructor: String
+  image: String
+  previewVideo: String
+  tileImage: String
+  owner: String
+  duration: Int
+  expertise_level: String
+  language: [String]
+  benefits: [String]
+  outcomes: [String]
+  type: String
+  prequisites: [String]
+  goodFor: [String]
+  mustFor: [String]
+  related_skills: [String]
+  publish_date: String
+  expiry_date: String
+  expected_completion: String
+  qa_required: Boolean
+  approvers: [String]
+  created_by: String
+  updated_by: String
+  status: Status
+  is_display: Boolean
+  category: String
+  sub_category: String
+  sub_categories: [sub_categories_input]
+  is_active: Boolean
 }
 
-input CourseFile{
-    file: Upload
-    courseId: String
+input CourseFile {
+  file: Upload
+  courseId: String
 }
-input ModuleInput{
-    id: ID
-    name: String
-    isChapter: Boolean
-    description: String
-    courseId: String
-    owner: String
-    duration: Int
-    level : String
-    sequence: Int
-    setGlobal: Boolean
+input ModuleInput {
+  id: ID
+  name: String
+  isChapter: Boolean
+  description: String
+  courseId: String
+  owner: String
+  duration: Int
+  level: String
+  sequence: Int
+  setGlobal: Boolean
 }
 
-type Module{
-    id: ID
-    name: String
-    isChapter: Boolean
-    description: String
-    courseId: String
-    owner: String
-    duration: Int
-    created_at: String
-    updated_at: String
-    level : String
-    sequence: Int
-    setGlobal: Boolean
+type Module {
+  id: ID
+  name: String
+  isChapter: Boolean
+  description: String
+  courseId: String
+  owner: String
+  duration: Int
+  created_at: String
+  updated_at: String
+  level: String
+  sequence: Int
+  setGlobal: Boolean
 }
 
 input ChapterInput {
-    id: ID
-    name: String
-    description: String
-    moduleId: String
-    courseId: String
-    sequence: Int
+  id: ID
+  name: String
+  description: String
+  moduleId: String
+  courseId: String
+  sequence: Int
 }
 
 type Chapter {
-    id: ID
-    name: String
-    description: String
-    moduleId: String
-    courseId: String
-    created_at: String
-    updated_at: String
-    sequence: Int
+  id: ID
+  name: String
+  description: String
+  moduleId: String
+  courseId: String
+  created_at: String
+  updated_at: String
+  sequence: Int
 }
 
 input TopicInput {
-    id: ID
-    name: String
-    description: String
-    type : String
-    moduleId: String
-    chapterId: String
-    courseId: String
-    sequence: Int
-    created_by: String
-    updated_by: String
+  id: ID
+  name: String
+  description: String
+  type: String
+  moduleId: String
+  chapterId: String
+  courseId: String
+  sequence: Int
+  created_by: String
+  updated_by: String
 }
 
 type Topic {
-    id: ID
-    name: String
-    description: String
-    type : String
-    moduleId: String
-    chapterId: String
-    courseId: String
-    created_at: String
-    updated_at: String
-    sequence: Int
-    created_by: String
-    updated_by: String
+  id: ID
+  name: String
+  description: String
+  type: String
+  moduleId: String
+  chapterId: String
+  courseId: String
+  created_at: String
+  updated_at: String
+  sequence: Int
+  created_by: String
+  updated_by: String
 }
 
 input TopicContentInput {
-    language: String
-    contentId: String
-    startTime: Int
-    duration: Int
-    skipIntroDuration: Int
-    nextShowTime: Int
-    fromEndTime: Int
-    type: String
-    is_default: Boolean
+  language: String
+  contentId: String
+  startTime: Int
+  duration: Int
+  skipIntroDuration: Int
+  nextShowTime: Int
+  fromEndTime: Int
+  type: String
+  is_default: Boolean
 }
 
 type TopicContent {
-    id: ID
-    language: String
-    topicId: String
-    courseId: String
-    startTime: Int
-    duration: Int
-    skipIntroDuration: Int
-    nextShowTime: Int
-    fromEndTime: Int
-    created_at: String
-    updated_at: String
-    type: String
-    is_default: Boolean
+  id: ID
+  language: String
+  topicId: String
+  courseId: String
+  startTime: Int
+  duration: Int
+  skipIntroDuration: Int
+  nextShowTime: Int
+  fromEndTime: Int
+  created_at: String
+  updated_at: String
+  type: String
+  is_default: Boolean
 }
 
-type TopicExam{
-    id: ID
-    topicId: String
-    examId: String
-    courseId: String
-    created_at: String
-    updated_at: String
-    language: String
+type TopicExam {
+  id: ID
+  topicId: String
+  examId: String
+  courseId: String
+  created_at: String
+  updated_at: String
+  language: String
 }
 
-input TopicExamInput{
-    id: ID
-    topicId: String
-    examId: String
-    created_at: String
-    updated_at: String
-    language: String
+input TopicExamInput {
+  id: ID
+  topicId: String
+  examId: String
+  created_at: String
+  updated_at: String
+  language: String
 }
 
-input TopicVideo{
-    file: Upload
-    courseId: String
-    contentId: String
+input TopicVideo {
+  file: Upload
+  courseId: String
+  contentId: String
 }
 
 input TopicSubtitle {
-    file: Upload
-    courseId: String
-    topicId: String    
-    language: String
+  file: Upload
+  courseId: String
+  topicId: String
+  language: String
 }
 
-input StaticContent{
-    type: Type
-    file: Upload
-    courseId: String
-    contentId: String
-    url: String
+input StaticContent {
+  type: Type
+  file: Upload
+  courseId: String
+  contentId: String
+  url: String
 }
 
-# enum Type 
+# enum Type
 enum Type {
-    SCORM
-    TINCAN
-    CMI5
-    HTML5
+  SCORM
+  TINCAN
+  CMI5
+  HTML5
 }
 
 type Quiz {
-    id: ID
-    name: String
-    category: String
-    type: String
-    isMandatory: Boolean
-    created_at: String
-    updated_at: String
-    topicId: String
-    courseId: String
-    questionId: String
-    qbId: String
-    weightage: Int
-    sequence: Int
-    startTime: Int
+  id: ID
+  name: String
+  category: String
+  type: String
+  isMandatory: Boolean
+  created_at: String
+  updated_at: String
+  topicId: String
+  courseId: String
+  questionId: String
+  qbId: String
+  weightage: Int
+  sequence: Int
+  startTime: Int
 }
 input QuizInput {
-    id: ID
-    name: String
-    category: String
-    type: String
-    isMandatory: Boolean
-    created_at: String
-    updated_at: String
-    topicId: String
-    courseId: String
-    questionId: String
-    qbId: String
-    weightage: Int
-    sequence: Int
-    startTime: Int
+  id: ID
+  name: String
+  category: String
+  type: String
+  isMandatory: Boolean
+  created_at: String
+  updated_at: String
+  topicId: String
+  courseId: String
+  questionId: String
+  qbId: String
+  weightage: Int
+  sequence: Int
+  startTime: Int
 }
 input QuizFile {
-    quizId: String
-    type: String
-    name: String
-    file: Upload
+  quizId: String
+  type: String
+  name: String
+  file: Upload
 }
 input QuizMcq {
-    quizId: String
-    question: String
-    options: [String]
-    correctOption: String
-    explanation: String
+  quizId: String
+  question: String
+  options: [String]
+  correctOption: String
+  explanation: String
 }
 input QuizDescriptive {
-    quizId: String
-    question: String
-    correctAnswer: String
-    explanation: String
+  quizId: String
+  question: String
+  correctAnswer: String
+  explanation: String
 }
 
 input TopicResourceInput {
-    name: String
-    type: String
-    topicId: String
-    created_at: String
-    updated_at: String
-    created_by: String
-    updated_by: String
-    url: String
-    file: Upload
+  name: String
+  type: String
+  topicId: String
+  created_at: String
+  updated_at: String
+  created_by: String
+  updated_by: String
+  url: String
+  file: Upload
 }
 
 type UploadResult {
-    success: Boolean
-    url: String
+  success: Boolean
+  url: String
 }
 
 type UploadResultSubtitles {
-    success: Boolean
-    url: String
-    language: String
+  success: Boolean
+  url: String
+  language: String
 }
 
 input QuestionBankInput {
-    id: ID
-    name: String
-    description: String
-    category: String
-    sub_category: String
-    created_at: String
-    updated_at: String
-    created_by: String
-    updated_by: String
-    is_active: Boolean
-    is_default: Boolean
-    owner: String
+  id: ID
+  name: String
+  description: String
+  category: String
+  sub_category: String
+  created_at: String
+  updated_at: String
+  created_by: String
+  updated_by: String
+  is_active: Boolean
+  is_default: Boolean
+  owner: String
 }
 
 type QuestionBank {
-    id: ID
-    name: String
-    description: String
-    category: String
-    sub_category: String
-    created_at: String
-    updated_at: String
-    created_by: String
-    updated_by: String
-    is_active: Boolean
-    is_default: Boolean
-    owner: String
+  id: ID
+  name: String
+  description: String
+  category: String
+  sub_category: String
+  created_at: String
+  updated_at: String
+  created_by: String
+  updated_by: String
+  is_active: Boolean
+  is_default: Boolean
+  owner: String
 }
 
 type QuestionBankQuestion {
-    id: ID
-    Name: String
-    Description: String
-    Type: String
-    Difficulty: Int
-    Attachment: String
-    AttachmentType: String
-    Hint : String
-    QbmId: String
-    Status: String
-    CreatedAt: String
-    UpdatedAt: String
-    CreatedBy: String
-    UpdatedBy: String
+  id: ID
+  Name: String
+  Description: String
+  Type: String
+  Difficulty: Int
+  Attachment: String
+  AttachmentType: String
+  Hint: String
+  QbmId: String
+  Status: String
+  CreatedAt: String
+  UpdatedAt: String
+  CreatedBy: String
+  UpdatedBy: String
 }
 
 input QuestionBankQuestionInput {
-    id: ID
-    Name: String
-    Description: String
-    Type: String
-    Difficulty: Int
-    File: Upload
-    AttachmentType: String
-    Hint : String
-    QbmId: String
-    Status: String
-    CreatedAt: String
-    UpdatedAt: String
-    CreatedBy: String
-    UpdatedBy: String
+  id: ID
+  Name: String
+  Description: String
+  Type: String
+  Difficulty: Int
+  File: Upload
+  AttachmentType: String
+  Hint: String
+  QbmId: String
+  Status: String
+  CreatedAt: String
+  UpdatedAt: String
+  CreatedBy: String
+  UpdatedBy: String
 }
 
 type QuestionOption {
-    id: ID
-    QmId: String
-    Description: String
-    IsCorrect: Boolean
-    CreatedAt: String
-    UpdatedAt: String
-    CreatedBy: String
-    UpdatedBy: String
-    AttachmentType: String
-    Attachment: String
-    IsActive : Boolean
+  id: ID
+  QmId: String
+  Description: String
+  IsCorrect: Boolean
+  CreatedAt: String
+  UpdatedAt: String
+  CreatedBy: String
+  UpdatedBy: String
+  AttachmentType: String
+  Attachment: String
+  IsActive: Boolean
 }
 
 input QuestionOptionInput {
-    id: ID
-    QmId: String
-    Description: String
-    IsCorrect: Boolean
-    CreatedAt: String
-    UpdatedAt: String
-    CreatedBy: String
-    UpdatedBy: String
-    AttachmentType: String
-    File: Upload
-    IsActive : Boolean
+  id: ID
+  QmId: String
+  Description: String
+  IsCorrect: Boolean
+  CreatedAt: String
+  UpdatedAt: String
+  CreatedBy: String
+  UpdatedBy: String
+  AttachmentType: String
+  File: Upload
+  IsActive: Boolean
 }
 
 type QuestionPaper {
-    id: ID
-    name: String
-    Category: String
-    SubCategory: String
-    CreatedAt: String
-    UpdatedAt: String
-    CreatedBy: String
-    UpdatedBy: String
-    IsActive : Boolean
-    DifficultyLevel: String
-    SectionWise: Boolean
-    Description: String
-    SuggestedDuration: String
-    Status: String
+  id: ID
+  name: String
+  Category: String
+  SubCategory: String
+  CreatedAt: String
+  UpdatedAt: String
+  CreatedBy: String
+  UpdatedBy: String
+  IsActive: Boolean
+  DifficultyLevel: String
+  SectionWise: Boolean
+  Description: String
+  SuggestedDuration: String
+  Status: String
 }
 
 input QuestionPaperInput {
-    id: ID
-    name: String
-    Category: String
-    SubCategory: String
-    CreatedAt: String
-    UpdatedAt: String
-    CreatedBy: String
-    UpdatedBy: String
-    IsActive : Boolean
-    DifficultyLevel: String
-    SectionWise: Boolean
-    Description: String
-    SuggestedDuration: String
-    Status: String
+  id: ID
+  name: String
+  Category: String
+  SubCategory: String
+  CreatedAt: String
+  UpdatedAt: String
+  CreatedBy: String
+  UpdatedBy: String
+  IsActive: Boolean
+  DifficultyLevel: String
+  SectionWise: Boolean
+  Description: String
+  SuggestedDuration: String
+  Status: String
 }
 
 type QuestionPaperSection {
-    id: ID
-    QpId: String
-    Name: String
-    Description: String
-    CreatedAt: String
-    UpdatedAt: String
-    CreatedBy: String
-    UpdatedBy: String
-    IsActive : Boolean
-    Type: String
-    DifficultyLevel: String
-    TotalQuestions: Int
+  id: ID
+  QpId: String
+  Name: String
+  Description: String
+  CreatedAt: String
+  UpdatedAt: String
+  CreatedBy: String
+  UpdatedBy: String
+  IsActive: Boolean
+  Type: String
+  DifficultyLevel: String
+  TotalQuestions: Int
 }
 
 input QuestionPaperSectionInput {
-    id: ID
-    QpId: String
-    Name: String
-    Description: String
-    CreatedAt: String
-    UpdatedAt: String
-    CreatedBy: String
-    UpdatedBy: String
-    IsActive : Boolean
-    Type: String
-    DifficultyLevel: String
-    TotalQuestions: Int
+  id: ID
+  QpId: String
+  Name: String
+  Description: String
+  CreatedAt: String
+  UpdatedAt: String
+  CreatedBy: String
+  UpdatedBy: String
+  IsActive: Boolean
+  Type: String
+  DifficultyLevel: String
+  TotalQuestions: Int
 }
 
 input MapSectionToBankInput {
-    id: ID
-    QbId: String
-    SectionId: String
-    DifficultyLevel: String
-    TotalQuestions: Int
-    QuestionMarks: String
-    QuestionType: String
-    RetrieveType: String
-    CreatedAt: String
-    UpdatedAt: String
-    CreatedBy: String
-    UpdatedBy: String
-    IsActive : Boolean
+  id: ID
+  QbId: String
+  SectionId: String
+  DifficultyLevel: String
+  TotalQuestions: Int
+  QuestionMarks: String
+  QuestionType: String
+  RetrieveType: String
+  CreatedAt: String
+  UpdatedAt: String
+  CreatedBy: String
+  UpdatedBy: String
+  IsActive: Boolean
 }
 
 type SectionQBMapping {
-    id: ID
-    QbId: String
-    SectionId: String
-    DifficultyLevel: String
-    TotalQuestions: Int
-    QuestionMarks: String
-    QuestionType: String
-    RetrieveType: String
-    CreatedAt: String
-    UpdatedAt: String
-    CreatedBy: String
-    UpdatedBy: String
-    IsActive : Boolean
+  id: ID
+  QbId: String
+  SectionId: String
+  DifficultyLevel: String
+  TotalQuestions: Int
+  QuestionMarks: String
+  QuestionType: String
+  RetrieveType: String
+  CreatedAt: String
+  UpdatedAt: String
+  CreatedBy: String
+  UpdatedBy: String
+  IsActive: Boolean
 }
 
 input SectionFixedQuestionsInput {
-    id: ID
-    SqbId: String
-    QuestionId: String
-    CreatedAt: String
-    UpdatedAt: String
-    CreatedBy: String
-    UpdatedBy: String
-    IsActive : Boolean
+  id: ID
+  SqbId: String
+  QuestionId: String
+  CreatedAt: String
+  UpdatedAt: String
+  CreatedBy: String
+  UpdatedBy: String
+  IsActive: Boolean
 }
 
 type SectionFixedQuestions {
-    id: ID
-    SqbId: String
-    QuestionId: String
-    CreatedAt: String
-    UpdatedAt: String
-    CreatedBy: String
-    UpdatedBy: String
-    IsActive : Boolean
+  id: ID
+  SqbId: String
+  QuestionId: String
+  CreatedAt: String
+  UpdatedAt: String
+  CreatedBy: String
+  UpdatedBy: String
+  IsActive: Boolean
 }
 
 input ExamInput {
-    id: ID
-    Name: String
-    Description: String
-    Code : String
-    QpId: String
-    CreatedAt: String
-    UpdatedAt: String
-    CreatedBy: String
-    UpdatedBy: String
-    IsActive : Boolean
-    Type: String
-    ScheduleType: String
-    Duration: Int
-    Status: String
-    Category: String
-    SubCategory: String
+  id: ID
+  Name: String
+  Description: String
+  Code: String
+  QpId: String
+  CreatedAt: String
+  UpdatedAt: String
+  CreatedBy: String
+  UpdatedBy: String
+  IsActive: Boolean
+  Type: String
+  ScheduleType: String
+  Duration: Int
+  Status: String
+  Category: String
+  SubCategory: String
 }
 
 type Exam {
-    id: ID
-    Name: String
-    Description: String
-    Code : String
-    QpId: String
-    QuestionIds: [String]
-    CreatedAt: String
-    UpdatedAt: String
-    CreatedBy: String
-    UpdatedBy: String
-    IsActive : Boolean
-    Type: String
-    ScheduleType: String
-    Duration: Int
-    Status: String
-    Category: String
-    SubCategory: String
-    TotalCount: Int
+  id: ID
+  Name: String
+  Description: String
+  Code: String
+  QpId: String
+  QuestionIds: [String]
+  CreatedAt: String
+  UpdatedAt: String
+  CreatedBy: String
+  UpdatedBy: String
+  IsActive: Boolean
+  Type: String
+  ScheduleType: String
+  Duration: Int
+  Status: String
+  Category: String
+  SubCategory: String
+  TotalCount: Int
 }
 
 input ExamScheduleInput {
-    id: ID
-    ExamId: String
-    Start: Int
-    End: Int
-    BufferTime: Int
-    CreatedAt: String
-    UpdatedAt: String
-    CreatedBy: String
-    UpdatedBy: String
-    IsActive : Boolean
+  id: ID
+  ExamId: String
+  Start: Int
+  End: Int
+  BufferTime: Int
+  CreatedAt: String
+  UpdatedAt: String
+  CreatedBy: String
+  UpdatedBy: String
+  IsActive: Boolean
 }
 
 type ExamSchedule {
-    id: ID
-    ExamId: String
-    Start: Int
-    End: Int
-    BufferTime: Int
-    CreatedAt: String
-    UpdatedAt: String
-    CreatedBy: String
-    UpdatedBy: String
-    IsActive : Boolean
+  id: ID
+  ExamId: String
+  Start: Int
+  End: Int
+  BufferTime: Int
+  CreatedAt: String
+  UpdatedAt: String
+  CreatedBy: String
+  UpdatedBy: String
+  IsActive: Boolean
 }
 
 input ExamInstructionInput {
-    id: ID
-    ExamId: String
-    Instructions: String
-    PassingCriteria: String
-    NoAttempts: Int
-    AccessType: String
-    CreatedAt: String
-    UpdatedAt: String
-    CreatedBy: String
-    UpdatedBy: String
-    IsActive : Boolean
+  id: ID
+  ExamId: String
+  Instructions: String
+  PassingCriteria: String
+  NoAttempts: Int
+  AccessType: String
+  CreatedAt: String
+  UpdatedAt: String
+  CreatedBy: String
+  UpdatedBy: String
+  IsActive: Boolean
 }
 
 type ExamInstruction {
-    id: ID
-    ExamId: String
-    Instructions: String
-    PassingCriteria: String
-    NoAttempts: Int
-    AccessType: String
-    CreatedAt: String
-    UpdatedAt: String
-    CreatedBy: String
-    UpdatedBy: String
-    IsActive : Boolean
+  id: ID
+  ExamId: String
+  Instructions: String
+  PassingCriteria: String
+  NoAttempts: Int
+  AccessType: String
+  CreatedAt: String
+  UpdatedAt: String
+  CreatedBy: String
+  UpdatedBy: String
+  IsActive: Boolean
 }
 
 input ExamCohortInput {
-    id: ID
-    ExamId: String
-    CohortId: String
-    CreatedAt: String
-    UpdatedAt: String
-    CreatedBy: String
-    UpdatedBy: String
-    IsActive : Boolean
+  id: ID
+  ExamId: String
+  CohortId: String
+  CreatedAt: String
+  UpdatedAt: String
+  CreatedBy: String
+  UpdatedBy: String
+  IsActive: Boolean
 }
 
 type ExamCohort {
-    id: ID
-    ExamId: String
-    CohortId: String
-    CreatedAt: String
-    UpdatedAt: String
-    CreatedBy: String
-    UpdatedBy: String
-    IsActive : Boolean
+  id: ID
+  ExamId: String
+  CohortId: String
+  CreatedAt: String
+  UpdatedAt: String
+  CreatedBy: String
+  UpdatedBy: String
+  IsActive: Boolean
 }
 
-input ExamConfigurationInput{
-    id: ID
-    ExamId: String
-    Shuffle: Boolean
-    DisplayHints: Boolean
-    ShowAnswer: Boolean
-    ShowResult: Boolean
-    CreatedBy: String
-    UpdatedBy: String
-    IsActive : Boolean
-    CreatedAt: String
-    UpdatedAt: String
+input ExamConfigurationInput {
+  id: ID
+  ExamId: String
+  Shuffle: Boolean
+  DisplayHints: Boolean
+  ShowAnswer: Boolean
+  ShowResult: Boolean
+  CreatedBy: String
+  UpdatedBy: String
+  IsActive: Boolean
+  CreatedAt: String
+  UpdatedAt: String
 }
 
 type ExamConfiguration {
-    id: ID
-    ExamId: String
-    Shuffle: Boolean
-    DisplayHints: Boolean
-    ShowAnswer: Boolean
-    ShowResult: Boolean
-    CreatedBy: String
-    UpdatedBy: String
-    IsActive : Boolean
-    CreatedAt: String
-    UpdatedAt: String
+  id: ID
+  ExamId: String
+  Shuffle: Boolean
+  DisplayHints: Boolean
+  ShowAnswer: Boolean
+  ShowResult: Boolean
+  CreatedBy: String
+  UpdatedBy: String
+  IsActive: Boolean
+  CreatedAt: String
+  UpdatedAt: String
 }
 input CourseCohortInput {
-    id: ID
-    CourseId: String
-    CohortId: String
-    CourseType: String
-    LspId: String
-    CohortCode: String
-    isMandatory: Boolean
-    CourseStatus: String
-    AddedBy: String
-    CreatedAt: String
-    UpdatedAt: String
-    CreatedBy: String
-    UpdatedBy: String
-    IsActive : Boolean
-    ExpectedCompletion: Int 
+  id: ID
+  CourseId: String
+  CohortId: String
+  CourseType: String
+  LspId: String
+  CohortCode: String
+  isMandatory: Boolean
+  CourseStatus: String
+  AddedBy: String
+  CreatedAt: String
+  UpdatedAt: String
+  CreatedBy: String
+  UpdatedBy: String
+  IsActive: Boolean
+  ExpectedCompletion: Int
 }
 
 type CourseCohort {
-    id: ID
-    CourseId: String
-    CohortId: String
-    CourseType: String
-    LspId: String
-    CohortCode: String
-    isMandatory: Boolean
-    CourseStatus: String
-    AddedBy: String
-    CreatedAt: String
-    UpdatedAt: String
-    CreatedBy: String
-    UpdatedBy: String
-    IsActive : Boolean
-    ExpectedCompletion: Int
+  id: ID
+  CourseId: String
+  CohortId: String
+  CourseType: String
+  LspId: String
+  CohortCode: String
+  isMandatory: Boolean
+  CourseStatus: String
+  AddedBy: String
+  CreatedAt: String
+  UpdatedAt: String
+  CreatedBy: String
+  UpdatedBy: String
+  IsActive: Boolean
+  ExpectedCompletion: Int
 }
 
 input CatMainInput {
-    id: ID
-    Name: String
-    Description: String
-    ImageUrl: String
-    Code: String
-    CreatedAt: String
-    UpdatedAt: String
-    CreatedBy: String
-    UpdatedBy: String
-    IsActive : Boolean
-    ImageFile: Upload
-    LspId: String
+  id: ID
+  Name: String
+  Description: String
+  ImageUrl: String
+  Code: String
+  CreatedAt: String
+  UpdatedAt: String
+  CreatedBy: String
+  UpdatedBy: String
+  IsActive: Boolean
+  ImageFile: Upload
+  LspId: String
 }
 
 type CatMain {
-    id: ID
-    Name: String
-    Description: String
-    ImageUrl: String
-    Code: String
-    CreatedAt: String
-    UpdatedAt: String
-    CreatedBy: String
-    UpdatedBy: String
-    IsActive : Boolean
-    LspId: String
+  id: ID
+  Name: String
+  Description: String
+  ImageUrl: String
+  Code: String
+  CreatedAt: String
+  UpdatedAt: String
+  CreatedBy: String
+  UpdatedBy: String
+  IsActive: Boolean
+  LspId: String
 }
 
 input SubCatMainInput {
-    id: ID
-    Name: String
-    Description: String
-    ImageUrl: String
-    Code: String
-    CatId: String
-    CreatedAt: String
-    UpdatedAt: String
-    CreatedBy: String
-    UpdatedBy: String
-    IsActive : Boolean
-    ImageFile: Upload
-    LspId: String
+  id: ID
+  Name: String
+  Description: String
+  ImageUrl: String
+  Code: String
+  CatId: String
+  CreatedAt: String
+  UpdatedAt: String
+  CreatedBy: String
+  UpdatedBy: String
+  IsActive: Boolean
+  ImageFile: Upload
+  LspId: String
 }
 
 type SubCatMain {
-    id: ID
-    Name: String
-    Description: String
-    ImageUrl: String
-    Code: String
-    CatId: String
-    CreatedAt: String
-    UpdatedAt: String
-    CreatedBy: String
-    UpdatedBy: String
-    IsActive : Boolean
-    LspId: String
+  id: ID
+  Name: String
+  Description: String
+  ImageUrl: String
+  Code: String
+  CatId: String
+  CreatedAt: String
+  UpdatedAt: String
+  CreatedBy: String
+  UpdatedBy: String
+  IsActive: Boolean
+  LspId: String
 }
 
 # define type mutations to add a course  using courseInput
-type Mutation{
-    addCatMain(input: [CatMainInput]): [CatMain]
-    deleteCatMain(id: ID): Boolean
-    addSubCatMain(input: [SubCatMainInput]): [SubCatMain]
-    deleteSubCatMain(id: ID): Boolean
-    addCategories(category: [String]): Boolean
-    addSubCategories(sub_category: [String]): Boolean
-    addCatSubMapping(category: String, sub_category: [String]): Boolean
-    addCourse(course: CourseInput): Course
-    deleteCourse(id: ID): Boolean
-    updateCourse(course: CourseInput): Course
-    uploadCourseImage(file: CourseFile): UploadResult
-    uploadCoursePreviewVideo(file: CourseFile): UploadResult
-    uploadCourseTileImage(file: CourseFile): UploadResult
-    addCourseModule(courseId: String, module: ModuleInput): Module
-    deleteCourseModule(id: ID): Boolean
-    updateCourseModule(module: ModuleInput): Module
-    addCourseChapter(courseId: String, chapter: ChapterInput): Chapter
-    deleteCourseChapter(id: ID): Boolean
-    updateCourseChapter(chapter: ChapterInput): Chapter
-    addCourseTopic(courseId: String, topic: TopicInput): Topic
-    deleteCourseTopic(id: ID): Boolean
-    updateCourseTopic(topic: TopicInput): Topic
-    addTopicContent(topicId: String, courseId:String, moduleId: String, topicContent: TopicContentInput): TopicContent
-    deleteTopicContent(id: ID): Boolean
-    addTopicExam(topicId: String, courseId:String, exam: TopicExamInput): TopicExam
-    deleteTopicExam(id: ID): Boolean
-    updateTopicExam(exam: TopicExamInput): TopicExam
-    updateTopicContent(topicContent: TopicContentInput, moduleId: String): TopicContent
-    uploadTopicContentVideo(file: TopicVideo): UploadResult
-    uploadTopicContentSubtitle(file: [TopicSubtitle]): [UploadResultSubtitles]
-    uploadTopicStaticContent(file: StaticContent): UploadResult
-    addQuiz(quiz: QuizInput): Quiz
-    updateQuiz(quiz: QuizInput): Quiz
-    deleteQuiz(id: ID): Boolean
-    uploadQuizFile(courseId:String, file: QuizFile): UploadResult
-    addQuizMCQ(quiz: QuizMcq): Boolean
-    addQuizDescriptive(quiz: QuizDescriptive): Boolean
-    uploadTopicResource(courseId:String, resource:TopicResourceInput): UploadResult
-    deleteTopicResource(id: ID): Boolean
-    #################################################################################################
-    createQuestionBank(input: QuestionBankInput): QuestionBank
-    updateQuestionBank(input: QuestionBankInput): QuestionBank
-    deleteQuestionBank(id: ID): Boolean
-    addQuestionBankQuestion(input: QuestionBankQuestionInput): QuestionBankQuestion
-    updateQuestionBankQuestion(input: QuestionBankQuestionInput): QuestionBankQuestion
-    deleteQuestionBankQuestion(id: ID): Boolean
-    addQuestionOptions(input: QuestionOptionInput): QuestionOption
-    updateQuestionOptions(input: QuestionOptionInput): QuestionOption
-    deleteQuestionOptions(id: ID): Boolean
-    addQuestionPaper(input: QuestionPaperInput): QuestionPaper
-    updateQuestionPaper(input: QuestionPaperInput): QuestionPaper
-    deleteQuestionPaper(id: ID): Boolean
-    addQuestionPaperSection(input: QuestionPaperSectionInput): QuestionPaperSection
-    updateQuestionPaperSection(input: QuestionPaperSectionInput): QuestionPaperSection
-    deleteQuestionPaperSection(id: ID): Boolean
-    mapSectionToBank(input: MapSectionToBankInput): SectionQBMapping
-    updateSectionToBank(input: MapSectionToBankInput): SectionQBMapping
-    deleteSectionToBank(id: ID): Boolean
-    addSectionFixedQuestions(input: SectionFixedQuestionsInput): SectionFixedQuestions
-    updateSectionFixedQuestions(input: SectionFixedQuestionsInput): SectionFixedQuestions
-    deleteSectionFixedQuestions(id: ID): Boolean
-    addExam(input: ExamInput): Exam
-    updateExam(input: ExamInput): Exam
-    deleteExam(id: ID): Boolean
-    addExamSchedule(input: ExamScheduleInput): ExamSchedule
-    updateExamSchedule(input: ExamScheduleInput): ExamSchedule
-    deleteExamSchedule(id: ID): Boolean
-    addExamInstruction(input: ExamInstructionInput): ExamInstruction
-    updateExamInstruction(input: ExamInstructionInput): ExamInstruction
-    deleteExamInstruction(id: ID): Boolean
-    addExamCohort(input: ExamCohortInput): ExamCohort
-    updateExamCohort(input: ExamCohortInput): ExamCohort
-    deleteExamCohort(id: ID): Boolean
-    addExamConfiguration(input: ExamConfigurationInput): ExamConfiguration
-    updateExamConfiguration(input: ExamConfigurationInput): ExamConfiguration
-    deleteExamConfiguration(id: ID): Boolean
-    addCourseCohort(input: CourseCohortInput): CourseCohort
-    updateCourseCohort(input: CourseCohortInput): CourseCohort
-    deleteCourseCohort(id: ID): Boolean
+type Mutation {
+  addCatMain(input: [CatMainInput]): [CatMain]
+  deleteCatMain(id: ID): Boolean
+  addSubCatMain(input: [SubCatMainInput]): [SubCatMain]
+  deleteSubCatMain(id: ID): Boolean
+  addCategories(category: [String]): Boolean
+  addSubCategories(sub_category: [String]): Boolean
+  addCatSubMapping(category: String, sub_category: [String]): Boolean
+  addCourse(course: CourseInput): Course
+  deleteCourse(id: ID): Boolean
+  updateCourse(course: CourseInput): Course
+  uploadCourseImage(file: CourseFile): UploadResult
+  uploadCoursePreviewVideo(file: CourseFile): UploadResult
+  uploadCourseTileImage(file: CourseFile): UploadResult
+  addCourseModule(courseId: String, module: ModuleInput): Module
+  deleteCourseModule(id: ID): Boolean
+  updateCourseModule(module: ModuleInput): Module
+  addCourseChapter(courseId: String, chapter: ChapterInput): Chapter
+  deleteCourseChapter(id: ID): Boolean
+  updateCourseChapter(chapter: ChapterInput): Chapter
+  addCourseTopic(courseId: String, topic: TopicInput): Topic
+  deleteCourseTopic(id: ID): Boolean
+  updateCourseTopic(topic: TopicInput): Topic
+  addTopicContent(
+    topicId: String
+    courseId: String
+    moduleId: String
+    topicContent: TopicContentInput
+  ): TopicContent
+  deleteTopicContent(id: ID): Boolean
+  addTopicExam(
+    topicId: String
+    courseId: String
+    exam: TopicExamInput
+  ): TopicExam
+  deleteTopicExam(id: ID): Boolean
+  updateTopicExam(exam: TopicExamInput): TopicExam
+  updateTopicContent(
+    topicContent: TopicContentInput
+    moduleId: String
+  ): TopicContent
+  uploadTopicContentVideo(file: TopicVideo): UploadResult
+  uploadTopicContentSubtitle(file: [TopicSubtitle]): [UploadResultSubtitles]
+  uploadTopicStaticContent(file: StaticContent): UploadResult
+  addQuiz(quiz: QuizInput): Quiz
+  updateQuiz(quiz: QuizInput): Quiz
+  deleteQuiz(id: ID): Boolean
+  uploadQuizFile(courseId: String, file: QuizFile): UploadResult
+  addQuizMCQ(quiz: QuizMcq): Boolean
+  addQuizDescriptive(quiz: QuizDescriptive): Boolean
+  uploadTopicResource(
+    courseId: String
+    resource: TopicResourceInput
+  ): UploadResult
+  deleteTopicResource(id: ID): Boolean
+  #################################################################################################
+  createQuestionBank(input: QuestionBankInput): QuestionBank
+  updateQuestionBank(input: QuestionBankInput): QuestionBank
+  deleteQuestionBank(id: ID): Boolean
+  bulkAddQuestionBankQuestions(qbId: String!, qfile: Upload!): Boolean!
+  addQuestionBankQuestion(
+    input: QuestionBankQuestionInput
+  ): QuestionBankQuestion
+  updateQuestionBankQuestion(
+    input: QuestionBankQuestionInput
+  ): QuestionBankQuestion
+  deleteQuestionBankQuestion(id: ID): Boolean
+  addQuestionOptions(input: QuestionOptionInput): QuestionOption
+  updateQuestionOptions(input: QuestionOptionInput): QuestionOption
+  deleteQuestionOptions(id: ID): Boolean
+  addQuestionPaper(input: QuestionPaperInput): QuestionPaper
+  updateQuestionPaper(input: QuestionPaperInput): QuestionPaper
+  deleteQuestionPaper(id: ID): Boolean
+  addQuestionPaperSection(
+    input: QuestionPaperSectionInput
+  ): QuestionPaperSection
+  updateQuestionPaperSection(
+    input: QuestionPaperSectionInput
+  ): QuestionPaperSection
+  deleteQuestionPaperSection(id: ID): Boolean
+  mapSectionToBank(input: MapSectionToBankInput): SectionQBMapping
+  updateSectionToBank(input: MapSectionToBankInput): SectionQBMapping
+  deleteSectionToBank(id: ID): Boolean
+  addSectionFixedQuestions(
+    input: SectionFixedQuestionsInput
+  ): SectionFixedQuestions
+  updateSectionFixedQuestions(
+    input: SectionFixedQuestionsInput
+  ): SectionFixedQuestions
+  deleteSectionFixedQuestions(id: ID): Boolean
+  addExam(input: ExamInput): Exam
+  updateExam(input: ExamInput): Exam
+  deleteExam(id: ID): Boolean
+  addExamSchedule(input: ExamScheduleInput): ExamSchedule
+  updateExamSchedule(input: ExamScheduleInput): ExamSchedule
+  deleteExamSchedule(id: ID): Boolean
+  addExamInstruction(input: ExamInstructionInput): ExamInstruction
+  updateExamInstruction(input: ExamInstructionInput): ExamInstruction
+  deleteExamInstruction(id: ID): Boolean
+  addExamCohort(input: ExamCohortInput): ExamCohort
+  updateExamCohort(input: ExamCohortInput): ExamCohort
+  deleteExamCohort(id: ID): Boolean
+  addExamConfiguration(input: ExamConfigurationInput): ExamConfiguration
+  updateExamConfiguration(input: ExamConfigurationInput): ExamConfiguration
+  deleteExamConfiguration(id: ID): Boolean
+  addCourseCohort(input: CourseCohortInput): CourseCohort
+  updateCourseCohort(input: CourseCohortInput): CourseCohort
+  deleteCourseCohort(id: ID): Boolean
 }
 `, BuiltIn: false},
 }
@@ -4929,6 +4971,30 @@ func (ec *executionContext) field_Mutation_addTopicExam_args(ctx context.Context
 		}
 	}
 	args["exam"] = arg2
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_bulkAddQuestionBankQuestions_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["qbId"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("qbId"))
+		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["qbId"] = arg0
+	var arg1 graphql.Upload
+	if tmp, ok := rawArgs["qfile"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("qfile"))
+		arg1, err = ec.unmarshalNUpload2githubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚐUpload(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["qfile"] = arg1
 	return args, nil
 }
 
@@ -11923,6 +11989,48 @@ func (ec *executionContext) _Mutation_deleteQuestionBank(ctx context.Context, fi
 	res := resTmp.(*bool)
 	fc.Result = res
 	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_bulkAddQuestionBankQuestions(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_bulkAddQuestionBankQuestions_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().BulkAddQuestionBankQuestions(rctx, args["qbId"].(string), args["qfile"].(graphql.Upload))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_addQuestionBankQuestion(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -23786,6 +23894,16 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, innerFunc)
 
+		case "bulkAddQuestionBankQuestions":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_bulkAddQuestionBankQuestions(ctx, field)
+			}
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, innerFunc)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		case "addQuestionBankQuestion":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_addQuestionBankQuestion(ctx, field)
@@ -25896,6 +26014,21 @@ func (ec *executionContext) unmarshalNString2string(ctx context.Context, v inter
 
 func (ec *executionContext) marshalNString2string(ctx context.Context, sel ast.SelectionSet, v string) graphql.Marshaler {
 	res := graphql.MarshalString(v)
+	if res == graphql.Null {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+	}
+	return res
+}
+
+func (ec *executionContext) unmarshalNUpload2githubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚐUpload(ctx context.Context, v interface{}) (graphql.Upload, error) {
+	res, err := graphql.UnmarshalUpload(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNUpload2githubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚐUpload(ctx context.Context, sel ast.SelectionSet, v graphql.Upload) graphql.Marshaler {
+	res := graphql.MarshalUpload(v)
 	if res == graphql.Null {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")

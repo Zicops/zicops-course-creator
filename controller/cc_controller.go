@@ -11,17 +11,6 @@ import (
 	graceful "gopkg.in/tylerb/graceful.v1" // see: https://github.com/tylerb/graceful
 )
 
-type maxPayloadHandler struct {
-	handler http.Handler
-	size    int64
-}
-
-// ServeHTTP uses MaxByteReader to limit the size of the input
-func (handler *maxPayloadHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	r.Body = http.MaxBytesReader(w, r.Body, handler.size)
-	handler.handler.ServeHTTP(w, r)
-}
-
 // CCBackendController ....
 func CCBackendController(ctx context.Context, port int, errorChannel chan error) {
 	log.Infof("Initializing router and endpoints.")
