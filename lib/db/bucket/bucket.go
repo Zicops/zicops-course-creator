@@ -119,7 +119,7 @@ func (sc *Client) GetSignedURLForObject(object string) string {
 	opts := &storage.SignedURLOptions{
 		Scheme:  storage.SigningSchemeV4,
 		Method:  "GET",
-		Expires: time.Now().Add(24 * time.Hour),
+		Expires: time.Now().Add(7 * 24 * time.Hour),
 	}
 	url, err := sc.bucket.SignedURL(object, opts)
 	if err != nil {
