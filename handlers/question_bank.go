@@ -315,7 +315,7 @@ func populateQuestionBankQuestions(ctx context.Context, row []string, i int, qbI
 		Type:             row[1],
 		Difficulty:       difficulty,
 		Hint:             row[4],
-		Status:           "active",
+		Status:           "Y",
 		AttachmentType:   "",
 		Attachment:       "",
 		AttachmentBucket: "",
