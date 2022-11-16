@@ -15,14 +15,14 @@ import (
 // Client ....
 type Client struct {
 	projectID    string
-	client       *storage.Client
+	Client       *storage.Client
 	bucket       *storage.BucketHandle
 	bucketPublic *storage.BucketHandle
 }
 
 // NewStorageHandler return new database action
 func NewStorageHandler() *Client {
-	return &Client{projectID: "", client: nil}
+	return &Client{projectID: "", Client: nil}
 }
 
 // InitializeStorageClient ...........
@@ -43,7 +43,7 @@ func (sc *Client) InitializeStorageClient(ctx context.Context, projectID string,
 	if err != nil {
 		return err
 	}
-	sc.client = client
+	sc.Client = client
 	sc.projectID = projectID
 	sc.bucket, _ = sc.CreateBucket(ctx, bucket)
 	sc.bucketPublic, _ = sc.CreateBucketPublic(ctx, constants.COURSES_PUBLIC_BUCKET)
@@ -52,7 +52,7 @@ func (sc *Client) InitializeStorageClient(ctx context.Context, projectID string,
 
 // CreateBucket  ...........
 func (sc *Client) CreateBucket(ctx context.Context, bucketName string) (*storage.BucketHandle, error) {
-	bkt := sc.client.Bucket(bucketName)
+	bkt := sc.Client.Bucket(bucketName)
 	exists, err := bkt.Attrs(ctx)
 	if err != nil && exists == nil {
 		if err := bkt.Create(ctx, sc.projectID, nil); err != nil {
@@ -64,7 +64,7 @@ func (sc *Client) CreateBucket(ctx context.Context, bucketName string) (*storage
 
 // CreateBucket  ...........
 func (sc *Client) CreateBucketPublic(ctx context.Context, bucketName string) (*storage.BucketHandle, error) {
-	bkt := sc.client.Bucket(bucketName)
+	bkt := sc.Client.Bucket(bucketName)
 	exists, err := bkt.Attrs(ctx)
 	if err != nil && exists == nil {
 		if err := bkt.Create(ctx, sc.projectID, nil); err != nil {
@@ -119,7 +119,7 @@ func (sc *Client) GetSignedURLForObject(object string) string {
 	opts := &storage.SignedURLOptions{
 		Scheme:  storage.SigningSchemeV4,
 		Method:  "GET",
-		Expires: time.Now().Add(24 * time.Hour),
+		Expires: time.Now().Add(7 * 24 * time.Hour),
 	}
 	url, err := sc.bucket.SignedURL(object, opts)
 	if err != nil {
@@ -139,6 +139,6 @@ func (sc *Client) GetSignedURLForObjectPub(object string) string {
 	// if err != nil {
 	// 	return ""
 	// }
-	url := "https://storage.googleapis.com/" + constants.COURSES_PUBLIC_BUCKET + "/" + object
+	url := "https://storage.googleapis.com/" + "courses-public-zicops-deploy" + "/" + object
 	return url
 }
