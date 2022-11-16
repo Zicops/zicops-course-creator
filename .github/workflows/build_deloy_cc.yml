@@ -8,7 +8,7 @@ env:
   GKE_CLUSTER: zicops-production-cost-one
   GKE_ZONE: asia-south1-a
   SERVICE_NAME: zicops-course-creator
-  NAMESPACE: staging
+  NAMESPACE: production
 jobs:
 
   build:
