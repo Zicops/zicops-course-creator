@@ -778,8 +778,10 @@ type SubCatMain {
 # define type mutations to add a course  using courseInput
 type Mutation {
   addCatMain(input: [CatMainInput]): [CatMain]
+  updateCatMain(input: CatMainInput): CatMain
   deleteCatMain(id: ID): Boolean
   addSubCatMain(input: [SubCatMainInput]): [SubCatMain]
+  updateSubCatMain(input: SubCatMainInput): SubCatMain
   deleteSubCatMain(id: ID): Boolean
   addCategories(category: [String]): Boolean
   addSubCategories(sub_category: [String]): Boolean

@@ -3,7 +3,6 @@ module github.com/zicops/zicops-course-creator
 go 1.17
 
 require (
-	cloud.google.com/go/compute v1.12.1
 	cloud.google.com/go/compute/metadata v0.2.1
 	cloud.google.com/go/storage v1.28.0
 	github.com/99designs/gqlgen v0.17.20
@@ -25,6 +24,7 @@ require (
 
 require (
 	cloud.google.com/go v0.106.0 // indirect
+	cloud.google.com/go/compute v1.12.1 // indirect
 	cloud.google.com/go/iam v0.7.0 // indirect
 	github.com/agnivade/levenshtein v1.1.1 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/configsources v1.1.25 // indirect
