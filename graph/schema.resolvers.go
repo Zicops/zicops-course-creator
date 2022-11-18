@@ -22,6 +22,15 @@ func (r *mutationResolver) AddCatMain(ctx context.Context, input []*model.CatMai
 	return resp, nil
 }
 
+func (r *mutationResolver) UpdateCatMain(ctx context.Context, input *model.CatMainInput) (*model.CatMain, error) {
+	resp, err := handlers.UpdateCatMain(ctx, input)
+	if err != nil {
+		log.Errorf("error updating categories: %v", err)
+		return nil, err
+	}
+	return resp, nil
+}
+
 func (r *mutationResolver) DeleteCatMain(ctx context.Context, id *string) (*bool, error) {
 	resp, err := handlers.DeleteCatMain(ctx, id)
 	if err != nil {
@@ -35,6 +44,15 @@ func (r *mutationResolver) AddSubCatMain(ctx context.Context, input []*model.Sub
 	resp, err := handlers.AddSubCatMain(ctx, input)
 	if err != nil {
 		log.Errorf("error adding sub categories: %v", err)
+		return nil, err
+	}
+	return resp, nil
+}
+
+func (r *mutationResolver) UpdateSubCatMain(ctx context.Context, input *model.SubCatMainInput) (*model.SubCatMain, error) {
+	resp, err := handlers.UpdateSubCatMain(ctx, input)
+	if err != nil {
+		log.Errorf("error updating sub categories: %v", err)
 		return nil, err
 	}
 	return resp, nil

@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/base64"
+	"errors"
 	"fmt"
 	"io"
 	"strconv"
@@ -318,4 +319,241 @@ func AddSubCatMain(ctx context.Context, input []*model.SubCatMainInput) ([]*mode
 		}
 	}
 	return subCatMain, nil
+}
+
+func UpdateCatMain(ctx context.Context, input *model.CatMainInput) (*model.CatMain, error) {
+	log.Infof("UpdateCatMain called")
+	_, err := helpers.GetClaimsFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	session, err := cassandra.GetCassSession("coursez")
+	if err != nil {
+		return nil, err
+	}
+	CassSession := session
+	if input.ID == nil {
+		return nil, errors.New("id is required")
+	}
+	updateCols := []string{}
+	imageUrl := ""
+	imageBucket := ""
+	qryStr := fmt.Sprintf(`SELECT * from coursez.cat_main where id='%s'`, *input.ID)
+	getCats := func() (banks []coursez.CatMain, err error) {
+		q := CassSession.Query(qryStr, nil)
+		defer q.Release()
+		iter := q.Iter()
+		return banks, iter.Select(&banks)
+	}
+	cats, err := getCats()
+	currentLspIds := []string{}
+	words := []string{}
+	currentSavedCat := coursez.CatMain{}
+	if err == nil && len(cats) > 0 {
+		currentSavedCat = cats[0]
+		if input.LspID != nil {
+			if !Contains(currentSavedCat.LspIDs, *input.LspID) {
+				currentLspIds = append(currentLspIds, *input.LspID)
+				updateCols = append(updateCols, "lsps")
+				currentSavedCat.LspIDs = currentLspIds
+			}
+		}
+		if input.Name != nil && *input.Name != currentSavedCat.Name {
+			name := strings.ToLower(*input.Name)
+			wordsLocal := strings.Split(name, " ")
+			words = append(words, wordsLocal...)
+			currentSavedCat.Name = *input.Name
+			currentSavedCat.Words = words
+			updateCols = append(updateCols, "name")
+			updateCols = append(updateCols, "words")
+		}
+		if input.Description != nil && *input.Description != currentSavedCat.Description {
+			currentSavedCat.Description = *input.Description
+			updateCols = append(updateCols, "description")
+		}
+		if input.Code != nil && *input.Code != currentSavedCat.Code {
+			currentSavedCat.Code = *input.Code
+			updateCols = append(updateCols, "code")
+		}
+		if input.ImageFile != nil {
+			storageC := bucket.NewStorageHandler()
+			gproject := googleprojectlib.GetGoogleProjectID()
+			err = storageC.InitializeStorageClient(ctx, gproject, "coursez-catimages")
+			if err != nil {
+				log.Errorf("Failed to upload image to course: %v", err.Error())
+				return nil, err
+			}
+			imageBucket = *input.ID + "/catimages/" + input.ImageFile.Filename
+			writer, err := storageC.UploadToGCS(ctx, imageBucket, map[string]string{})
+			if err != nil {
+				log.Errorf("Failed to upload image to course: %v", err.Error())
+				return nil, err
+			}
+			defer writer.Close()
+			fileBuffer := bytes.NewBuffer(nil)
+			if _, err := io.Copy(fileBuffer, input.ImageFile.File); err != nil {
+				return nil, err
+			}
+			currentBytes := fileBuffer.Bytes()
+			_, err = io.Copy(writer, bytes.NewReader(currentBytes))
+			if err != nil {
+				return nil, err
+			}
+			imageUrl = storageC.GetSignedURLForObject(imageBucket)
+			currentSavedCat.ImageBucket = imageBucket
+			currentSavedCat.ImageURL = imageUrl
+			updateCols = append(updateCols, "image_bucket")
+			updateCols = append(updateCols, "image_url")
+		}
+		if updateCols != nil && len(updateCols) > 0 {
+			currentSavedCat.UpdatedAt = time.Now().Unix()
+			updateCols = append(updateCols, "updated_at")
+			upStms, uNames := coursez.CatMainTable.Update(updateCols...)
+			updateQuery := CassSession.Query(upStms, uNames).BindStruct(&currentSavedCat)
+			if err := updateQuery.ExecRelease(); err != nil {
+				return nil, err
+			}
+		}
+	}
+	created := strconv.FormatInt(currentSavedCat.CreatedAt, 10)
+	updated := strconv.FormatInt(currentSavedCat.UpdatedAt, 10)
+	catMain := &model.CatMain{
+		ID:          &currentSavedCat.ID,
+		Name:        &currentSavedCat.Name,
+		Description: &currentSavedCat.Description,
+		Code:        &currentSavedCat.Code,
+		CreatedAt:   &created,
+		UpdatedAt:   &updated,
+		CreatedBy:   &currentSavedCat.CreatedBy,
+		UpdatedBy:   &currentSavedCat.UpdatedBy,
+		IsActive:    &currentSavedCat.IsActive,
+		ImageURL:    &currentSavedCat.ImageURL,
+		LspID:       input.LspID,
+	}
+	return catMain, nil
+}
+
+func UpdateSubCatMain(ctx context.Context, input *model.SubCatMainInput) (*model.SubCatMain, error) {
+	log.Infof("UpdateSubCatMain called")
+	_, err := helpers.GetClaimsFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	session, err := cassandra.GetCassSession("coursez")
+	if err != nil {
+		return nil, err
+	}
+	CassSession := session
+	if input.ID == nil {
+		return nil, errors.New("id is required")
+	}
+	updateCols := []string{}
+	imageUrl := ""
+	imageBucket := ""
+	qryStr := fmt.Sprintf(`SELECT * from coursez.sub_cat_main where id='%s'`, *input.ID)
+	getCats := func() (banks []coursez.SubCatMain, err error) {
+		q := CassSession.Query(qryStr, nil)
+		defer q.Release()
+		iter := q.Iter()
+		return banks, iter.Select(&banks)
+	}
+	cats, err := getCats()
+	currentLspIds := []string{}
+	words := []string{}
+	currentSavedCat := coursez.SubCatMain{}
+	if err == nil && len(cats) > 0 {
+		currentSavedCat = cats[0]
+		if input.CatID != nil && *input.CatID != currentSavedCat.ParentID {
+			currentSavedCat.ParentID = *input.CatID
+			updateCols = append(updateCols, "parent_id")
+		}
+		if input.LspID != nil {
+			if !Contains(currentSavedCat.LspIDs, *input.LspID) {
+				currentLspIds = append(currentLspIds, *input.LspID)
+				updateCols = append(updateCols, "lsps")
+				currentSavedCat.LspIDs = currentLspIds
+			}
+		}
+		if input.Name != nil && *input.Name != currentSavedCat.Name {
+			name := strings.ToLower(*input.Name)
+			wordsLocal := strings.Split(name, " ")
+			words = append(words, wordsLocal...)
+			currentSavedCat.Name = *input.Name
+			currentSavedCat.Words = words
+			updateCols = append(updateCols, "name")
+			updateCols = append(updateCols, "words")
+		}
+		if input.Description != nil && *input.Description != currentSavedCat.Description {
+			currentSavedCat.Description = *input.Description
+			updateCols = append(updateCols, "description")
+		}
+		if input.Code != nil && *input.Code != currentSavedCat.Code {
+			currentSavedCat.Code = *input.Code
+			updateCols = append(updateCols, "code")
+		}
+		if input.ImageFile != nil {
+			storageC := bucket.NewStorageHandler()
+			gproject := googleprojectlib.GetGoogleProjectID()
+			err = storageC.InitializeStorageClient(ctx, gproject, "coursez-catimages")
+			if err != nil {
+				log.Errorf("Failed to upload image to course: %v", err.Error())
+				return nil, err
+			}
+			imageBucket = *input.ID + "/catimages/" + input.ImageFile.Filename
+			writer, err := storageC.UploadToGCS(ctx, imageBucket, map[string]string{})
+			if err != nil {
+				log.Errorf("Failed to upload image to course: %v", err.Error())
+				return nil, err
+			}
+			defer writer.Close()
+			fileBuffer := bytes.NewBuffer(nil)
+			if _, err := io.Copy(fileBuffer, input.ImageFile.File); err != nil {
+				return nil, err
+			}
+			currentBytes := fileBuffer.Bytes()
+			_, err = io.Copy(writer, bytes.NewReader(currentBytes))
+			if err != nil {
+				return nil, err
+			}
+			imageUrl = storageC.GetSignedURLForObject(imageBucket)
+			currentSavedCat.ImageBucket = imageBucket
+			currentSavedCat.ImageURL = imageUrl
+			updateCols = append(updateCols, "image_bucket")
+			updateCols = append(updateCols, "image_url")
+		}
+		if len(updateCols) > 0 {
+			currentSavedCat.UpdatedAt = time.Now().Unix()
+			updateCols = append(updateCols, "updated_at")
+			upStms, uNames := coursez.SubCatMainTable.Update(updateCols...)
+			updateQuery := CassSession.Query(upStms, uNames).BindStruct(&currentSavedCat)
+			if err := updateQuery.ExecRelease(); err != nil {
+				return nil, err
+			}
+		}
+	}
+	created := strconv.FormatInt(currentSavedCat.CreatedAt, 10)
+	updated := strconv.FormatInt(currentSavedCat.UpdatedAt, 10)
+	catMain := &model.SubCatMain{
+		ID:          &currentSavedCat.ID,
+		Name:        &currentSavedCat.Name,
+		Description: &currentSavedCat.Description,
+		Code:        &currentSavedCat.Code,
+		CreatedAt:   &created,
+		UpdatedAt:   &updated,
+		CreatedBy:   &currentSavedCat.CreatedBy,
+		UpdatedBy:   &currentSavedCat.UpdatedBy,
+		IsActive:    &currentSavedCat.IsActive,
+		ImageURL:    &currentSavedCat.ImageURL,
+		LspID:       input.LspID,
+	}
+	return catMain, nil
+}
+
+func Contains(s []string, e string) bool {
+	for _, a := range s {
+		if a == e {
+			return true
+		}
+	}
+	return false
 }

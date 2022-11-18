@@ -263,6 +263,7 @@ type ComplexityRoot struct {
 		DeleteTopicExam              func(childComplexity int, id *string) int
 		DeleteTopicResource          func(childComplexity int, id *string) int
 		MapSectionToBank             func(childComplexity int, input *model.MapSectionToBankInput) int
+		UpdateCatMain                func(childComplexity int, input *model.CatMainInput) int
 		UpdateCourse                 func(childComplexity int, course *model.CourseInput) int
 		UpdateCourseChapter          func(childComplexity int, chapter *model.ChapterInput) int
 		UpdateCourseCohort           func(childComplexity int, input *model.CourseCohortInput) int
@@ -281,6 +282,7 @@ type ComplexityRoot struct {
 		UpdateQuiz                   func(childComplexity int, quiz *model.QuizInput) int
 		UpdateSectionFixedQuestions  func(childComplexity int, input *model.SectionFixedQuestionsInput) int
 		UpdateSectionToBank          func(childComplexity int, input *model.MapSectionToBankInput) int
+		UpdateSubCatMain             func(childComplexity int, input *model.SubCatMainInput) int
 		UpdateTopicContent           func(childComplexity int, topicContent *model.TopicContentInput, moduleID *string) int
 		UpdateTopicExam              func(childComplexity int, exam *model.TopicExamInput) int
 		UploadCourseImage            func(childComplexity int, file *model.CourseFile) int
@@ -493,8 +495,10 @@ type ComplexityRoot struct {
 
 type MutationResolver interface {
 	AddCatMain(ctx context.Context, input []*model.CatMainInput) ([]*model.CatMain, error)
+	UpdateCatMain(ctx context.Context, input *model.CatMainInput) (*model.CatMain, error)
 	DeleteCatMain(ctx context.Context, id *string) (*bool, error)
 	AddSubCatMain(ctx context.Context, input []*model.SubCatMainInput) ([]*model.SubCatMain, error)
+	UpdateSubCatMain(ctx context.Context, input *model.SubCatMainInput) (*model.SubCatMain, error)
 	DeleteSubCatMain(ctx context.Context, id *string) (*bool, error)
 	AddCategories(ctx context.Context, category []*string) (*bool, error)
 	AddSubCategories(ctx context.Context, subCategory []*string) (*bool, error)
@@ -2180,6 +2184,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.MapSectionToBank(childComplexity, args["input"].(*model.MapSectionToBankInput)), true
 
+	case "Mutation.updateCatMain":
+		if e.complexity.Mutation.UpdateCatMain == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_updateCatMain_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdateCatMain(childComplexity, args["input"].(*model.CatMainInput)), true
+
 	case "Mutation.updateCourse":
 		if e.complexity.Mutation.UpdateCourse == nil {
 			break
@@ -2395,6 +2411,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.UpdateSectionToBank(childComplexity, args["input"].(*model.MapSectionToBankInput)), true
+
+	case "Mutation.updateSubCatMain":
+		if e.complexity.Mutation.UpdateSubCatMain == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_updateSubCatMain_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdateSubCatMain(childComplexity, args["input"].(*model.SubCatMainInput)), true
 
 	case "Mutation.updateTopicContent":
 		if e.complexity.Mutation.UpdateTopicContent == nil {
@@ -4403,8 +4431,10 @@ type SubCatMain {
 # define type mutations to add a course  using courseInput
 type Mutation {
   addCatMain(input: [CatMainInput]): [CatMain]
+  updateCatMain(input: CatMainInput): CatMain
   deleteCatMain(id: ID): Boolean
   addSubCatMain(input: [SubCatMainInput]): [SubCatMain]
+  updateSubCatMain(input: SubCatMainInput): SubCatMain
   deleteSubCatMain(id: ID): Boolean
   addCategories(category: [String]): Boolean
   addSubCategories(sub_category: [String]): Boolean
@@ -5373,6 +5403,21 @@ func (ec *executionContext) field_Mutation_mapSectionToBank_args(ctx context.Con
 	return args, nil
 }
 
+func (ec *executionContext) field_Mutation_updateCatMain_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 *model.CatMainInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalOCatMainInput2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐCatMainInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
 func (ec *executionContext) field_Mutation_updateCourseChapter_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -5635,6 +5680,21 @@ func (ec *executionContext) field_Mutation_updateSectionToBank_args(ctx context.
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
 		arg0, err = ec.unmarshalOMapSectionToBankInput2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐMapSectionToBankInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_updateSubCatMain_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 *model.SubCatMainInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalOSubCatMainInput2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐSubCatMainInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -10392,6 +10452,45 @@ func (ec *executionContext) _Mutation_addCatMain(ctx context.Context, field grap
 	return ec.marshalOCatMain2ᚕᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐCatMain(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _Mutation_updateCatMain(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_updateCatMain_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().UpdateCatMain(rctx, args["input"].(*model.CatMainInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.CatMain)
+	fc.Result = res
+	return ec.marshalOCatMain2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐCatMain(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _Mutation_deleteCatMain(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -10468,6 +10567,45 @@ func (ec *executionContext) _Mutation_addSubCatMain(ctx context.Context, field g
 	res := resTmp.([]*model.SubCatMain)
 	fc.Result = res
 	return ec.marshalOSubCatMain2ᚕᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐSubCatMain(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_updateSubCatMain(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_updateSubCatMain_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().UpdateSubCatMain(rctx, args["input"].(*model.SubCatMainInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.SubCatMain)
+	fc.Result = res
+	return ec.marshalOSubCatMain2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐSubCatMain(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_deleteSubCatMain(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -23607,6 +23745,13 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, innerFunc)
 
+		case "updateCatMain":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_updateCatMain(ctx, field)
+			}
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, innerFunc)
+
 		case "deleteCatMain":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_deleteCatMain(ctx, field)
@@ -23617,6 +23762,13 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 		case "addSubCatMain":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_addSubCatMain(ctx, field)
+			}
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, innerFunc)
+
+		case "updateSubCatMain":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_updateSubCatMain(ctx, field)
 			}
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, innerFunc)
