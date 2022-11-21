@@ -24,9 +24,6 @@ spec:
     spec:
       containers:
         {{ $zcbcred := printf "%s/%s" .Values.zcServiceAccount.credential.dir .Values.zcServiceAccount.credential.file }}
-        {{ $zcbcert := printf "%s/%s" .Values.zcCertAstra.cert.dir .Values.zcCertAstra.cert.file }}
-        {{ $zcbcertca := printf "%s/%s" .Values.zcCertCAAstra.cert.dir .Values.zcCertCAAstra.cert.file }}
-        {{ $zcbkey := printf "%s/%s" .Values.zcAstraKey.key.dir .Values.zcAstraKey.key.file }}
         - name: {{ .Chart.Name }}-asp
           image: "{{ .Values.asp.repository }}:{{ .Values.asp.tag }}"
           imagePullPolicy: {{ .Values.asp.pullPolicy }}
@@ -38,15 +35,6 @@ spec:
           volumeMounts:
           - name: zicops-cc
             mountPath: {{ .Values.zcServiceAccount.credential.dir | quote }}
-            readOnly: true
-          - name: zdevastracert
-            mountPath: {{ .Values.zcCertAstra.cert.dir | quote }}
-            readOnly: true
-          - name: zdevastracertca
-            mountPath: {{ .Values.zcCertCAAstra.cert.dir | quote }}
-            readOnly: true
-          - name: zdevastrakey
-            mountPath: {{ .Values.zcAstraKey.key.dir | quote }}
             readOnly: true
           env:
           - name: GOOGLE_APPLICATION_CREDENTIALS
@@ -82,15 +70,6 @@ spec:
           - name: zicops-cc
             mountPath: {{ .Values.zcServiceAccount.credential.dir | quote }}
             readOnly: true
-          - name: zdevastracert
-            mountPath: {{ .Values.zcCertAstra.cert.dir | quote }}
-            readOnly: true
-          - name: zdevastracertca
-            mountPath: {{ .Values.zcCertCAAstra.cert.dir | quote }}
-            readOnly: true
-          - name: zdevastrakey
-            mountPath: {{ .Values.zcAstraKey.key.dir | quote }}
-            readOnly: true
           env:
           - name: PORT
             value: {{ .Values.image.port | quote }}
@@ -120,12 +99,3 @@ spec:
       - name: zicops-cc
         secret:
           secretName: {{ .Values.zcServiceAccount.secret }}
-      - name: zdevastracert
-        secret:
-          secretName: {{ .Values.zcCertAstra.secret }}
-      - name: zdevastracertca
-        secret:
-          secretName: {{ .Values.zcCertCAAstra.secret }}
-      - name: zdevastrakey
-        secret:
-          secretName: {{ .Values.zcAstraKey.secret }}
