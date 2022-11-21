@@ -5,7 +5,7 @@ on:
 
 env:
   PROJECT_ID: ${{ secrets.GKE_PROJECT }}
-  GKE_CLUSTER: zicops-production-cost-one
+  GKE_CLUSTER: zicops-dot-com-1
   GKE_ZONE: asia-south1-a
   SERVICE_NAME: zicops-course-creator
   NAMESPACE: production
