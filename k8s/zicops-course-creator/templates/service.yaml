@@ -11,9 +11,9 @@ spec:
   type: {{ .Values.service.type }}
   ports:
     - port: {{ .Values.service.port }}
-      targetPort: http-server-cc
+      targetPort: cc-prod
       protocol: TCP
-      name: http-server-cc-prod
+      name: cc-prod
   selector:
     app: {{ template "zicops-course-creator.name" . }}
     release: {{ .Release.Name }}
