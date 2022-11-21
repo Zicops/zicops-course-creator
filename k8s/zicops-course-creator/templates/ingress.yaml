@@ -21,7 +21,7 @@ spec:
   rules:
     - http:
         paths:
-          - path: /cc/?(.*)
+          - path: /release/cc/?(.*)
             pathType: Prefix  
             backend:
               service:

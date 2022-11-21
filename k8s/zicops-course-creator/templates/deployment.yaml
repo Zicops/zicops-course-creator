@@ -64,7 +64,7 @@ spec:
           - name: REDIS_PASSWORD
             value: "AI2GIErdjD"
           ports:
-            - name: http-server-cc
+            - name: http-server-cc-prod
               containerPort: {{ .Values.asp.port }}
               protocol: TCP
         - name: {{ .Chart.Name }}
@@ -97,7 +97,7 @@ spec:
           - name: GOOGLE_APPLICATION_CREDENTIALS
             value: {{ $zcbcred }}
           - name: CASSANDRA_HOST
-            value: "3adcf077-0f2e-447a-b901-4b7b77b8e78d-asia-south1.db.astra.datastax.com"
+            value: "32d390ef-f0ad-4103-9d63-97ac0790b466-asia-south1.db.astra.datastax.com"
           - name: CASSANDRA_PORT
             value: "29042"
           - name: CASSANDRA_USERNAME
