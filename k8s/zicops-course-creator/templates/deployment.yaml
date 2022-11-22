@@ -62,7 +62,7 @@ spec:
           - name: REDIS_PORT
             value: "6379"
           - name: REDIS_PASSWORD
-            value: "AI2GIErdjD"
+            value: "GjEUr5HDxa"
           ports:
             - name: cc-prod
               containerPort: {{ .Values.asp.port }}
@@ -115,7 +115,7 @@ spec:
           - name: REDIS_PORT
             value: "6379"
           - name: REDIS_PASSWORD
-            value: "AI2GIErdjD"
+            value: "GjEUr5HDxa"
       volumes:
       - name: zicops-cc
         secret:
