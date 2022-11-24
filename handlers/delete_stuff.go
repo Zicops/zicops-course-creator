@@ -42,7 +42,7 @@ func DeleteSubCatMain(ctx context.Context, id *string, parent_id *string) (*bool
 		return nil, err
 	}
 
-	deleteSrt := fmt.Sprintf("DELETE FROM coursez.sub_cat_main WHERE id='%s' AND is_active=true AND parent_id='%s' AND is_active=true", *id, *parent_id)
+	deleteSrt := fmt.Sprintf("DELETE FROM coursez.sub_cat_main WHERE id='%s'AND parent_id='%s' AND is_active=true", *id, *parent_id)
 	if err := CassSession.Query(deleteSrt, nil).Exec(); err != nil {
 		return &isSuccess, err
 	}
