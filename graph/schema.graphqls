@@ -782,7 +782,7 @@ type Mutation {
   deleteCatMain(id: ID): Boolean
   addSubCatMain(input: [SubCatMainInput]): [SubCatMain]
   updateSubCatMain(input: SubCatMainInput): SubCatMain
-  deleteSubCatMain(id: ID): Boolean
+  deleteSubCatMain(id: ID, cat_id: String): Boolean
   addCategories(category: [String]): Boolean
   addSubCategories(sub_category: [String]): Boolean
   addCatSubMapping(category: String, sub_category: [String]): Boolean

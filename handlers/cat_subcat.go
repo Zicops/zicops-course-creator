@@ -338,7 +338,7 @@ func UpdateCatMain(ctx context.Context, input *model.CatMainInput) (*model.CatMa
 	updateCols := []string{}
 	imageUrl := ""
 	imageBucket := ""
-	qryStr := fmt.Sprintf(`SELECT * from coursez.cat_main where id='%s'`, *input.ID)
+	qryStr := fmt.Sprintf(`SELECT * from coursez.cat_main where id='%s' AND is_active=true`, *input.ID)
 	getCats := func() (banks []coursez.CatMain, err error) {
 		q := CassSession.Query(qryStr, nil)
 		defer q.Release()
@@ -444,13 +444,13 @@ func UpdateSubCatMain(ctx context.Context, input *model.SubCatMainInput) (*model
 		return nil, err
 	}
 	CassSession := session
-	if input.ID == nil {
-		return nil, errors.New("id is required")
+	if input.ID == nil || input.CatID == nil {
+		return nil, errors.New("id and cat_id are required")
 	}
 	updateCols := []string{}
 	imageUrl := ""
 	imageBucket := ""
-	qryStr := fmt.Sprintf(`SELECT * from coursez.sub_cat_main where id='%s'`, *input.ID)
+	qryStr := fmt.Sprintf(`SELECT * from coursez.sub_cat_main where id='%s' AND parent_id='%s' and is_active=true`, *input.ID, *input.CatID)
 	getCats := func() (banks []coursez.SubCatMain, err error) {
 		q := CassSession.Query(qryStr, nil)
 		defer q.Release()

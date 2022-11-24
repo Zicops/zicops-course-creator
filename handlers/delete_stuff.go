@@ -30,7 +30,7 @@ func DeleteCatMain(ctx context.Context, id *string) (*bool, error) {
 
 }
 
-func DeleteSubCatMain(ctx context.Context, id *string) (*bool, error) {
+func DeleteSubCatMain(ctx context.Context, id *string, parent_id *string) (*bool, error) {
 	session, err := cassandra.GetCassSession("coursez")
 	if err != nil {
 		return nil, err
@@ -42,7 +42,7 @@ func DeleteSubCatMain(ctx context.Context, id *string) (*bool, error) {
 		return nil, err
 	}
 
-	deleteSrt := fmt.Sprintf("DELETE FROM coursez.sub_cat_main WHERE id='%s' AND is_active=true", *id)
+	deleteSrt := fmt.Sprintf("DELETE FROM coursez.sub_cat_main WHERE id='%s' AND is_active=true AND parent_id='%s' AND is_active=true", *id, *parent_id)
 	if err := CassSession.Query(deleteSrt, nil).Exec(); err != nil {
 		return &isSuccess, err
 	}

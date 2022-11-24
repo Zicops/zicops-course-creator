@@ -32,14 +32,6 @@ func main() {
 	}
 	gin.SetMode(gin.ReleaseMode)
 
-	// test cassandra connection
-	_, err1 := cassandra.GetCassSession("coursez")
-	_, err2 := cassandra.GetCassSession("qbankz")
-	if err1 != nil && err2 != nil {
-		log.Fatalf("Error connecting to cassandra: %v and %v ", err1, err2)
-	} else {
-		log.Infof("Cassandra connection successful")
-	}
 	bootUPErrors := make(chan error, 1)
 	go monitorSystem(cancel, bootUPErrors)
 	go checkAndInitCassandraSession()
@@ -66,16 +58,23 @@ func monitorSystem(cancel context.CancelFunc, errorChannel chan error) {
 func checkAndInitCassandraSession() error {
 	// get user session every 1 minute
 	// if session is nil then create new session
+
+	// test cassandra connection
+	_, err1 := cassandra.GetCassSession("coursez")
+	_, err2 := cassandra.GetCassSession("qbankz")
+	if err1 != nil && err2 != nil {
+		log.Errorf("Error connecting to cassandra: %v and %v ", err1, err2)
+	} else {
+		log.Infof("Cassandra connection successful")
+	}
 	for {
 		for key := range cassandra.GlobalSession {
 			_, err := cassandra.GetCassSession(key)
 			if err != nil {
-				//delete session
-				delete(cassandra.GlobalSession, key)
+				cassandra.GlobalSession[key] = nil
 				_, err := cassandra.GetCassSession(key)
 				if err != nil {
-					log.Fatal("Error connecting to cassandra: %v ", err)
-					panic(err)
+					log.Errorf("Error connecting to cassandra: %v ", err)
 				}
 			}
 		}

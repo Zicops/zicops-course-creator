@@ -258,7 +258,7 @@ type ComplexityRoot struct {
 		DeleteQuiz                   func(childComplexity int, id *string) int
 		DeleteSectionFixedQuestions  func(childComplexity int, id *string) int
 		DeleteSectionToBank          func(childComplexity int, id *string) int
-		DeleteSubCatMain             func(childComplexity int, id *string) int
+		DeleteSubCatMain             func(childComplexity int, id *string, catID *string) int
 		DeleteTopicContent           func(childComplexity int, id *string) int
 		DeleteTopicExam              func(childComplexity int, id *string) int
 		DeleteTopicResource          func(childComplexity int, id *string) int
@@ -499,7 +499,7 @@ type MutationResolver interface {
 	DeleteCatMain(ctx context.Context, id *string) (*bool, error)
 	AddSubCatMain(ctx context.Context, input []*model.SubCatMainInput) ([]*model.SubCatMain, error)
 	UpdateSubCatMain(ctx context.Context, input *model.SubCatMainInput) (*model.SubCatMain, error)
-	DeleteSubCatMain(ctx context.Context, id *string) (*bool, error)
+	DeleteSubCatMain(ctx context.Context, id *string, catID *string) (*bool, error)
 	AddCategories(ctx context.Context, category []*string) (*bool, error)
 	AddSubCategories(ctx context.Context, subCategory []*string) (*bool, error)
 	AddCatSubMapping(ctx context.Context, category *string, subCategory []*string) (*bool, error)
@@ -2134,7 +2134,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.DeleteSubCatMain(childComplexity, args["id"].(*string)), true
+		return e.complexity.Mutation.DeleteSubCatMain(childComplexity, args["id"].(*string), args["cat_id"].(*string)), true
 
 	case "Mutation.deleteTopicContent":
 		if e.complexity.Mutation.DeleteTopicContent == nil {
@@ -4435,7 +4435,7 @@ type Mutation {
   deleteCatMain(id: ID): Boolean
   addSubCatMain(input: [SubCatMainInput]): [SubCatMain]
   updateSubCatMain(input: SubCatMainInput): SubCatMain
-  deleteSubCatMain(id: ID): Boolean
+  deleteSubCatMain(id: ID, cat_id: String): Boolean
   addCategories(category: [String]): Boolean
   addSubCategories(sub_category: [String]): Boolean
   addCatSubMapping(category: String, sub_category: [String]): Boolean
@@ -5340,6 +5340,15 @@ func (ec *executionContext) field_Mutation_deleteSubCatMain_args(ctx context.Con
 		}
 	}
 	args["id"] = arg0
+	var arg1 *string
+	if tmp, ok := rawArgs["cat_id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("cat_id"))
+		arg1, err = ec.unmarshalOString2ᚖstring(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["cat_id"] = arg1
 	return args, nil
 }
 
@@ -10633,7 +10642,7 @@ func (ec *executionContext) _Mutation_deleteSubCatMain(ctx context.Context, fiel
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().DeleteSubCatMain(rctx, args["id"].(*string))
+		return ec.resolvers.Mutation().DeleteSubCatMain(rctx, args["id"].(*string), args["cat_id"].(*string))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
