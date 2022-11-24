@@ -58,8 +58,8 @@ func (r *mutationResolver) UpdateSubCatMain(ctx context.Context, input *model.Su
 	return resp, nil
 }
 
-func (r *mutationResolver) DeleteSubCatMain(ctx context.Context, id *string) (*bool, error) {
-	resp, err := handlers.DeleteSubCatMain(ctx, id)
+func (r *mutationResolver) DeleteSubCatMain(ctx context.Context, id *string, catID *string) (*bool, error) {
+	resp, err := handlers.DeleteSubCatMain(ctx, id, catID)
 	if err != nil {
 		log.Errorf("error delete DeleteSubCatMain : %v", err)
 		return nil, err
