@@ -230,9 +230,13 @@ func AddSubCatMain(ctx context.Context, input []*model.SubCatMainInput) ([]*mode
 			words = append(words, wordsLocal...)
 		}
 		guid := base64.URLEncoding.EncodeToString([]byte(strings.ToLower(*c.Name)))
+		parentID := cc.CatID
+		if parentID == nil {
+			continue
+		}
 		imageUrl := ""
 		imageBucket := ""
-		qryStr := fmt.Sprintf(`SELECT * from coursez.sub_cat_main where id='%s'`, guid)
+		qryStr := fmt.Sprintf(`SELECT * from coursez.sub_cat_main where id='%s' AND parent_id='%s' AND is_active=true`, guid, *parentID)
 		getCats := func() (banks []coursez.SubCatMain, err error) {
 			q := CassSession.Query(qryStr, nil)
 			defer q.Release()
@@ -405,7 +409,7 @@ func UpdateCatMain(ctx context.Context, input *model.CatMainInput) (*model.CatMa
 			updateCols = append(updateCols, "image_bucket")
 			updateCols = append(updateCols, "image_url")
 		}
-		if updateCols != nil && len(updateCols) > 0 {
+		if len(updateCols) > 0 {
 			currentSavedCat.UpdatedAt = time.Now().Unix()
 			updateCols = append(updateCols, "updated_at")
 			upStms, uNames := coursez.CatMainTable.Update(updateCols...)
@@ -451,7 +455,7 @@ func UpdateSubCatMain(ctx context.Context, input *model.SubCatMainInput) (*model
 	updateCols := []string{}
 	imageUrl := ""
 	imageBucket := ""
-	qryStr := fmt.Sprintf(`SELECT * from coursez.sub_cat_main where id='%s' AND parent_id='%s' and is_active=true`, *input.ID, *input.CatID)
+	qryStr := fmt.Sprintf(`SELECT * from coursez.sub_cat_main where id='%s' AND parent_id='%s' AND is_active=true`, *input.ID, *input.CatID)
 	getCats := func() (banks []coursez.SubCatMain, err error) {
 		q := CassSession.Query(qryStr, nil)
 		defer q.Release()
@@ -462,14 +466,8 @@ func UpdateSubCatMain(ctx context.Context, input *model.SubCatMainInput) (*model
 	currentLspIds := []string{}
 	words := []string{}
 	currentSavedCat := coursez.SubCatMain{}
-	currentSavedCat.CreatedAt = time.Now().Unix()
-	currentSavedCat.UpdatedAt = time.Now().Unix()
 	if err == nil && len(cats) > 0 {
 		currentSavedCat = cats[0]
-		if input.CatID != nil && *input.CatID != currentSavedCat.ParentID {
-			currentSavedCat.ParentID = *input.CatID
-			updateCols = append(updateCols, "parent_id")
-		}
 		if input.LspID != nil {
 			if !Contains(currentSavedCat.LspIDs, *input.LspID) {
 				currentLspIds = append(currentLspIds, *input.LspID)
