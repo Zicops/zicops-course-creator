@@ -15,7 +15,7 @@ require (
 	github.com/scylladb/gocqlx/v2 v2.7.0
 	github.com/sirupsen/logrus v1.9.0
 	github.com/vektah/gqlparser/v2 v2.5.1
-	github.com/zicops/contracts v0.0.0-20221119091203-acd5a0d42b52
+	github.com/zicops/contracts v0.0.0-20221124163851-9ae3fa6f2741
 	github.com/zicops/zicops-cass-pool v0.0.0-20221120133410-f85054884c37
 	golang.org/x/oauth2 v0.2.0
 	google.golang.org/api v0.103.0
