@@ -444,6 +444,7 @@ func UpdateSubCatMain(ctx context.Context, input *model.SubCatMainInput) (*model
 		return nil, err
 	}
 	CassSession := session
+	log.Infof("UpdateSubCatMain: %v", *input)
 	if input.ID == nil || input.CatID == nil {
 		return nil, errors.New("id and cat_id are required")
 	}
@@ -461,6 +462,8 @@ func UpdateSubCatMain(ctx context.Context, input *model.SubCatMainInput) (*model
 	currentLspIds := []string{}
 	words := []string{}
 	currentSavedCat := coursez.SubCatMain{}
+	currentSavedCat.CreatedAt = time.Now().Unix()
+	currentSavedCat.UpdatedAt = time.Now().Unix()
 	if err == nil && len(cats) > 0 {
 		currentSavedCat = cats[0]
 		if input.CatID != nil && *input.CatID != currentSavedCat.ParentID {
