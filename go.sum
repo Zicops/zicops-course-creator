@@ -671,6 +671,8 @@ github.com/zicops/contracts v0.0.0-20221110012020-fb8e54901471 h1:4T9HNb/2/d/iqB
 github.com/zicops/contracts v0.0.0-20221110012020-fb8e54901471/go.mod h1:jt0EYQwy9NemS+9GgiVeF71y+kDE1NIx7B/uQLOMGPM=
 github.com/zicops/contracts v0.0.0-20221119091203-acd5a0d42b52 h1:8gCMckKOPlMEE5hDPUbsd/OnkwqqEuFJ1HujgFC/Ows=
 github.com/zicops/contracts v0.0.0-20221119091203-acd5a0d42b52/go.mod h1:jt0EYQwy9NemS+9GgiVeF71y+kDE1NIx7B/uQLOMGPM=
+github.com/zicops/contracts v0.0.0-20221124163851-9ae3fa6f2741 h1:DuvphAeIrlYwXItFBLcD95DbKqfSmLhRTWAIQE50lCw=
+github.com/zicops/contracts v0.0.0-20221124163851-9ae3fa6f2741/go.mod h1:jt0EYQwy9NemS+9GgiVeF71y+kDE1NIx7B/uQLOMGPM=
 github.com/zicops/zicops-cass-pool v0.0.0-20220919192352-78030dc81568 h1:7BrLOoLjBfRku9FM2YGFpKKNA9TYdZYWretY96mIyHQ=
 github.com/zicops/zicops-cass-pool v0.0.0-20220919192352-78030dc81568/go.mod h1:PmA3zXnEFGbSNErxO1LEuXrKRYr4xer1l+o/TdjFkpo=
 github.com/zicops/zicops-cass-pool v0.0.0-20221120133410-f85054884c37 h1:BI1StsfYOfNRV1KTpKlDGM2mEhZAPmfLWqq1m2HZZnU=
