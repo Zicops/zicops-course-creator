@@ -509,7 +509,7 @@ func (r *mutationResolver) AddQuestionPaperSection(ctx context.Context, input *m
 }
 
 func (r *mutationResolver) UpdateQuestionPaperSection(ctx context.Context, input *model.QuestionPaperSectionInput) (*model.QuestionPaperSection, error) {
-	resp, err := handlers.QuestionPaperSectionCreate(ctx, input)
+	resp, err := handlers.QuestionPaperSectionUpdate(ctx, input)
 	if err != nil {
 		log.Errorf("error updating question paper section: %v", err)
 		return nil, err
