@@ -126,11 +126,11 @@ func graphqlHandler() gin.HandlerFunc {
 			MaxMemory:     250 * mb,
 			MaxUploadSize: 250 * mb,
 		})
+		lspIdInt := c.Request.Header.Get("tenant")
 		ctxValue := c.Value("zclaims").(map[string]interface{})
-		lspIdInt := ctxValue["tenant"]
 		lspID := "d8685567-cdae-4ee0-a80e-c187848a760e"
-		if lspIdInt != nil && lspIdInt.(string) != "" {
-			lspID = lspIdInt.(string)
+		if lspIdInt != "" {
+			lspID = lspIdInt
 		}
 		ctxValue["lsp_id"] = lspID
 		// set ctxValue to request context
