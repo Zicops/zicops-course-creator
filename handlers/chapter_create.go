@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/rs/xid"
+	"github.com/google/uuid"
 	"github.com/scylladb/gocqlx/v2"
 	log "github.com/sirupsen/logrus"
 	"github.com/zicops/contracts/coursez"
@@ -27,9 +27,9 @@ func ChapterCreate(ctx context.Context, courseID string, chapter *model.ChapterI
 		return nil, err
 	}
 	lspID := claims["lsp_id"].(string)
-	guid := xid.New()
+
 	cassandraChapter := coursez.Chapter{
-		ID:          guid.String(),
+		ID:          uuid.New().String(),
 		Name:        *chapter.Name,
 		Description: *chapter.Description,
 		CreatedAt:   time.Now().Unix(),

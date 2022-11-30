@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/rs/xid"
+	"github.com/google/uuid"
 	"github.com/scylladb/gocqlx/v2"
 	log "github.com/sirupsen/logrus"
 	"github.com/zicops/contracts/qbankz"
@@ -17,7 +17,7 @@ import (
 
 func QuestionPaperCreate(ctx context.Context, input *model.QuestionPaperInput) (*model.QuestionPaper, error) {
 	log.Info("QuestionPaperCreate called")
-	guid := xid.New()
+
 	session, err := cassandra.GetCassSession("qbankz")
 	if err != nil {
 		return nil, err
@@ -30,7 +30,7 @@ func QuestionPaperCreate(ctx context.Context, input *model.QuestionPaperInput) (
 	lspID := claims["lsp_id"].(string)
 	email_creator := claims["email"].(string)
 	cassandraQuestionBank := qbankz.QuestionPaperMain{
-		ID:                guid.String(),
+		ID:                uuid.New().String(),
 		Name:              *input.Name,
 		Category:          *input.Category,
 		SubCategory:       *input.SubCategory,
@@ -160,7 +160,7 @@ func QuestionPaperUpdate(ctx context.Context, input *model.QuestionPaperInput) (
 
 func QuestionPaperSectionCreate(ctx context.Context, input *model.QuestionPaperSectionInput) (*model.QuestionPaperSection, error) {
 	log.Info("QuestionPaperSectionCreate called")
-	guid := xid.New()
+
 	session, err := cassandra.GetCassSession("qbankz")
 	if err != nil {
 		return nil, err
@@ -173,7 +173,7 @@ func QuestionPaperSectionCreate(ctx context.Context, input *model.QuestionPaperS
 	email_creator := claims["email"].(string)
 	lspID := claims["lsp_id"].(string)
 	cassandraQuestionBank := qbankz.SectionMain{
-		ID:              guid.String(),
+		ID:              uuid.New().String(),
 		Name:            *input.Name,
 		IsActive:        *input.IsActive,
 		CreatedBy:       email_creator,

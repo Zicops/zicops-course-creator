@@ -7,7 +7,7 @@ import (
 	"io"
 	"time"
 
-	"github.com/rs/xid"
+	"github.com/google/uuid"
 	log "github.com/sirupsen/logrus"
 	"github.com/zicops/contracts/coursez"
 	"github.com/zicops/zicops-cass-pool/cassandra"
@@ -19,7 +19,6 @@ import (
 
 func AddTopicResources(ctx context.Context, courseID string, resource *model.TopicResourceInput) (*model.UploadResult, error) {
 	log.Infof("AddTopicResources Called")
-	guid := xid.New().String()
 	session, err := cassandra.GetCassSession("coursez")
 	if err != nil {
 		return nil, err
@@ -75,7 +74,7 @@ func AddTopicResources(ctx context.Context, courseID string, resource *model.Top
 	createdBy := email_creator
 	updatedBy := email_creator
 	cassandraResource := coursez.Resource{
-		ID:         guid,
+		ID:         uuid.New().String(),
 		Name:       sourceName,
 		TopicId:    *resource.TopicID,
 		CourseId:   courseID,

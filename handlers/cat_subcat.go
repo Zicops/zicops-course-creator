@@ -11,7 +11,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/rs/xid"
+	"github.com/google/uuid"
 	log "github.com/sirupsen/logrus"
 	"github.com/zicops/contracts/coursez"
 	"github.com/zicops/zicops-cass-pool/cassandra"
@@ -79,11 +79,11 @@ func AddCategorySubMap(ctx context.Context, category *string, subCategory []*str
 
 	isSuccess := false
 	for _, subCat := range subCategory {
-		guid := xid.New()
+
 		currentSubCat := *subCat
 		currentCat := *category
 		cassandraCategory := coursez.CatSubMap{
-			ID:          guid.String(),
+			ID:          uuid.New().String(),
 			Category:    currentCat,
 			SubCategory: currentSubCat,
 		}

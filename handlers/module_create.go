@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/rs/xid"
+	"github.com/google/uuid"
 	"github.com/scylladb/gocqlx/v2"
 	log "github.com/sirupsen/logrus"
 	"github.com/zicops/contracts/coursez"
@@ -17,7 +17,7 @@ import (
 
 func ModuleCreate(ctx context.Context, courseID string, module *model.ModuleInput) (*model.Module, error) {
 	log.Info("ModuleCreate called")
-	guid := xid.New()
+
 	session, err := cassandra.GetCassSession("coursez")
 	if err != nil {
 		return nil, err
@@ -29,7 +29,7 @@ func ModuleCreate(ctx context.Context, courseID string, module *model.ModuleInpu
 	}
 	lspID := claims["lsp_id"].(string)
 	cassandraModule := coursez.Module{
-		ID:          guid.String(),
+		ID:          uuid.New().String(),
 		Name:        *module.Name,
 		Description: *module.Description,
 		CreatedAt:   time.Now().Unix(),

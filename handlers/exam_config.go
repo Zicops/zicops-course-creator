@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/rs/xid"
+	"github.com/google/uuid"
 	"github.com/scylladb/gocqlx/v2"
 	log "github.com/sirupsen/logrus"
 	"github.com/zicops/contracts/qbankz"
@@ -17,7 +17,7 @@ import (
 
 func AddExamConfiguration(ctx context.Context, input *model.ExamConfigurationInput) (*model.ExamConfiguration, error) {
 	log.Info("ExamInstructionsCreate called")
-	guid := xid.New()
+
 	session, err := cassandra.GetCassSession("qbankz")
 	if err != nil {
 		return nil, err
@@ -30,7 +30,7 @@ func AddExamConfiguration(ctx context.Context, input *model.ExamConfigurationInp
 	lspID := claims["lsp_id"].(string)
 	email_creator := claims["email"].(string)
 	cassandraQuestionBank := qbankz.ExamConfig{
-		ID:           guid.String(),
+		ID:           uuid.New().String(),
 		ExamID:       *input.ExamID,
 		IsActive:     *input.IsActive,
 		CreatedBy:    email_creator,
