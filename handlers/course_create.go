@@ -10,10 +10,10 @@ import (
 	"strings"
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/scylladb/gocqlx/v2"
 	log "github.com/sirupsen/logrus"
 
-	"github.com/rs/xid"
 	"github.com/zicops/contracts/coursez"
 	"github.com/zicops/zicops-cass-pool/cassandra"
 	"github.com/zicops/zicops-course-creator/graph/model"
@@ -38,7 +38,7 @@ func CourseCreator(ctx context.Context, courseInput *model.CourseInput) (*model.
 	}
 	email_creator := claims["email"].(string)
 	lspId := claims["lsp_id"].(string)
-	guid := xid.New()
+
 	language := []string{}
 	takeaways := []string{}
 	outcomes := []string{}
@@ -96,7 +96,7 @@ func CourseCreator(ctx context.Context, courseInput *model.CourseInput) (*model.
 	}
 
 	cassandraCourse := coursez.Course{
-		ID:                 guid.String(),
+		ID:                 uuid.New().String(),
 		Name:               *courseInput.Name,
 		Words:              words,
 		LspId:              lspId,

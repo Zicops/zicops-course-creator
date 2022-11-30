@@ -14,7 +14,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/rs/xid"
+	"github.com/google/uuid"
 	"github.com/scylladb/gocqlx/v2"
 	log "github.com/sirupsen/logrus"
 	"github.com/zicops/contracts/coursez"
@@ -29,7 +29,7 @@ import (
 
 func TopicContentCreate(ctx context.Context, topicID string, courseID string, moduleID *string, topicConent *model.TopicContentInput) (*model.TopicContent, error) {
 	log.Info("TopicContentCreate called")
-	guid := xid.New()
+
 	session, err := cassandra.GetCassSession("coursez")
 	if err != nil {
 		return nil, err
@@ -44,7 +44,7 @@ func TopicContentCreate(ctx context.Context, topicID string, courseID string, mo
 		return nil, fmt.Errorf("moduleID is nil")
 	}
 	cassandraTopicContent := coursez.TopicContent{
-		ID:                 guid.String(),
+		ID:                 uuid.New().String(),
 		TopicId:            topicID,
 		CourseId:           courseID,
 		ModuleId:           *moduleID,
@@ -129,7 +129,7 @@ func TopicContentCreate(ctx context.Context, topicID string, courseID string, mo
 
 func TopicExamCreate(ctx context.Context, topicID string, courseID string, exam *model.TopicExamInput) (*model.TopicExam, error) {
 	log.Info("TopicExamCreate called")
-	guid := xid.New()
+
 	session, err := cassandra.GetCassSession("coursez")
 	if err != nil {
 		return nil, err
@@ -154,7 +154,7 @@ func TopicExamCreate(ctx context.Context, topicID string, courseID string, exam 
 		return nil, err
 	}
 	cassandraTopicContent := coursez.TopicExam{
-		ID:        guid.String(),
+		ID:        uuid.New().String(),
 		TopicId:   topicID,
 		CourseId:  courseID,
 		ExamId:    *exam.ExamID,

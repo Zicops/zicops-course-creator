@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/rs/xid"
+	"github.com/google/uuid"
 	"github.com/scylladb/gocqlx/v2"
 	log "github.com/sirupsen/logrus"
 	"github.com/zicops/contracts/qbankz"
@@ -28,7 +28,7 @@ func ExamScheduleCreate(ctx context.Context, exam *model.ExamScheduleInput) (*mo
 	}
 	lspID := claims["lsp_id"].(string)
 	email_creator := claims["email"].(string)
-	guid := xid.New()
+
 	// prase *exam.Start to int64
 	startString := strconv.Itoa(*exam.Start)
 	start, err := strconv.ParseInt(startString, 10, 64)
@@ -42,7 +42,7 @@ func ExamScheduleCreate(ctx context.Context, exam *model.ExamScheduleInput) (*mo
 		return nil, err
 	}
 	cassandraQuestionBank := qbankz.ExamSchedule{
-		ID:         guid.String(),
+		ID:         uuid.New().String(),
 		LspId:      lspID,
 		ExamID:     *exam.ExamID,
 		IsActive:   *exam.IsActive,
