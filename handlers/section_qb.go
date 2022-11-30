@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/rs/xid"
+	"github.com/google/uuid"
 	"github.com/scylladb/gocqlx/v2"
 	log "github.com/sirupsen/logrus"
 	"github.com/zicops/contracts/qbankz"
@@ -17,7 +17,7 @@ import (
 
 func QuestionSectionMap(ctx context.Context, input *model.MapSectionToBankInput) (*model.SectionQBMapping, error) {
 	log.Info("QuestionSectionMap called")
-	guid := xid.New()
+
 	session, err := cassandra.GetCassSession("qbankz")
 	if err != nil {
 		return nil, err
@@ -30,7 +30,7 @@ func QuestionSectionMap(ctx context.Context, input *model.MapSectionToBankInput)
 	email_creator := claims["email"].(string)
 	lspID := claims["lsp_id"].(string)
 	cassandraQuestionBank := qbankz.SectionQBMapping{
-		ID:              guid.String(),
+		ID:              uuid.New().String(),
 		QBId:            *input.QbID,
 		SectionID:       *input.SectionID,
 		IsActive:        *input.IsActive,
@@ -152,7 +152,7 @@ func QuestionSectionMapUpdate(ctx context.Context, input *model.MapSectionToBank
 
 func QuestionFixed(ctx context.Context, input *model.SectionFixedQuestionsInput) (*model.SectionFixedQuestions, error) {
 	log.Info("QuestionFixed called")
-	guid := xid.New()
+
 	session, err := cassandra.GetCassSession("qbankz")
 	if err != nil {
 		return nil, err
@@ -165,7 +165,7 @@ func QuestionFixed(ctx context.Context, input *model.SectionFixedQuestionsInput)
 	email_creator := claims["email"].(string)
 	lspID := claims["lsp_id"].(string)
 	cassandraQuestionBank := qbankz.SectionFixedQuestions{
-		ID:         guid.String(),
+		ID:         uuid.New().String(),
 		SQBId:      *input.SqbID,
 		QuestionID: *input.QuestionID,
 		IsActive:   *input.IsActive,

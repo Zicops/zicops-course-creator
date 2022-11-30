@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/rs/xid"
+	"github.com/google/uuid"
 	"github.com/scylladb/gocqlx/v2"
 	log "github.com/sirupsen/logrus"
 	"github.com/zicops/contracts/coursez"
@@ -21,7 +21,7 @@ import (
 
 func CreateTopicQuiz(ctx context.Context, quiz *model.QuizInput) (*model.Quiz, error) {
 	log.Info("CreateTopicQuiz called")
-	guid := xid.New()
+
 	session, err := cassandra.GetCassSession("coursez")
 	if err != nil {
 		return nil, err
@@ -33,7 +33,7 @@ func CreateTopicQuiz(ctx context.Context, quiz *model.QuizInput) (*model.Quiz, e
 	}
 	lspID := claims["lsp_id"].(string)
 	cassandraQuiz := coursez.Quiz{
-		ID:        guid.String(),
+		ID:        uuid.New().String(),
 		CreatedAt: time.Now().Unix(),
 		UpdatedAt: time.Now().Unix(),
 		IsActive:  true,
@@ -233,9 +233,9 @@ func UploadQuizFile(ctx context.Context, courseID string, quiz model.QuizFile) (
 		return &isSuccess, err
 	}
 	getUrl := storageC.GetSignedURLForObject(bucketPath)
-	guid := xid.New()
+
 	cassandraQuizFile := coursez.QuizFile{
-		ID:         guid.String(),
+		ID:         uuid.New().String(),
 		QuizId:     *quiz.QuizID,
 		BucketPath: bucketPath,
 		Path:       getUrl,
@@ -279,9 +279,9 @@ func AddMCQQuiz(ctx context.Context, quiz *model.QuizMcq) (*bool, error) {
 	for _, option := range quiz.Options {
 		options = append(options, *option)
 	}
-	guid := xid.New()
+
 	cassandraQuiz := coursez.QuizMcq{
-		ID:       guid.String(),
+		ID:       uuid.New().String(),
 		QuizId:   *quiz.QuizID,
 		Options:  options,
 		IsActive: true,
@@ -321,9 +321,9 @@ func AddQuizDescriptive(ctx context.Context, quiz *model.QuizDescriptive) (*bool
 		return nil, err
 	}
 	lspID := claims["lsp_id"].(string)
-	guid := xid.New()
+
 	cassandraQuiz := coursez.QuizDescriptive{
-		ID:       guid.String(),
+		ID:       uuid.New().String(),
 		QuizId:   *quiz.QuizID,
 		IsActive: true,
 		LspId:    lspID,

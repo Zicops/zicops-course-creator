@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/rs/xid"
+	"github.com/google/uuid"
 	"github.com/scylladb/gocqlx/v2"
 	log "github.com/sirupsen/logrus"
 	"github.com/zicops/contracts/qbankz"
@@ -29,7 +29,7 @@ func ExamCreate(ctx context.Context, exam *model.ExamInput) (*model.Exam, error)
 	}
 	lspID := claims["lsp_id"].(string)
 	email_creator := claims["email"].(string)
-	guid := xid.New()
+
 	qpId := *exam.QpID
 	questionsIDs, total_count, err := GetQuestionIDsFromPaperId(CassSession, ctx, lspID, qpId)
 	if err != nil {
@@ -42,7 +42,7 @@ func ExamCreate(ctx context.Context, exam *model.ExamInput) (*model.Exam, error)
 		words = append(words, wordsLocal...)
 	}
 	cassandraQuestionBank := qbankz.Exam{
-		ID:           guid.String(),
+		ID:           uuid.New().String(),
 		Name:         *exam.Name,
 		Words:        words,
 		Category:     *exam.Category,
@@ -162,7 +162,7 @@ func ExamUpdate(ctx context.Context, input *model.ExamInput) (*model.Exam, error
 	}
 	updatedAt := time.Now().Unix()
 	if input.QpID != nil && *input.QpID != "" && *input.QpID != cassandraQuestionBank.QPID {
-		questionsIDs, total_count,  err := GetQuestionIDsFromPaperId(CassSession, ctx, lspID, *input.QpID)
+		questionsIDs, total_count, err := GetQuestionIDsFromPaperId(CassSession, ctx, lspID, *input.QpID)
 		if err != nil {
 			return nil, err
 		}

@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/rs/xid"
+	"github.com/google/uuid"
 	"github.com/scylladb/gocqlx/v2"
 	log "github.com/sirupsen/logrus"
 	"github.com/zicops/contracts/coursez"
@@ -31,9 +31,9 @@ func AddCourseCohort(ctx context.Context, input *model.CourseCohortInput) (*mode
 	if input.ExpectedCompletion != nil {
 		expectedComp = *input.ExpectedCompletion
 	}
-	guid := xid.New()
+
 	cassandraQuestionBank := coursez.CourseCohortMapping{
-		ID:                     guid.String(),
+		ID:                     uuid.New().String(),
 		CourseID:               *input.CourseID,
 		CourseType:             *input.CourseType,
 		CohortID:               *input.CohortID,

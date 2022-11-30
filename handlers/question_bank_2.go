@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/rs/xid"
+	"github.com/google/uuid"
 	"github.com/scylladb/gocqlx/v2"
 	log "github.com/sirupsen/logrus"
 	"github.com/zicops/contracts/qbankz"
@@ -38,9 +38,9 @@ func AddQuestionOptions(ctx context.Context, input *model.QuestionOptionInput) (
 		return nil, fmt.Errorf("lsp id not found")
 	}
 	email_creator := claims["email"].(string)
-	guid := xid.New()
+
 	cassandraQuestionBank := qbankz.OptionsMain{
-		ID:             guid.String(),
+		ID:             uuid.New().String(),
 		Description:    *input.Description,
 		IsCorrect:      *input.IsCorrect,
 		QmId:           *input.QmID,

@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/rs/xid"
+	"github.com/google/uuid"
 	"github.com/scylladb/gocqlx/v2"
 	log "github.com/sirupsen/logrus"
 	"github.com/zicops/contracts/coursez"
@@ -28,9 +28,9 @@ func TopicCreate(ctx context.Context, courseID string, topic *model.TopicInput) 
 	}
 	email_creator := claims["email"].(string)
 	lspId := claims["lsp_id"].(string)
-	guid := xid.New()
+
 	cassandraTopic := coursez.Topic{
-		ID:          guid.String(),
+		ID:          uuid.New().String(),
 		Name:        *topic.Name,
 		Description: *topic.Description,
 		Type:        *topic.Type,

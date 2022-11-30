@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/99designs/gqlgen/graphql"
+	"github.com/google/uuid"
 	"github.com/rs/xid"
 	"github.com/scylladb/gocqlx/v2"
 	log "github.com/sirupsen/logrus"
@@ -24,7 +25,7 @@ import (
 
 func QuestionBankCreate(ctx context.Context, input *model.QuestionBankInput) (*model.QuestionBank, error) {
 	log.Info("QuestionBankCreate called")
-	guid := xid.New()
+
 	session, err := cassandra.GetCassSession("qbankz")
 	if err != nil {
 		return nil, err
@@ -43,7 +44,7 @@ func QuestionBankCreate(ctx context.Context, input *model.QuestionBankInput) (*m
 	lspID := claims["lsp_id"].(string)
 	email_creator := claims["email"].(string)
 	cassandraQuestionBank := qbankz.QuestionBankMain{
-		ID:          guid.String(),
+		ID:          uuid.New().String(),
 		Name:        *input.Name,
 		Words:       words,
 		Description: *input.Description,
@@ -183,10 +184,10 @@ func AddQuestionBankQuestion(ctx context.Context, input *model.QuestionBankQuest
 		return nil, fmt.Errorf("lsp id not found")
 	}
 	email_creator := claims["email"].(string)
-	guid := xid.New()
+
 	getUrl := ""
 	cassandraQuestionBank := qbankz.QuestionMain{
-		ID:             guid.String(),
+		ID:             uuid.New().String(),
 		Name:           *input.Name,
 		Description:    *input.Description,
 		QbmId:          *input.QbmID,
@@ -299,7 +300,7 @@ func BulkAddQuestionBankQuestions(ctx context.Context, qbID string, qfile graphq
 func populateQuestionBankQuestions(ctx context.Context, row []string, i int, qbID string, email_creator string, lspID string, CassSession *gocqlx.Session) {
 	col9 := 9
 	correctOptions := strings.ToLower(row[col9])
-	guid := xid.New()
+
 	// row 3 to int
 	difficulty, err := strconv.Atoi(row[2])
 	if err != nil {
@@ -308,7 +309,7 @@ func populateQuestionBankQuestions(ctx context.Context, row []string, i int, qbI
 	}
 
 	cassandraQuestionBank := qbankz.QuestionMain{
-		ID:               guid.String(),
+		ID:               uuid.New().String(),
 		Name:             row[3],
 		Description:      row[3],
 		QbmId:            qbID,
@@ -351,7 +352,7 @@ func populateQuestionBankQuestions(ctx context.Context, row []string, i int, qbI
 	}
 	questionOption1 := qbankz.OptionsMain{
 		ID:               xid.New().String(),
-		QmId:             guid.String(),
+		QmId:             uuid.New().String(),
 		Description:      row[5],
 		LspId:            lspID,
 		IsActive:         true,
@@ -366,7 +367,7 @@ func populateQuestionBankQuestions(ctx context.Context, row []string, i int, qbI
 	}
 	questionOption2 := qbankz.OptionsMain{
 		ID:               xid.New().String(),
-		QmId:             guid.String(),
+		QmId:             uuid.New().String(),
 		Description:      row[6],
 		LspId:            lspID,
 		IsActive:         true,
@@ -381,7 +382,7 @@ func populateQuestionBankQuestions(ctx context.Context, row []string, i int, qbI
 	}
 	questionOption3 := qbankz.OptionsMain{
 		ID:               xid.New().String(),
-		QmId:             guid.String(),
+		QmId:             uuid.New().String(),
 		Description:      row[7],
 		LspId:            lspID,
 		IsActive:         true,
@@ -396,7 +397,7 @@ func populateQuestionBankQuestions(ctx context.Context, row []string, i int, qbI
 	}
 	questionOption4 := qbankz.OptionsMain{
 		ID:               xid.New().String(),
-		QmId:             guid.String(),
+		QmId:             uuid.New().String(),
 		Description:      row[8],
 		LspId:            lspID,
 		IsActive:         true,
