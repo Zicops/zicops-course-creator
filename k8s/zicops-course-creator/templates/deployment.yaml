@@ -64,7 +64,7 @@ spec:
           - name: REDIS_PASSWORD
             value: "AI2GIErdjD"
           ports:
-            - name: http-server-um
+            - name: http-server-cc
               containerPort: {{ .Values.asp.port }}
               protocol: TCP
         - name: {{ .Chart.Name }}
