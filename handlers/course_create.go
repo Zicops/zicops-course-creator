@@ -557,6 +557,14 @@ func CourseUpdate(ctx context.Context, courseInput *model.CourseInput) (*model.C
 		updateCols = append(updateCols, "publisher")
 		cassandraCourse.Publisher = *courseInput.Publisher
 	}
+	if courseInput.ExpiryDate != nil && *courseInput.ExpiryDate != cassandraCourse.ExpiryDate {
+		updateCols = append(updateCols, "expiry_date")
+		cassandraCourse.ExpiryDate = *courseInput.ExpiryDate
+	}
+	if courseInput.PublishDate != nil && *courseInput.PublishDate != cassandraCourse.PublishDate {
+		updateCols = append(updateCols, "publish_date")
+		cassandraCourse.PublishDate = *courseInput.PublishDate
+	}
 	if len(updateCols) > 0 {
 		updatedAt := time.Now().Unix()
 		cassandraCourse.UpdatedAt = updatedAt
