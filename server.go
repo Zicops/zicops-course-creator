@@ -31,15 +31,6 @@ func main() {
 		port = 8090
 	}
 	gin.SetMode(gin.ReleaseMode)
-
-	// test cassandra connection
-	_, err1 := cassandra.GetCassSession("coursez")
-	_, err2 := cassandra.GetCassSession("qbankz")
-	if err1 != nil && err2 != nil {
-		log.Fatalf("Error connecting to cassandra: %v and %v ", err1, err2)
-	} else {
-		log.Infof("Cassandra connection successful")
-	}
 	bootUPErrors := make(chan error, 1)
 	go monitorSystem(cancel, bootUPErrors)
 	go checkAndInitCassandraSession()
