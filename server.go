@@ -37,7 +37,7 @@ func main() {
 	controller.CCBackendController(ctx, port, bootUPErrors)
 	err = <-bootUPErrors
 	if err != nil {
-		log.Errorf("There is an issue starting backend server for course creator: %v", err.Error())
+		log.Errorf("there is an issue starting backend server for course creator: %v", err.Error())
 		global.WaitGroupServer.Wait()
 		os.Exit(1)
 	}
@@ -51,7 +51,7 @@ func monitorSystem(cancel context.CancelFunc, errorChannel chan error) {
 	<-holdSignal
 	cancel()
 	// send error to channel
-	errorChannel <- fmt.Errorf("System termination signal received")
+	errorChannel <- fmt.Errorf("system termination signal received")
 }
 
 func checkAndInitCassandraSession() error {
