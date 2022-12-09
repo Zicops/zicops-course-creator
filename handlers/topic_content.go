@@ -45,19 +45,28 @@ func TopicContentCreate(ctx context.Context, topicID string, courseID string, mo
 	}
 	cassandraTopicContent := coursez.TopicContent{
 		ID:                 uuid.New().String(),
+		Language:           *topicConent.Language,
 		TopicId:            topicID,
 		CourseId:           courseID,
 		ModuleId:           *moduleID,
-		Language:           *topicConent.Language,
+		LspId:              lspID,
 		CreatedAt:          time.Now().Unix(),
 		UpdatedAt:          time.Now().Unix(),
+		StartTime:          0,
+		Duration:           0,
+		SkipIntroDuration:  0,
+		NextShowtime:       0,
+		FromEndTime:        0,
 		TopicContentBucket: "",
 		Url:                "",
 		SubtitleFile:       "",
+		SubtitleFileBucket: "",
+		Type:               "",
 		IsActive:           true,
-		LspId:              lspID,
+		IsDefault:          false,
 	}
-	if moduleID != nil && topicConent.Duration != nil {
+	contentCountByTopicID := GetTopicContentCountByTopicID(ctx, topicID, lspID, CassSession)
+	if moduleID != nil && topicConent.Duration != nil && contentCountByTopicID == 0 {
 		mod := GetModule(ctx, *moduleID, lspID, CassSession)
 		if mod == nil {
 			return nil, fmt.Errorf("module not found")
@@ -69,7 +78,7 @@ func TopicContentCreate(ctx context.Context, topicID string, courseID string, mo
 			return nil, err
 		}
 	}
-	if topicConent.Duration != nil && cassandraTopicContent.CourseId != "" {
+	if topicConent.Duration != nil && cassandraTopicContent.CourseId != "" && contentCountByTopicID == 0 {
 		course := GetCourse(ctx, cassandraTopicContent.CourseId, lspID, CassSession)
 		if course == nil {
 			return nil, fmt.Errorf("course not found")
@@ -125,6 +134,15 @@ func TopicContentCreate(ctx context.Context, topicID string, courseID string, mo
 		CourseID:          &courseID,
 	}
 	return &responseModel, nil
+}
+
+func GetTopicContentCountByTopicID(ctx context.Context, topicID string, lspID string, CassSession *gocqlx.Session) int {
+	queryStr := fmt.Sprintf("SELECT COUNT(*) FROM coursez.topic_content WHERE topic_id='%s' and lsp_id='%s' and is_active=true", topicID, lspID)
+	iter := CassSession.Query(queryStr, nil).Iter()
+	var count int
+	for iter.Scan(&count) {
+	}
+	return count
 }
 
 func TopicExamCreate(ctx context.Context, topicID string, courseID string, exam *model.TopicExamInput) (*model.TopicExam, error) {
