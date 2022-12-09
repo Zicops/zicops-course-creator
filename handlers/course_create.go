@@ -578,6 +578,22 @@ func CourseUpdate(ctx context.Context, courseInput *model.CourseInput) (*model.C
 	}
 	updated := strconv.FormatInt(cassandraCourse.UpdatedAt, 10)
 	created := strconv.FormatInt(cassandraCourse.CreatedAt, 10)
+	/// convert cassandraCourse.Status to model.Status
+	var status model.Status
+	if cassandraCourse.Status == "active" {
+		status = model.StatusPublished
+	} else if cassandraCourse.Status == "saved" {
+		status = model.StatusSaved
+	} else if cassandraCourse.Status == "approved" {
+		status = model.StatusApproved
+	} else if cassandraCourse.Status == "rejected" {
+		status = model.StatusRejected
+	} else if cassandraCourse.Status == "on_hold" {
+		status = model.StatusOnHold
+	} else if cassandraCourse.Status == "approval_pending" {
+		status = model.StatusApprovalPending
+	}
+
 	responseModel := model.Course{
 		ID:                 &cassandraCourse.ID,
 		Name:               courseInput.Name,
@@ -607,7 +623,7 @@ func CourseUpdate(ctx context.Context, courseInput *model.CourseInput) (*model.C
 		Approvers:          courseInput.Approvers,
 		CreatedBy:          courseInput.CreatedBy,
 		UpdatedBy:          courseInput.UpdatedBy,
-		Status:             courseInput.Status,
+		Status:             &status,
 		IsDisplay:          courseInput.IsDisplay,
 		ExpectedCompletion: courseInput.ExpectedCompletion,
 		Category:           courseInput.Category,
