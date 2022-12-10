@@ -137,7 +137,7 @@ func TopicContentCreate(ctx context.Context, topicID string, courseID string, mo
 }
 
 func GetTopicContentCountByTopicID(ctx context.Context, topicID string, lspID string, CassSession *gocqlx.Session) int {
-	queryStr := fmt.Sprintf("SELECT COUNT(*) FROM coursez.topic_content WHERE topic_id='%s' and lsp_id='%s' and is_active=true", topicID, lspID)
+	queryStr := fmt.Sprintf("SELECT COUNT(*) FROM coursez.topic_content WHERE topicid='%s' and lsp_id='%s' and is_active=true ALLOW FILTERING", topicID, lspID)
 	iter := CassSession.Query(queryStr, nil).Iter()
 	var count int
 	for iter.Scan(&count) {
