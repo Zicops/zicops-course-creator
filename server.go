@@ -6,7 +6,6 @@ import (
 	"os/signal"
 	"strconv"
 	"syscall"
-	"time"
 
 	"os"
 
@@ -55,7 +54,7 @@ func monitorSystem(cancel context.CancelFunc, errorChannel chan error) {
 	errorChannel <- fmt.Errorf("system termination signal received")
 }
 
-func checkAndInitCassandraSession() error {
+func checkAndInitCassandraSession() {
 	// get user session every 1 minute
 	// if session is nil then create new session
 	//test cassandra connection
@@ -66,31 +65,5 @@ func checkAndInitCassandraSession() error {
 		log.Errorf("Error connecting to cassandra: %v and %v ", err1, err2, err3)
 	} else {
 		log.Infof("Cassandra connection successful")
-	}
-	for {
-		for key := range cassandra.GlobalSession {
-			session, err := cassandra.GetCassSession(key)
-			restart := false
-			if session != nil {
-				qX := session.Query("select now() from system.local", nil)
-				if qX != nil {
-					err = qX.Exec()
-					if err != nil {
-						restart = true
-					}
-				}
-			} else {
-				restart = true
-			}
-
-			if err != nil || restart {
-				cassandra.GlobalSession[key] = nil
-				session, err := cassandra.GetCassSession(key)
-				if err == nil && session != nil {
-					cassandra.GlobalSession[key] = nil
-				}
-			}
-		}
-		time.Sleep(20 * time.Minute)
 	}
 }
