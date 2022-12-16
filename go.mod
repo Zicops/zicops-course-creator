@@ -17,7 +17,7 @@ require (
 	github.com/sirupsen/logrus v1.9.0
 	github.com/vektah/gqlparser/v2 v2.5.1
 	github.com/zicops/contracts v0.0.0-20221124163851-9ae3fa6f2741
-	github.com/zicops/zicops-cass-pool v0.0.0-20221216001309-0cbe9d1900ea
+	github.com/zicops/zicops-cass-pool v0.0.0-20221216014726-547bf7bf5d26
 	golang.org/x/oauth2 v0.3.0
 	google.golang.org/api v0.105.0
 	gopkg.in/tylerb/graceful.v1 v1.2.15
