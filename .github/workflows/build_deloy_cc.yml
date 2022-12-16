@@ -2,7 +2,6 @@ name: Docker Image CI
 
 on:
   workflow_dispatch:
-
 env:
   PROJECT_ID: ${{ secrets.GKE_PROJECT }}
   GKE_CLUSTER: zicops-dot-com-1
