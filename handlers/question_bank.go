@@ -12,7 +12,6 @@ import (
 
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/google/uuid"
-	"github.com/rs/xid"
 	"github.com/scylladb/gocqlx/v2"
 	log "github.com/sirupsen/logrus"
 	"github.com/zicops/contracts/qbankz"
@@ -351,8 +350,8 @@ func populateQuestionBankQuestions(ctx context.Context, row []string, i int, qbI
 		isCorrect4 = true
 	}
 	questionOption1 := qbankz.OptionsMain{
-		ID:               xid.New().String(),
-		QmId:             uuid.New().String(),
+		ID:               uuid.NewString(),
+		QmId:             cassandraQuestionBank.ID,
 		Description:      row[5],
 		LspId:            lspID,
 		IsActive:         true,
@@ -366,8 +365,8 @@ func populateQuestionBankQuestions(ctx context.Context, row []string, i int, qbI
 		IsCorrect:        isCorrect1,
 	}
 	questionOption2 := qbankz.OptionsMain{
-		ID:               xid.New().String(),
-		QmId:             uuid.New().String(),
+		ID:               uuid.NewString(),
+		QmId:             cassandraQuestionBank.ID,
 		Description:      row[6],
 		LspId:            lspID,
 		IsActive:         true,
@@ -381,8 +380,8 @@ func populateQuestionBankQuestions(ctx context.Context, row []string, i int, qbI
 		IsCorrect:        isCorrect2,
 	}
 	questionOption3 := qbankz.OptionsMain{
-		ID:               xid.New().String(),
-		QmId:             uuid.New().String(),
+		ID:               uuid.NewString(),
+		QmId:             cassandraQuestionBank.ID,
 		Description:      row[7],
 		LspId:            lspID,
 		IsActive:         true,
@@ -396,8 +395,8 @@ func populateQuestionBankQuestions(ctx context.Context, row []string, i int, qbI
 		IsCorrect:        isCorrect3,
 	}
 	questionOption4 := qbankz.OptionsMain{
-		ID:               xid.New().String(),
-		QmId:             uuid.New().String(),
+		ID:               uuid.NewString(),
+		QmId:             cassandraQuestionBank.ID,
 		Description:      row[8],
 		LspId:            lspID,
 		IsActive:         true,
