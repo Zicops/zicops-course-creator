@@ -775,6 +775,11 @@ type SubCatMain {
   LspId: String
 }
 
+type ThumbnailsData {
+  contentId: String!
+  thumbnail:String!
+}
+
 # define type mutations to add a course  using courseInput
 type Mutation {
   addCatMain(input: [CatMainInput]): [CatMain]
@@ -886,4 +891,6 @@ type Mutation {
   addCourseCohort(input: CourseCohortInput): CourseCohort
   updateCourseCohort(input: CourseCohortInput): CourseCohort
   deleteCourseCohort(id: ID): Boolean
+  AddContentThumbail(contentId:String!, thumbnail: String!): String!
+  GetThumbnails(contentId:[String]!): [ThumbnailsData]!
 }

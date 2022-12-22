@@ -3,11 +3,14 @@ package bucket
 import (
 	"context"
 	"fmt"
+	"log"
 	"os"
 	"time"
 
 	"cloud.google.com/go/storage"
+	firebase "firebase.google.com/go"
 	"github.com/zicops/zicops-course-creator/constants"
+	"github.com/zicops/zicops-course-creator/global"
 	"github.com/zicops/zicops-course-creator/helpers"
 	"google.golang.org/api/option"
 )
@@ -47,6 +50,19 @@ func (sc *Client) InitializeStorageClient(ctx context.Context, projectID string,
 	sc.projectID = projectID
 	sc.bucket, _ = sc.CreateBucket(ctx, bucket)
 	sc.bucketPublic, _ = sc.CreateBucketPublic(ctx, constants.COURSES_PUBLIC_BUCKET)
+
+	//initialize firebase and firestore
+	opt := option.WithCredentials(currentCreds)
+	global.App, err = firebase.NewApp(global.Ct, nil, opt)
+	if err != nil {
+		log.Printf("error initializing app: %v", err)
+	}
+
+	global.Client, err = global.App.Firestore(global.Ct)
+	if err != nil {
+		log.Printf("Error while initialising firestore %v", err)
+	}
+
 	return nil
 }
 

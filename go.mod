@@ -5,6 +5,7 @@ go 1.17
 require (
 	cloud.google.com/go/compute/metadata v0.2.3
 	cloud.google.com/go/storage v1.28.1
+	firebase.google.com/go v3.13.0+incompatible
 	github.com/99designs/gqlgen v0.17.22
 	github.com/aws/aws-sdk-go-v2 v1.17.3
 	github.com/aws/aws-sdk-go-v2/service/amplify v1.12.2
@@ -23,8 +24,15 @@ require (
 )
 
 require (
+	cloud.google.com/go/longrunning v0.3.0 // indirect
+	golang.org/x/sync v0.1.0 // indirect
+	golang.org/x/time v0.1.0 // indirect
+)
+
+require (
 	cloud.google.com/go v0.107.0 // indirect
 	cloud.google.com/go/compute v1.14.0 // indirect
+	cloud.google.com/go/firestore v1.9.0
 	cloud.google.com/go/iam v0.9.0 // indirect
 	github.com/agnivade/levenshtein v1.1.1 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/configsources v1.1.27 // indirect
