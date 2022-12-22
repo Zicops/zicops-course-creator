@@ -653,6 +653,11 @@ type SubCatMainInput struct {
 	LspID       *string         `json:"LspId"`
 }
 
+type ThumbnailsData struct {
+	ContentID string `json:"contentId"`
+	Thumbnail string `json:"thumbnail"`
+}
+
 type Topic struct {
 	ID          *string `json:"id"`
 	Name        *string `json:"name"`
