@@ -52,6 +52,7 @@ func (sc *Client) InitializeStorageClient(ctx context.Context, projectID string,
 	sc.bucketPublic, _ = sc.CreateBucketPublic(ctx, constants.COURSES_PUBLIC_BUCKET)
 
 	//initialize firebase and firestore
+	global.Ct = ctx
 	opt := option.WithCredentials(currentCreds)
 	global.App, err = firebase.NewApp(global.Ct, nil, opt)
 	if err != nil {
