@@ -30,7 +30,6 @@ func main() {
 		port = 8090
 	}
 	gin.SetMode(gin.ReleaseMode)
-
 	bootUPErrors := make(chan error, 1)
 	go monitorSystem(cancel, bootUPErrors)
 	go checkAndInitCassandraSession()
