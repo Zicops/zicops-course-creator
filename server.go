@@ -11,6 +11,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
+	"github.com/zicops/zicops-cass-pool/cassandra"
 	"github.com/zicops/zicops-course-creator/controller"
 	"github.com/zicops/zicops-course-creator/global"
 )
@@ -32,7 +33,7 @@ func main() {
 	bootUPErrors := make(chan error, 1)
 	go monitorSystem(cancel, bootUPErrors)
 
-	//go checkAndInitCassandraSession()
+	go checkAndInitCassandraSession()
 	controller.CCBackendController(ctx, port, bootUPErrors)
 	err = <-bootUPErrors
 	if err != nil {
@@ -53,7 +54,6 @@ func monitorSystem(cancel context.CancelFunc, errorChannel chan error) {
 	errorChannel <- fmt.Errorf("system termination signal received")
 }
 
-/*
 func checkAndInitCassandraSession() {
 	// get user session every 1 minute
 	// if session is nil then create new session
@@ -67,4 +67,3 @@ func checkAndInitCassandraSession() {
 		log.Infof("Cassandra connection successful")
 	}
 }
-*/
