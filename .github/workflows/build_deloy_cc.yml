@@ -34,7 +34,7 @@ jobs:
       run: |-
         docker tag gcr.io/$PROJECT_ID/$SERVICE_NAME:${GITHUB_SHA} gcr.io/$PROJECT_ID/$SERVICE_NAME:latest    
     - run: |
-        gcloud auth configure-docker -q
+        gcloud components install gke-gcloud-auth-plugin
     - name: Push image to GCP
       run: docker push gcr.io/$PROJECT_ID/$SERVICE_NAME:${GITHUB_SHA}
     - name: Push image to GCP
