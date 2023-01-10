@@ -17,7 +17,7 @@ import (
 )
 
 func main() {
-	os.Setenv("GOOGLE_APPLICATION_CREDENTIALS", "zicops-cc.json")
+	//os.Setenv("GOOGLE_APPLICATION_CREDENTIALS", "zicops-cc.json")
 	log.Infof("Starting zicops course creator service")
 	ctx, cancel := context.WithCancel(context.Background())
 	global.CTX = ctx
@@ -32,7 +32,6 @@ func main() {
 	gin.SetMode(gin.ReleaseMode)
 	bootUPErrors := make(chan error, 1)
 	go monitorSystem(cancel, bootUPErrors)
-
 	go checkAndInitCassandraSession()
 	controller.CCBackendController(ctx, port, bootUPErrors)
 	err = <-bootUPErrors
