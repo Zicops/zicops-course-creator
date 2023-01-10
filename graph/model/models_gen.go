@@ -177,23 +177,23 @@ type CourseInput struct {
 }
 
 type Discussion struct {
-	CourseID       string  `json:"CourseId"`
-	ReplyID        *string `json:"ReplyId"`
-	Content        string  `json:"Content"`
-	Module         *string `json:"Module"`
-	Chapter        *string `json:"Chapter"`
-	Topic          *string `json:"Topic"`
-	Likes          []*int  `json:"Likes"`
-	Dislike        []*int  `json:"Dislike"`
-	IsAnonymous    *bool   `json:"IsAnonymous"`
-	IsPinned       *bool   `json:"IsPinned"`
-	IsAnnouncement *bool   `json:"IsAnnouncement"`
-	ReplyCount     *int    `json:"ReplyCount"`
-	CreatedBy      string  `json:"CreatedBy"`
-	CreatedAt      int     `json:"CreatedAt"`
-	UpdatedBy      string  `json:"UpdatedBy"`
-	UpdatedAt      int     `json:"UpdatedAt"`
-	Status         string  `json:"Status"`
+	CourseID       string    `json:"CourseId"`
+	ReplyID        *string   `json:"ReplyId"`
+	Content        string    `json:"Content"`
+	Module         *string   `json:"Module"`
+	Chapter        *string   `json:"Chapter"`
+	Topic          *string   `json:"Topic"`
+	Likes          []*string `json:"Likes"`
+	Dislike        []*string `json:"Dislike"`
+	IsAnonymous    *bool     `json:"IsAnonymous"`
+	IsPinned       *bool     `json:"IsPinned"`
+	IsAnnouncement *bool     `json:"IsAnnouncement"`
+	ReplyCount     *int      `json:"ReplyCount"`
+	CreatedBy      string    `json:"CreatedBy"`
+	CreatedAt      int       `json:"CreatedAt"`
+	UpdatedBy      string    `json:"UpdatedBy"`
+	UpdatedAt      int       `json:"UpdatedAt"`
+	Status         string    `json:"Status"`
 }
 
 type Exam struct {

@@ -22,7 +22,10 @@ func AddCourseDiscussion(ctx context.Context, inp model.Discussion) (string, err
 		return "", err
 	}
 	CassSession := session
-	var likesArray, dislikesArray []int
+
+	//coursez.Discussion's likes and dislikes were []string, and
+	//we had []*string as input so we had to convert them
+	var likesArray, dislikesArray []string
 	for _, l := range inp.Likes {
 		likesArray = append(likesArray, *l)
 	}

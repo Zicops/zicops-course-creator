@@ -4544,8 +4544,8 @@ input Discussion {
 	Module: String
 	Chapter: String 
 	Topic: String
-	Likes: [Int]!
-	Dislike: [Int]!
+	Likes: [String]!
+	Dislike: [String]!
 	IsAnonymous: Boolean   
 	IsPinned: Boolean
 	IsAnnouncement: Boolean
@@ -26335,7 +26335,7 @@ func (ec *executionContext) unmarshalInputDiscussion(ctx context.Context, obj in
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Likes"))
-			it.Likes, err = ec.unmarshalNInt2ᚕᚖint(ctx, v)
+			it.Likes, err = ec.unmarshalNString2ᚕᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -26343,7 +26343,7 @@ func (ec *executionContext) unmarshalInputDiscussion(ctx context.Context, obj in
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Dislike"))
-			it.Dislike, err = ec.unmarshalNInt2ᚕᚖint(ctx, v)
+			it.Dislike, err = ec.unmarshalNString2ᚕᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -31548,32 +31548,6 @@ func (ec *executionContext) marshalNInt2int(ctx context.Context, sel ast.Selecti
 		}
 	}
 	return res
-}
-
-func (ec *executionContext) unmarshalNInt2ᚕᚖint(ctx context.Context, v interface{}) ([]*int, error) {
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
-	var err error
-	res := make([]*int, len(vSlice))
-	for i := range vSlice {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalOInt2ᚖint(ctx, vSlice[i])
-		if err != nil {
-			return nil, err
-		}
-	}
-	return res, nil
-}
-
-func (ec *executionContext) marshalNInt2ᚕᚖint(ctx context.Context, sel ast.SelectionSet, v []*int) graphql.Marshaler {
-	ret := make(graphql.Array, len(v))
-	for i := range v {
-		ret[i] = ec.marshalOInt2ᚖint(ctx, sel, v[i])
-	}
-
-	return ret
 }
 
 func (ec *executionContext) unmarshalNString2string(ctx context.Context, v interface{}) (string, error) {

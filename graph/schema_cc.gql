@@ -792,8 +792,8 @@ input Discussion {
 	Module: String
 	Chapter: String 
 	Topic: String
-	Likes: [Int]!
-	Dislike: [Int]!
+	Likes: [String]!
+	Dislike: [String]!
 	IsAnonymous: Boolean   
 	IsPinned: Boolean
 	IsAnnouncement: Boolean
