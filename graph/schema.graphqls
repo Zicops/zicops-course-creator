@@ -799,9 +799,9 @@ input Discussion {
 	IsAnnouncement: Boolean
 	ReplyCount: Int
 	CreatedBy: String!
-	Created_at: String!
-	Updated_by: String!
-	Updated_at: String! 
+	CreatedAt: String!
+	UpdatedBy: String!
+	UpdatedAt: String! 
 	Status: String! 
 }
 

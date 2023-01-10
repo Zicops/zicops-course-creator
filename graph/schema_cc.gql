@@ -786,26 +786,23 @@ input ThumbnailsDataInput {
 }
 
 input Discussion {
-	DiscussionId: String
-	CourseId: String 
+	CourseId: String! 
 	ReplyId: String 
-	UserId: String 
-	Time: Int 
-	Content: String 
-	Module: String 
+	Content: String! 
+	Module: String
 	Chapter: String 
-	Topic: String 
-	Likes: [Int]
-	Dislike: [Int]
+	Topic: String
+	Likes: [Int]!
+	Dislike: [Int]!
 	IsAnonymous: Boolean   
 	IsPinned: Boolean
 	IsAnnouncement: Boolean
 	ReplyCount: Int
-	CreatedBy: String
-	Created_at: String
-	Updated_by: String 
-	Updated_at: String 
-	Status: String 
+	CreatedBy: String!
+	Created_at: String!
+	Updated_by: String!
+	Updated_at: String! 
+	Status: String! 
 }
 
 

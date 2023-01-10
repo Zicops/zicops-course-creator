@@ -79,7 +79,7 @@ func HealthCheckHandler(c *gin.Context) {
 	}
 }
 
-//GetHealthStatus ...
+// GetHealthStatus ...
 func GetHealthStatus(w http.ResponseWriter) {
 	healthStatus := "Super Dentist backend service is healthy"
 	response, _ := json.Marshal(healthStatus)

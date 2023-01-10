@@ -4551,9 +4551,9 @@ input Discussion {
 	IsAnnouncement: Boolean
 	ReplyCount: Int
 	CreatedBy: String!
-	Created_at: String!
-	Updated_by: String!
-	Updated_at: String! 
+	CreatedAt: String!
+	UpdatedBy: String!
+	UpdatedAt: String! 
 	Status: String! 
 }
 
@@ -26276,7 +26276,7 @@ func (ec *executionContext) unmarshalInputDiscussion(ctx context.Context, obj in
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"CourseId", "ReplyId", "Content", "Module", "Chapter", "Topic", "Likes", "Dislike", "IsAnonymous", "IsPinned", "IsAnnouncement", "ReplyCount", "CreatedBy", "Created_at", "Updated_by", "Updated_at", "Status"}
+	fieldsInOrder := [...]string{"CourseId", "ReplyId", "Content", "Module", "Chapter", "Topic", "Likes", "Dislike", "IsAnonymous", "IsPinned", "IsAnnouncement", "ReplyCount", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt", "Status"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -26387,26 +26387,26 @@ func (ec *executionContext) unmarshalInputDiscussion(ctx context.Context, obj in
 			if err != nil {
 				return it, err
 			}
-		case "Created_at":
+		case "CreatedAt":
 			var err error
 
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Created_at"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("CreatedAt"))
 			it.CreatedAt, err = ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
-		case "Updated_by":
+		case "UpdatedBy":
 			var err error
 
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Updated_by"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("UpdatedBy"))
 			it.UpdatedBy, err = ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
-		case "Updated_at":
+		case "UpdatedAt":
 			var err error
 
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Updated_at"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("UpdatedAt"))
 			it.UpdatedAt, err = ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
