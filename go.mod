@@ -16,7 +16,7 @@ require (
 	github.com/scylladb/gocqlx/v2 v2.7.0
 	github.com/sirupsen/logrus v1.9.0
 	github.com/vektah/gqlparser/v2 v2.5.1
-	github.com/zicops/contracts v0.0.0-20230110125242-54d2ab567b87
+	github.com/zicops/contracts v0.0.0-20230110174744-7ab0c36fc3d0
 	github.com/zicops/zicops-cass-pool v0.0.0-20221216180317-e591441b40ab
 	golang.org/x/oauth2 v0.4.0
 	google.golang.org/api v0.106.0
@@ -31,7 +31,7 @@ require (
 
 require (
 	cloud.google.com/go v0.108.0 // indirect
-	cloud.google.com/go/compute v1.15.0 // indirect
+	cloud.google.com/go/compute v1.15.1 // indirect
 	cloud.google.com/go/firestore v1.9.0
 	cloud.google.com/go/iam v0.10.0 // indirect
 	github.com/agnivade/levenshtein v1.1.1 // indirect

@@ -4551,9 +4551,9 @@ input Discussion {
 	IsAnnouncement: Boolean
 	ReplyCount: Int
 	CreatedBy: String!
-	CreatedAt: String!
+	CreatedAt: Int!
 	UpdatedBy: String!
-	UpdatedAt: String! 
+	UpdatedAt: Int! 
 	Status: String! 
 }
 
@@ -26391,7 +26391,7 @@ func (ec *executionContext) unmarshalInputDiscussion(ctx context.Context, obj in
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("CreatedAt"))
-			it.CreatedAt, err = ec.unmarshalNString2string(ctx, v)
+			it.CreatedAt, err = ec.unmarshalNInt2int(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -26407,7 +26407,7 @@ func (ec *executionContext) unmarshalInputDiscussion(ctx context.Context, obj in
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("UpdatedAt"))
-			it.UpdatedAt, err = ec.unmarshalNString2string(ctx, v)
+			it.UpdatedAt, err = ec.unmarshalNInt2int(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -31533,6 +31533,21 @@ func (ec *executionContext) marshalNBoolean2bool(ctx context.Context, sel ast.Se
 func (ec *executionContext) unmarshalNDiscussion2githubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐDiscussion(ctx context.Context, v interface{}) (model.Discussion, error) {
 	res, err := ec.unmarshalInputDiscussion(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalNInt2int(ctx context.Context, v interface{}) (int, error) {
+	res, err := graphql.UnmarshalInt(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNInt2int(ctx context.Context, sel ast.SelectionSet, v int) graphql.Marshaler {
+	res := graphql.MarshalInt(v)
+	if res == graphql.Null {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+	}
+	return res
 }
 
 func (ec *executionContext) unmarshalNInt2ᚕᚖint(ctx context.Context, v interface{}) ([]*int, error) {

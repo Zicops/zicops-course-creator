@@ -45,9 +45,9 @@ func AddCourseDiscussion(ctx context.Context, inp model.Discussion) (string, err
 		IsAnnouncement: *inp.IsAnnouncement,
 		ReplyCount:     *inp.ReplyCount,
 		CreatedBy:      inp.CreatedBy,
-		CreatedAt:      inp.CreatedAt,
+		CreatedAt:      int64(inp.CreatedAt),
 		UpdatedBy:      inp.UpdatedBy,
-		UpdatedAt:      inp.UpdatedAt,
+		UpdatedAt:      int64(inp.UpdatedAt),
 		Status:         inp.Status,
 	}
 	if inp.ReplyID != nil && *inp.ReplyID != "" {

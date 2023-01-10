@@ -190,9 +190,9 @@ type Discussion struct {
 	IsAnnouncement *bool   `json:"IsAnnouncement"`
 	ReplyCount     *int    `json:"ReplyCount"`
 	CreatedBy      string  `json:"CreatedBy"`
-	CreatedAt      string  `json:"CreatedAt"`
+	CreatedAt      int     `json:"CreatedAt"`
 	UpdatedBy      string  `json:"UpdatedBy"`
-	UpdatedAt      string  `json:"UpdatedAt"`
+	UpdatedAt      int     `json:"UpdatedAt"`
 	Status         string  `json:"Status"`
 }
 
