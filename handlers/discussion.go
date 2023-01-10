@@ -2,9 +2,11 @@ package handlers
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/zicops/contracts/coursez"
 	"github.com/zicops/zicops-cass-pool/cassandra"
 	"github.com/zicops/zicops-course-creator/graph/model"
@@ -32,20 +34,20 @@ func AddCourseDiscussion(ctx context.Context, inp model.Discussion) (string, err
 	for _, d := range inp.Dislike {
 		dislikesArray = append(dislikesArray, *d)
 	}
-	//discussionId := fmt.Sprint(uuid.New().ID())
+	discussionId := fmt.Sprint(uuid.New().ID())
 	discussionData := coursez.Discussion{
-		//DiscussionId:   discussionId,
-		CourseId:  inp.CourseID,
-		UserId:    id,
-		Time:      time.Now().Unix(),
-		Content:   inp.Content,
-		Likes:     likesArray,
-		Dislike:   dislikesArray,
-		CreatedBy: inp.CreatedBy,
-		CreatedAt: int64(inp.CreatedAt),
-		UpdatedBy: inp.UpdatedBy,
-		UpdatedAt: int64(inp.UpdatedAt),
-		Status:    inp.Status,
+		DiscussionId: discussionId,
+		CourseId:     inp.CourseID,
+		UserId:       id,
+		Time:         time.Now().Unix(),
+		Content:      inp.Content,
+		Likes:        likesArray,
+		Dislike:      dislikesArray,
+		CreatedBy:    inp.CreatedBy,
+		CreatedAt:    int64(inp.CreatedAt),
+		UpdatedBy:    inp.UpdatedBy,
+		UpdatedAt:    int64(inp.UpdatedAt),
+		Status:       inp.Status,
 	}
 	if inp.ReplyID != nil && *inp.ReplyID != "" {
 		discussionData.ReplyId = *inp.ReplyID
