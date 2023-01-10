@@ -824,8 +824,8 @@ func (r *mutationResolver) DeleteCourseCohort(ctx context.Context, id *string) (
 }
 
 // AddContentThumbail is the resolver for the AddContentThumbail field.
-func (r *mutationResolver) AddContentThumbail(ctx context.Context, contentID string, thumbnail string) (string, error) {
-	resp, err := handlers.AddContentThumbail(ctx, contentID, thumbnail)
+func (r *mutationResolver) AddContentThumbail(ctx context.Context, data *model.ThumbnailsDataInput) (string, error) {
+	resp, err := handlers.AddContentThumbail(ctx, data)
 	if err != nil {
 		log.Errorf("Error adding thumbnails to firestore: %v", err)
 		return "", err
@@ -841,6 +841,15 @@ func (r *mutationResolver) GetThumbnails(ctx context.Context, contentID []*strin
 		return nil, err
 	}
 	return resp, err
+}
+
+// AddCourseDiscussion is the resolver for the addCourseDiscussion field.
+func (r *mutationResolver) AddCourseDiscussion(ctx context.Context, discussionInput model.Discussion) (string, error) {
+	resp, err := handlers.AddCourseDiscussion(ctx, discussionInput)
+	if err != nil {
+		log.Errorf("Error adding data into discussion %v", err)
+	}
+	return resp, nil
 }
 
 // Mutation returns generated.MutationResolver implementation.

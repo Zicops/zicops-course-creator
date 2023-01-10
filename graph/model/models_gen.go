@@ -176,6 +176,26 @@ type CourseInput struct {
 	IsActive           *bool                 `json:"is_active"`
 }
 
+type Discussion struct {
+	CourseID       string  `json:"CourseId"`
+	ReplyID        *string `json:"ReplyId"`
+	Content        string  `json:"Content"`
+	Module         *string `json:"Module"`
+	Chapter        *string `json:"Chapter"`
+	Topic          *string `json:"Topic"`
+	Likes          []*int  `json:"Likes"`
+	Dislike        []*int  `json:"Dislike"`
+	IsAnonymous    *bool   `json:"IsAnonymous"`
+	IsPinned       *bool   `json:"IsPinned"`
+	IsAnnouncement *bool   `json:"IsAnnouncement"`
+	ReplyCount     *int    `json:"ReplyCount"`
+	CreatedBy      string  `json:"CreatedBy"`
+	CreatedAt      string  `json:"Created_at"`
+	UpdatedBy      string  `json:"Updated_by"`
+	UpdatedAt      string  `json:"Updated_at"`
+	Status         string  `json:"Status"`
+}
+
 type Exam struct {
 	ID           *string   `json:"id"`
 	Name         *string   `json:"Name"`
@@ -656,6 +676,11 @@ type SubCatMainInput struct {
 type ThumbnailsData struct {
 	ContentID string `json:"contentId"`
 	Thumbnail string `json:"thumbnail"`
+}
+
+type ThumbnailsDataInput struct {
+	ContentID string    `json:"contentId"`
+	Thumbnail []*string `json:"thumbnail"`
 }
 
 type Topic struct {
