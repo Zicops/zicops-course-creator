@@ -1,6 +1,8 @@
 package handlers
 
 import (
+	"bytes"
+	"compress/gzip"
 	"context"
 	"log"
 
@@ -9,18 +11,33 @@ import (
 	"google.golang.org/api/iterator"
 )
 
-func AddContentThumbail(ctx context.Context, contentID string, thumbnail string) (string, error) {
+func AddContentThumbail(ctx context.Context, data *model.ThumbnailsDataInput) (string, error) {
 	global.Ct = ctx
-	data := &model.ThumbnailsData{
-		ContentID: contentID,
-		Thumbnail: thumbnail,
-	}
-	_, _, err := global.Client.Collection("thumbnails").Add(global.Ct, data)
-	if err != nil {
-		log.Printf("Got error while adding data to firestore %v\n", err)
-		return "", nil
+
+	for _, v := range data.Thumbnail {
+
+		val := enc(*v)
+		inp := &model.ThumbnailsData{
+			ContentID: data.ContentID,
+			Thumbnail: val,
+		}
+		_, _, err := global.Client.Collection("thumbnails").Add(global.Ct, inp)
+		if err != nil {
+			log.Printf("Got error while adding data to firestore %v\n", err)
+			return "", nil
+		}
 	}
 	return "Data added successfully", nil
+}
+
+func enc(inp string) string {
+	var b bytes.Buffer
+	gz := gzip.NewWriter(&b)
+	if _, err := gz.Write([]byte(inp)); err != nil {
+		log.Println(err)
+	}
+	gz.Close()
+	return b.String()
 }
 
 func GetThumbnails(ctx context.Context, contentID []*string) ([]*model.ThumbnailsData, error) {

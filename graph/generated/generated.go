@@ -216,10 +216,11 @@ type ComplexityRoot struct {
 		AddCatMain                   func(childComplexity int, input []*model.CatMainInput) int
 		AddCatSubMapping             func(childComplexity int, category *string, subCategory []*string) int
 		AddCategories                func(childComplexity int, category []*string) int
-		AddContentThumbail           func(childComplexity int, contentID string, thumbnail string) int
+		AddContentThumbail           func(childComplexity int, data *model.ThumbnailsDataInput) int
 		AddCourse                    func(childComplexity int, course *model.CourseInput) int
 		AddCourseChapter             func(childComplexity int, courseID *string, chapter *model.ChapterInput) int
 		AddCourseCohort              func(childComplexity int, input *model.CourseCohortInput) int
+		AddCourseDiscussion          func(childComplexity int, discussionInput model.Discussion) int
 		AddCourseModule              func(childComplexity int, courseID *string, module *model.ModuleInput) int
 		AddCourseTopic               func(childComplexity int, courseID *string, topic *model.TopicInput) int
 		AddExam                      func(childComplexity int, input *model.ExamInput) int
@@ -583,8 +584,9 @@ type MutationResolver interface {
 	AddCourseCohort(ctx context.Context, input *model.CourseCohortInput) (*model.CourseCohort, error)
 	UpdateCourseCohort(ctx context.Context, input *model.CourseCohortInput) (*model.CourseCohort, error)
 	DeleteCourseCohort(ctx context.Context, id *string) (*bool, error)
-	AddContentThumbail(ctx context.Context, contentID string, thumbnail string) (string, error)
+	AddContentThumbail(ctx context.Context, data *model.ThumbnailsDataInput) (string, error)
 	GetThumbnails(ctx context.Context, contentID []*string) ([]*model.ThumbnailsData, error)
+	AddCourseDiscussion(ctx context.Context, discussionInput model.Discussion) (string, error)
 }
 
 type executableSchema struct {
@@ -1628,7 +1630,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.AddContentThumbail(childComplexity, args["contentId"].(string), args["thumbnail"].(string)), true
+		return e.complexity.Mutation.AddContentThumbail(childComplexity, args["data"].(*model.ThumbnailsDataInput)), true
 
 	case "Mutation.addCourse":
 		if e.complexity.Mutation.AddCourse == nil {
@@ -1665,6 +1667,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.AddCourseCohort(childComplexity, args["input"].(*model.CourseCohortInput)), true
+
+	case "Mutation.addCourseDiscussion":
+		if e.complexity.Mutation.AddCourseDiscussion == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_addCourseDiscussion_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.AddCourseDiscussion(childComplexity, args["discussionInput"].(model.Discussion)), true
 
 	case "Mutation.addCourseModule":
 		if e.complexity.Mutation.AddCourseModule == nil {
@@ -3648,6 +3662,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputCourseCohortInput,
 		ec.unmarshalInputCourseFile,
 		ec.unmarshalInputCourseInput,
+		ec.unmarshalInputDiscussion,
 		ec.unmarshalInputExamCohortInput,
 		ec.unmarshalInputExamConfigurationInput,
 		ec.unmarshalInputExamInput,
@@ -3667,6 +3682,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputSectionFixedQuestionsInput,
 		ec.unmarshalInputStaticContent,
 		ec.unmarshalInputSubCatMainInput,
+		ec.unmarshalInputThumbnailsDataInput,
 		ec.unmarshalInputTopicContentInput,
 		ec.unmarshalInputTopicExamInput,
 		ec.unmarshalInputTopicInput,
@@ -4513,8 +4529,34 @@ type SubCatMain {
 
 type ThumbnailsData {
   contentId: String!
-  thumbnail:String!
+  thumbnail: String!
 }
+
+input ThumbnailsDataInput {
+  contentId: String!
+  thumbnail: [String]!
+}
+
+input Discussion {
+	CourseId: String! 
+	ReplyId: String 
+	Content: String! 
+	Module: String
+	Chapter: String 
+	Topic: String
+	Likes: [Int]!
+	Dislike: [Int]!
+	IsAnonymous: Boolean   
+	IsPinned: Boolean
+	IsAnnouncement: Boolean
+	ReplyCount: Int
+	CreatedBy: String!
+	Created_at: String!
+	Updated_by: String!
+	Updated_at: String! 
+	Status: String! 
+}
+
 
 # define type mutations to add a course  using courseInput
 type Mutation {
@@ -4627,8 +4669,9 @@ type Mutation {
   addCourseCohort(input: CourseCohortInput): CourseCohort
   updateCourseCohort(input: CourseCohortInput): CourseCohort
   deleteCourseCohort(id: ID): Boolean
-  AddContentThumbail(contentId:String!, thumbnail: String!): String!
+  AddContentThumbail(data: ThumbnailsDataInput): String!
   GetThumbnails(contentId:[String]!): [ThumbnailsData]!
+  addCourseDiscussion(discussionInput: Discussion!): String!
 }
 `, BuiltIn: false},
 }
@@ -4641,24 +4684,15 @@ var parsedSchema = gqlparser.MustLoadSchema(sources...)
 func (ec *executionContext) field_Mutation_AddContentThumbail_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 string
-	if tmp, ok := rawArgs["contentId"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("contentId"))
-		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+	var arg0 *model.ThumbnailsDataInput
+	if tmp, ok := rawArgs["data"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("data"))
+		arg0, err = ec.unmarshalOThumbnailsDataInput2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐThumbnailsDataInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["contentId"] = arg0
-	var arg1 string
-	if tmp, ok := rawArgs["thumbnail"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("thumbnail"))
-		arg1, err = ec.unmarshalNString2string(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["thumbnail"] = arg1
+	args["data"] = arg0
 	return args, nil
 }
 
@@ -4767,6 +4801,21 @@ func (ec *executionContext) field_Mutation_addCourseCohort_args(ctx context.Cont
 		}
 	}
 	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_addCourseDiscussion_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 model.Discussion
+	if tmp, ok := rawArgs["discussionInput"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("discussionInput"))
+		arg0, err = ec.unmarshalNDiscussion2githubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐDiscussion(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["discussionInput"] = arg0
 	return args, nil
 }
 
@@ -17312,7 +17361,7 @@ func (ec *executionContext) _Mutation_AddContentThumbail(ctx context.Context, fi
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().AddContentThumbail(rctx, fc.Args["contentId"].(string), fc.Args["thumbnail"].(string))
+		return ec.resolvers.Mutation().AddContentThumbail(rctx, fc.Args["data"].(*model.ThumbnailsDataInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -17408,6 +17457,61 @@ func (ec *executionContext) fieldContext_Mutation_GetThumbnails(ctx context.Cont
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Mutation_GetThumbnails_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_addCourseDiscussion(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_addCourseDiscussion(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().AddCourseDiscussion(rctx, fc.Args["discussionInput"].(model.Discussion))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_addCourseDiscussion(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_addCourseDiscussion_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return
 	}
@@ -26165,6 +26269,162 @@ func (ec *executionContext) unmarshalInputCourseInput(ctx context.Context, obj i
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputDiscussion(ctx context.Context, obj interface{}) (model.Discussion, error) {
+	var it model.Discussion
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"CourseId", "ReplyId", "Content", "Module", "Chapter", "Topic", "Likes", "Dislike", "IsAnonymous", "IsPinned", "IsAnnouncement", "ReplyCount", "CreatedBy", "Created_at", "Updated_by", "Updated_at", "Status"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "CourseId":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("CourseId"))
+			it.CourseID, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "ReplyId":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ReplyId"))
+			it.ReplyID, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Content":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Content"))
+			it.Content, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Module":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Module"))
+			it.Module, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Chapter":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Chapter"))
+			it.Chapter, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Topic":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Topic"))
+			it.Topic, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Likes":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Likes"))
+			it.Likes, err = ec.unmarshalNInt2ᚕᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Dislike":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Dislike"))
+			it.Dislike, err = ec.unmarshalNInt2ᚕᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "IsAnonymous":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("IsAnonymous"))
+			it.IsAnonymous, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "IsPinned":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("IsPinned"))
+			it.IsPinned, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "IsAnnouncement":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("IsAnnouncement"))
+			it.IsAnnouncement, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "ReplyCount":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ReplyCount"))
+			it.ReplyCount, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "CreatedBy":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("CreatedBy"))
+			it.CreatedBy, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Created_at":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Created_at"))
+			it.CreatedAt, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Updated_by":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Updated_by"))
+			it.UpdatedBy, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Updated_at":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Updated_at"))
+			it.UpdatedAt, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Status":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Status"))
+			it.Status, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputExamCohortInput(ctx context.Context, obj interface{}) (model.ExamCohortInput, error) {
 	var it model.ExamCohortInput
 	asMap := map[string]interface{}{}
@@ -28105,6 +28365,42 @@ func (ec *executionContext) unmarshalInputSubCatMainInput(ctx context.Context, o
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputThumbnailsDataInput(ctx context.Context, obj interface{}) (model.ThumbnailsDataInput, error) {
+	var it model.ThumbnailsDataInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"contentId", "thumbnail"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "contentId":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("contentId"))
+			it.ContentID, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "thumbnail":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("thumbnail"))
+			it.Thumbnail, err = ec.unmarshalNString2ᚕᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputTopicContentInput(ctx context.Context, obj interface{}) (model.TopicContentInput, error) {
 	var it model.TopicContentInput
 	asMap := map[string]interface{}{}
@@ -29893,6 +30189,15 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
+		case "addCourseDiscussion":
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_addCourseDiscussion(ctx, field)
+			})
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -31225,6 +31530,37 @@ func (ec *executionContext) marshalNBoolean2bool(ctx context.Context, sel ast.Se
 	return res
 }
 
+func (ec *executionContext) unmarshalNDiscussion2githubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐDiscussion(ctx context.Context, v interface{}) (model.Discussion, error) {
+	res, err := ec.unmarshalInputDiscussion(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalNInt2ᚕᚖint(ctx context.Context, v interface{}) ([]*int, error) {
+	var vSlice []interface{}
+	if v != nil {
+		vSlice = graphql.CoerceList(v)
+	}
+	var err error
+	res := make([]*int, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalOInt2ᚖint(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) marshalNInt2ᚕᚖint(ctx context.Context, sel ast.SelectionSet, v []*int) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	for i := range v {
+		ret[i] = ec.marshalOInt2ᚖint(ctx, sel, v[i])
+	}
+
+	return ret
+}
+
 func (ec *executionContext) unmarshalNString2string(ctx context.Context, v interface{}) (string, error) {
 	res, err := graphql.UnmarshalString(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -32146,6 +32482,14 @@ func (ec *executionContext) marshalOThumbnailsData2ᚖgithubᚗcomᚋzicopsᚋzi
 		return graphql.Null
 	}
 	return ec._ThumbnailsData(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalOThumbnailsDataInput2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐThumbnailsDataInput(ctx context.Context, v interface{}) (*model.ThumbnailsDataInput, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputThumbnailsDataInput(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOTopic2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐTopic(ctx context.Context, sel ast.SelectionSet, v *model.Topic) graphql.Marshaler {

@@ -777,8 +777,34 @@ type SubCatMain {
 
 type ThumbnailsData {
   contentId: String!
-  thumbnail:String!
+  thumbnail: String!
 }
+
+input ThumbnailsDataInput {
+  contentId: String!
+  thumbnail: [String]!
+}
+
+input Discussion {
+	CourseId: String! 
+	ReplyId: String 
+	Content: String! 
+	Module: String
+	Chapter: String 
+	Topic: String
+	Likes: [Int]!
+	Dislike: [Int]!
+	IsAnonymous: Boolean   
+	IsPinned: Boolean
+	IsAnnouncement: Boolean
+	ReplyCount: Int
+	CreatedBy: String!
+	Created_at: String!
+	Updated_by: String!
+	Updated_at: String! 
+	Status: String! 
+}
+
 
 # define type mutations to add a course  using courseInput
 type Mutation {
@@ -891,6 +917,7 @@ type Mutation {
   addCourseCohort(input: CourseCohortInput): CourseCohort
   updateCourseCohort(input: CourseCohortInput): CourseCohort
   deleteCourseCohort(id: ID): Boolean
-  AddContentThumbail(contentId:String!, thumbnail: String!): String!
+  AddContentThumbail(data: ThumbnailsDataInput): String!
   GetThumbnails(contentId:[String]!): [ThumbnailsData]!
+  addCourseDiscussion(discussionInput: Discussion!): String!
 }
