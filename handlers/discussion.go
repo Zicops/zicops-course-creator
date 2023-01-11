@@ -93,7 +93,7 @@ func updateReplyCount(inp model.Discussion) error {
 	}
 	CassSession := session
 
-	querystr := fmt.Sprintf(`SELECT * from coursez.discussion where discussion_id='%s'`, parentId)
+	querystr := fmt.Sprintf(`SELECT * from coursez.discussion where discussion_id='%s' `, parentId)
 	getDiscussion := func() (parent []coursez.Discussion, err error) {
 		q := CassSession.Query(querystr, nil)
 		defer q.Release()
@@ -107,9 +107,7 @@ func updateReplyCount(inp model.Discussion) error {
 	}
 	parentDiscussion := parentDiscussions[0]
 	parentDiscussion.ReplyCount = parentDiscussion.ReplyCount + 1
-	parentDiscussion.UpdatedAt = time.Now().Unix()
-	updatedCols := []string{"updated_at", "reply_count"}
-	stmt, names := coursez.DiscussionTable.Update(updatedCols...)
+	stmt, names := coursez.DiscussionTable.Update("reply_count")
 	updatedQuery := CassSession.Query(stmt, names).BindStruct(&parentDiscussion)
 	if err = updatedQuery.ExecRelease(); err != nil {
 		return err
