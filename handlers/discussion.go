@@ -51,6 +51,10 @@ func AddCourseDiscussion(ctx context.Context, inp model.Discussion) (string, err
 	}
 	if inp.ReplyID != nil && *inp.ReplyID != "" {
 		discussionData.ReplyId = *inp.ReplyID
+		err := updateReplyCount(inp)
+		if err != nil {
+			return "", err
+		}
 	}
 	if inp.IsAnonymous != nil {
 		discussionData.IsAnonymous = *inp.IsAnonymous
@@ -79,4 +83,37 @@ func AddCourseDiscussion(ctx context.Context, inp model.Discussion) (string, err
 		return "", err
 	}
 	return "Data added successfully", nil
+}
+
+func updateReplyCount(inp model.Discussion) error {
+	parentId := *inp.ReplyID
+	session, err := cassandra.GetCassSession("coursez")
+	if err != nil {
+		return err
+	}
+	CassSession := session
+
+	querystr := fmt.Sprintf(`SELECT * from coursez.discussion where discussion_id='%s'`, parentId)
+	getDiscussion := func() (parent []coursez.Discussion, err error) {
+		q := CassSession.Query(querystr, nil)
+		defer q.Release()
+		iter := q.Iter()
+		return parent, iter.Select(&parent)
+	}
+
+	parentDiscussions, err := getDiscussion()
+	if err != nil {
+		return err
+	}
+	parentDiscussion := parentDiscussions[0]
+	parentDiscussion.ReplyCount = parentDiscussion.ReplyCount + 1
+	parentDiscussion.UpdatedAt = time.Now().Unix()
+	updatedCols := []string{"updated_at", "reply_count"}
+	stmt, names := coursez.DiscussionTable.Update(updatedCols...)
+	updatedQuery := CassSession.Query(stmt, names).BindStruct(&parentDiscussion)
+	if err = updatedQuery.ExecRelease(); err != nil {
+		return err
+	}
+
+	return nil
 }
