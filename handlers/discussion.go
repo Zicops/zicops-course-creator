@@ -82,7 +82,7 @@ func AddCourseDiscussion(ctx context.Context, inp model.Discussion) (string, err
 	if err := insertQuery.ExecRelease(); err != nil {
 		return "", err
 	}
-	return "Data added successfully", nil
+	return discussionId, nil
 }
 
 func updateReplyCount(inp model.Discussion) error {
