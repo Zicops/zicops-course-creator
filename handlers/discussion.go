@@ -48,6 +48,7 @@ func AddCourseDiscussion(ctx context.Context, inp model.Discussion) (string, err
 		UpdatedBy:    inp.UpdatedBy,
 		UpdatedAt:    int64(inp.UpdatedAt),
 		Status:       inp.Status,
+		ReplyCount:   0,
 	}
 	if inp.ReplyID != nil && *inp.ReplyID != "" {
 		discussionData.ReplyId = *inp.ReplyID
@@ -73,9 +74,6 @@ func AddCourseDiscussion(ctx context.Context, inp model.Discussion) (string, err
 	}
 	if inp.IsAnnouncement != nil {
 		discussionData.IsAnnouncement = *inp.IsAnnouncement
-	}
-	if inp.ReplyCount != nil {
-		discussionData.ReplyCount = *inp.ReplyCount
 	}
 
 	insertQuery := CassSession.Query(coursez.DiscussionTable.Insert()).BindStruct(discussionData)
