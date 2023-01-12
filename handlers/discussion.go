@@ -130,7 +130,7 @@ func UpdateCourseDiscussion(ctx context.Context, discussionID string, courseID s
 	CassSession := session
 
 	//if we have any changes given in query, then we will update them
-	queryStr := fmt.Sprintf(`SELECT * from coursez.discussion where course_id = '%s' and discussion_id = '%s' ALLOW FILTERING`)
+	queryStr := fmt.Sprintf(`SELECT * from coursez.discussion where course_id = '%s' and discussion_id = '%s' ALLOW FILTERING`, courseID, discussionID)
 	updatedCols := []string{}
 
 	getDiscussions := func() (discussions []coursez.Discussion, err error) {
