@@ -806,6 +806,30 @@ input Discussion {
 }
 
 
+type DiscussionData {
+	DiscussionId: String
+	CourseId: String 
+	ReplyId: String 
+	UserId: String 
+	Time: Int 
+	Content: String 
+	Module: String 
+	Chapter: String 
+	Topic: String 
+	Likes: [String]
+	Dislike: [String]
+	IsAnonymous: Boolean   
+	IsPinned: Boolean
+	IsAnnouncement: Boolean
+	ReplyCount: Int
+	CreatedBy: String
+	Created_at: Int
+	Updated_by: String 
+	Updated_at: Int
+	Status: String 
+}
+
+
 # define type mutations to add a course  using courseInput
 type Mutation {
   addCatMain(input: [CatMainInput]): [CatMain]
@@ -920,4 +944,5 @@ type Mutation {
   AddContentThumbail(data: ThumbnailsDataInput): String!
   GetThumbnails(contentId:[String]!): [ThumbnailsData]!
   addCourseDiscussion(discussionInput: Discussion!): String!
+  updateCourseDiscussion(discussionId: String!, courseId:String!, Content: String, likes: String, dislikes: String, isAnonymous: Boolean, IsPinned: Boolean, IsAnnouncement: Boolean, status: String):DiscussionData
 }

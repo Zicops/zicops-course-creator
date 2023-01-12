@@ -852,6 +852,15 @@ func (r *mutationResolver) AddCourseDiscussion(ctx context.Context, discussionIn
 	return resp, nil
 }
 
+// UpdateCourseDiscussion is the resolver for the updateCourseDiscussion field.
+func (r *mutationResolver) UpdateCourseDiscussion(ctx context.Context, discussionID string, courseID string, content *string, likes *string, dislikes *string, isAnonymous *bool, isPinned *bool, isAnnouncement *bool, status *string) (*model.DiscussionData, error) {
+	resp, err := handlers.UpdateCourseDiscussion(ctx, discussionID, courseID, content, likes, dislikes, isAnonymous, isPinned, isAnnouncement, status)
+	if err != nil {
+		log.Errorf("Error adding data into discussion %v", err)
+	}
+	return resp, nil
+}
+
 // Mutation returns generated.MutationResolver implementation.
 func (r *Resolver) Mutation() generated.MutationResolver { return &mutationResolver{r} }
 

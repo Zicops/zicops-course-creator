@@ -124,6 +124,29 @@ type ComplexityRoot struct {
 		UpdatedBy          func(childComplexity int) int
 	}
 
+	DiscussionData struct {
+		Chapter        func(childComplexity int) int
+		Content        func(childComplexity int) int
+		CourseID       func(childComplexity int) int
+		CreatedAt      func(childComplexity int) int
+		CreatedBy      func(childComplexity int) int
+		DiscussionID   func(childComplexity int) int
+		Dislike        func(childComplexity int) int
+		IsAnnouncement func(childComplexity int) int
+		IsAnonymous    func(childComplexity int) int
+		IsPinned       func(childComplexity int) int
+		Likes          func(childComplexity int) int
+		Module         func(childComplexity int) int
+		ReplyCount     func(childComplexity int) int
+		ReplyID        func(childComplexity int) int
+		Status         func(childComplexity int) int
+		Time           func(childComplexity int) int
+		Topic          func(childComplexity int) int
+		UpdatedAt      func(childComplexity int) int
+		UpdatedBy      func(childComplexity int) int
+		UserID         func(childComplexity int) int
+	}
+
 	Exam struct {
 		Category     func(childComplexity int) int
 		Code         func(childComplexity int) int
@@ -271,6 +294,7 @@ type ComplexityRoot struct {
 		UpdateCourse                 func(childComplexity int, course *model.CourseInput) int
 		UpdateCourseChapter          func(childComplexity int, chapter *model.ChapterInput) int
 		UpdateCourseCohort           func(childComplexity int, input *model.CourseCohortInput) int
+		UpdateCourseDiscussion       func(childComplexity int, discussionID string, courseID string, content *string, likes *string, dislikes *string, isAnonymous *bool, isPinned *bool, isAnnouncement *bool, status *string) int
 		UpdateCourseModule           func(childComplexity int, module *model.ModuleInput) int
 		UpdateCourseTopic            func(childComplexity int, topic *model.TopicInput) int
 		UpdateExam                   func(childComplexity int, input *model.ExamInput) int
@@ -587,6 +611,7 @@ type MutationResolver interface {
 	AddContentThumbail(ctx context.Context, data *model.ThumbnailsDataInput) (string, error)
 	GetThumbnails(ctx context.Context, contentID []*string) ([]*model.ThumbnailsData, error)
 	AddCourseDiscussion(ctx context.Context, discussionInput model.Discussion) (string, error)
+	UpdateCourseDiscussion(ctx context.Context, discussionID string, courseID string, content *string, likes *string, dislikes *string, isAnonymous *bool, isPinned *bool, isAnnouncement *bool, status *string) (*model.DiscussionData, error)
 }
 
 type executableSchema struct {
@@ -1093,6 +1118,146 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.CourseCohort.UpdatedBy(childComplexity), true
+
+	case "DiscussionData.Chapter":
+		if e.complexity.DiscussionData.Chapter == nil {
+			break
+		}
+
+		return e.complexity.DiscussionData.Chapter(childComplexity), true
+
+	case "DiscussionData.Content":
+		if e.complexity.DiscussionData.Content == nil {
+			break
+		}
+
+		return e.complexity.DiscussionData.Content(childComplexity), true
+
+	case "DiscussionData.CourseId":
+		if e.complexity.DiscussionData.CourseID == nil {
+			break
+		}
+
+		return e.complexity.DiscussionData.CourseID(childComplexity), true
+
+	case "DiscussionData.Created_at":
+		if e.complexity.DiscussionData.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.DiscussionData.CreatedAt(childComplexity), true
+
+	case "DiscussionData.CreatedBy":
+		if e.complexity.DiscussionData.CreatedBy == nil {
+			break
+		}
+
+		return e.complexity.DiscussionData.CreatedBy(childComplexity), true
+
+	case "DiscussionData.DiscussionId":
+		if e.complexity.DiscussionData.DiscussionID == nil {
+			break
+		}
+
+		return e.complexity.DiscussionData.DiscussionID(childComplexity), true
+
+	case "DiscussionData.Dislike":
+		if e.complexity.DiscussionData.Dislike == nil {
+			break
+		}
+
+		return e.complexity.DiscussionData.Dislike(childComplexity), true
+
+	case "DiscussionData.IsAnnouncement":
+		if e.complexity.DiscussionData.IsAnnouncement == nil {
+			break
+		}
+
+		return e.complexity.DiscussionData.IsAnnouncement(childComplexity), true
+
+	case "DiscussionData.IsAnonymous":
+		if e.complexity.DiscussionData.IsAnonymous == nil {
+			break
+		}
+
+		return e.complexity.DiscussionData.IsAnonymous(childComplexity), true
+
+	case "DiscussionData.IsPinned":
+		if e.complexity.DiscussionData.IsPinned == nil {
+			break
+		}
+
+		return e.complexity.DiscussionData.IsPinned(childComplexity), true
+
+	case "DiscussionData.Likes":
+		if e.complexity.DiscussionData.Likes == nil {
+			break
+		}
+
+		return e.complexity.DiscussionData.Likes(childComplexity), true
+
+	case "DiscussionData.Module":
+		if e.complexity.DiscussionData.Module == nil {
+			break
+		}
+
+		return e.complexity.DiscussionData.Module(childComplexity), true
+
+	case "DiscussionData.ReplyCount":
+		if e.complexity.DiscussionData.ReplyCount == nil {
+			break
+		}
+
+		return e.complexity.DiscussionData.ReplyCount(childComplexity), true
+
+	case "DiscussionData.ReplyId":
+		if e.complexity.DiscussionData.ReplyID == nil {
+			break
+		}
+
+		return e.complexity.DiscussionData.ReplyID(childComplexity), true
+
+	case "DiscussionData.Status":
+		if e.complexity.DiscussionData.Status == nil {
+			break
+		}
+
+		return e.complexity.DiscussionData.Status(childComplexity), true
+
+	case "DiscussionData.Time":
+		if e.complexity.DiscussionData.Time == nil {
+			break
+		}
+
+		return e.complexity.DiscussionData.Time(childComplexity), true
+
+	case "DiscussionData.Topic":
+		if e.complexity.DiscussionData.Topic == nil {
+			break
+		}
+
+		return e.complexity.DiscussionData.Topic(childComplexity), true
+
+	case "DiscussionData.Updated_at":
+		if e.complexity.DiscussionData.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.DiscussionData.UpdatedAt(childComplexity), true
+
+	case "DiscussionData.Updated_by":
+		if e.complexity.DiscussionData.UpdatedBy == nil {
+			break
+		}
+
+		return e.complexity.DiscussionData.UpdatedBy(childComplexity), true
+
+	case "DiscussionData.UserId":
+		if e.complexity.DiscussionData.UserID == nil {
+			break
+		}
+
+		return e.complexity.DiscussionData.UserID(childComplexity), true
 
 	case "Exam.Category":
 		if e.complexity.Exam.Category == nil {
@@ -2279,6 +2444,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.UpdateCourseCohort(childComplexity, args["input"].(*model.CourseCohortInput)), true
+
+	case "Mutation.updateCourseDiscussion":
+		if e.complexity.Mutation.UpdateCourseDiscussion == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_updateCourseDiscussion_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdateCourseDiscussion(childComplexity, args["discussionId"].(string), args["courseId"].(string), args["Content"].(*string), args["likes"].(*string), args["dislikes"].(*string), args["isAnonymous"].(*bool), args["IsPinned"].(*bool), args["IsAnnouncement"].(*bool), args["status"].(*string)), true
 
 	case "Mutation.updateCourseModule":
 		if e.complexity.Mutation.UpdateCourseModule == nil {
@@ -4558,6 +4735,30 @@ input Discussion {
 }
 
 
+type DiscussionData {
+	DiscussionId: String
+	CourseId: String 
+	ReplyId: String 
+	UserId: String 
+	Time: Int 
+	Content: String 
+	Module: String 
+	Chapter: String 
+	Topic: String 
+	Likes: [String]
+	Dislike: [String]
+	IsAnonymous: Boolean   
+	IsPinned: Boolean
+	IsAnnouncement: Boolean
+	ReplyCount: Int
+	CreatedBy: String
+	Created_at: Int
+	Updated_by: String 
+	Updated_at: Int
+	Status: String 
+}
+
+
 # define type mutations to add a course  using courseInput
 type Mutation {
   addCatMain(input: [CatMainInput]): [CatMain]
@@ -4672,6 +4873,7 @@ type Mutation {
   AddContentThumbail(data: ThumbnailsDataInput): String!
   GetThumbnails(contentId:[String]!): [ThumbnailsData]!
   addCourseDiscussion(discussionInput: Discussion!): String!
+  updateCourseDiscussion(discussionId: String!, courseId:String!, Content: String, likes: String, dislikes: String, isAnonymous: Boolean, IsPinned: Boolean, IsAnnouncement: Boolean, status: String):DiscussionData
 }
 `, BuiltIn: false},
 }
@@ -5632,6 +5834,93 @@ func (ec *executionContext) field_Mutation_updateCourseCohort_args(ctx context.C
 		}
 	}
 	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_updateCourseDiscussion_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["discussionId"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("discussionId"))
+		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["discussionId"] = arg0
+	var arg1 string
+	if tmp, ok := rawArgs["courseId"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("courseId"))
+		arg1, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["courseId"] = arg1
+	var arg2 *string
+	if tmp, ok := rawArgs["Content"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Content"))
+		arg2, err = ec.unmarshalOString2ᚖstring(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["Content"] = arg2
+	var arg3 *string
+	if tmp, ok := rawArgs["likes"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("likes"))
+		arg3, err = ec.unmarshalOString2ᚖstring(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["likes"] = arg3
+	var arg4 *string
+	if tmp, ok := rawArgs["dislikes"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("dislikes"))
+		arg4, err = ec.unmarshalOString2ᚖstring(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["dislikes"] = arg4
+	var arg5 *bool
+	if tmp, ok := rawArgs["isAnonymous"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("isAnonymous"))
+		arg5, err = ec.unmarshalOBoolean2ᚖbool(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["isAnonymous"] = arg5
+	var arg6 *bool
+	if tmp, ok := rawArgs["IsPinned"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("IsPinned"))
+		arg6, err = ec.unmarshalOBoolean2ᚖbool(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["IsPinned"] = arg6
+	var arg7 *bool
+	if tmp, ok := rawArgs["IsAnnouncement"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("IsAnnouncement"))
+		arg7, err = ec.unmarshalOBoolean2ᚖbool(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["IsAnnouncement"] = arg7
+	var arg8 *string
+	if tmp, ok := rawArgs["status"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("status"))
+		arg8, err = ec.unmarshalOString2ᚖstring(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["status"] = arg8
 	return args, nil
 }
 
@@ -8991,6 +9280,826 @@ func (ec *executionContext) fieldContext_CourseCohort_ExpectedCompletion(ctx con
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _DiscussionData_DiscussionId(ctx context.Context, field graphql.CollectedField, obj *model.DiscussionData) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_DiscussionData_DiscussionId(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.DiscussionID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_DiscussionData_DiscussionId(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "DiscussionData",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _DiscussionData_CourseId(ctx context.Context, field graphql.CollectedField, obj *model.DiscussionData) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_DiscussionData_CourseId(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CourseID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_DiscussionData_CourseId(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "DiscussionData",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _DiscussionData_ReplyId(ctx context.Context, field graphql.CollectedField, obj *model.DiscussionData) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_DiscussionData_ReplyId(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ReplyID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_DiscussionData_ReplyId(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "DiscussionData",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _DiscussionData_UserId(ctx context.Context, field graphql.CollectedField, obj *model.DiscussionData) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_DiscussionData_UserId(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.UserID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_DiscussionData_UserId(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "DiscussionData",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _DiscussionData_Time(ctx context.Context, field graphql.CollectedField, obj *model.DiscussionData) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_DiscussionData_Time(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Time, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*int)
+	fc.Result = res
+	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_DiscussionData_Time(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "DiscussionData",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _DiscussionData_Content(ctx context.Context, field graphql.CollectedField, obj *model.DiscussionData) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_DiscussionData_Content(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Content, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_DiscussionData_Content(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "DiscussionData",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _DiscussionData_Module(ctx context.Context, field graphql.CollectedField, obj *model.DiscussionData) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_DiscussionData_Module(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Module, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_DiscussionData_Module(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "DiscussionData",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _DiscussionData_Chapter(ctx context.Context, field graphql.CollectedField, obj *model.DiscussionData) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_DiscussionData_Chapter(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Chapter, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_DiscussionData_Chapter(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "DiscussionData",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _DiscussionData_Topic(ctx context.Context, field graphql.CollectedField, obj *model.DiscussionData) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_DiscussionData_Topic(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Topic, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_DiscussionData_Topic(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "DiscussionData",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _DiscussionData_Likes(ctx context.Context, field graphql.CollectedField, obj *model.DiscussionData) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_DiscussionData_Likes(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Likes, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*string)
+	fc.Result = res
+	return ec.marshalOString2ᚕᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_DiscussionData_Likes(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "DiscussionData",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _DiscussionData_Dislike(ctx context.Context, field graphql.CollectedField, obj *model.DiscussionData) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_DiscussionData_Dislike(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Dislike, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*string)
+	fc.Result = res
+	return ec.marshalOString2ᚕᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_DiscussionData_Dislike(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "DiscussionData",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _DiscussionData_IsAnonymous(ctx context.Context, field graphql.CollectedField, obj *model.DiscussionData) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_DiscussionData_IsAnonymous(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.IsAnonymous, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*bool)
+	fc.Result = res
+	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_DiscussionData_IsAnonymous(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "DiscussionData",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _DiscussionData_IsPinned(ctx context.Context, field graphql.CollectedField, obj *model.DiscussionData) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_DiscussionData_IsPinned(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.IsPinned, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*bool)
+	fc.Result = res
+	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_DiscussionData_IsPinned(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "DiscussionData",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _DiscussionData_IsAnnouncement(ctx context.Context, field graphql.CollectedField, obj *model.DiscussionData) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_DiscussionData_IsAnnouncement(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.IsAnnouncement, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*bool)
+	fc.Result = res
+	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_DiscussionData_IsAnnouncement(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "DiscussionData",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _DiscussionData_ReplyCount(ctx context.Context, field graphql.CollectedField, obj *model.DiscussionData) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_DiscussionData_ReplyCount(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ReplyCount, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*int)
+	fc.Result = res
+	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_DiscussionData_ReplyCount(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "DiscussionData",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _DiscussionData_CreatedBy(ctx context.Context, field graphql.CollectedField, obj *model.DiscussionData) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_DiscussionData_CreatedBy(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CreatedBy, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_DiscussionData_CreatedBy(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "DiscussionData",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _DiscussionData_Created_at(ctx context.Context, field graphql.CollectedField, obj *model.DiscussionData) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_DiscussionData_Created_at(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CreatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*int)
+	fc.Result = res
+	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_DiscussionData_Created_at(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "DiscussionData",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _DiscussionData_Updated_by(ctx context.Context, field graphql.CollectedField, obj *model.DiscussionData) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_DiscussionData_Updated_by(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.UpdatedBy, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_DiscussionData_Updated_by(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "DiscussionData",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _DiscussionData_Updated_at(ctx context.Context, field graphql.CollectedField, obj *model.DiscussionData) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_DiscussionData_Updated_at(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.UpdatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*int)
+	fc.Result = res
+	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_DiscussionData_Updated_at(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "DiscussionData",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _DiscussionData_Status(ctx context.Context, field graphql.CollectedField, obj *model.DiscussionData) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_DiscussionData_Status(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Status, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_DiscussionData_Status(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "DiscussionData",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
 		},
 	}
 	return fc, nil
@@ -17512,6 +18621,100 @@ func (ec *executionContext) fieldContext_Mutation_addCourseDiscussion(ctx contex
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Mutation_addCourseDiscussion_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_updateCourseDiscussion(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_updateCourseDiscussion(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().UpdateCourseDiscussion(rctx, fc.Args["discussionId"].(string), fc.Args["courseId"].(string), fc.Args["Content"].(*string), fc.Args["likes"].(*string), fc.Args["dislikes"].(*string), fc.Args["isAnonymous"].(*bool), fc.Args["IsPinned"].(*bool), fc.Args["IsAnnouncement"].(*bool), fc.Args["status"].(*string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.DiscussionData)
+	fc.Result = res
+	return ec.marshalODiscussionData2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐDiscussionData(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_updateCourseDiscussion(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "DiscussionId":
+				return ec.fieldContext_DiscussionData_DiscussionId(ctx, field)
+			case "CourseId":
+				return ec.fieldContext_DiscussionData_CourseId(ctx, field)
+			case "ReplyId":
+				return ec.fieldContext_DiscussionData_ReplyId(ctx, field)
+			case "UserId":
+				return ec.fieldContext_DiscussionData_UserId(ctx, field)
+			case "Time":
+				return ec.fieldContext_DiscussionData_Time(ctx, field)
+			case "Content":
+				return ec.fieldContext_DiscussionData_Content(ctx, field)
+			case "Module":
+				return ec.fieldContext_DiscussionData_Module(ctx, field)
+			case "Chapter":
+				return ec.fieldContext_DiscussionData_Chapter(ctx, field)
+			case "Topic":
+				return ec.fieldContext_DiscussionData_Topic(ctx, field)
+			case "Likes":
+				return ec.fieldContext_DiscussionData_Likes(ctx, field)
+			case "Dislike":
+				return ec.fieldContext_DiscussionData_Dislike(ctx, field)
+			case "IsAnonymous":
+				return ec.fieldContext_DiscussionData_IsAnonymous(ctx, field)
+			case "IsPinned":
+				return ec.fieldContext_DiscussionData_IsPinned(ctx, field)
+			case "IsAnnouncement":
+				return ec.fieldContext_DiscussionData_IsAnnouncement(ctx, field)
+			case "ReplyCount":
+				return ec.fieldContext_DiscussionData_ReplyCount(ctx, field)
+			case "CreatedBy":
+				return ec.fieldContext_DiscussionData_CreatedBy(ctx, field)
+			case "Created_at":
+				return ec.fieldContext_DiscussionData_Created_at(ctx, field)
+			case "Updated_by":
+				return ec.fieldContext_DiscussionData_Updated_by(ctx, field)
+			case "Updated_at":
+				return ec.fieldContext_DiscussionData_Updated_at(ctx, field)
+			case "Status":
+				return ec.fieldContext_DiscussionData_Status(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type DiscussionData", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_updateCourseDiscussion_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return
 	}
@@ -29257,6 +30460,107 @@ func (ec *executionContext) _CourseCohort(ctx context.Context, sel ast.Selection
 	return out
 }
 
+var discussionDataImplementors = []string{"DiscussionData"}
+
+func (ec *executionContext) _DiscussionData(ctx context.Context, sel ast.SelectionSet, obj *model.DiscussionData) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, discussionDataImplementors)
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("DiscussionData")
+		case "DiscussionId":
+
+			out.Values[i] = ec._DiscussionData_DiscussionId(ctx, field, obj)
+
+		case "CourseId":
+
+			out.Values[i] = ec._DiscussionData_CourseId(ctx, field, obj)
+
+		case "ReplyId":
+
+			out.Values[i] = ec._DiscussionData_ReplyId(ctx, field, obj)
+
+		case "UserId":
+
+			out.Values[i] = ec._DiscussionData_UserId(ctx, field, obj)
+
+		case "Time":
+
+			out.Values[i] = ec._DiscussionData_Time(ctx, field, obj)
+
+		case "Content":
+
+			out.Values[i] = ec._DiscussionData_Content(ctx, field, obj)
+
+		case "Module":
+
+			out.Values[i] = ec._DiscussionData_Module(ctx, field, obj)
+
+		case "Chapter":
+
+			out.Values[i] = ec._DiscussionData_Chapter(ctx, field, obj)
+
+		case "Topic":
+
+			out.Values[i] = ec._DiscussionData_Topic(ctx, field, obj)
+
+		case "Likes":
+
+			out.Values[i] = ec._DiscussionData_Likes(ctx, field, obj)
+
+		case "Dislike":
+
+			out.Values[i] = ec._DiscussionData_Dislike(ctx, field, obj)
+
+		case "IsAnonymous":
+
+			out.Values[i] = ec._DiscussionData_IsAnonymous(ctx, field, obj)
+
+		case "IsPinned":
+
+			out.Values[i] = ec._DiscussionData_IsPinned(ctx, field, obj)
+
+		case "IsAnnouncement":
+
+			out.Values[i] = ec._DiscussionData_IsAnnouncement(ctx, field, obj)
+
+		case "ReplyCount":
+
+			out.Values[i] = ec._DiscussionData_ReplyCount(ctx, field, obj)
+
+		case "CreatedBy":
+
+			out.Values[i] = ec._DiscussionData_CreatedBy(ctx, field, obj)
+
+		case "Created_at":
+
+			out.Values[i] = ec._DiscussionData_Created_at(ctx, field, obj)
+
+		case "Updated_by":
+
+			out.Values[i] = ec._DiscussionData_Updated_by(ctx, field, obj)
+
+		case "Updated_at":
+
+			out.Values[i] = ec._DiscussionData_Updated_at(ctx, field, obj)
+
+		case "Status":
+
+			out.Values[i] = ec._DiscussionData_Status(ctx, field, obj)
+
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
 var examImplementors = []string{"Exam"}
 
 func (ec *executionContext) _Exam(ctx context.Context, sel ast.SelectionSet, obj *model.Exam) graphql.Marshaler {
@@ -30198,6 +31502,12 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
+		case "updateCourseDiscussion":
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_updateCourseDiscussion(ctx, field)
+			})
+
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -32050,6 +33360,13 @@ func (ec *executionContext) unmarshalOCourseInput2ᚖgithubᚗcomᚋzicopsᚋzic
 	}
 	res, err := ec.unmarshalInputCourseInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalODiscussionData2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐDiscussionData(ctx context.Context, sel ast.SelectionSet, v *model.DiscussionData) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._DiscussionData(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalOExam2ᚖgithubᚗcomᚋzicopsᚋzicopsᚑcourseᚑcreatorᚋgraphᚋmodelᚐExam(ctx context.Context, sel ast.SelectionSet, v *model.Exam) graphql.Marshaler {

@@ -114,3 +114,123 @@ func updateReplyCount(inp model.Discussion) error {
 
 	return nil
 }
+
+func UpdateCourseDiscussion(ctx context.Context, discussionID string, courseID string, content *string, likes *string, dislikes *string, isAnonymous *bool, isPinned *bool, isAnnouncement *bool, status *string) (*model.DiscussionData, error) {
+	claims, err := helpers.GetClaimsFromContext(ctx)
+	if err != nil {
+		log.Printf("Got error while getting claims %v", err)
+		return nil, err
+	}
+	uId := claims["user_id"].(string)
+
+	session, err := cassandra.GetCassSession("coursez")
+	if err != nil {
+		return nil, err
+	}
+	CassSession := session
+
+	//if we have any changes given in query, then we will update them
+	queryStr := fmt.Sprintf(`SELECT * from coursez.discussion where course_id = '%s' and discussion_id = '%s' ALLOW FILTERING`)
+	updatedCols := []string{}
+
+	getDiscussions := func() (discussions []coursez.Discussion, err error) {
+		q := CassSession.Query(queryStr, nil)
+		defer q.Release()
+		iter := q.Iter()
+		return discussions, iter.Select(&discussions)
+	}
+
+	data, err := getDiscussions()
+	if err != nil {
+		return nil, err
+	}
+	if len(data) == 0 {
+		return nil, nil
+	}
+
+	discussion := data[0]
+	if content != nil && uId == discussion.UserId && *content != "" {
+		tmp := *content
+		discussion.Content = tmp
+		updatedCols = append(updatedCols, "user_id")
+	}
+	if likes != nil {
+		likesArray := discussion.Likes
+		likesArray = append(likesArray, *likes)
+
+		discussion.Likes = likesArray
+		updatedCols = append(updatedCols, "likes")
+	}
+	if dislikes != nil {
+		dislikesArray := discussion.Dislike
+		dislikesArray = append(dislikesArray, *dislikes)
+
+		discussion.Dislike = dislikesArray
+		updatedCols = append(updatedCols, "dislikes")
+	}
+	if isAnonymous != nil {
+		tmp := *isAnonymous
+		discussion.IsAnonymous = tmp
+		updatedCols = append(updatedCols, "is_anonymous")
+	}
+	if isPinned != nil {
+		tmp := *isPinned
+		discussion.IsPinned = tmp
+		updatedCols = append(updatedCols, "is_pinned")
+	}
+	if isAnnouncement != nil {
+		tmp := *isAnnouncement
+		discussion.IsAnnouncement = tmp
+		updatedCols = append(updatedCols, "is_announcement")
+	}
+	if status != nil && *status != "" {
+		tmp := *status
+		discussion.Status = tmp
+	}
+
+	//we have updated all the values, lets put those updates in database table
+	if len(updatedCols) > 0 {
+		discussion.UpdatedAt = time.Now().Unix()
+		updatedCols = append(updatedCols, "updated_at")
+		stmt, names := coursez.DiscussionTable.Update(updatedCols...)
+		updatedQuery := CassSession.Query(stmt, names).BindStruct(&discussion)
+		if err = updatedQuery.ExecRelease(); err != nil {
+			return nil, err
+		}
+	}
+
+	var likesArray, dislikesArray []*string
+	for _, l := range discussion.Likes {
+		likesArray = append(likesArray, &l)
+	}
+	for _, d := range discussion.Dislike {
+		dislikesArray = append(dislikesArray, &d)
+	}
+	ca := int(discussion.CreatedAt)
+	ua := int(discussion.UpdatedAt)
+	t := int(discussion.Time)
+	result := model.DiscussionData{
+		DiscussionID:   &discussion.DiscussionId,
+		CourseID:       &discussion.CourseId,
+		ReplyID:        &discussion.ReplyId,
+		UserID:         &discussion.UserId,
+		Time:           &t,
+		Content:        &discussion.Content,
+		Module:         &discussion.Module,
+		Chapter:        &discussion.Chapter,
+		Topic:          &discussion.Topic,
+		Likes:          likesArray,
+		Dislike:        dislikesArray,
+		IsAnonymous:    &discussion.IsAnonymous,
+		IsPinned:       &discussion.IsPinned,
+		IsAnnouncement: &discussion.IsAnnouncement,
+		ReplyCount:     &discussion.ReplyCount,
+		CreatedBy:      &discussion.CreatedBy,
+		CreatedAt:      &ca,
+		UpdatedBy:      &discussion.UpdatedBy,
+		UpdatedAt:      &ua,
+		Status:         &discussion.Status,
+	}
+
+	return &result, nil
+}
