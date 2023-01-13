@@ -115,7 +115,7 @@ func updateReplyCount(inp model.Discussion) error {
 	return nil
 }
 
-func UpdateCourseDiscussion(ctx context.Context, discussionID string, courseID string, content *string, likes *string, dislikes *string, isAnonymous *bool, isPinned *bool, isAnnouncement *bool, status *string) (*model.DiscussionData, error) {
+func UpdateCourseDiscussion(ctx context.Context, discussionID string, courseID string, content *string, likes []*string, dislikes []*string, isAnonymous *bool, isPinned *bool, isAnnouncement *bool, status *string) (*model.DiscussionData, error) {
 	claims, err := helpers.GetClaimsFromContext(ctx)
 	if err != nil {
 		log.Printf("Got error while getting claims %v", err)
@@ -154,18 +154,20 @@ func UpdateCourseDiscussion(ctx context.Context, discussionID string, courseID s
 		discussion.Content = tmp
 		updatedCols = append(updatedCols, "user_id")
 	}
+	//we have discusion.Likes as []string and in input we receive []*string, as ofcourse, likes array is not compulsory
+	var ArrayLikes, ArrayDislikes []string
 	if likes != nil {
-		likesArray := discussion.Likes
-		likesArray = append(likesArray, *likes)
-
-		discussion.Likes = likesArray
+		for _, v := range likes {
+			ArrayLikes = append(ArrayLikes, *v)
+		}
+		discussion.Likes = ArrayLikes
 		updatedCols = append(updatedCols, "likes")
 	}
 	if dislikes != nil {
-		dislikesArray := discussion.Dislike
-		dislikesArray = append(dislikesArray, *dislikes)
-
-		discussion.Dislike = dislikesArray
+		for _, v := range dislikes {
+			ArrayDislikes = append(ArrayDislikes, *v)
+		}
+		discussion.Dislike = ArrayDislikes
 		updatedCols = append(updatedCols, "dislikes")
 	}
 	if isAnonymous != nil {

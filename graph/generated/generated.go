@@ -294,7 +294,7 @@ type ComplexityRoot struct {
 		UpdateCourse                 func(childComplexity int, course *model.CourseInput) int
 		UpdateCourseChapter          func(childComplexity int, chapter *model.ChapterInput) int
 		UpdateCourseCohort           func(childComplexity int, input *model.CourseCohortInput) int
-		UpdateCourseDiscussion       func(childComplexity int, discussionID string, courseID string, content *string, likes *string, dislikes *string, isAnonymous *bool, isPinned *bool, isAnnouncement *bool, status *string) int
+		UpdateCourseDiscussion       func(childComplexity int, discussionID string, courseID string, content *string, likes []*string, dislikes []*string, isAnonymous *bool, isPinned *bool, isAnnouncement *bool, status *string) int
 		UpdateCourseModule           func(childComplexity int, module *model.ModuleInput) int
 		UpdateCourseTopic            func(childComplexity int, topic *model.TopicInput) int
 		UpdateExam                   func(childComplexity int, input *model.ExamInput) int
@@ -611,7 +611,7 @@ type MutationResolver interface {
 	AddContentThumbail(ctx context.Context, data *model.ThumbnailsDataInput) (string, error)
 	GetThumbnails(ctx context.Context, contentID []*string) ([]*model.ThumbnailsData, error)
 	AddCourseDiscussion(ctx context.Context, discussionInput model.Discussion) (string, error)
-	UpdateCourseDiscussion(ctx context.Context, discussionID string, courseID string, content *string, likes *string, dislikes *string, isAnonymous *bool, isPinned *bool, isAnnouncement *bool, status *string) (*model.DiscussionData, error)
+	UpdateCourseDiscussion(ctx context.Context, discussionID string, courseID string, content *string, likes []*string, dislikes []*string, isAnonymous *bool, isPinned *bool, isAnnouncement *bool, status *string) (*model.DiscussionData, error)
 }
 
 type executableSchema struct {
@@ -2455,7 +2455,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.UpdateCourseDiscussion(childComplexity, args["discussionId"].(string), args["courseId"].(string), args["Content"].(*string), args["likes"].(*string), args["dislikes"].(*string), args["isAnonymous"].(*bool), args["IsPinned"].(*bool), args["IsAnnouncement"].(*bool), args["status"].(*string)), true
+		return e.complexity.Mutation.UpdateCourseDiscussion(childComplexity, args["discussionId"].(string), args["courseId"].(string), args["Content"].(*string), args["likes"].([]*string), args["dislikes"].([]*string), args["isAnonymous"].(*bool), args["IsPinned"].(*bool), args["IsAnnouncement"].(*bool), args["status"].(*string)), true
 
 	case "Mutation.updateCourseModule":
 		if e.complexity.Mutation.UpdateCourseModule == nil {
@@ -4873,7 +4873,7 @@ type Mutation {
   AddContentThumbail(data: ThumbnailsDataInput): String!
   GetThumbnails(contentId:[String]!): [ThumbnailsData]!
   addCourseDiscussion(discussionInput: Discussion!): String!
-  updateCourseDiscussion(discussionId: String!, courseId:String!, Content: String, likes: String, dislikes: String, isAnonymous: Boolean, IsPinned: Boolean, IsAnnouncement: Boolean, status: String):DiscussionData
+  updateCourseDiscussion(discussionId: String!, courseId:String!, Content: String, likes: [String], dislikes: [String], isAnonymous: Boolean, IsPinned: Boolean, IsAnnouncement: Boolean, status: String):DiscussionData
 }
 `, BuiltIn: false},
 }
@@ -5867,19 +5867,19 @@ func (ec *executionContext) field_Mutation_updateCourseDiscussion_args(ctx conte
 		}
 	}
 	args["Content"] = arg2
-	var arg3 *string
+	var arg3 []*string
 	if tmp, ok := rawArgs["likes"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("likes"))
-		arg3, err = ec.unmarshalOString2ᚖstring(ctx, tmp)
+		arg3, err = ec.unmarshalOString2ᚕᚖstring(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
 	args["likes"] = arg3
-	var arg4 *string
+	var arg4 []*string
 	if tmp, ok := rawArgs["dislikes"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("dislikes"))
-		arg4, err = ec.unmarshalOString2ᚖstring(ctx, tmp)
+		arg4, err = ec.unmarshalOString2ᚕᚖstring(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -18641,7 +18641,7 @@ func (ec *executionContext) _Mutation_updateCourseDiscussion(ctx context.Context
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().UpdateCourseDiscussion(rctx, fc.Args["discussionId"].(string), fc.Args["courseId"].(string), fc.Args["Content"].(*string), fc.Args["likes"].(*string), fc.Args["dislikes"].(*string), fc.Args["isAnonymous"].(*bool), fc.Args["IsPinned"].(*bool), fc.Args["IsAnnouncement"].(*bool), fc.Args["status"].(*string))
+		return ec.resolvers.Mutation().UpdateCourseDiscussion(rctx, fc.Args["discussionId"].(string), fc.Args["courseId"].(string), fc.Args["Content"].(*string), fc.Args["likes"].([]*string), fc.Args["dislikes"].([]*string), fc.Args["isAnonymous"].(*bool), fc.Args["IsPinned"].(*bool), fc.Args["IsAnnouncement"].(*bool), fc.Args["status"].(*string))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
