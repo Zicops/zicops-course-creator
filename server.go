@@ -11,12 +11,13 @@ import (
 
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
+	"github.com/zicops/zicops-cass-pool/cassandra"
 	"github.com/zicops/zicops-course-creator/controller"
 	"github.com/zicops/zicops-course-creator/global"
 )
 
 func main() {
-	os.Setenv("GOOGLE_APPLICATION_CREDENTIALS", "zicops-cc.json")
+	//os.Setenv("GOOGLE_APPLICATION_CREDENTIALS", "zicops-cc.json")
 	log.Infof("Starting zicops course creator service")
 	ctx, cancel := context.WithCancel(context.Background())
 	global.CTX = ctx
@@ -52,7 +53,6 @@ func monitorSystem(cancel context.CancelFunc, errorChannel chan error) {
 	errorChannel <- fmt.Errorf("system termination signal received")
 }
 
-/*
 func checkAndInitCassandraSession() {
 	// get user session every 1 minute
 	// if session is nil then create new session
@@ -66,4 +66,3 @@ func checkAndInitCassandraSession() {
 		log.Infof("Cassandra connection successful")
 	}
 }
-*/
