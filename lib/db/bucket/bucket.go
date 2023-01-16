@@ -12,6 +12,7 @@ import (
 	"github.com/zicops/zicops-course-creator/constants"
 	"github.com/zicops/zicops-course-creator/global"
 	"github.com/zicops/zicops-course-creator/helpers"
+	"google.golang.org/api/iterator"
 	"google.golang.org/api/option"
 )
 
@@ -161,41 +162,45 @@ func (sc *Client) GetSignedURLForObjectPub(object string) string {
 }
 
 func (sc *Client) DeleteObjectsFromBucket(ctx context.Context, fileName string, lang *string) string {
-	// l := "en"
-	// if lang != nil {
-	// 	l = *lang
-	// }
-	// metadata := map[string]string{
-	// 	"language": l,
-	// }
+	l := "en"
+	if lang != nil {
+		l = *lang
+	}
+	metadata := map[string]string{
+		"language": l,
+	}
 	o := sc.bucket.Object(fileName)
 
-	attrs, err := o.Attrs(ctx)
-	if err != nil {
-		return err.Error()
-	}
-	o = o.If(storage.Conditions{MetagenerationMatch: attrs.Metageneration})
-	if err := o.Delete(ctx); err != nil {
-		return ""
-	}
-
-	// bucketObject := sc.bucket.Objects(ctx, nil)
-	// for {
-	// 	attrs, err := bucketObject.Next()
-	// 	if err == iterator.Done {
-	// 		break
-	// 	}
-	// 	if err != nil {
-	// 		return err.Error()
-	// 	}
-	// 	res := attrs.Metadata
-	// 	if metadata["language"] == res["langauge"] {
-
-	// 		if err := o.Delete(ctx); err != nil {
-	// 			return ""
-	// 		}
-	// 	}
+	// This commented out block of code is giving:-    storage: object doesn't exist     error
+	// attrs, err := o.Attrs(ctx)
+	// if err != nil {
+	// 	return err.Error()
 	// }
+	// o = o.If(storage.Conditions{MetagenerationMatch: attrs.Metageneration})
+	// if err := o.Delete(ctx); err != nil {
+	// 	return ""
+	// }
+
+	//and the given below code is just executing to the end, giving true, but not deleting the subtitles
+	//checked from subtitles url in the front-end, subtitles not deleted
+
+	bucketObject := sc.bucket.Objects(ctx, nil)
+	for {
+		attrs, err := bucketObject.Next()
+		if err == iterator.Done {
+			break
+		}
+		if err != nil {
+			return err.Error()
+		}
+		res := attrs.Metadata
+		if metadata["language"] == res["langauge"] {
+
+			if err := o.Delete(ctx); err != nil {
+				return ""
+			}
+		}
+	}
 
 	return "1"
 }
