@@ -2,12 +2,16 @@ package handlers
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"strings"
 
+	log "github.com/sirupsen/logrus"
 	"github.com/zicops/contracts/coursez"
 	"github.com/zicops/zicops-cass-pool/cassandra"
 	"github.com/zicops/zicops-course-creator/helpers"
+	"github.com/zicops/zicops-course-creator/lib/db/bucket"
+	"github.com/zicops/zicops-course-creator/lib/googleprojectlib"
 )
 
 func DeleteCatMain(ctx context.Context, id *string) (*bool, error) {
@@ -476,4 +480,34 @@ func DeleteCourseCohort(ctx context.Context, id *string) (*bool, error) {
 	}
 	isSuccess = true
 	return &isSuccess, nil
+}
+
+func DeleteTopicSubtitle(ctx context.Context, courseID string, topicID string, fileName string, lang *string) (*bool, error) {
+	log.Info("DeleteTopicSubtitle called")
+	resp := false
+	claims, err := helpers.GetClaimsFromContext(ctx)
+	if err != nil {
+		return &resp, err
+	}
+	lspId := claims["lsp_id"].(string)
+	if lspId == "" {
+		return &resp, fmt.Errorf("lsp_id is empty")
+	}
+	storageC := bucket.NewStorageHandler()
+	gproject := googleprojectlib.GetGoogleProjectID()
+	err = storageC.InitializeStorageClient(ctx, gproject, lspId)
+	if err != nil {
+		log.Errorf("Failed to delete subtitle to course topic: %v", err.Error())
+		return &resp, err
+	}
+	mainBucket := courseID + "/" + topicID + "/subtitles/"
+	bucketPath := mainBucket + fileName
+	res := storageC.DeleteObjectsFromBucket(ctx, bucketPath, lang)
+
+	r := true
+	if res == "1" {
+		return &r, nil
+	}
+	r = false
+	return &r, errors.New(res)
 }

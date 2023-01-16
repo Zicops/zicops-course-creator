@@ -333,6 +333,16 @@ func (r *mutationResolver) UploadTopicContentSubtitle(ctx context.Context, file 
 	return resp, nil
 }
 
+// DeleteTopicContentSubtitle is the resolver for the deleteTopicContentSubtitle field.
+func (r *mutationResolver) DeleteTopicContentSubtitle(ctx context.Context, courseID string, topicID string, fileName string, lang *string) (*bool, error) {
+	resp, err := handlers.DeleteTopicSubtitle(ctx, courseID, topicID, fileName, lang)
+	if err != nil {
+		log.Errorf("error uploading topic subtitle: %v", err)
+		return nil, err
+	}
+	return resp, nil
+}
+
 // UploadTopicStaticContent is the resolver for the uploadTopicStaticContent field.
 func (r *mutationResolver) UploadTopicStaticContent(ctx context.Context, file *model.StaticContent) (*model.UploadResult, error) {
 	resp, err := handlers.UploadTopicStaticContent(ctx, file)

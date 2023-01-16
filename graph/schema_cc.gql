@@ -876,6 +876,7 @@ type Mutation {
   ): TopicContent
   uploadTopicContentVideo(file: TopicVideo): UploadResult
   uploadTopicContentSubtitle(file: [TopicSubtitle]): [UploadResultSubtitles]
+  deleteTopicContentSubtitle(courseId: String!, topicId: String!, fileName:String!): Boolean!
   uploadTopicStaticContent(file: StaticContent): UploadResult
   addQuiz(quiz: QuizInput): Quiz
   updateQuiz(quiz: QuizInput): Quiz
@@ -944,5 +945,5 @@ type Mutation {
   AddContentThumbail(data: ThumbnailsDataInput): String!
   GetThumbnails(contentId:[String]!): [ThumbnailsData]!
   addCourseDiscussion(discussionInput: Discussion!): String!
-  updateCourseDiscussion(discussionId: String!, courseId:String!, Content: String, likes: []String, dislikes: []String, isAnonymous: Boolean, IsPinned: Boolean, IsAnnouncement: Boolean, status: String):DiscussionData
+  updateCourseDiscussion(discussionId: String!, courseId:String!, Content: String, likes: [String], dislikes: [String], isAnonymous: Boolean, IsPinned: Boolean, IsAnnouncement: Boolean, status: String):DiscussionData
 }

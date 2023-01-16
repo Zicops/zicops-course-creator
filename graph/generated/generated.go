@@ -286,6 +286,7 @@ type ComplexityRoot struct {
 		DeleteSectionToBank          func(childComplexity int, id *string) int
 		DeleteSubCatMain             func(childComplexity int, id *string, catID *string) int
 		DeleteTopicContent           func(childComplexity int, id *string) int
+		DeleteTopicContentSubtitle   func(childComplexity int, courseID string, topicID string, fileName string, lang *string) int
 		DeleteTopicExam              func(childComplexity int, id *string) int
 		DeleteTopicResource          func(childComplexity int, id *string) int
 		GetThumbnails                func(childComplexity int, contentID []*string) int
@@ -559,6 +560,7 @@ type MutationResolver interface {
 	UpdateTopicContent(ctx context.Context, topicContent *model.TopicContentInput, moduleID *string) (*model.TopicContent, error)
 	UploadTopicContentVideo(ctx context.Context, file *model.TopicVideo) (*model.UploadResult, error)
 	UploadTopicContentSubtitle(ctx context.Context, file []*model.TopicSubtitle) ([]*model.UploadResultSubtitles, error)
+	DeleteTopicContentSubtitle(ctx context.Context, courseID string, topicID string, fileName string, lang *string) (*bool, error)
 	UploadTopicStaticContent(ctx context.Context, file *model.StaticContent) (*model.UploadResult, error)
 	AddQuiz(ctx context.Context, quiz *model.QuizInput) (*model.Quiz, error)
 	UpdateQuiz(ctx context.Context, quiz *model.QuizInput) (*model.Quiz, error)
@@ -2348,6 +2350,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.DeleteTopicContent(childComplexity, args["id"].(*string)), true
+
+	case "Mutation.deleteTopicContentSubtitle":
+		if e.complexity.Mutation.DeleteTopicContentSubtitle == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_deleteTopicContentSubtitle_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.DeleteTopicContentSubtitle(childComplexity, args["courseId"].(string), args["topicId"].(string), args["fileName"].(string), args["lang"].(*string)), true
 
 	case "Mutation.deleteTopicExam":
 		if e.complexity.Mutation.DeleteTopicExam == nil {
@@ -4805,6 +4819,7 @@ type Mutation {
   ): TopicContent
   uploadTopicContentVideo(file: TopicVideo): UploadResult
   uploadTopicContentSubtitle(file: [TopicSubtitle]): [UploadResultSubtitles]
+  deleteTopicContentSubtitle(courseId: String!, topicId: String!, fileName:String!, lang: String): Boolean
   uploadTopicStaticContent(file: StaticContent): UploadResult
   addQuiz(quiz: QuizInput): Quiz
   updateQuiz(quiz: QuizInput): Quiz
@@ -5729,6 +5744,48 @@ func (ec *executionContext) field_Mutation_deleteSubCatMain_args(ctx context.Con
 		}
 	}
 	args["cat_id"] = arg1
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_deleteTopicContentSubtitle_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["courseId"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("courseId"))
+		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["courseId"] = arg0
+	var arg1 string
+	if tmp, ok := rawArgs["topicId"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("topicId"))
+		arg1, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["topicId"] = arg1
+	var arg2 string
+	if tmp, ok := rawArgs["fileName"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("fileName"))
+		arg2, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["fileName"] = arg2
+	var arg3 *string
+	if tmp, ok := rawArgs["lang"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("lang"))
+		arg3, err = ec.unmarshalOString2ᚖstring(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["lang"] = arg3
 	return args, nil
 }
 
@@ -15141,6 +15198,58 @@ func (ec *executionContext) fieldContext_Mutation_uploadTopicContentSubtitle(ctx
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Mutation_uploadTopicContentSubtitle_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_deleteTopicContentSubtitle(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_deleteTopicContentSubtitle(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().DeleteTopicContentSubtitle(rctx, fc.Args["courseId"].(string), fc.Args["topicId"].(string), fc.Args["fileName"].(string), fc.Args["lang"].(*string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*bool)
+	fc.Result = res
+	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_deleteTopicContentSubtitle(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_deleteTopicContentSubtitle_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return
 	}
@@ -31176,6 +31285,12 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_uploadTopicContentSubtitle(ctx, field)
+			})
+
+		case "deleteTopicContentSubtitle":
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_deleteTopicContentSubtitle(ctx, field)
 			})
 
 		case "uploadTopicStaticContent":

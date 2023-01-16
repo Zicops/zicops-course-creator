@@ -876,6 +876,7 @@ type Mutation {
   ): TopicContent
   uploadTopicContentVideo(file: TopicVideo): UploadResult
   uploadTopicContentSubtitle(file: [TopicSubtitle]): [UploadResultSubtitles]
+  deleteTopicContentSubtitle(courseId: String!, topicId: String!, fileName:String!, lang: String): Boolean
   uploadTopicStaticContent(file: StaticContent): UploadResult
   addQuiz(quiz: QuizInput): Quiz
   updateQuiz(quiz: QuizInput): Quiz

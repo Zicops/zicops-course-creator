@@ -12,6 +12,7 @@ import (
 	"github.com/zicops/zicops-course-creator/constants"
 	"github.com/zicops/zicops-course-creator/global"
 	"github.com/zicops/zicops-course-creator/helpers"
+	"google.golang.org/api/iterator"
 	"google.golang.org/api/option"
 )
 
@@ -158,4 +159,41 @@ func (sc *Client) GetSignedURLForObjectPub(object string) string {
 	// }
 	url := "https://storage.googleapis.com/" + "courses-public-zicops-deploy" + "/" + object
 	return url
+}
+
+func (sc *Client) DeleteObjectsFromBucket(ctx context.Context, fileName string, lang *string) string {
+	l := "en"
+	if lang != nil {
+		l = *lang
+	}
+	metadata := map[string]string{
+		"language": l,
+	}
+	o := sc.bucket.Object(fileName)
+
+	// attrs, err := o.Attrs(ctx)
+	// if err != nil {
+	// 	return err.Error()
+	// }
+	// o = o.If(storage.Conditions{MetagenerationMatch: attrs.Metageneration})
+
+	bucketObject := sc.bucket.Objects(ctx, nil)
+	for {
+		attrs, err := bucketObject.Next()
+		if err == iterator.Done {
+			break
+		}
+		if err != nil {
+			return err.Error()
+		}
+		res := attrs.Metadata
+		if metadata["language"] == res["langauge"] {
+
+			if err := o.Delete(ctx); err != nil {
+				return ""
+			}
+		}
+	}
+
+	return "1"
 }
