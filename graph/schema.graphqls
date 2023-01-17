@@ -789,7 +789,7 @@ input Discussion {
 	CourseId: String! 
 	ReplyId: String 
   UserId: String
-  Time: Int!
+  Time: Int
 	Content: String! 
 	Module: String
 	Chapter: String 

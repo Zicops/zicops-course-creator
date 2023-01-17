@@ -13,11 +13,6 @@ import (
 	"github.com/zicops/zicops-course-creator/helpers"
 )
 
-/*CreatedBy: String!
-CreatedAt: Int!
-UpdatedBy: String!
-UpdatedAt: Int! */
-
 func AddCourseDiscussion(ctx context.Context, inp model.Discussion) (string, error) {
 	claims, err := helpers.GetClaimsFromContext(ctx)
 	if err != nil {
@@ -29,6 +24,10 @@ func AddCourseDiscussion(ctx context.Context, inp model.Discussion) (string, err
 	}
 	CreatedBy := claims["user_id"].(string)
 
+	t := 0
+	if inp.Time != nil {
+		t = *inp.Time
+	}
 	session, err := cassandra.GetCassSession("coursez")
 	if err != nil {
 		return "", err
@@ -49,7 +48,7 @@ func AddCourseDiscussion(ctx context.Context, inp model.Discussion) (string, err
 		DiscussionId: discussionId,
 		CourseId:     inp.CourseID,
 		UserId:       id,
-		Time:         int64(inp.Time),
+		Time:         int64(t),
 		Content:      inp.Content,
 		Likes:        likesArray,
 		Dislike:      dislikesArray,
