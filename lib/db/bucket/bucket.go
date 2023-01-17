@@ -164,7 +164,7 @@ func (sc *Client) DeleteObjectsFromBucket(ctx context.Context, fileName string) 
 	o := sc.bucket.Object(fileName)
 
 	if err := o.Delete(ctx); err != nil {
-		return ""
+		return err.Error()
 	}
 
 	return "1"
