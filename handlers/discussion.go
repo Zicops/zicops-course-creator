@@ -13,12 +13,22 @@ import (
 	"github.com/zicops/zicops-course-creator/helpers"
 )
 
+/*CreatedBy: String!
+CreatedAt: Int!
+UpdatedBy: String!
+UpdatedAt: Int! */
+
 func AddCourseDiscussion(ctx context.Context, inp model.Discussion) (string, error) {
 	claims, err := helpers.GetClaimsFromContext(ctx)
 	if err != nil {
 		log.Printf("Got error while getting claims %v", err)
 	}
 	id := claims["user_id"].(string)
+	if inp.UserID != nil {
+		id = *inp.UserID
+	}
+	CreatedBy := claims["user_id"].(string)
+
 	session, err := cassandra.GetCassSession("coursez")
 	if err != nil {
 		return "", err
@@ -39,14 +49,14 @@ func AddCourseDiscussion(ctx context.Context, inp model.Discussion) (string, err
 		DiscussionId: discussionId,
 		CourseId:     inp.CourseID,
 		UserId:       id,
-		Time:         time.Now().Unix(),
+		Time:         int64(inp.Time),
 		Content:      inp.Content,
 		Likes:        likesArray,
 		Dislike:      dislikesArray,
-		CreatedBy:    inp.CreatedBy,
-		CreatedAt:    int64(inp.CreatedAt),
-		UpdatedBy:    inp.UpdatedBy,
-		UpdatedAt:    int64(inp.UpdatedAt),
+		CreatedBy:    CreatedBy,
+		CreatedAt:    time.Now().Unix(),
+		UpdatedBy:    CreatedBy,
+		UpdatedAt:    time.Now().Unix(),
 		Status:       inp.Status,
 		ReplyCount:   0,
 	}
@@ -189,11 +199,14 @@ func UpdateCourseDiscussion(ctx context.Context, discussionID string, courseID s
 		tmp := *status
 		discussion.Status = tmp
 	}
+	updatedBy := claims["user_id"].(string)
 
 	//we have updated all the values, lets put those updates in database table
 	if len(updatedCols) > 0 {
 		discussion.UpdatedAt = time.Now().Unix()
 		updatedCols = append(updatedCols, "updated_at")
+		discussion.UpdatedBy = updatedBy
+		updatedCols = append(updatedCols, "updated_by")
 		stmt, names := coursez.DiscussionTable.Update(updatedCols...)
 		updatedQuery := CassSession.Query(stmt, names).BindStruct(&discussion)
 		if err = updatedQuery.ExecRelease(); err != nil {

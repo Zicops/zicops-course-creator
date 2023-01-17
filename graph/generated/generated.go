@@ -4731,6 +4731,8 @@ input ThumbnailsDataInput {
 input Discussion {
 	CourseId: String! 
 	ReplyId: String 
+  UserId: String
+  Time: Int!
 	Content: String! 
 	Module: String
 	Chapter: String 
@@ -4741,10 +4743,6 @@ input Discussion {
 	IsPinned: Boolean
 	IsAnnouncement: Boolean
 	ReplyCount: Int
-	CreatedBy: String!
-	CreatedAt: Int!
-	UpdatedBy: String!
-	UpdatedAt: Int! 
 	Status: String! 
 }
 
@@ -27588,7 +27586,7 @@ func (ec *executionContext) unmarshalInputDiscussion(ctx context.Context, obj in
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"CourseId", "ReplyId", "Content", "Module", "Chapter", "Topic", "Likes", "Dislike", "IsAnonymous", "IsPinned", "IsAnnouncement", "ReplyCount", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt", "Status"}
+	fieldsInOrder := [...]string{"CourseId", "ReplyId", "UserId", "Time", "Content", "Module", "Chapter", "Topic", "Likes", "Dislike", "IsAnonymous", "IsPinned", "IsAnnouncement", "ReplyCount", "Status"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -27608,6 +27606,22 @@ func (ec *executionContext) unmarshalInputDiscussion(ctx context.Context, obj in
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ReplyId"))
 			it.ReplyID, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "UserId":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("UserId"))
+			it.UserID, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Time":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Time"))
+			it.Time, err = ec.unmarshalNInt2int(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -27688,38 +27702,6 @@ func (ec *executionContext) unmarshalInputDiscussion(ctx context.Context, obj in
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ReplyCount"))
 			it.ReplyCount, err = ec.unmarshalOInt2ᚖint(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "CreatedBy":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("CreatedBy"))
-			it.CreatedBy, err = ec.unmarshalNString2string(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "CreatedAt":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("CreatedAt"))
-			it.CreatedAt, err = ec.unmarshalNInt2int(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "UpdatedBy":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("UpdatedBy"))
-			it.UpdatedBy, err = ec.unmarshalNString2string(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "UpdatedAt":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("UpdatedAt"))
-			it.UpdatedAt, err = ec.unmarshalNInt2int(ctx, v)
 			if err != nil {
 				return it, err
 			}

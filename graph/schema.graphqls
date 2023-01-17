@@ -788,6 +788,8 @@ input ThumbnailsDataInput {
 input Discussion {
 	CourseId: String! 
 	ReplyId: String 
+  UserId: String
+  Time: Int!
 	Content: String! 
 	Module: String
 	Chapter: String 
@@ -798,10 +800,6 @@ input Discussion {
 	IsPinned: Boolean
 	IsAnnouncement: Boolean
 	ReplyCount: Int
-	CreatedBy: String!
-	CreatedAt: Int!
-	UpdatedBy: String!
-	UpdatedAt: Int! 
 	Status: String! 
 }
 
