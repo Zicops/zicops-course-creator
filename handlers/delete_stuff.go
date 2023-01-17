@@ -502,7 +502,7 @@ func DeleteTopicSubtitle(ctx context.Context, courseID string, topicID string, f
 	}
 	mainBucket := courseID + "/" + topicID + "/subtitles/"
 	bucketPath := mainBucket + fileName
-	res := storageC.DeleteObjectsFromBucket(ctx, bucketPath, lang)
+	res := storageC.DeleteObjectsFromBucket(ctx, bucketPath)
 
 	r := true
 	if res == "1" {
