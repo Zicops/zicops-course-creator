@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"context"
+	"encoding/base64"
 	"fmt"
 	"log"
 	"time"
@@ -18,11 +19,12 @@ func AddCourseDiscussion(ctx context.Context, inp model.Discussion) (string, err
 	if err != nil {
 		log.Printf("Got error while getting claims %v", err)
 	}
-	id := claims["user_id"].(string)
-	if inp.UserID != nil {
-		id = *inp.UserID
+	email_creator := claims["email"].(string)
+	id := base64.URLEncoding.EncodeToString([]byte(email_creator))
+	if inp.UserID != "" {
+		id = inp.UserID
 	}
-	CreatedBy := claims["user_id"].(string)
+	CreatedBy := inp.UserID
 
 	t := 0
 	if inp.Time != nil {

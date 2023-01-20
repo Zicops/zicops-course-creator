@@ -4731,7 +4731,7 @@ input ThumbnailsDataInput {
 input Discussion {
 	CourseId: String! 
 	ReplyId: String 
-  UserId: String
+  UserId: String!
   Time: Int
 	Content: String! 
 	Module: String
@@ -27613,7 +27613,7 @@ func (ec *executionContext) unmarshalInputDiscussion(ctx context.Context, obj in
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("UserId"))
-			it.UserID, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.UserID, err = ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
