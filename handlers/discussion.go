@@ -262,10 +262,12 @@ func DeleteCourseDiscussion(ctx context.Context, discussionID *string) (*bool, e
 	if err != nil {
 		return nil, err
 	}
+	var res bool
 	CassSession := session
 	var queryStr string
 	if discussionID != nil {
 		queryStr = fmt.Sprintf(`DELETE * FROM coursez.discussion where discussion_id='%s' ALLOW FILTERING`, *discussionID)
+		res = deleteChildren(ctx, discussionID)
 	} else {
 		queryStr = fmt.Sprintf(`DELETE * FROM coursez.discussion`)
 	}
@@ -273,7 +275,24 @@ func DeleteCourseDiscussion(ctx context.Context, discussionID *string) (*bool, e
 	if err := CassSession.Query(queryStr, nil).Exec(); err != nil {
 		return &isSuccess, err
 	}
+	if !res {
+		return &isSuccess, nil
+	}
+
 	isSuccess = true
 
-	return nil, nil
+	return &isSuccess, nil
+}
+
+func deleteChildren(ctx context.Context, discussionID *string) bool {
+	session, err := cassandra.GetCassSession("coursez")
+	if err != nil {
+		return false
+	}
+	CassSession := session
+	queryStr := fmt.Sprintf(`DELETE * FROM coursez.discussion where reply_id='%s' ALLOW FILTERING`, *discussionID)
+	if err := CassSession.Query(queryStr, nil).Exec(); err != nil {
+		return false
+	}
+	return true
 }
