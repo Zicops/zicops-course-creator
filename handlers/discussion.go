@@ -266,7 +266,7 @@ func DeleteCourseDiscussion(ctx context.Context, discussionID *string) (*bool, e
 	CassSession := session
 	var queryStr string
 	if discussionID != nil {
-		queryStr = fmt.Sprintf(`DELETE * FROM coursez.discussion where discussion_id='%s' ALLOW FILTERING`, *discussionID)
+		queryStr = fmt.Sprintf(`DELETE FROM coursez.discussion where discussion_id='%s' ALLOW FILTERING`, *discussionID)
 		res = deleteChildren(ctx, discussionID)
 	} else {
 		queryStr = fmt.Sprintf(`DELETE * FROM coursez.discussion`)
