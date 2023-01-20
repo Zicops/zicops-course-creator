@@ -269,6 +269,7 @@ type ComplexityRoot struct {
 		DeleteCourse                 func(childComplexity int, id *string) int
 		DeleteCourseChapter          func(childComplexity int, id *string) int
 		DeleteCourseCohort           func(childComplexity int, id *string) int
+		DeleteCourseDiscussion       func(childComplexity int, discussionID *string) int
 		DeleteCourseModule           func(childComplexity int, id *string) int
 		DeleteCourseTopic            func(childComplexity int, id *string) int
 		DeleteExam                   func(childComplexity int, id *string) int
@@ -614,6 +615,7 @@ type MutationResolver interface {
 	GetThumbnails(ctx context.Context, contentID []*string) ([]*model.ThumbnailsData, error)
 	AddCourseDiscussion(ctx context.Context, discussionInput model.Discussion) (string, error)
 	UpdateCourseDiscussion(ctx context.Context, discussionID string, courseID string, content *string, likes []*string, dislikes []*string, isAnonymous *bool, isPinned *bool, isAnnouncement *bool, status *string) (*model.DiscussionData, error)
+	DeleteCourseDiscussion(ctx context.Context, discussionID *string) (*bool, error)
 }
 
 type executableSchema struct {
@@ -2146,6 +2148,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.DeleteCourseCohort(childComplexity, args["id"].(*string)), true
+
+	case "Mutation.deleteCourseDiscussion":
+		if e.complexity.Mutation.DeleteCourseDiscussion == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_deleteCourseDiscussion_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.DeleteCourseDiscussion(childComplexity, args["discussionId"].(*string)), true
 
 	case "Mutation.deleteCourseModule":
 		if e.complexity.Mutation.DeleteCourseModule == nil {
@@ -4887,6 +4901,7 @@ type Mutation {
   GetThumbnails(contentId:[String]!): [ThumbnailsData]!
   addCourseDiscussion(discussionInput: Discussion!): String!
   updateCourseDiscussion(discussionId: String!, courseId:String!, Content: String, likes: [String], dislikes: [String], isAnonymous: Boolean, IsPinned: Boolean, IsAnnouncement: Boolean, status: String):DiscussionData
+  deleteCourseDiscussion(discussionId: String): Boolean
 }
 `, BuiltIn: false},
 }
@@ -5478,6 +5493,21 @@ func (ec *executionContext) field_Mutation_deleteCourseCohort_args(ctx context.C
 		}
 	}
 	args["id"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_deleteCourseDiscussion_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 *string
+	if tmp, ok := rawArgs["discussionId"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("discussionId"))
+		arg0, err = ec.unmarshalOString2ᚖstring(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["discussionId"] = arg0
 	return args, nil
 }
 
@@ -18828,6 +18858,58 @@ func (ec *executionContext) fieldContext_Mutation_updateCourseDiscussion(ctx con
 	return fc, nil
 }
 
+func (ec *executionContext) _Mutation_deleteCourseDiscussion(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_deleteCourseDiscussion(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().DeleteCourseDiscussion(rctx, fc.Args["discussionId"].(*string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*bool)
+	fc.Result = res
+	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_deleteCourseDiscussion(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_deleteCourseDiscussion_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Query___type(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Query___type(ctx, field)
 	if err != nil {
@@ -31603,6 +31685,12 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_updateCourseDiscussion(ctx, field)
+			})
+
+		case "deleteCourseDiscussion":
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_deleteCourseDiscussion(ctx, field)
 			})
 
 		default:

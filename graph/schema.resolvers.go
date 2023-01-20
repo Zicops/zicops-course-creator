@@ -871,6 +871,16 @@ func (r *mutationResolver) UpdateCourseDiscussion(ctx context.Context, discussio
 	return resp, nil
 }
 
+// DeleteCourseDiscussion is the resolver for the deleteCourseDiscussion field.
+func (r *mutationResolver) DeleteCourseDiscussion(ctx context.Context, discussionID *string) (*bool, error) {
+	res, err := handlers.DeleteCourseDiscussion(ctx, discussionID)
+	if err != nil {
+		log.Println("Error while deleting the discussions  %v", err)
+	}
+
+	return res, nil
+}
+
 // Mutation returns generated.MutationResolver implementation.
 func (r *Resolver) Mutation() generated.MutationResolver { return &mutationResolver{r} }
 

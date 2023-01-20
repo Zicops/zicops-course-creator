@@ -250,3 +250,30 @@ func UpdateCourseDiscussion(ctx context.Context, discussionID string, courseID s
 
 	return &result, nil
 }
+
+func DeleteCourseDiscussion(ctx context.Context, discussionID *string) (*bool, error) {
+	_, err := helpers.GetClaimsFromContext(ctx)
+	if err != nil {
+		log.Printf("Got error while getting claims %v", err)
+	}
+	isSuccess := false
+
+	session, err := cassandra.GetCassSession("coursez")
+	if err != nil {
+		return nil, err
+	}
+	CassSession := session
+	var queryStr string
+	if discussionID != nil {
+		queryStr = fmt.Sprintf(`DELETE * FROM coursez.discussion where discussion_id='%s' ALLOW FILTERING`, *discussionID)
+	} else {
+		queryStr = fmt.Sprintf(`DELETE * FROM coursez.discussion`)
+	}
+
+	if err := CassSession.Query(queryStr, nil).Exec(); err != nil {
+		return &isSuccess, err
+	}
+	isSuccess = true
+
+	return nil, nil
+}
