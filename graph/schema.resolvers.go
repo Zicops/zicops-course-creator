@@ -881,6 +881,16 @@ func (r *mutationResolver) DeleteCourseDiscussion(ctx context.Context, discussio
 	return res, nil
 }
 
+// UpdateLikesDislikes is the resolver for the updateLikesDislikes field.
+func (r *mutationResolver) UpdateLikesDislikes(ctx context.Context, discussionID string, input string, userID string) (*bool, error) {
+	res, err := handlers.UpdateLikesDislikes(ctx, discussionID, input, userID)
+	if err != nil {
+		log.Println("Error while deleting the discussions  %v", err)
+	}
+
+	return res, nil
+}
+
 // Mutation returns generated.MutationResolver implementation.
 func (r *Resolver) Mutation() generated.MutationResolver { return &mutationResolver{r} }
 
