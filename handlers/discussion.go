@@ -166,7 +166,6 @@ func UpdateCourseDiscussion(ctx context.Context, discussionID string, courseID s
 		discussion.Content = tmp
 		updatedCols = append(updatedCols, "user_id")
 	}
-
 	if isAnonymous != nil {
 		tmp := *isAnonymous
 		discussion.IsAnonymous = tmp
@@ -291,7 +290,7 @@ func UpdateLikesDislikes(ctx context.Context, discussionID string, input string,
 		log.Printf("Got error while getting claims: %v", err)
 		return nil, err
 	}
-	var updatedCol string
+	var updatedCol []string
 
 	queryStr := fmt.Sprintf(`SELECT * FROM coursez.discussion where discussion_id = '%s' ALLOW FILTERING`, discussionID)
 	session, err := cassandra.GetCassSession("coursez")
@@ -313,8 +312,11 @@ func UpdateLikesDislikes(ctx context.Context, discussionID string, input string,
 	if len(data) == 0 {
 		return nil, nil
 	}
+
 	discussion := data[0]
 	if input == "likes" {
+
+		//increment the likes, and if already present in dislikes then remove that
 		isPresent := false
 		for k, v := range discussion.Likes {
 			if v == userID {
@@ -327,9 +329,18 @@ func UpdateLikesDislikes(ctx context.Context, discussionID string, input string,
 		if !isPresent {
 			discussion.Likes = append(discussion.Likes, userID)
 		}
-		updatedCol = "likes"
+		updatedCol = append(updatedCol, "likes")
+
+		//check dislikes too
+		for k, v := range discussion.Dislike {
+			if v == userID {
+				discussion.Dislike = append(discussion.Dislike[:k], discussion.Dislike[k+1:]...)
+				updatedCol = append(updatedCol, "dislikes")
+			}
+		}
 
 	} else if input == "dislikes" {
+		//increment the dislikes if already not disliked, else remove. And check likes too
 		isPresent := false
 		for k, v := range discussion.Dislike {
 			if v == userID {
@@ -342,13 +353,21 @@ func UpdateLikesDislikes(ctx context.Context, discussionID string, input string,
 		if !isPresent {
 			discussion.Dislike = append(discussion.Dislike, userID)
 		}
-		updatedCol = "dislikes"
+		updatedCol = append(updatedCol, "dislikes")
+
+		//check likes too
+		for k, v := range discussion.Likes {
+			if v == userID {
+				discussion.Likes = append(discussion.Likes[:k], discussion.Likes[k+1:]...)
+				updatedCol = append(updatedCol, "likes")
+			}
+		}
 	} else {
 		return nil, errors.New("wrong input in UpdateLikesDislikes")
 	}
 
 	//we have updated the columns in the table, let's update it in database too
-	stmt, names := coursez.DiscussionTable.Update(updatedCol)
+	stmt, names := coursez.DiscussionTable.Update(updatedCol...)
 	updatedQuery := CassSession.Query(stmt, names).BindStruct(&discussion)
 	if err = updatedQuery.ExecRelease(); err != nil {
 		return nil, err
