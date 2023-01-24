@@ -316,9 +316,12 @@ func UpdateLikesDislikes(ctx context.Context, discussionID string, input string,
 	discussion := data[0]
 	if input == "likes" {
 
+		var likesArray []string
 		//increment the likes, and if already present in dislikes then remove that
 		isPresent := false
-		for k, v := range discussion.Likes {
+		for k, vv := range discussion.Likes {
+			v := vv
+			likesArray = append(likesArray, v)
 			if v == userID {
 				//userId already present, delete this userID
 				discussion.Likes = append(discussion.Likes[:k], discussion.Likes[k+1:]...)
@@ -327,7 +330,8 @@ func UpdateLikesDislikes(ctx context.Context, discussionID string, input string,
 		}
 		//userId not found in discussions Likes
 		if !isPresent {
-			discussion.Likes = append(discussion.Likes, userID)
+			likesArray = append(likesArray, userID)
+			discussion.Likes = likesArray
 		}
 		updatedCol = append(updatedCol, "likes")
 
@@ -341,8 +345,12 @@ func UpdateLikesDislikes(ctx context.Context, discussionID string, input string,
 
 	} else if input == "dislikes" {
 		//increment the dislikes if already not disliked, else remove. And check likes too
+
+		var dislikesArray []string
 		isPresent := false
-		for k, v := range discussion.Dislike {
+		for k, vv := range discussion.Dislike {
+			v := vv
+			dislikesArray = append(dislikesArray, v)
 			if v == userID {
 				//userId already present, delete this userID
 				discussion.Dislike = append(discussion.Dislike[:k], discussion.Dislike[k+1:]...)
@@ -351,7 +359,8 @@ func UpdateLikesDislikes(ctx context.Context, discussionID string, input string,
 		}
 		//userId not found in discussions Likes
 		if !isPresent {
-			discussion.Dislike = append(discussion.Dislike, userID)
+			dislikesArray = append(dislikesArray, userID)
+			discussion.Dislike = dislikesArray
 		}
 		updatedCol = append(updatedCol, "dislikes")
 
