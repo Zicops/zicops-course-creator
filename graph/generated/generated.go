@@ -270,6 +270,7 @@ type ComplexityRoot struct {
 		DeleteCourseChapter          func(childComplexity int, id *string) int
 		DeleteCourseCohort           func(childComplexity int, id *string) int
 		DeleteCourseDiscussion       func(childComplexity int, discussionID *string) int
+		DeleteCourseMedia            func(childComplexity int, courseID string, fileName string) int
 		DeleteCourseModule           func(childComplexity int, id *string) int
 		DeleteCourseTopic            func(childComplexity int, id *string) int
 		DeleteExam                   func(childComplexity int, id *string) int
@@ -553,6 +554,7 @@ type MutationResolver interface {
 	UpdateCourseChapter(ctx context.Context, chapter *model.ChapterInput) (*model.Chapter, error)
 	AddCourseTopic(ctx context.Context, courseID *string, topic *model.TopicInput) (*model.Topic, error)
 	DeleteCourseTopic(ctx context.Context, id *string) (*bool, error)
+	DeleteCourseMedia(ctx context.Context, courseID string, fileName string) (*bool, error)
 	UpdateCourseTopic(ctx context.Context, topic *model.TopicInput) (*model.Topic, error)
 	AddTopicContent(ctx context.Context, topicID *string, courseID *string, moduleID *string, topicContent *model.TopicContentInput) (*model.TopicContent, error)
 	DeleteTopicContent(ctx context.Context, id *string) (*bool, error)
@@ -2162,6 +2164,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.DeleteCourseDiscussion(childComplexity, args["discussionId"].(*string)), true
+
+	case "Mutation.deleteCourseMedia":
+		if e.complexity.Mutation.DeleteCourseMedia == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_deleteCourseMedia_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.DeleteCourseMedia(childComplexity, args["courseId"].(string), args["fileName"].(string)), true
 
 	case "Mutation.deleteCourseModule":
 		if e.complexity.Mutation.DeleteCourseModule == nil {
@@ -4824,6 +4838,7 @@ type Mutation {
   updateCourseChapter(chapter: ChapterInput): Chapter
   addCourseTopic(courseId: String, topic: TopicInput): Topic
   deleteCourseTopic(id: ID): Boolean
+  deleteCourseMedia(courseId: String!, fileName: String!):Boolean
   updateCourseTopic(topic: TopicInput): Topic
   addTopicContent(
     topicId: String
@@ -5523,6 +5538,30 @@ func (ec *executionContext) field_Mutation_deleteCourseDiscussion_args(ctx conte
 		}
 	}
 	args["discussionId"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_deleteCourseMedia_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["courseId"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("courseId"))
+		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["courseId"] = arg0
+	var arg1 string
+	if tmp, ok := rawArgs["fileName"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("fileName"))
+		arg1, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["fileName"] = arg1
 	return args, nil
 }
 
@@ -14678,6 +14717,58 @@ func (ec *executionContext) fieldContext_Mutation_deleteCourseTopic(ctx context.
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Mutation_deleteCourseTopic_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_deleteCourseMedia(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_deleteCourseMedia(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().DeleteCourseMedia(rctx, fc.Args["courseId"].(string), fc.Args["fileName"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*bool)
+	fc.Result = res
+	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_deleteCourseMedia(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_deleteCourseMedia_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return
 	}
@@ -31395,6 +31486,12 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_deleteCourseTopic(ctx, field)
+			})
+
+		case "deleteCourseMedia":
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_deleteCourseMedia(ctx, field)
 			})
 
 		case "updateCourseTopic":
