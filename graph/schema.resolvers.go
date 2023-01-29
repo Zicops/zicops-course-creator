@@ -243,6 +243,16 @@ func (r *mutationResolver) DeleteCourseTopic(ctx context.Context, id *string) (*
 	return resp, nil
 }
 
+// DeleteCourseMedia is the resolver for the deleteCourseMedia field.
+func (r *mutationResolver) DeleteCourseMedia(ctx context.Context, courseID string, fileName string) (*bool, error) {
+	res, err := handlers.DeleteCourseMedia(ctx, courseID, fileName)
+	if err != nil {
+		log.Errorf("error while deleting course media: %v", err)
+		return nil, err
+	}
+	return res, nil
+}
+
 // UpdateCourseTopic is the resolver for the updateCourseTopic field.
 func (r *mutationResolver) UpdateCourseTopic(ctx context.Context, topic *model.TopicInput) (*model.Topic, error) {
 	resp, err := handlers.TopicUpdate(ctx, topic)
@@ -874,6 +884,16 @@ func (r *mutationResolver) UpdateCourseDiscussion(ctx context.Context, discussio
 // DeleteCourseDiscussion is the resolver for the deleteCourseDiscussion field.
 func (r *mutationResolver) DeleteCourseDiscussion(ctx context.Context, discussionID *string) (*bool, error) {
 	res, err := handlers.DeleteCourseDiscussion(ctx, discussionID)
+	if err != nil {
+		log.Println("Error while deleting the discussions  %v", err)
+	}
+
+	return res, nil
+}
+
+// UpdateLikesDislikes is the resolver for the updateLikesDislikes field.
+func (r *mutationResolver) UpdateLikesDislikes(ctx context.Context, discussionID string, input string, userID string) (*bool, error) {
+	res, err := handlers.UpdateLikesDislikes(ctx, discussionID, input, userID)
 	if err != nil {
 		log.Println("Error while deleting the discussions  %v", err)
 	}

@@ -3,6 +3,7 @@ package handlers
 import (
 	"context"
 	"encoding/base64"
+	"errors"
 	"fmt"
 	"log"
 	"time"
@@ -165,22 +166,6 @@ func UpdateCourseDiscussion(ctx context.Context, discussionID string, courseID s
 		discussion.Content = tmp
 		updatedCols = append(updatedCols, "user_id")
 	}
-	//we have discusion.Likes as []string and in input we receive []*string, as ofcourse, likes array is not compulsory
-	var ArrayLikes, ArrayDislikes []string
-	if likes != nil {
-		for _, v := range likes {
-			ArrayLikes = append(ArrayLikes, *v)
-		}
-		discussion.Likes = ArrayLikes
-		updatedCols = append(updatedCols, "likes")
-	}
-	if dislikes != nil {
-		for _, v := range dislikes {
-			ArrayDislikes = append(ArrayDislikes, *v)
-		}
-		discussion.Dislike = ArrayDislikes
-		updatedCols = append(updatedCols, "dislikes")
-	}
 	if isAnonymous != nil {
 		tmp := *isAnonymous
 		discussion.IsAnonymous = tmp
@@ -199,6 +184,7 @@ func UpdateCourseDiscussion(ctx context.Context, discussionID string, courseID s
 	if status != nil && *status != "" {
 		tmp := *status
 		discussion.Status = tmp
+		updatedCols = append(updatedCols, "status")
 	}
 	updatedBy := claims["user_id"].(string)
 
@@ -255,6 +241,7 @@ func DeleteCourseDiscussion(ctx context.Context, discussionID *string) (*bool, e
 	_, err := helpers.GetClaimsFromContext(ctx)
 	if err != nil {
 		log.Printf("Got error while getting claims %v", err)
+		return nil, err
 	}
 	isSuccess := false
 
@@ -269,7 +256,7 @@ func DeleteCourseDiscussion(ctx context.Context, discussionID *string) (*bool, e
 		queryStr = fmt.Sprintf(`DELETE FROM coursez.discussion where discussion_id='%s' ALLOW FILTERING`, *discussionID)
 		res = deleteChildren(ctx, discussionID)
 	} else {
-		queryStr = fmt.Sprintf(`DELETE * FROM coursez.discussion`)
+		queryStr = fmt.Sprintf(`DELETE FROM coursez.discussion`)
 	}
 
 	if err := CassSession.Query(queryStr, nil).Exec(); err != nil {
@@ -295,4 +282,106 @@ func deleteChildren(ctx context.Context, discussionID *string) bool {
 		return false
 	}
 	return true
+}
+
+func UpdateLikesDislikes(ctx context.Context, discussionID string, input string, userID string) (*bool, error) {
+	_, err := helpers.GetClaimsFromContext(ctx)
+	if err != nil {
+		log.Printf("Got error while getting claims: %v", err)
+		return nil, err
+	}
+	var updatedCol []string
+
+	queryStr := fmt.Sprintf(`SELECT * FROM coursez.discussion where discussion_id = '%s' ALLOW FILTERING`, discussionID)
+	session, err := cassandra.GetCassSession("coursez")
+	if err != nil {
+		return nil, err
+	}
+	CassSession := session
+	getDiscussions := func() (discussions []coursez.Discussion, err error) {
+		q := CassSession.Query(queryStr, nil)
+		defer q.Release()
+		iter := q.Iter()
+		return discussions, iter.Select(&discussions)
+	}
+
+	data, err := getDiscussions()
+	if err != nil {
+		return nil, err
+	}
+	if len(data) == 0 {
+		return nil, nil
+	}
+
+	discussion := data[0]
+	if input == "likes" {
+
+		var likesArray []string
+		//increment the likes, and if already present in dislikes then remove that
+		isPresent := false
+		for k, vv := range discussion.Likes {
+			v := vv
+			likesArray = append(likesArray, v)
+			if v == userID {
+				//userId already present, delete this userID
+				discussion.Likes = append(discussion.Likes[:k], discussion.Likes[k+1:]...)
+				isPresent = true
+			}
+		}
+		//userId not found in discussions Likes
+		if !isPresent {
+			likesArray = append(likesArray, userID)
+			discussion.Likes = likesArray
+		}
+		updatedCol = append(updatedCol, "likes")
+
+		//check dislikes too
+		for k, v := range discussion.Dislike {
+			if v == userID {
+				discussion.Dislike = append(discussion.Dislike[:k], discussion.Dislike[k+1:]...)
+				updatedCol = append(updatedCol, "dislikes")
+			}
+		}
+
+	} else if input == "dislikes" {
+		//increment the dislikes if already not disliked, else remove. And check likes too
+
+		var dislikesArray []string
+		isPresent := false
+		for k, vv := range discussion.Dislike {
+			v := vv
+			dislikesArray = append(dislikesArray, v)
+			if v == userID {
+				//userId already present, delete this userID
+				discussion.Dislike = append(discussion.Dislike[:k], discussion.Dislike[k+1:]...)
+				isPresent = true
+			}
+		}
+		//userId not found in discussions Likes
+		if !isPresent {
+			dislikesArray = append(dislikesArray, userID)
+			discussion.Dislike = dislikesArray
+		}
+		updatedCol = append(updatedCol, "dislikes")
+
+		//check likes too
+		for k, v := range discussion.Likes {
+			if v == userID {
+				discussion.Likes = append(discussion.Likes[:k], discussion.Likes[k+1:]...)
+				updatedCol = append(updatedCol, "likes")
+			}
+		}
+	} else {
+		return nil, errors.New("wrong input in UpdateLikesDislikes")
+	}
+
+	//we have updated the columns in the table, let's update it in database too
+	stmt, names := coursez.DiscussionTable.Update(updatedCol...)
+	updatedQuery := CassSession.Query(stmt, names).BindStruct(&discussion)
+	if err = updatedQuery.ExecRelease(); err != nil {
+		return nil, err
+	}
+
+	res := true
+	return &res, nil
 }

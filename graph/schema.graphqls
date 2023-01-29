@@ -853,6 +853,7 @@ type Mutation {
   updateCourseChapter(chapter: ChapterInput): Chapter
   addCourseTopic(courseId: String, topic: TopicInput): Topic
   deleteCourseTopic(id: ID): Boolean
+  deleteCourseMedia(courseId: String!, fileName: String!):Boolean
   updateCourseTopic(topic: TopicInput): Topic
   addTopicContent(
     topicId: String
@@ -945,4 +946,5 @@ type Mutation {
   addCourseDiscussion(discussionInput: Discussion!): String!
   updateCourseDiscussion(discussionId: String!, courseId:String!, Content: String, likes: [String], dislikes: [String], isAnonymous: Boolean, IsPinned: Boolean, IsAnnouncement: Boolean, status: String):DiscussionData
   deleteCourseDiscussion(discussionId: String): Boolean
+  updateLikesDislikes(discussionId: String!, input: String!, UserId: String!): Boolean
 }

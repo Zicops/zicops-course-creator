@@ -511,3 +511,32 @@ func DeleteTopicSubtitle(ctx context.Context, courseID string, topicID string, f
 	r = false
 	return &r, errors.New(res)
 }
+
+func DeleteCourseMedia(ctx context.Context, courseID string, fileName string) (*bool, error) {
+	resp := false
+	claims, err := helpers.GetClaimsFromContext(ctx)
+	if err != nil {
+		return &resp, err
+	}
+	lspId := claims["lsp_id"].(string)
+	if lspId == "" {
+		return &resp, fmt.Errorf("lsp_id is empty")
+	}
+	storageC := bucket.NewStorageHandler()
+	gproject := googleprojectlib.GetGoogleProjectID()
+	err = storageC.InitializeStorageClient(ctx, gproject, lspId)
+	if err != nil {
+		log.Errorf("Failed to delete subtitle to course topic: %v", err.Error())
+		return &resp, err
+	}
+	bucketPath := fmt.Sprintf("%s/%s", courseID, fileName)
+	res := storageC.DeleteObjectsFromBucket(ctx, bucketPath)
+
+	r := true
+	if res == "1" {
+		return &r, nil
+	}
+	r = false
+	return &r, errors.New(res)
+
+}
