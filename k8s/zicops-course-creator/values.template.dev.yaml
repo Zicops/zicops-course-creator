@@ -1,0 +1,70 @@
+# Default values for zicops-course-creator.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+maxSurge: 1
+
+#Backend image details
+
+image:
+  repository: gcr.io/zicops-one/zicops-course-creator
+  tag: ${GITHUB_SHA}
+  pullPolicy: Always
+  health: /healthz
+  port: 8090
+
+#Authorization reverse proxy details
+asp:
+  repository: gcr.io/zicops-one/zicops-auth-proxy
+  tag: latest
+  port: 8080
+  pullPolicy: Always
+  arg:
+    mode: "authz"
+
+maxBodySizeMb: 100
+# TODO add more routes for frontend etc..
+
+service:
+  type: ClusterIP
+  port: 80
+
+zcServiceAccount:
+  name: zicops-cc
+  secret: zicops-cc
+  credential:
+    dir: /var/run/secrets/zicops-cc
+    file: zicops-cc.json
+
+zcCertAstra:
+  name: zdevastracert
+  secret: zdevastracert
+  cert:
+    dir: /var/run/secrets/zdevastracert
+    file: cert
+
+zcCertCAAstra:
+  name: zdevastracertca
+  secret: zdevastracertca
+  cert:
+    dir: /var/run/secrets/zdevastracertca
+    file: ca.crt
+
+zcAstraKey:
+  name: zdevastrakey
+  secret: zdevastrakey
+  key:
+    dir: /var/run/secrets/zdevastrakey
+    file: key
+
+redis:
+  host: "prod-redis-cluster.redis.svc.cluster.local"
+  password: "AI2GIErdjD"
+  port: 6379
+
+astra:
+  host: 3adcf077-0f2e-447a-b901-4b7b77b8e78d-asia-south1.db.astra.datastax.com
+  username: oNMMDhfoAmdhhaNMWajICmnk
+  password: Ah0_7-ZCiOlC+J+8vTtC,T-a,36IW0cQvHY0Km3AhPQeWxrKJpjvGJ,34UZhMGsn93uBQz5Yle_j6ZTDdi0+IW7lZjB9f.wK8bLZBOWyTraZLB-B.P.Dkljqw0j2QnZE
+  port: 29042

@@ -57,3 +57,14 @@ zcAstraKey:
   key:
     dir: /var/run/secrets/zdevastrakey
     file: key
+
+redis:
+  host: prod-redis-cluster.redis.svc.cluster.local
+  password: GjEUr5HDxa
+  port: 6379
+
+astra:
+  host: 32d390ef-f0ad-4103-9d63-97ac0790b466-asia-south1.db.astra.datastax.com
+  username: oNMMDhfoAmdhhaNMWajICmnk
+  password: Ah0_7-ZCiOlC+J+8vTtC,T-a,36IW0cQvHY0Km3AhPQeWxrKJpjvGJ,34UZhMGsn93uBQz5Yle_j6ZTDdi0+IW7lZjB9f.wK8bLZBOWyTraZLB-B.P.Dkljqw0j2QnZE
+  port: 29042
