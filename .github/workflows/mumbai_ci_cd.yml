@@ -49,9 +49,11 @@ jobs:
   approval_stage:
     needs: build_push_image
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
     steps:
     - name: Get Approvals for Staging Deployment
       uses: trstringer/manual-approval@v1.8.0
+      timeout-minutes: 5
       with:
          secret: ${{ github.TOKEN }}
          approvers: saraswatpuneet,ngupta10, ansh5461
@@ -97,6 +99,7 @@ jobs:
     steps:
     - name: Get Approvals for Zicops One Production Deployment
       uses: trstringer/manual-approval@v1.8.0
+      timeout-minutes: 5
       with:
          secret: ${{ github.TOKEN }}
          approvers: saraswatpuneet,ngupta10
