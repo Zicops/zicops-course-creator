@@ -10,6 +10,7 @@ import (
 	"os"
 
 	"github.com/gin-gonic/gin"
+	"github.com/penglongli/gin-metrics/ginmetrics"
 	log "github.com/sirupsen/logrus"
 	"github.com/zicops/zicops-cass-pool/cassandra"
 	"github.com/zicops/zicops-course-creator/controller"
