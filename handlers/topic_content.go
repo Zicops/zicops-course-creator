@@ -25,6 +25,7 @@ import (
 	"github.com/zicops/zicops-course-creator/lib/db/bucket"
 	"github.com/zicops/zicops-course-creator/lib/googleprojectlib"
 	deploy_static "github.com/zicops/zicops-course-creator/lib/static"
+	"github.com/zicops/zicops-course-creator/lib/utils"
 )
 
 func TopicContentCreate(ctx context.Context, topicID string, courseID string, moduleID *string, topicConent *model.TopicContentInput) (*model.TopicContent, error) {
@@ -216,33 +217,20 @@ func UploadTopicVideo(ctx context.Context, file model.TopicVideo) (*model.Upload
 		return nil, fmt.Errorf("lsp_id is empty")
 	}
 	isSuccess := model.UploadResult{}
-	storageC := bucket.NewStorageHandler()
-	gproject := googleprojectlib.GetGoogleProjectID()
-	err = storageC.InitializeStorageClient(ctx, gproject, lspId)
-	if err != nil {
-		log.Errorf("Failed to upload video to course topic: %v", err.Error())
-		return &isSuccess, nil
-	}
 	if file.CourseID == nil || file.ContentID == nil {
 		log.Errorf("Failed to upload video to course topic: %v", "courseID or contentId is nil")
 		return &isSuccess, nil
 	}
 	bucketPath := *file.CourseID + "/" + *file.ContentID + "/" + file.File.Filename
-	writer, err := storageC.UploadToGCS(ctx, bucketPath, map[string]string{})
+	storageC := bucket.NewStorageHandler()
+	gproject := googleprojectlib.GetGoogleProjectID()
+	err = storageC.InitializeStorageClient(ctx, gproject, lspId)
 	if err != nil {
 		log.Errorf("Failed to upload video to course topic: %v", err.Error())
-		return &isSuccess, nil
 	}
-	defer writer.Close()
-	fileBuffer := bytes.NewBuffer(nil)
-	if _, err := io.Copy(fileBuffer, file.File.File); err != nil {
-		return &isSuccess, nil
-	}
-	currentBytes := fileBuffer.Bytes()
-	_, err = io.Copy(writer, bytes.NewReader(currentBytes))
-	if err != nil {
-		return &isSuccess, err
-	}
+
+	go utils.UploadFileToGCP(*storageC, file.File.File, bucketPath, lspId)
+
 	getUrl := storageC.GetSignedURLForObject(bucketPath)
 	topicContent := GetTopicContent(ctx, *file.ContentID, lspId, CassSession)
 	updateQuery := fmt.Sprintf("UPDATE coursez.topic_content SET topiccontentbucket='%s', url='%s' WHERE id='%s' AND lsp_id='%s' AND is_active=true and created_at=%d", bucketPath, getUrl, topicContent.ID, topicContent.LspId, topicContent.CreatedAt)
