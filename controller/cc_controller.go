@@ -6,15 +6,16 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
 	"github.com/zicops/zicops-course-creator/global"
 	graceful "gopkg.in/tylerb/graceful.v1" // see: https://github.com/tylerb/graceful
 )
 
 // CCBackendController ....
-func CCBackendController(ctx context.Context, port int, errorChannel chan error) {
+func CCBackendController(ctx context.Context, port int, errorChannel chan error, r *gin.Engine) {
 	log.Infof("Initializing router and endpoints.")
-	ccRouter, err := CCRouter()
+	ccRouter, err := CCRouter(r)
 	if err != nil {
 		errorChannel <- err
 		return
@@ -32,8 +33,8 @@ func serverHTTPRoutes(ctx context.Context, httpAddress string, handler http.Hand
 		//BeforeShutdown:    beforeShutDown,
 		ShutdownInitiated: shutDownBackend,
 		Server: &http.Server{
-			Addr:    httpAddress,
-			Handler: handler,
+			Addr:         httpAddress,
+			Handler:      handler,
 			WriteTimeout: 50 * time.Second,
 			ReadTimeout:  50 * time.Second,
 		},
