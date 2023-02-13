@@ -570,5 +570,8 @@ func GetQBankQ(ctx context.Context, courseID string, lspID string, session *gocq
 	if err := getQuery.SelectRelease(&chapters); err != nil {
 		return nil
 	}
+	if len(chapters) == 0 {
+		return nil
+	}
 	return &chapters[0]
 }

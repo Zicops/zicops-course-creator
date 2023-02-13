@@ -56,7 +56,7 @@ jobs:
       timeout-minutes: 5
       with:
          secret: ${{ github.TOKEN }}
-         approvers: saraswatpuneet,ngupta10, ansh5461
+         approvers: saraswatpuneet,ngupta10,Ansh5461
          minimum-approvals: 1
          issue-title: "Deploying to staging"
          exclude-workflow-initiator-as-approver: false
@@ -102,7 +102,7 @@ jobs:
       timeout-minutes: 5
       with:
          secret: ${{ github.TOKEN }}
-         approvers: saraswatpuneet,ngupta10
+         approvers: saraswatpuneet,ngupta10,Ansh5461
          minimum-approvals: 1
          issue-title: "Deploying to zicops one production cluster"
          exclude-workflow-initiator-as-approver: false
