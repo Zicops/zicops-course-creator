@@ -529,7 +529,7 @@ func DeleteCourseMedia(ctx context.Context, courseID string, fileName string) (*
 		log.Errorf("Failed to delete subtitle to course topic: %v", err.Error())
 		return &resp, err
 	}
-	bucketPath := fmt.Sprintf("%s/%s", courseID, fileName)
+	bucketPath := courseID + "/" + fileName
 	res := storageC.DeleteObjectsFromBucket(ctx, bucketPath)
 
 	r := true
