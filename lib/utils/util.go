@@ -35,7 +35,7 @@ func init() {
 func UploadFileToGCP(file graphql.Upload, bucketPath string, lspId string) {
 	storageC := bucket.NewStorageHandler()
 	ctx := context.Background()
-	const chunkSize = 1024 * 1024 // 1 MB
+	const chunkSize = 50 * 1024 * 1024 // 1 MB
 	gproject := googleprojectlib.GetGoogleProjectID()
 	err := storageC.InitializeStorageClient(ctx, gproject, lspId)
 	if err != nil {
@@ -66,9 +66,6 @@ func UploadFileToGCP(file graphql.Upload, bucketPath string, lspId string) {
 
 	buf := make([]byte, chunkSize)
 	for {
-		if file == nil {
-			break
-		}
 		n, err := file.File.Read(buf)
 		if err != nil && err != io.EOF {
 			log.Errorf("Failed to upload video to course topic: %v", err.Error())
