@@ -26,13 +26,13 @@ func init() {
 	go func() {
 		for {
 			req := <-UploaderQueue
-			UploadFileToGCP(req.File, req.BucketPath, req.LspId)
+			UploadFileToGCP(*req.File, req.BucketPath, req.LspId)
 		}
 	}()
 }
 
 // UploadFileToGCP uploads file to GCP bucket
-func UploadFileToGCP(file *graphql.Upload, bucketPath string, lspId string) {
+func UploadFileToGCP(file graphql.Upload, bucketPath string, lspId string) {
 	storageC := bucket.NewStorageHandler()
 	ctx := context.Background()
 	const chunkSize = 1024 * 1024 // 1 MB
