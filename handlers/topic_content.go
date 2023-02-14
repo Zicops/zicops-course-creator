@@ -13,6 +13,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/99designs/gqlgen/graphql"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"github.com/scylladb/gocqlx/v2"
@@ -228,7 +229,7 @@ func UploadTopicVideo(ctx context.Context, file model.TopicVideo) (*model.Upload
 	if err != nil {
 		log.Errorf("Failed to upload video to course topic: %v", err.Error())
 	}
-	go sendUploadRequestToUploaderQueue(ctx, file, bucketPath, lspId)
+	go sendUploadRequestToUploaderQueue(ctx, *file.File, bucketPath, lspId)
 	getUrl := storageC.GetSignedURLForObject(bucketPath)
 	topicContent := GetTopicContent(ctx, *file.ContentID, lspId, CassSession)
 	updateQuery := fmt.Sprintf("UPDATE coursez.topic_content SET topiccontentbucket='%s', url='%s' WHERE id='%s' AND lsp_id='%s' AND is_active=true and created_at=%d", bucketPath, getUrl, topicContent.ID, topicContent.LspId, topicContent.CreatedAt)
@@ -241,11 +242,12 @@ func UploadTopicVideo(ctx context.Context, file model.TopicVideo) (*model.Upload
 	isSuccess.URL = &getUrl
 	return &isSuccess, nil
 }
-func sendUploadRequestToUploaderQueue(ctx context.Context, file model.TopicVideo, bucketPath string, lspId string) {
+
+func sendUploadRequestToUploaderQueue(ctx context.Context, file graphql.Upload, bucketPath string, lspId string) {
 	// send message to uploader queue
 	uploadRequest := utils.UploadRequest{
 		BucketPath: bucketPath,
-		File:       file.File,
+		File:       file,
 		LspId:      lspId,
 	}
 
