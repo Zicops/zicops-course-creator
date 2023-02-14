@@ -6,12 +6,33 @@ import (
 	"io"
 	"sync"
 
+	"github.com/99designs/gqlgen/graphql"
 	log "github.com/sirupsen/logrus"
 	"github.com/zicops/zicops-course-creator/lib/db/bucket"
 	"github.com/zicops/zicops-course-creator/lib/googleprojectlib"
 )
 
-func UploadFileToGCP(file io.Reader, bucketPath string, lspId string) {
+type UploadRequest struct {
+	File       *graphql.Upload
+	BucketPath string
+	LspId      string
+}
+
+var (
+	UploaderQueue = make(chan *UploadRequest, 2)
+)
+
+func init() {
+	go func() {
+		for {
+			req := <-UploaderQueue
+			UploadFileToGCP(req.File, req.BucketPath, req.LspId)
+		}
+	}()
+}
+
+// UploadFileToGCP uploads file to GCP bucket
+func UploadFileToGCP(file *graphql.Upload, bucketPath string, lspId string) {
 	storageC := bucket.NewStorageHandler()
 	ctx := context.Background()
 	const chunkSize = 1024 * 1024 // 1 MB
@@ -48,7 +69,7 @@ func UploadFileToGCP(file io.Reader, bucketPath string, lspId string) {
 		if file == nil {
 			break
 		}
-		n, err := file.Read(buf)
+		n, err := file.File.Read(buf)
 		if err != nil && err != io.EOF {
 			log.Errorf("Failed to upload video to course topic: %v", err.Error())
 			return
@@ -56,11 +77,8 @@ func UploadFileToGCP(file io.Reader, bucketPath string, lspId string) {
 		if n == 0 {
 			break
 		}
-		chunk := make([]byte, n)
-		copy(chunk, buf[:n])
-		chunkChan <- chunk
+		chunkChan <- buf[:n]
 	}
-
 	close(chunkChan)
 	wg.Wait()
 }
