@@ -19,7 +19,7 @@ type UploadRequest struct {
 }
 
 var (
-	UploaderQueue = make(chan *UploadRequest, 10)
+	UploaderQueue = make(chan *UploadRequest, 1)
 )
 
 func init() {
