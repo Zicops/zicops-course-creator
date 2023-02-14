@@ -11,7 +11,7 @@ import (
 	"github.com/zicops/zicops-course-creator/lib/googleprojectlib"
 )
 
-func UploadFileToGCP(file *io.ReadSeeker, bucketPath string, lspId string) {
+func UploadFileToGCP(file io.Reader, bucketPath string, lspId string) {
 	storageC := bucket.NewStorageHandler()
 	ctx := context.Background()
 	const chunkSize = 1024 * 1024 // 1 MB
@@ -48,7 +48,7 @@ func UploadFileToGCP(file *io.ReadSeeker, bucketPath string, lspId string) {
 		if file == nil {
 			break
 		}
-		n, err := (*file).Read(buf)
+		n, err := file.Read(buf)
 		if err != nil && err != io.EOF {
 			log.Errorf("Failed to upload video to course topic: %v", err.Error())
 			return
