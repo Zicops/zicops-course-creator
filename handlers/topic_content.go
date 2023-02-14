@@ -229,7 +229,7 @@ func UploadTopicVideo(ctx context.Context, file model.TopicVideo) (*model.Upload
 		log.Errorf("Failed to upload video to course topic: %v", err.Error())
 	}
 
-	utils.UploadFileToGCP(file.File.File, bucketPath, lspId)
+	utils.UploadFileToGCP(&file.File.File, bucketPath, lspId)
 
 	getUrl := storageC.GetSignedURLForObject(bucketPath)
 	topicContent := GetTopicContent(ctx, *file.ContentID, lspId, CassSession)
