@@ -22,29 +22,28 @@ var (
 
 func init() {
 	go func() {
-		storageC := bucket.NewStorageHandler()
 		ctx := context.Background()
-		gproject := googleprojectlib.GetGoogleProjectID()
-		err := storageC.InitializeStorageClient(ctx, gproject, "lspId")
-		if err != nil {
-			log.Errorf("Failed to upload video to course topic: %v", err.Error())
-		}
 		for {
 			req := <-UploaderQueue
+			storageC := bucket.NewStorageHandler()
+			gproject := googleprojectlib.GetGoogleProjectID()
+			err := storageC.InitializeStorageClient(ctx, gproject, req.LspId)
+			if err != nil {
+				log.Errorf("Failed to upload video to course topic: %v", err.Error())
+				panic(err.Error())
+			}
 			writer, err := storageC.UploadToGCS(ctx, req.BucketPath, map[string]string{})
 			if err != nil {
 				log.Errorf("Failed to upload video to course topic: %v", err.Error())
-				return
+				panic(err.Error())
 			}
-			defer writer.Close()
-			// Upload the file to GCS using writer without buffering and routines
-			// This is because we want to upload the file as it is being read from the request
-			// and not buffer it in memory
 			_, err = io.Copy(writer, req.File.File)
 			if err != nil {
 				log.Errorf("Failed to upload video to course topic: %v", err.Error())
-				return
+				panic(err.Error())
+
 			}
+			writer.Close()
 		}
 	}()
 }
