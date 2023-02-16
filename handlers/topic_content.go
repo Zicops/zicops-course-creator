@@ -229,7 +229,7 @@ func UploadTopicVideo(ctx context.Context, file model.TopicVideo) (*model.Upload
 	if err != nil {
 		log.Errorf("Failed to upload video to course topic: %v", err.Error())
 	}
-	go sendUploadRequestToUploaderQueue(ctx, *file.File, bucketPath, lspId)
+	sendUploadRequestToUploaderQueue(ctx, *file.File, bucketPath, lspId)
 	getUrl := storageC.GetSignedURLForObject(bucketPath)
 	topicContent := GetTopicContent(ctx, *file.ContentID, lspId, CassSession)
 	updateQuery := fmt.Sprintf("UPDATE coursez.topic_content SET topiccontentbucket='%s', url='%s' WHERE id='%s' AND lsp_id='%s' AND is_active=true and created_at=%d", bucketPath, getUrl, topicContent.ID, topicContent.LspId, topicContent.CreatedAt)
