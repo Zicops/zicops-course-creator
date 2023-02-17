@@ -17,7 +17,7 @@ type UploadRequest struct {
 }
 
 var (
-	UploaderQueue = make(chan *UploadRequest, 2)
+	UploaderQueue = make(chan *UploadRequest, 5)
 )
 
 func init() {
@@ -37,11 +37,22 @@ func init() {
 				log.Errorf("Failed to upload video to course topic: %v", err.Error())
 				panic(err.Error())
 			}
-			_, err = io.Copy(writer, req.File.File)
-			if err != nil {
-				log.Errorf("Failed to upload video to course topic: %v", err.Error())
-				panic(err.Error())
-
+			// read the file in chunks and upload incrementally
+			buf := make([]byte, 1024)
+			for {
+				n, err := req.File.File.Read(buf)
+				if err == io.EOF {
+					break
+				}
+				if err != nil {
+					log.Errorf("Failed to read file: %v", err.Error())
+					panic(err.Error())
+				}
+				_, err = writer.Write(buf[:n])
+				if err != nil {
+					log.Errorf("Failed to upload file: %v", err.Error())
+					panic(err.Error())
+				}
 			}
 			writer.Close()
 		}
