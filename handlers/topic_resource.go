@@ -3,6 +3,7 @@ package handlers
 import (
 	"bytes"
 	"context"
+	"encoding/base64"
 	"fmt"
 	"io"
 	"time"
@@ -47,7 +48,7 @@ func AddTopicResources(ctx context.Context, courseID string, resource *model.Top
 		if courseID == "" || resource.TopicID == nil {
 			return &isSuccess, nil
 		}
-		bucketPath = courseID + "/" + *resource.TopicID + "/" + resource.File.Filename
+		bucketPath = courseID + "/" + *resource.TopicID + "/" + base64.URLEncoding.EncodeToString([]byte(resource.File.Filename))
 		writer, err := storageC.UploadToGCS(ctx, bucketPath, map[string]string{})
 		if err != nil {
 			log.Errorf("Failed to upload video to course topic: %v", err.Error())

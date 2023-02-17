@@ -3,6 +3,7 @@ package handlers
 import (
 	"bytes"
 	"context"
+	"encoding/base64"
 	"encoding/csv"
 	"fmt"
 	"io"
@@ -203,7 +204,7 @@ func AddQuestionBankQuestion(ctx context.Context, input *model.QuestionBankQuest
 		IsActive:       true,
 	}
 	if input.File != nil {
-		bucketPath := "question_banks/" + cassandraQuestionBank.QbmId + "/" + cassandraQuestionBank.ID + "/" + input.File.Filename
+		bucketPath := "question_banks/" + cassandraQuestionBank.QbmId + "/" + cassandraQuestionBank.ID + "/" + base64.URLEncoding.EncodeToString([]byte(input.File.Filename))
 		storageC := bucket.NewStorageHandler()
 		gproject := googleprojectlib.GetGoogleProjectID()
 		err := storageC.InitializeStorageClient(ctx, gproject, lspID)
@@ -501,7 +502,7 @@ func UpdateQuestionBankQuestion(ctx context.Context, input *model.QuestionBankQu
 	}
 	updatedAt := time.Now().Unix()
 	if input.File != nil {
-		bucketPath := "question_banks/" + cassandraQuestionBank.QbmId + "/" + cassandraQuestionBank.ID + "/" + input.File.Filename
+		bucketPath := "question_banks/" + cassandraQuestionBank.QbmId + "/" + cassandraQuestionBank.ID + "/" + base64.URLEncoding.EncodeToString([]byte(input.File.Filename))
 		storageC := bucket.NewStorageHandler()
 		gproject := googleprojectlib.GetGoogleProjectID()
 		err := storageC.InitializeStorageClient(ctx, gproject, lspID)

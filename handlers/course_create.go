@@ -3,6 +3,7 @@ package handlers
 import (
 	"bytes"
 	"context"
+	"encoding/base64"
 	"fmt"
 	"io"
 	"reflect"
@@ -229,7 +230,7 @@ func UploadCourseImage(ctx context.Context, file model.CourseFile) (*model.Uploa
 		log.Errorf("Failed to upload image to course: %v", err.Error())
 		return &isSuccess, nil
 	}
-	bucketPath := *file.CourseID + "/" + file.File.Filename
+	bucketPath := *file.CourseID + "/" + base64.URLEncoding.EncodeToString([]byte(file.File.Filename))
 	writer, err := storageC.UploadToGCS(ctx, bucketPath, map[string]string{})
 	if err != nil {
 		log.Errorf("Failed to upload image to course: %v", err.Error())
@@ -296,7 +297,7 @@ func UploadCoursePreviewVideo(ctx context.Context, file model.CourseFile) (*mode
 		log.Errorf("Failed to upload image to course: %v", err.Error())
 		return &isSuccess, nil
 	}
-	bucketPath := *file.CourseID + "/" + file.File.Filename
+	bucketPath := *file.CourseID + "/" + base64.URLEncoding.EncodeToString([]byte(file.File.Filename))
 	writer, err := storageC.UploadToGCS(ctx, bucketPath, map[string]string{})
 	if err != nil {
 		log.Errorf("Failed to upload image to course: %v", err.Error())
@@ -352,7 +353,7 @@ func UploadCourseTileImage(ctx context.Context, file model.CourseFile) (*model.U
 		log.Errorf("Failed to upload image to course: %v", err.Error())
 		return &isSuccess, nil
 	}
-	bucketPath := *file.CourseID + "/" + file.File.Filename
+	bucketPath := *file.CourseID + "/" + base64.URLEncoding.EncodeToString([]byte(file.File.Filename))
 	writer, err := storageC.UploadToGCS(ctx, bucketPath, map[string]string{})
 	if err != nil {
 		log.Errorf("Failed to upload image to course: %v", err.Error())
