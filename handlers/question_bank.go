@@ -326,6 +326,10 @@ func populateQuestionBankQuestions(ctx context.Context, row []string, i int, qbI
 		LspId:            lspID,
 		IsActive:         true,
 	}
+	if cassandraQuestionBank.Name == "" {
+		log.Errorf("Failed to insert question bank question: %v", "name is empty")
+		return
+	}
 	insertQuery := CassSession.Query(qbankz.QuestionMainTable.Insert()).BindStruct(cassandraQuestionBank)
 	if err := insertQuery.ExecRelease(); err != nil {
 		log.Errorf("Failed to insert question bank question: %v", err.Error())
@@ -408,6 +412,10 @@ func populateQuestionBankQuestions(ctx context.Context, row []string, i int, qbI
 		Attachment:       "",
 		AttachmentBucket: "",
 		IsCorrect:        isCorrect4,
+	}
+	if questionOption1.Description == "" || questionOption2.Description == "" || questionOption3.Description == "" || questionOption4.Description == "" {
+		log.Errorf("Failed to insert question bank question option: %v", "description is empty")
+		return
 	}
 	insertQuery = CassSession.Query(qbankz.OptionsMainTable.Insert()).BindStruct(questionOption1)
 	if err := insertQuery.ExecRelease(); err != nil {
