@@ -248,7 +248,7 @@ func sendUploadRequestToUploaderQueue(ctx context.Context, file graphql.Upload, 
 	// send message to uploader queue
 	uploadRequest := utils.UploadRequest{
 		BucketPath: bucketPath,
-		File:       file,
+		File:       &file,
 		LspId:      lspId,
 	}
 

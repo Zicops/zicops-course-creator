@@ -11,7 +11,7 @@ import (
 )
 
 type UploadRequest struct {
-	File       graphql.Upload
+	File       *graphql.Upload
 	BucketPath string
 	LspId      string
 }
