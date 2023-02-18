@@ -253,7 +253,7 @@ func sendUploadRequestToUploaderQueue(ctx context.Context, file graphql.Upload, 
 	}
 
 	// send message to uploader queue in utils
-	utils.UploaderQueue <- &uploadRequest
+	utils.UploaderQueue <- uploadRequest
 }
 
 func UploadTopicSubtitle(ctx context.Context, files []*model.TopicSubtitle) ([]*model.UploadResultSubtitles, error) {
