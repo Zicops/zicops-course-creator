@@ -36,11 +36,11 @@ func init() {
 				log.Errorf("Failed to upload video to course topic: %v", err.Error())
 				panic(err.Error())
 			}
+
 			// read the file in chunks and upload incrementally
 			buf := make([]byte, 1024)
 			var wg sync.WaitGroup
 			for {
-				wg.Add(1)
 				n, err := req.File.File.Read(buf)
 				if err == io.EOF {
 					break
@@ -49,17 +49,22 @@ func init() {
 					log.Errorf("Failed to read file: %v", err.Error())
 					panic(err.Error())
 				}
-				_, err = writer.Write(buf[:n])
-				if err != nil {
-					log.Errorf("Failed to upload file: %v", err.Error())
-					panic(err.Error())
-				}
+
+				// increment the WaitGroup counter for each chunk
+				wg.Add(1)
+				go func(chunk []byte) {
+					_, err = writer.Write(chunk)
+					if err != nil {
+						log.Errorf("Failed to upload file: %v", err.Error())
+						panic(err.Error())
+					}
+					wg.Done()
+				}(buf[:n])
 			}
+
+			// wait for all the chunks to be uploaded before closing the writer
 			wg.Wait()
-			err = writer.Close()
-			if err != nil {
-				log.Errorf("Failed to close file: %v", err.Error())
-			}
+			writer.Close()
 		}
 	}()
 }
