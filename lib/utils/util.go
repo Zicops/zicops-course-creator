@@ -3,6 +3,7 @@ package utils
 import (
 	"context"
 	"io"
+	"sync"
 
 	"github.com/99designs/gqlgen/graphql"
 	log "github.com/sirupsen/logrus"
@@ -37,7 +38,9 @@ func init() {
 			}
 			// read the file in chunks and upload incrementally
 			buf := make([]byte, 1024)
+			var wg sync.WaitGroup
 			for {
+				wg.Add(1)
 				n, err := req.File.File.Read(buf)
 				if err == io.EOF {
 					break
@@ -52,7 +55,11 @@ func init() {
 					panic(err.Error())
 				}
 			}
-			writer.Close()
+			wg.Wait()
+			err = writer.Close()
+			if err != nil {
+				log.Errorf("Failed to close file: %v", err.Error())
+			}
 		}
 	}()
 }
