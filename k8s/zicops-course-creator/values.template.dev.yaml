@@ -58,9 +58,10 @@ zcAstraKey:
     dir: /var/run/secrets/zdevastrakey
     file: key
 
+
 redis:
-  host: prod-redis-cluster.redis.svc.cluster.local
-  password: UU1vNG9jZXhGbw==
+  host: "prod-redis-master.redis.svc.cluster.local"
+  password: "ARjzlZnpZ5"
   port: 6379
 
 astra:
