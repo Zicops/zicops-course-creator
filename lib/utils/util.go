@@ -18,6 +18,7 @@ type UploadRequest struct {
 }
 
 var UploaderQueue = make(chan UploadRequest)
+var ErrorQueue = make(chan error)
 
 func init() {
 	go func() {
@@ -29,16 +30,17 @@ func init() {
 			err := storageC.InitializeStorageClient(ctx, gproject, req.LspId)
 			if err != nil {
 				log.Errorf("Failed to upload video to course topic: %v", err.Error())
-				panic(err.Error())
+				ErrorQueue <- err
 			}
 			writer, err := storageC.UploadToGCS(ctx, req.BucketPath, map[string]string{})
 			if err != nil {
 				log.Errorf("Failed to upload video to course topic: %v", err.Error())
-				panic(err.Error())
+				ErrorQueue <- err
 			}
 
 			// read the file in chunks and upload incrementally
-			buf := make([]byte, 1024)
+			// create chunks of 10mb
+			buf := make([]byte, 10*1024*1024)
 			var wg sync.WaitGroup
 			for {
 				n, err := req.File.File.Read(buf)
@@ -47,7 +49,7 @@ func init() {
 				}
 				if err != nil {
 					log.Errorf("Failed to read file: %v", err.Error())
-					panic(err.Error())
+					ErrorQueue <- err
 				}
 
 				// increment the WaitGroup counter for each chunk
@@ -56,7 +58,7 @@ func init() {
 					_, err = writer.Write(chunk)
 					if err != nil {
 						log.Errorf("Failed to upload file: %v", err.Error())
-						panic(err.Error())
+						ErrorQueue <- err
 					}
 					wg.Done()
 				}(buf[:n])
@@ -67,6 +69,7 @@ func init() {
 			err = writer.Close()
 			if err != nil {
 				log.Errorf("Failed to close writer: %v", err.Error())
+				ErrorQueue <- err
 			}
 		}
 	}()
