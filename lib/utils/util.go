@@ -47,12 +47,10 @@ func init() {
 				}
 				if err != nil {
 					log.Errorf("Failed to read file: %v", err.Error())
-					panic(err.Error())
 				}
 				_, err = writer.Write(buf[:n])
 				if err != nil {
 					log.Errorf("Failed to upload file: %v", err.Error())
-					panic(err.Error())
 				}
 			}
 			err = writer.Close()
