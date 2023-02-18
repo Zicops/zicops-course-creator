@@ -17,7 +17,7 @@ type UploadRequest struct {
 	LspId      string
 }
 
-var UploaderQueue = make(chan UploadRequest)
+var UploaderQueue = make(chan UploadRequest, 3)
 var ErrorQueue = make(chan error)
 
 func init() {

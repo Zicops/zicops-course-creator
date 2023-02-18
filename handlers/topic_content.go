@@ -230,11 +230,8 @@ func UploadTopicVideo(ctx context.Context, file model.TopicVideo) (*model.Upload
 	if err != nil {
 		log.Errorf("Failed to upload video to course topic: %v", err.Error())
 	}
-	err = sendUploadRequestToUploaderQueue(ctx, *file.File, bucketPath, lspId)
-	if err != nil {
-		log.Errorf("Failed to upload video to course topic: %v", err.Error())
-		return nil, err
-	}
+	sendUploadRequestToUploaderQueue(ctx, file.File, bucketPath, lspId)
+
 	getUrl := storageC.GetSignedURLForObject(bucketPath)
 	topicContent := GetTopicContent(ctx, *file.ContentID, lspId, CassSession)
 	updateQuery := fmt.Sprintf("UPDATE coursez.topic_content SET topiccontentbucket='%s', url='%s' WHERE id='%s' AND lsp_id='%s' AND is_active=true and created_at=%d", bucketPath, getUrl, topicContent.ID, topicContent.LspId, topicContent.CreatedAt)
@@ -248,20 +245,16 @@ func UploadTopicVideo(ctx context.Context, file model.TopicVideo) (*model.Upload
 	return &isSuccess, nil
 }
 
-func sendUploadRequestToUploaderQueue(ctx context.Context, file graphql.Upload, bucketPath string, lspId string) error{
+func sendUploadRequestToUploaderQueue(ctx context.Context, file *graphql.Upload, bucketPath string, lspId string) error {
 	// send message to uploader queue
 	uploadRequest := utils.UploadRequest{
 		BucketPath: bucketPath,
-		File:       &file,
+		File:       file,
 		LspId:      lspId,
 	}
 
 	// send message to uploader queue in utils
 	utils.UploaderQueue <- uploadRequest
-	err := <-utils.ErrorQueue
-	if err != nil {
-		return err
-	}
 	return nil
 }
 
