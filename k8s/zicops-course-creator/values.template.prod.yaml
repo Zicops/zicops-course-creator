@@ -60,7 +60,7 @@ zcAstraKey:
 
 redis:
   host: prod-redis-cluster.redis.svc.cluster.local
-  password: GjEUr5HDxa
+  password: R2pFVXI1SER4YQ==
   port: 6379
 
 astra:
