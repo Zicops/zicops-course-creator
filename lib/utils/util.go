@@ -64,7 +64,10 @@ func init() {
 
 			// wait for all the chunks to be uploaded before closing the writer
 			wg.Wait()
-			writer.Close()
+			err = writer.Close()
+			if err != nil {
+				log.Errorf("Failed to close writer: %v", err.Error())
+			}
 		}
 	}()
 }
