@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/base64"
+	"encoding/json"
 	"fmt"
 	"io"
 	"reflect"
@@ -17,6 +18,7 @@ import (
 
 	"github.com/zicops/contracts/coursez"
 	"github.com/zicops/zicops-cass-pool/cassandra"
+	"github.com/zicops/zicops-cass-pool/redis"
 	"github.com/zicops/zicops-course-creator/graph/model"
 	"github.com/zicops/zicops-course-creator/helpers"
 	"github.com/zicops/zicops-course-creator/lib/db/bucket"
@@ -633,6 +635,11 @@ func CourseUpdate(ctx context.Context, courseInput *model.CourseInput) (*model.C
 		SubCategories:      subCatsRes,
 		Outcomes:           courseInput.Outcomes,
 		IsActive:           courseInput.IsActive,
+	}
+	key := fmt.Sprintf("course:%s", courseID)
+	redisBytes, err := json.Marshal(cassandraCourse)
+	if err == nil {
+		redis.SetRedisValue(ctx, key, string(redisBytes))
 	}
 	return &responseModel, nil
 }

@@ -13,6 +13,7 @@ import (
 	"github.com/penglongli/gin-metrics/ginmetrics"
 	log "github.com/sirupsen/logrus"
 	"github.com/zicops/zicops-cass-pool/cassandra"
+	"github.com/zicops/zicops-cass-pool/redis"
 	"github.com/zicops/zicops-course-creator/controller"
 	"github.com/zicops/zicops-course-creator/global"
 )
@@ -72,6 +73,12 @@ func checkAndInitCassandraSession() {
 	// get user session every 1 minute
 	// if session is nil then create new session
 	//test cassandra connection
+	_, err := redis.Initialize()
+	if err != nil {
+		log.Errorf("Error connecting to redis: %v", err)
+	} else {
+		log.Infof("Redis connection successful")
+	}
 	_, err1 := cassandra.GetCassSession("coursez")
 	_, err2 := cassandra.GetCassSession("qbankz")
 	_, err3 := cassandra.GetCassSession("userz")
