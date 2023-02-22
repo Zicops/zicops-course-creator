@@ -1,4 +1,4 @@
-FROM golang:1.17 as builder
+FROM golang:1.18 as builder
 RUN apt-get update -qq
 
 ARG GO_MODULES_TOKEN
