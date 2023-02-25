@@ -64,7 +64,7 @@ func AddTopicResources(ctx context.Context, courseID string, resource *model.Top
 		if err != nil {
 			return &isSuccess, err
 		}
-		getUrl = storageC.GetSignedURLForObject(bucketPath)
+		getUrl = storageC.GetSignedURLForObject(ctx, bucketPath)
 	} else {
 		getUrl = *resource.URL
 	}

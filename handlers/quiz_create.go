@@ -233,7 +233,7 @@ func UploadQuizFile(ctx context.Context, courseID string, quiz model.QuizFile) (
 	if err != nil {
 		return &isSuccess, err
 	}
-	getUrl := storageC.GetSignedURLForObject(bucketPath)
+	getUrl := storageC.GetSignedURLForObject(ctx, bucketPath)
 
 	cassandraQuizFile := coursez.QuizFile{
 		ID:         uuid.New().String(),

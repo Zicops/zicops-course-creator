@@ -165,7 +165,7 @@ func AddCatMain(ctx context.Context, input []*model.CatMainInput) ([]*model.CatM
 			if err != nil {
 				continue
 			}
-			imageUrl = storageC.GetSignedURLForObject(imageBucket)
+			imageUrl = storageC.GetSignedURLForObject(ctx, imageBucket)
 		} else if c.ImageURL != nil {
 			imageUrl = *c.ImageURL
 		}
@@ -281,7 +281,7 @@ func AddSubCatMain(ctx context.Context, input []*model.SubCatMainInput) ([]*mode
 			if err != nil {
 				continue
 			}
-			imageUrl = storageC.GetSignedURLForObject(imageBucket)
+			imageUrl = storageC.GetSignedURLForObject(ctx, imageBucket)
 		} else if c.ImageURL != nil {
 			imageUrl = *c.ImageURL
 		}
@@ -403,7 +403,7 @@ func UpdateCatMain(ctx context.Context, input *model.CatMainInput) (*model.CatMa
 			if err != nil {
 				return nil, err
 			}
-			imageUrl = storageC.GetSignedURLForObject(imageBucket)
+			imageUrl = storageC.GetSignedURLForObject(ctx, imageBucket)
 			currentSavedCat.ImageBucket = imageBucket
 			currentSavedCat.ImageURL = imageUrl
 			updateCols = append(updateCols, "image_bucket")
@@ -516,7 +516,7 @@ func UpdateSubCatMain(ctx context.Context, input *model.SubCatMainInput) (*model
 			if err != nil {
 				return nil, err
 			}
-			imageUrl = storageC.GetSignedURLForObject(imageBucket)
+			imageUrl = storageC.GetSignedURLForObject(ctx, imageBucket)
 			currentSavedCat.ImageBucket = imageBucket
 			currentSavedCat.ImageURL = imageUrl
 			updateCols = append(updateCols, "image_bucket")

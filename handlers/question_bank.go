@@ -227,7 +227,7 @@ func AddQuestionBankQuestion(ctx context.Context, input *model.QuestionBankQuest
 		if err != nil {
 			return nil, err
 		}
-		getUrl = storageC.GetSignedURLForObject(bucketPath)
+		getUrl = storageC.GetSignedURLForObject(ctx, bucketPath)
 		cassandraQuestionBank.Attachment = getUrl
 		cassandraQuestionBank.AttachmentBucket = bucketPath
 	}
@@ -525,7 +525,7 @@ func UpdateQuestionBankQuestion(ctx context.Context, input *model.QuestionBankQu
 		if err != nil {
 			return nil, err
 		}
-		getUrl := storageC.GetSignedURLForObject(bucketPath)
+		getUrl := storageC.GetSignedURLForObject(ctx, bucketPath)
 		cassandraQuestionBank.Attachment = getUrl
 		updatedCols = append(updatedCols, "attachment_url")
 		cassandraQuestionBank.AttachmentBucket = bucketPath

@@ -252,7 +252,7 @@ func UploadCourseImage(ctx context.Context, file model.CourseFile) (*model.Uploa
 	if course == nil || course.ID == "" {
 		return &isSuccess, fmt.Errorf("course not found")
 	}
-	getUrl := storageC.GetSignedURLForObject(bucketPath)
+	getUrl := storageC.GetSignedURLForObject(ctx, bucketPath)
 	// update course image in cassandra
 	updateQuery := fmt.Sprintf("UPDATE coursez.course SET imagebucket='%s', image='%s' WHERE id='%s' AND lsp_id='%s' AND is_active=true AND created_at=%d ", bucketPath, getUrl, *file.CourseID, lspID, course.CreatedAt)
 	log.Errorf("update query: %s", updateQuery)
@@ -315,7 +315,7 @@ func UploadCoursePreviewVideo(ctx context.Context, file model.CourseFile) (*mode
 	if err != nil {
 		return &isSuccess, err
 	}
-	getUrl := storageC.GetSignedURLForObject(bucketPath)
+	getUrl := storageC.GetSignedURLForObject(ctx, bucketPath)
 	// update course image in cassandra
 	updateQuery := fmt.Sprintf("UPDATE coursez.course SET previewvideobucket='%s', previewvideo='%s' WHERE id='%s' AND lsp_id='%s' AND is_active=true AND created_at=%d", bucketPath, getUrl, *file.CourseID, lspID, course.CreatedAt)
 	updateQ := CassSession.Query(updateQuery, nil)
@@ -375,7 +375,7 @@ func UploadCourseTileImage(ctx context.Context, file model.CourseFile) (*model.U
 	if course == nil {
 		return &isSuccess, fmt.Errorf("course not found")
 	}
-	getUrl := storageC.GetSignedURLForObject(bucketPath)
+	getUrl := storageC.GetSignedURLForObject(ctx, bucketPath)
 	updateQuery := fmt.Sprintf("UPDATE coursez.course SET tileimagebucket='%s', tileimage='%s' WHERE id='%s' AND lsp_id='%s' AND is_active=true AND created_at=%d", bucketPath, getUrl, *file.CourseID, lspID, course.CreatedAt)
 	updateQ := CassSession.Query(updateQuery, nil)
 	if err := updateQ.ExecRelease(); err != nil {

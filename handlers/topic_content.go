@@ -232,7 +232,7 @@ func UploadTopicVideo(ctx context.Context, file model.TopicVideo) (*model.Upload
 	}
 	sendUploadRequestToUploaderQueue(ctx, file.File, bucketPath, lspId)
 
-	getUrl := storageC.GetSignedURLForObject(bucketPath)
+	getUrl := storageC.GetSignedURLForObject(ctx, bucketPath)
 	topicContent := GetTopicContent(ctx, *file.ContentID, lspId, CassSession)
 	updateQuery := fmt.Sprintf("UPDATE coursez.topic_content SET topiccontentbucket='%s', url='%s' WHERE id='%s' AND lsp_id='%s' AND is_active=true and created_at=%d", bucketPath, getUrl, topicContent.ID, topicContent.LspId, topicContent.CreatedAt)
 	updateQ := CassSession.Query(updateQuery, nil)
@@ -311,7 +311,7 @@ func UploadTopicSubtitle(ctx context.Context, files []*model.TopicSubtitle) ([]*
 			isSuccess = append(isSuccess, &isLocalSuccess)
 			continue
 		}
-		getUrl := storageC.GetSignedURLForObject(bucketPath)
+		getUrl := storageC.GetSignedURLForObject(ctx, bucketPath)
 		isLocal = true
 		isLocalSuccess.Success = &isLocal
 		isLocalSuccess.URL = &getUrl
