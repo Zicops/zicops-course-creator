@@ -61,3 +61,16 @@ func init() {
 		}
 	}()
 }
+
+func SendUploadRequestToUploaderQueue(ctx context.Context, file *graphql.Upload, bucketPath string, lspId string) error {
+	// send message to uploader queue
+	uploadRequest := UploadRequest{
+		BucketPath: bucketPath,
+		File:       file,
+		LspId:      lspId,
+	}
+
+	// send message to uploader queue in utils
+	UploaderQueue <- uploadRequest
+	return nil
+}

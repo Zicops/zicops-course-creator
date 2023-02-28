@@ -23,6 +23,7 @@ import (
 	"github.com/zicops/zicops-course-creator/helpers"
 	"github.com/zicops/zicops-course-creator/lib/db/bucket"
 	"github.com/zicops/zicops-course-creator/lib/googleprojectlib"
+	"github.com/zicops/zicops-course-creator/lib/utils"
 )
 
 // func to get context and course input and set it in cassandra
@@ -300,21 +301,7 @@ func UploadCoursePreviewVideo(ctx context.Context, file model.CourseFile) (*mode
 		return &isSuccess, nil
 	}
 	bucketPath := *file.CourseID + "/" + base64.URLEncoding.EncodeToString([]byte(file.File.Filename))
-	writer, err := storageC.UploadToGCS(ctx, bucketPath, map[string]string{})
-	if err != nil {
-		log.Errorf("Failed to upload image to course: %v", err.Error())
-		return &isSuccess, nil
-	}
-	defer writer.Close()
-	fileBuffer := bytes.NewBuffer(nil)
-	if _, err := io.Copy(fileBuffer, file.File.File); err != nil {
-		return &isSuccess, nil
-	}
-	currentBytes := fileBuffer.Bytes()
-	_, err = io.Copy(writer, bytes.NewReader(currentBytes))
-	if err != nil {
-		return &isSuccess, err
-	}
+	utils.SendUploadRequestToUploaderQueue(ctx, file.File, bucketPath, lspID)
 	getUrl := storageC.GetSignedURLForObject(ctx, bucketPath)
 	// update course image in cassandra
 	updateQuery := fmt.Sprintf("UPDATE coursez.course SET previewvideobucket='%s', previewvideo='%s' WHERE id='%s' AND lsp_id='%s' AND is_active=true AND created_at=%d", bucketPath, getUrl, *file.CourseID, lspID, course.CreatedAt)

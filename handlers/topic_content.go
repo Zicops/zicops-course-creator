@@ -14,7 +14,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/99designs/gqlgen/graphql"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"github.com/scylladb/gocqlx/v2"
@@ -230,7 +229,7 @@ func UploadTopicVideo(ctx context.Context, file model.TopicVideo) (*model.Upload
 	if err != nil {
 		log.Errorf("Failed to upload video to course topic: %v", err.Error())
 	}
-	sendUploadRequestToUploaderQueue(ctx, file.File, bucketPath, lspId)
+	utils.SendUploadRequestToUploaderQueue(ctx, file.File, bucketPath, lspId)
 
 	getUrl := storageC.GetSignedURLForObject(ctx, bucketPath)
 	topicContent := GetTopicContent(ctx, *file.ContentID, lspId, CassSession)
@@ -243,19 +242,6 @@ func UploadTopicVideo(ctx context.Context, file model.TopicVideo) (*model.Upload
 	isSuccess.Success = &isSuccessRes
 	isSuccess.URL = &getUrl
 	return &isSuccess, nil
-}
-
-func sendUploadRequestToUploaderQueue(ctx context.Context, file *graphql.Upload, bucketPath string, lspId string) error {
-	// send message to uploader queue
-	uploadRequest := utils.UploadRequest{
-		BucketPath: bucketPath,
-		File:       file,
-		LspId:      lspId,
-	}
-
-	// send message to uploader queue in utils
-	utils.UploaderQueue <- uploadRequest
-	return nil
 }
 
 func UploadTopicSubtitle(ctx context.Context, files []*model.TopicSubtitle) ([]*model.UploadResultSubtitles, error) {
