@@ -489,6 +489,12 @@ func DeleteTopicSubtitle(ctx context.Context, courseID string, topicID string, f
 	if err != nil {
 		return &resp, err
 	}
+	session, err := cassandra.GetCassSession("coursez")
+	if err != nil {
+		log.Println("Got error while getting session: ", err)
+		return nil, err
+	}
+	CassSession := session
 	lspId := claims["lsp_id"].(string)
 	if lspId == "" {
 		return &resp, fmt.Errorf("lsp_id is empty")
@@ -509,6 +515,35 @@ func DeleteTopicSubtitle(ctx context.Context, courseID string, topicID string, f
 		return &r, nil
 	}
 	r = false
+
+	qryStr := fmt.Sprintf(`SELECT * FROM coursez.topic_content WHERE courseid = '%s' AND topicid='%s' ALLOW FILTERING`, courseID, topicID)
+	getTopic := func() (topics []coursez.TopicContent, err error) {
+		q := CassSession.Query(qryStr, nil)
+		defer q.Release()
+		iter := q.Iter()
+		return topics, iter.Select(&topics)
+	}
+
+	topics, err := getTopic()
+	if err != nil {
+		return nil, err
+	}
+	if len(topics) == 0 {
+		return nil, nil
+	}
+	topic := topics[0]
+
+	//remove the subtitle bucket
+	if topic.SubtitleFileBucket != "" {
+		topic.SubtitleFileBucket = ""
+	}
+	//update the table
+	upStms, uNames := coursez.TopicContentTable.Update("subtitlefilebucket")
+	updateQuery := CassSession.Query(upStms, uNames).BindStruct(&topic)
+	if err := updateQuery.ExecRelease(); err != nil {
+		return nil, err
+	}
+
 	return &r, errors.New(res)
 }
 
