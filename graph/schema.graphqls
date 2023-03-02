@@ -948,3 +948,5 @@ type Mutation {
   deleteCourseDiscussion(discussionId: String): Boolean
   updateLikesDislikes(discussionId: String!, input: String!, UserId: String!): Boolean
 }
+
+type Query
