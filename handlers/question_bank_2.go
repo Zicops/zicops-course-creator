@@ -3,6 +3,7 @@ package handlers
 import (
 	"bytes"
 	"context"
+	"encoding/base64"
 	"fmt"
 	"io"
 	"strconv"
@@ -54,7 +55,7 @@ func AddQuestionOptions(ctx context.Context, input *model.QuestionOptionInput) (
 	}
 	getUrl := ""
 	if input.File != nil {
-		bucketPath := "question_banks/" + cassandraQuestionBank.QmId + "/" + cassandraQuestionBank.ID + "/" + input.File.Filename
+		bucketPath := "question_banks/" + cassandraQuestionBank.QmId + "/" + cassandraQuestionBank.ID + "/" + base64.URLEncoding.EncodeToString([]byte(input.File.Filename))
 		storageC := bucket.NewStorageHandler()
 		gproject := googleprojectlib.GetGoogleProjectID()
 		err := storageC.InitializeStorageClient(ctx, gproject, lspID)
@@ -77,7 +78,7 @@ func AddQuestionOptions(ctx context.Context, input *model.QuestionOptionInput) (
 		if err != nil {
 			return nil, err
 		}
-		getUrl = storageC.GetSignedURLForObject(bucketPath)
+		getUrl = storageC.GetSignedURLForObject(ctx, bucketPath)
 		cassandraQuestionBank.Attachment = getUrl
 		cassandraQuestionBank.AttachmentBucket = bucketPath
 	}
@@ -149,7 +150,7 @@ func UpdateQuestionOptions(ctx context.Context, input *model.QuestionOptionInput
 	}
 	updatedAt := time.Now().Unix()
 	if input.File != nil {
-		bucketPath := "question_banks/" + cassandraQuestionBank.QmId + "/" + cassandraQuestionBank.ID + "/" + input.File.Filename
+		bucketPath := "question_banks/" + cassandraQuestionBank.QmId + "/" + cassandraQuestionBank.ID + "/" + base64.URLEncoding.EncodeToString([]byte(input.File.Filename))
 		storageC := bucket.NewStorageHandler()
 		gproject := googleprojectlib.GetGoogleProjectID()
 		err := storageC.InitializeStorageClient(ctx, gproject, lspID)
@@ -172,7 +173,7 @@ func UpdateQuestionOptions(ctx context.Context, input *model.QuestionOptionInput
 		if err != nil {
 			return nil, err
 		}
-		getUrl := storageC.GetSignedURLForObject(bucketPath)
+		getUrl := storageC.GetSignedURLForObject(ctx, bucketPath)
 		cassandraQuestionBank.Attachment = getUrl
 		updatedCols = append(updatedCols, "attachment_url")
 		cassandraQuestionBank.AttachmentBucket = bucketPath

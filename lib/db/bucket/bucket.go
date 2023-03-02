@@ -2,6 +2,7 @@ package bucket
 
 import (
 	"context"
+	"encoding/base64"
 	"fmt"
 	"log"
 	"os"
@@ -9,6 +10,7 @@ import (
 
 	"cloud.google.com/go/storage"
 	firebase "firebase.google.com/go"
+	"github.com/zicops/zicops-cass-pool/redis"
 	"github.com/zicops/zicops-course-creator/constants"
 	"github.com/zicops/zicops-course-creator/global"
 	"github.com/zicops/zicops-course-creator/helpers"
@@ -132,17 +134,24 @@ func (sc *Client) SetTags(ctx context.Context, path string, tags map[string]stri
 
 }
 
-func (sc *Client) GetSignedURLForObject(object string) string {
+func (sc *Client) GetSignedURLForObject(ctx context.Context, object string) string {
+	key := base64.StdEncoding.EncodeToString([]byte(object))
+	res, err := redis.GetRedisValue(ctx, key)
+	if err == nil && res != "" {
+		return res
+	}
 	opts := &storage.SignedURLOptions{
 		Scheme:  storage.SigningSchemeV4,
 		Method:  "GET",
-		Expires: time.Now().Add(7 * 24 * time.Hour),
+		Expires: time.Now().Add(24 * time.Hour),
 	}
 	url, err := sc.bucket.SignedURL(object, opts)
 	if err != nil {
 		return ""
 	}
-
+	allBut10Secsto24Hours := 24*time.Hour - 10*time.Second
+	redis.SetRedisValue(ctx, key, url)
+	redis.SetTTL(ctx, key, int(allBut10Secsto24Hours.Seconds()))
 	return url
 }
 

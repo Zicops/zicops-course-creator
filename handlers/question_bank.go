@@ -3,6 +3,7 @@ package handlers
 import (
 	"bytes"
 	"context"
+	"encoding/base64"
 	"encoding/csv"
 	"fmt"
 	"io"
@@ -203,7 +204,7 @@ func AddQuestionBankQuestion(ctx context.Context, input *model.QuestionBankQuest
 		IsActive:       true,
 	}
 	if input.File != nil {
-		bucketPath := "question_banks/" + cassandraQuestionBank.QbmId + "/" + cassandraQuestionBank.ID + "/" + input.File.Filename
+		bucketPath := "question_banks/" + cassandraQuestionBank.QbmId + "/" + cassandraQuestionBank.ID + "/" + base64.URLEncoding.EncodeToString([]byte(input.File.Filename))
 		storageC := bucket.NewStorageHandler()
 		gproject := googleprojectlib.GetGoogleProjectID()
 		err := storageC.InitializeStorageClient(ctx, gproject, lspID)
@@ -226,7 +227,7 @@ func AddQuestionBankQuestion(ctx context.Context, input *model.QuestionBankQuest
 		if err != nil {
 			return nil, err
 		}
-		getUrl = storageC.GetSignedURLForObject(bucketPath)
+		getUrl = storageC.GetSignedURLForObject(ctx, bucketPath)
 		cassandraQuestionBank.Attachment = getUrl
 		cassandraQuestionBank.AttachmentBucket = bucketPath
 	}
@@ -298,7 +299,7 @@ func BulkAddQuestionBankQuestions(ctx context.Context, qbID string, qfile graphq
 
 func populateQuestionBankQuestions(ctx context.Context, row []string, i int, qbID string, email_creator string, lspID string, CassSession *gocqlx.Session) {
 	col9 := 9
-	correctOptions := strings.ToLower(row[col9])
+	correctOptions := strings.TrimSpace(strings.ToLower(row[col9]))
 
 	// row 3 to int
 	difficulty, err := strconv.Atoi(row[2])
@@ -326,6 +327,10 @@ func populateQuestionBankQuestions(ctx context.Context, row []string, i int, qbI
 		LspId:            lspID,
 		IsActive:         true,
 	}
+	if cassandraQuestionBank.Name == "" {
+		log.Errorf("Failed to insert question bank question: %v", "name is empty")
+		return
+	}
 	insertQuery := CassSession.Query(qbankz.QuestionMainTable.Insert()).BindStruct(cassandraQuestionBank)
 	if err := insertQuery.ExecRelease(); err != nil {
 		log.Errorf("Failed to insert question bank question: %v", err.Error())
@@ -337,16 +342,16 @@ func populateQuestionBankQuestions(ctx context.Context, row []string, i int, qbI
 	isCorrect3 := false
 	isCorrect4 := false
 
-	if strings.Contains(correctOptions, "a") && i == 5 {
+	if strings.Contains(correctOptions, "a") {
 		isCorrect1 = true
 	}
-	if strings.Contains(correctOptions, "b") && i == 6 {
+	if strings.Contains(correctOptions, "b") {
 		isCorrect2 = true
 	}
-	if strings.Contains(correctOptions, "c") && i == 7 {
+	if strings.Contains(correctOptions, "c") {
 		isCorrect3 = true
 	}
-	if strings.Contains(correctOptions, "d") && i == 8 {
+	if strings.Contains(correctOptions, "d") {
 		isCorrect4 = true
 	}
 	questionOption1 := qbankz.OptionsMain{
@@ -408,6 +413,10 @@ func populateQuestionBankQuestions(ctx context.Context, row []string, i int, qbI
 		Attachment:       "",
 		AttachmentBucket: "",
 		IsCorrect:        isCorrect4,
+	}
+	if questionOption1.Description == "" || questionOption2.Description == "" || questionOption3.Description == "" || questionOption4.Description == "" {
+		log.Errorf("Failed to insert question bank question option: %v", "description is empty")
+		return
 	}
 	insertQuery = CassSession.Query(qbankz.OptionsMainTable.Insert()).BindStruct(questionOption1)
 	if err := insertQuery.ExecRelease(); err != nil {
@@ -493,7 +502,7 @@ func UpdateQuestionBankQuestion(ctx context.Context, input *model.QuestionBankQu
 	}
 	updatedAt := time.Now().Unix()
 	if input.File != nil {
-		bucketPath := "question_banks/" + cassandraQuestionBank.QbmId + "/" + cassandraQuestionBank.ID + "/" + input.File.Filename
+		bucketPath := "question_banks/" + cassandraQuestionBank.QbmId + "/" + cassandraQuestionBank.ID + "/" + base64.URLEncoding.EncodeToString([]byte(input.File.Filename))
 		storageC := bucket.NewStorageHandler()
 		gproject := googleprojectlib.GetGoogleProjectID()
 		err := storageC.InitializeStorageClient(ctx, gproject, lspID)
@@ -516,7 +525,7 @@ func UpdateQuestionBankQuestion(ctx context.Context, input *model.QuestionBankQu
 		if err != nil {
 			return nil, err
 		}
-		getUrl := storageC.GetSignedURLForObject(bucketPath)
+		getUrl := storageC.GetSignedURLForObject(ctx, bucketPath)
 		cassandraQuestionBank.Attachment = getUrl
 		updatedCols = append(updatedCols, "attachment_url")
 		cassandraQuestionBank.AttachmentBucket = bucketPath

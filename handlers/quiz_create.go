@@ -3,6 +3,7 @@ package handlers
 import (
 	"bytes"
 	"context"
+	"encoding/base64"
 	"fmt"
 	"io"
 	"strconv"
@@ -216,7 +217,7 @@ func UploadQuizFile(ctx context.Context, courseID string, quiz model.QuizFile) (
 	if courseID == "" || quiz.QuizID == nil {
 		return nil, fmt.Errorf("course id and  quiz id is required")
 	}
-	bucketPath := courseID + "/" + *quiz.QuizID + "/" + quiz.File.Filename
+	bucketPath := courseID + "/" + *quiz.QuizID + "/" + base64.URLEncoding.EncodeToString([]byte(quiz.File.Filename))
 	writer, err := storageC.UploadToGCS(ctx, bucketPath, map[string]string{})
 	if err != nil {
 		log.Errorf("Failed to upload video to course topic: %v", err.Error())
@@ -232,7 +233,7 @@ func UploadQuizFile(ctx context.Context, courseID string, quiz model.QuizFile) (
 	if err != nil {
 		return &isSuccess, err
 	}
-	getUrl := storageC.GetSignedURLForObject(bucketPath)
+	getUrl := storageC.GetSignedURLForObject(ctx, bucketPath)
 
 	cassandraQuizFile := coursez.QuizFile{
 		ID:         uuid.New().String(),

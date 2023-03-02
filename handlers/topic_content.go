@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"crypto/sha256"
+	"encoding/base64"
 	"encoding/hex"
 	"fmt"
 	"io"
@@ -221,17 +222,16 @@ func UploadTopicVideo(ctx context.Context, file model.TopicVideo) (*model.Upload
 		log.Errorf("Failed to upload video to course topic: %v", "courseID or contentId is nil")
 		return &isSuccess, nil
 	}
-	bucketPath := *file.CourseID + "/" + *file.ContentID + "/" + file.File.Filename
+	bucketPath := *file.CourseID + "/" + *file.ContentID + "/" + base64.URLEncoding.EncodeToString([]byte(file.File.Filename))
 	storageC := bucket.NewStorageHandler()
 	gproject := googleprojectlib.GetGoogleProjectID()
 	err = storageC.InitializeStorageClient(ctx, gproject, lspId)
 	if err != nil {
 		log.Errorf("Failed to upload video to course topic: %v", err.Error())
 	}
+	utils.SendUploadRequestToUploaderQueue(ctx, file.File, bucketPath, lspId)
 
-	go utils.UploadFileToGCP(file.File.File, bucketPath, lspId)
-
-	getUrl := storageC.GetSignedURLForObject(bucketPath)
+	getUrl := storageC.GetSignedURLForObject(ctx, bucketPath)
 	topicContent := GetTopicContent(ctx, *file.ContentID, lspId, CassSession)
 	updateQuery := fmt.Sprintf("UPDATE coursez.topic_content SET topiccontentbucket='%s', url='%s' WHERE id='%s' AND lsp_id='%s' AND is_active=true and created_at=%d", bucketPath, getUrl, topicContent.ID, topicContent.LspId, topicContent.CreatedAt)
 	updateQ := CassSession.Query(updateQuery, nil)
@@ -273,7 +273,7 @@ func UploadTopicSubtitle(ctx context.Context, files []*model.TopicSubtitle) ([]*
 			language = *file.Language
 		}
 		mainBucket := *file.CourseID + "/" + *file.TopicID + "/subtitles/"
-		bucketPath := mainBucket + file.File.Filename
+		bucketPath := mainBucket + base64.URLEncoding.EncodeToString([]byte(file.File.Filename))
 		writer, err := storageC.UploadToGCS(ctx, bucketPath, map[string]string{"language": language})
 		if err != nil {
 			log.Errorf("Failed to upload subtitle to course topic: %v", err.Error())
@@ -297,7 +297,7 @@ func UploadTopicSubtitle(ctx context.Context, files []*model.TopicSubtitle) ([]*
 			isSuccess = append(isSuccess, &isLocalSuccess)
 			continue
 		}
-		getUrl := storageC.GetSignedURLForObject(bucketPath)
+		getUrl := storageC.GetSignedURLForObject(ctx, bucketPath)
 		isLocal = true
 		isLocalSuccess.Success = &isLocal
 		isLocalSuccess.URL = &getUrl
@@ -517,7 +517,7 @@ func UploadTopicStaticContent(ctx context.Context, file *model.StaticContent) (*
 		hashBytes := hash.Sum(nil)
 		hashString := hex.EncodeToString(hashBytes)
 		bucketPath = lspId + "/" + *file.CourseID + "/" + *file.ContentID + "/" + hashString + "/"
-		w, err := storageC.UploadToGCS(ctx, bucketPath+file.File.Filename, map[string]string{})
+		w, err := storageC.UploadToGCS(ctx, bucketPath+base64.URLEncoding.EncodeToString([]byte(file.File.Filename)), map[string]string{})
 		if err != nil {
 			log.Errorf("Failed to upload static content to course topic: %v", err.Error())
 			return &isSuccess, nil
@@ -536,7 +536,7 @@ func UploadTopicStaticContent(ctx context.Context, file *model.StaticContent) (*
 		currentType := strings.ToLower(strings.TrimSpace(file.Type.String()))
 		dataStorage := deploy_static.StorageObjectData{}
 		dataStorage.Bucket = "static-content-private"
-		dataStorage.Name = bucketPath + file.File.Filename
+		dataStorage.Name = bucketPath + base64.URLEncoding.EncodeToString([]byte(file.File.Filename))
 		dataStorage.ContentID = *file.ContentID
 		outputAmp, err := deploy_static.DeployStatic(ctx, dataStorage)
 		if err != nil {

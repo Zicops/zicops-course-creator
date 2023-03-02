@@ -154,9 +154,27 @@ func DeleteTopicContent(ctx context.Context, id *string) (*bool, error) {
 		return nil, err
 	}
 	lspId := claims["lsp_id"].(string)
-	deleteSrt := fmt.Sprintf("DELETE FROM coursez.topic_content WHERE id = '%s' AND lsp_id = '%s' AND is_active=true", *id, lspId)
-	if err := CassSession.Query(deleteSrt, nil).Exec(); err != nil {
-		return &isSuccess, err
+	cassandraTopicContent := GetTopicContent(ctx, *id, lspId, CassSession)
+	if cassandraTopicContent != nil {
+		deleteSrt := fmt.Sprintf("DELETE FROM coursez.topic_content WHERE id = '%s' AND lsp_id = '%s' AND is_active=true", *id, lspId)
+		if err := CassSession.Query(deleteSrt, nil).Exec(); err != nil {
+			return &isSuccess, err
+		}
+		mod := GetModule(ctx, cassandraTopicContent.ModuleId, cassandraTopicContent.LspId, CassSession)
+		newDuration := mod.Duration - cassandraTopicContent.Duration
+		queryStr := fmt.Sprintf("UPDATE coursez.module SET duration=%d WHERE id='%s'and lsp_id='%s' and is_active=true and created_at=%d", newDuration, cassandraTopicContent.ModuleId, cassandraTopicContent.LspId, mod.CreatedAt)
+		updateQ := CassSession.Query(queryStr, nil)
+		if err := updateQ.ExecRelease(); err != nil {
+			return nil, err
+		}
+
+		course := GetCourse(ctx, cassandraTopicContent.CourseId, cassandraTopicContent.LspId, CassSession)
+		newDuration = course.Duration - cassandraTopicContent.Duration
+		queryStr = fmt.Sprintf("UPDATE coursez.course SET duration=%d WHERE id='%s' and lsp_id='%s' and is_active=true and created_at=%d", newDuration, cassandraTopicContent.CourseId, cassandraTopicContent.LspId, course.CreatedAt)
+		updateQ = CassSession.Query(queryStr, nil)
+		if err := updateQ.ExecRelease(); err != nil {
+			return nil, err
+		}
 	}
 	isSuccess = true
 	return &isSuccess, nil

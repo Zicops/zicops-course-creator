@@ -2,7 +2,7 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-replicaCount: 1
+replicaCount: 2
 maxSurge: 1
 
 #Backend image details
@@ -59,8 +59,8 @@ zcAstraKey:
     file: key
 
 redis:
-  host: prod-redis-cluster.redis.svc.cluster.local
-  password: GjEUr5HDxa
+  host: "prod-redis-master.redis.svc.cluster.local"
+  password: "BEY8md9JBg"
   port: 6379
 
 astra:

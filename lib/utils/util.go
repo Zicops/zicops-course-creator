@@ -1,63 +1,76 @@
 package utils
 
 import (
-	"bytes"
 	"context"
 	"io"
-	"sync"
 
+	"github.com/99designs/gqlgen/graphql"
 	log "github.com/sirupsen/logrus"
 	"github.com/zicops/zicops-course-creator/lib/db/bucket"
 	"github.com/zicops/zicops-course-creator/lib/googleprojectlib"
 )
 
-func UploadFileToGCP(file io.Reader, bucketPath string, lspId string) {
-	storageC := bucket.NewStorageHandler()
-	ctx := context.Background()
-	const chunkSize = 1024 * 1024 // 1 MB
-	gproject := googleprojectlib.GetGoogleProjectID()
-	err := storageC.InitializeStorageClient(ctx, gproject, lspId)
-	if err != nil {
-		log.Errorf("Failed to upload video to course topic: %v", err.Error())
-	}
-	writer, err := storageC.UploadToGCS(ctx, bucketPath, map[string]string{})
-	if err != nil {
-		log.Errorf("Failed to upload video to course topic: %v", err.Error())
-		return
-	}
-	defer writer.Close()
+type UploadRequest struct {
+	File       *graphql.Upload
+	BucketPath string
+	LspId      string
+}
 
-	chunkChan := make(chan []byte, 100)
-	var wg sync.WaitGroup
+var UploaderQueue = make(chan UploadRequest, 5)
+var ErrorQueue = make(chan error)
 
-	wg.Add(1)
+func init() {
 	go func() {
-		defer wg.Done()
-
-		for chunk := range chunkChan {
-			_, err := io.Copy(writer, bytes.NewReader(chunk))
+		ctx := context.Background()
+		for {
+			req := <-UploaderQueue
+			storageC := bucket.NewStorageHandler()
+			gproject := googleprojectlib.GetGoogleProjectID()
+			err := storageC.InitializeStorageClient(ctx, gproject, req.LspId)
 			if err != nil {
 				log.Errorf("Failed to upload video to course topic: %v", err.Error())
-				return
+				ErrorQueue <- err
+			}
+			writer, err := storageC.UploadToGCS(ctx, req.BucketPath, map[string]string{})
+			if err != nil {
+				log.Errorf("Failed to upload video to course topic: %v", err.Error())
+				ErrorQueue <- err
+			}
+
+			// read the file in chunks and upload incrementally
+			// create chunks of 10mb
+			buf := make([]byte, 10*1024*1024)
+			for {
+				n, err := req.File.File.Read(buf)
+				if err == io.EOF {
+					break
+				}
+				if err != nil {
+					log.Errorf("Failed to read file: %v", err.Error())
+				}
+				_, err = writer.Write(buf[:n])
+				if err != nil {
+					log.Errorf("Failed to upload file: %v", err.Error())
+				}
+			}
+			err = writer.Close()
+			if err != nil {
+				log.Errorf("Failed to close writer: %v", err.Error())
+				ErrorQueue <- err
 			}
 		}
 	}()
+}
 
-	buf := make([]byte, chunkSize)
-	for {
-		n, err := file.Read(buf)
-		if err != nil && err != io.EOF {
-			log.Errorf("Failed to upload video to course topic: %v", err.Error())
-			return
-		}
-		if n == 0 {
-			break
-		}
-		chunk := make([]byte, n)
-		copy(chunk, buf[:n])
-		chunkChan <- chunk
+func SendUploadRequestToUploaderQueue(ctx context.Context, file *graphql.Upload, bucketPath string, lspId string) error {
+	// send message to uploader queue
+	uploadRequest := UploadRequest{
+		BucketPath: bucketPath,
+		File:       file,
+		LspId:      lspId,
 	}
 
-	close(chunkChan)
-	wg.Wait()
+	// send message to uploader queue in utils
+	UploaderQueue <- uploadRequest
+	return nil
 }

@@ -3,6 +3,8 @@ package handlers
 import (
 	"bytes"
 	"context"
+	"encoding/base64"
+	"encoding/json"
 	"fmt"
 	"io"
 	"reflect"
@@ -16,10 +18,12 @@ import (
 
 	"github.com/zicops/contracts/coursez"
 	"github.com/zicops/zicops-cass-pool/cassandra"
+	"github.com/zicops/zicops-cass-pool/redis"
 	"github.com/zicops/zicops-course-creator/graph/model"
 	"github.com/zicops/zicops-course-creator/helpers"
 	"github.com/zicops/zicops-course-creator/lib/db/bucket"
 	"github.com/zicops/zicops-course-creator/lib/googleprojectlib"
+	"github.com/zicops/zicops-course-creator/lib/utils"
 )
 
 // func to get context and course input and set it in cassandra
@@ -229,7 +233,7 @@ func UploadCourseImage(ctx context.Context, file model.CourseFile) (*model.Uploa
 		log.Errorf("Failed to upload image to course: %v", err.Error())
 		return &isSuccess, nil
 	}
-	bucketPath := *file.CourseID + "/" + file.File.Filename
+	bucketPath := *file.CourseID + "/" + base64.URLEncoding.EncodeToString([]byte(file.File.Filename))
 	writer, err := storageC.UploadToGCS(ctx, bucketPath, map[string]string{})
 	if err != nil {
 		log.Errorf("Failed to upload image to course: %v", err.Error())
@@ -249,7 +253,7 @@ func UploadCourseImage(ctx context.Context, file model.CourseFile) (*model.Uploa
 	if course == nil || course.ID == "" {
 		return &isSuccess, fmt.Errorf("course not found")
 	}
-	getUrl := storageC.GetSignedURLForObject(bucketPath)
+	getUrl := storageC.GetSignedURLForObject(ctx, bucketPath)
 	// update course image in cassandra
 	updateQuery := fmt.Sprintf("UPDATE coursez.course SET imagebucket='%s', image='%s' WHERE id='%s' AND lsp_id='%s' AND is_active=true AND created_at=%d ", bucketPath, getUrl, *file.CourseID, lspID, course.CreatedAt)
 	log.Errorf("update query: %s", updateQuery)
@@ -296,23 +300,9 @@ func UploadCoursePreviewVideo(ctx context.Context, file model.CourseFile) (*mode
 		log.Errorf("Failed to upload image to course: %v", err.Error())
 		return &isSuccess, nil
 	}
-	bucketPath := *file.CourseID + "/" + file.File.Filename
-	writer, err := storageC.UploadToGCS(ctx, bucketPath, map[string]string{})
-	if err != nil {
-		log.Errorf("Failed to upload image to course: %v", err.Error())
-		return &isSuccess, nil
-	}
-	defer writer.Close()
-	fileBuffer := bytes.NewBuffer(nil)
-	if _, err := io.Copy(fileBuffer, file.File.File); err != nil {
-		return &isSuccess, nil
-	}
-	currentBytes := fileBuffer.Bytes()
-	_, err = io.Copy(writer, bytes.NewReader(currentBytes))
-	if err != nil {
-		return &isSuccess, err
-	}
-	getUrl := storageC.GetSignedURLForObject(bucketPath)
+	bucketPath := *file.CourseID + "/" + base64.URLEncoding.EncodeToString([]byte(file.File.Filename))
+	utils.SendUploadRequestToUploaderQueue(ctx, file.File, bucketPath, lspID)
+	getUrl := storageC.GetSignedURLForObject(ctx, bucketPath)
 	// update course image in cassandra
 	updateQuery := fmt.Sprintf("UPDATE coursez.course SET previewvideobucket='%s', previewvideo='%s' WHERE id='%s' AND lsp_id='%s' AND is_active=true AND created_at=%d", bucketPath, getUrl, *file.CourseID, lspID, course.CreatedAt)
 	updateQ := CassSession.Query(updateQuery, nil)
@@ -352,7 +342,7 @@ func UploadCourseTileImage(ctx context.Context, file model.CourseFile) (*model.U
 		log.Errorf("Failed to upload image to course: %v", err.Error())
 		return &isSuccess, nil
 	}
-	bucketPath := *file.CourseID + "/" + file.File.Filename
+	bucketPath := *file.CourseID + "/" + base64.URLEncoding.EncodeToString([]byte(file.File.Filename))
 	writer, err := storageC.UploadToGCS(ctx, bucketPath, map[string]string{})
 	if err != nil {
 		log.Errorf("Failed to upload image to course: %v", err.Error())
@@ -372,7 +362,7 @@ func UploadCourseTileImage(ctx context.Context, file model.CourseFile) (*model.U
 	if course == nil {
 		return &isSuccess, fmt.Errorf("course not found")
 	}
-	getUrl := storageC.GetSignedURLForObject(bucketPath)
+	getUrl := storageC.GetSignedURLForObject(ctx, bucketPath)
 	updateQuery := fmt.Sprintf("UPDATE coursez.course SET tileimagebucket='%s', tileimage='%s' WHERE id='%s' AND lsp_id='%s' AND is_active=true AND created_at=%d", bucketPath, getUrl, *file.CourseID, lspID, course.CreatedAt)
 	updateQ := CassSession.Query(updateQuery, nil)
 	if err := updateQ.ExecRelease(); err != nil {
@@ -632,6 +622,11 @@ func CourseUpdate(ctx context.Context, courseInput *model.CourseInput) (*model.C
 		SubCategories:      subCatsRes,
 		Outcomes:           courseInput.Outcomes,
 		IsActive:           courseInput.IsActive,
+	}
+	key := fmt.Sprintf("course:%s", courseID)
+	redisBytes, err := json.Marshal(cassandraCourse)
+	if err == nil {
+		redis.SetRedisValue(ctx, key, string(redisBytes))
 	}
 	return &responseModel, nil
 }
