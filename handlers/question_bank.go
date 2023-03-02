@@ -299,7 +299,7 @@ func BulkAddQuestionBankQuestions(ctx context.Context, qbID string, qfile graphq
 
 func populateQuestionBankQuestions(ctx context.Context, row []string, i int, qbID string, email_creator string, lspID string, CassSession *gocqlx.Session) {
 	col9 := 9
-	correctOptions := strings.ToLower(row[col9])
+	correctOptions := strings.TrimSpace(strings.ToLower(row[col9]))
 
 	// row 3 to int
 	difficulty, err := strconv.Atoi(row[2])
@@ -342,16 +342,16 @@ func populateQuestionBankQuestions(ctx context.Context, row []string, i int, qbI
 	isCorrect3 := false
 	isCorrect4 := false
 
-	if strings.Contains(correctOptions, "a") && i == 5 {
+	if strings.Contains(correctOptions, "a") {
 		isCorrect1 = true
 	}
-	if strings.Contains(correctOptions, "b") && i == 6 {
+	if strings.Contains(correctOptions, "b") {
 		isCorrect2 = true
 	}
-	if strings.Contains(correctOptions, "c") && i == 7 {
+	if strings.Contains(correctOptions, "c") {
 		isCorrect3 = true
 	}
-	if strings.Contains(correctOptions, "d") && i == 8 {
+	if strings.Contains(correctOptions, "d") {
 		isCorrect4 = true
 	}
 	questionOption1 := qbankz.OptionsMain{
