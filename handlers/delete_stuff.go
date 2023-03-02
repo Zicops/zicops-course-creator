@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"context"
+	"encoding/base64"
 	"errors"
 	"fmt"
 	"strings"
@@ -525,6 +526,7 @@ func DeleteTopicSubtitle(ctx context.Context, courseID string, topicID string, f
 		return &resp, err
 	}
 	mainBucket := courseID + "/" + topicID + "/subtitles/"
+	fileName = base64.URLEncoding.EncodeToString([]byte(fileName))
 	bucketPath := mainBucket + fileName
 	res := storageC.DeleteObjectsFromBucket(ctx, bucketPath)
 
@@ -582,6 +584,7 @@ func DeleteCourseMedia(ctx context.Context, courseID string, fileName string) (*
 		log.Errorf("Failed to delete subtitle to course topic: %v", err.Error())
 		return &resp, err
 	}
+	fileName = base64.URLEncoding.EncodeToString([]byte(fileName))
 	bucketPath := courseID + "/" + fileName
 	res := storageC.DeleteObjectsFromBucket(ctx, bucketPath)
 
