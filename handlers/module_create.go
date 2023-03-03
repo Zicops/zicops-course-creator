@@ -10,7 +10,7 @@ import (
 	"github.com/scylladb/gocqlx/v2"
 	log "github.com/sirupsen/logrus"
 	"github.com/zicops/contracts/coursez"
-	"github.com/zicops/zicops-cass-pool/cassandra"
+	"github.com/zicops/zicops-course-creator/global"
 	"github.com/zicops/zicops-course-creator/graph/model"
 	"github.com/zicops/zicops-course-creator/helpers"
 )
@@ -18,7 +18,7 @@ import (
 func ModuleCreate(ctx context.Context, courseID string, module *model.ModuleInput) (*model.Module, error) {
 	log.Info("ModuleCreate called")
 
-	session, err := cassandra.GetCassSession("coursez")
+	session, err := global.CassPool.GetSession(ctx, "coursez")
 	if err != nil {
 		return nil, err
 	}
@@ -79,7 +79,7 @@ func UpdateModule(ctx context.Context, module *model.ModuleInput) (*model.Module
 	if module.ID == nil {
 		return nil, fmt.Errorf("module id is required")
 	}
-	session, err := cassandra.GetCassSession("coursez")
+	session, err := global.CassPool.GetSession(ctx, "coursez")
 	if err != nil {
 		return nil, err
 	}

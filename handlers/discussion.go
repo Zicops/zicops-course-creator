@@ -10,7 +10,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/zicops/contracts/coursez"
-	"github.com/zicops/zicops-cass-pool/cassandra"
+	"github.com/zicops/zicops-course-creator/global"
 	"github.com/zicops/zicops-course-creator/graph/model"
 	"github.com/zicops/zicops-course-creator/helpers"
 )
@@ -31,7 +31,7 @@ func AddCourseDiscussion(ctx context.Context, inp model.Discussion) (string, err
 	if inp.Time != nil {
 		t = *inp.Time
 	}
-	session, err := cassandra.GetCassSession("coursez")
+	session, err := global.CassPool.GetSession(ctx, "coursez")
 	if err != nil {
 		return "", err
 	}
@@ -64,7 +64,7 @@ func AddCourseDiscussion(ctx context.Context, inp model.Discussion) (string, err
 	}
 	if inp.ReplyID != nil && *inp.ReplyID != "" {
 		discussionData.ReplyId = *inp.ReplyID
-		err := updateReplyCount(inp)
+		err := updateReplyCount(ctx, inp)
 		if err != nil {
 			return "", err
 		}
@@ -95,9 +95,9 @@ func AddCourseDiscussion(ctx context.Context, inp model.Discussion) (string, err
 	return discussionId, nil
 }
 
-func updateReplyCount(inp model.Discussion) error {
+func updateReplyCount(ctx context.Context, inp model.Discussion) error {
 	parentId := *inp.ReplyID
-	session, err := cassandra.GetCassSession("coursez")
+	session, err := global.CassPool.GetSession(ctx, "coursez")
 	if err != nil {
 		return err
 	}
@@ -135,7 +135,7 @@ func UpdateCourseDiscussion(ctx context.Context, discussionID string, courseID s
 	}
 	uId := claims["user_id"].(string)
 
-	session, err := cassandra.GetCassSession("coursez")
+	session, err := global.CassPool.GetSession(ctx, "coursez")
 	if err != nil {
 		return nil, err
 	}
@@ -245,7 +245,7 @@ func DeleteCourseDiscussion(ctx context.Context, discussionID *string) (*bool, e
 	}
 	isSuccess := false
 
-	session, err := cassandra.GetCassSession("coursez")
+	session, err := global.CassPool.GetSession(ctx, "coursez")
 	if err != nil {
 		return nil, err
 	}
@@ -272,7 +272,7 @@ func DeleteCourseDiscussion(ctx context.Context, discussionID *string) (*bool, e
 }
 
 func deleteChildren(ctx context.Context, discussionID *string) bool {
-	session, err := cassandra.GetCassSession("coursez")
+	session, err := global.CassPool.GetSession(ctx, "coursez")
 	if err != nil {
 		return false
 	}
@@ -293,7 +293,7 @@ func UpdateLikesDislikes(ctx context.Context, discussionID string, input string,
 	var updatedCol []string
 
 	queryStr := fmt.Sprintf(`SELECT * FROM coursez.discussion where discussion_id = '%s' ALLOW FILTERING`, discussionID)
-	session, err := cassandra.GetCassSession("coursez")
+	session, err := global.CassPool.GetSession(ctx, "coursez")
 	if err != nil {
 		return nil, err
 	}

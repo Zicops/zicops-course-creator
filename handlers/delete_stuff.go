@@ -9,14 +9,14 @@ import (
 
 	log "github.com/sirupsen/logrus"
 	"github.com/zicops/contracts/coursez"
-	"github.com/zicops/zicops-cass-pool/cassandra"
+	"github.com/zicops/zicops-course-creator/global"
 	"github.com/zicops/zicops-course-creator/helpers"
 	"github.com/zicops/zicops-course-creator/lib/db/bucket"
 	"github.com/zicops/zicops-course-creator/lib/googleprojectlib"
 )
 
 func DeleteCatMain(ctx context.Context, id *string) (*bool, error) {
-	session, err := cassandra.GetCassSession("coursez")
+	session, err := global.CassPool.GetSession(ctx, "coursez")
 	if err != nil {
 		return nil, err
 	}
@@ -36,7 +36,7 @@ func DeleteCatMain(ctx context.Context, id *string) (*bool, error) {
 }
 
 func DeleteSubCatMain(ctx context.Context, id *string, parent_id *string) (*bool, error) {
-	session, err := cassandra.GetCassSession("coursez")
+	session, err := global.CassPool.GetSession(ctx, "coursez")
 	if err != nil {
 		return nil, err
 	}
@@ -56,7 +56,7 @@ func DeleteSubCatMain(ctx context.Context, id *string, parent_id *string) (*bool
 }
 
 func DeleteCourse(ctx context.Context, id *string) (*bool, error) {
-	session, err := cassandra.GetCassSession("coursez")
+	session, err := global.CassPool.GetSession(ctx, "coursez")
 	if err != nil || id == nil {
 		return nil, err
 	}
@@ -84,7 +84,7 @@ func DeleteCourse(ctx context.Context, id *string) (*bool, error) {
 }
 
 func DeleteCourseModule(ctx context.Context, id *string) (*bool, error) {
-	session, err := cassandra.GetCassSession("coursez")
+	session, err := global.CassPool.GetSession(ctx, "coursez")
 	if err != nil {
 		return nil, err
 	}
@@ -104,7 +104,7 @@ func DeleteCourseModule(ctx context.Context, id *string) (*bool, error) {
 }
 
 func DeleteCourseChapter(ctx context.Context, id *string) (*bool, error) {
-	session, err := cassandra.GetCassSession("coursez")
+	session, err := global.CassPool.GetSession(ctx, "coursez")
 	if err != nil {
 		return nil, err
 	}
@@ -124,7 +124,7 @@ func DeleteCourseChapter(ctx context.Context, id *string) (*bool, error) {
 }
 
 func DeleteCourseTopic(ctx context.Context, id *string) (*bool, error) {
-	session, err := cassandra.GetCassSession("coursez")
+	session, err := global.CassPool.GetSession(ctx, "coursez")
 	if err != nil {
 		return nil, err
 	}
@@ -144,7 +144,7 @@ func DeleteCourseTopic(ctx context.Context, id *string) (*bool, error) {
 }
 
 func DeleteTopicContent(ctx context.Context, id *string) (*bool, error) {
-	session, err := cassandra.GetCassSession("coursez")
+	session, err := global.CassPool.GetSession(ctx, "coursez")
 	if err != nil {
 		return nil, err
 	}
@@ -182,7 +182,7 @@ func DeleteTopicContent(ctx context.Context, id *string) (*bool, error) {
 }
 
 func DeleteTopicExam(ctx context.Context, id *string) (*bool, error) {
-	session, err := cassandra.GetCassSession("coursez")
+	session, err := global.CassPool.GetSession(ctx, "coursez")
 	if err != nil {
 		return nil, err
 	}
@@ -202,7 +202,7 @@ func DeleteTopicExam(ctx context.Context, id *string) (*bool, error) {
 }
 
 func DeleteQuiz(ctx context.Context, id *string) (*bool, error) {
-	session, err := cassandra.GetCassSession("coursez")
+	session, err := global.CassPool.GetSession(ctx, "coursez")
 	if err != nil {
 		return nil, err
 	}
@@ -222,7 +222,7 @@ func DeleteQuiz(ctx context.Context, id *string) (*bool, error) {
 }
 
 func DeleteTopicResource(ctx context.Context, id *string) (*bool, error) {
-	session, err := cassandra.GetCassSession("coursez")
+	session, err := global.CassPool.GetSession(ctx, "coursez")
 	if err != nil {
 		return nil, err
 	}
@@ -242,7 +242,7 @@ func DeleteTopicResource(ctx context.Context, id *string) (*bool, error) {
 }
 
 func DeleteQuestionBank(ctx context.Context, id *string) (*bool, error) {
-	session, err := cassandra.GetCassSession("qbankz")
+	session, err := global.CassPool.GetSession(ctx, "qbankz")
 	if err != nil {
 		return nil, err
 	}
@@ -262,7 +262,7 @@ func DeleteQuestionBank(ctx context.Context, id *string) (*bool, error) {
 }
 
 func DeleteQuestionBankQuestion(ctx context.Context, id *string) (*bool, error) {
-	session, err := cassandra.GetCassSession("qbankz")
+	session, err := global.CassPool.GetSession(ctx, "qbankz")
 	if err != nil {
 		return nil, err
 	}
@@ -282,7 +282,7 @@ func DeleteQuestionBankQuestion(ctx context.Context, id *string) (*bool, error) 
 }
 
 func DeleteQuestionOptions(ctx context.Context, id *string) (*bool, error) {
-	session, err := cassandra.GetCassSession("qbankz")
+	session, err := global.CassPool.GetSession(ctx, "qbankz")
 	if err != nil {
 		return nil, err
 	}
@@ -302,7 +302,7 @@ func DeleteQuestionOptions(ctx context.Context, id *string) (*bool, error) {
 }
 
 func DeleteQuestionPaper(ctx context.Context, id *string) (*bool, error) {
-	session, err := cassandra.GetCassSession("qbankz")
+	session, err := global.CassPool.GetSession(ctx, "qbankz")
 	if err != nil {
 		return nil, err
 	}
@@ -322,7 +322,7 @@ func DeleteQuestionPaper(ctx context.Context, id *string) (*bool, error) {
 }
 
 func DeleteQuestionPaperSection(ctx context.Context, id *string) (*bool, error) {
-	session, err := cassandra.GetCassSession("qbankz")
+	session, err := global.CassPool.GetSession(ctx, "qbankz")
 	if err != nil {
 		return nil, err
 	}
@@ -342,7 +342,7 @@ func DeleteQuestionPaperSection(ctx context.Context, id *string) (*bool, error) 
 }
 
 func DeleteSectionToBank(ctx context.Context, id *string) (*bool, error) {
-	session, err := cassandra.GetCassSession("qbankz")
+	session, err := global.CassPool.GetSession(ctx, "qbankz")
 	if err != nil {
 		return nil, err
 	}
@@ -362,7 +362,7 @@ func DeleteSectionToBank(ctx context.Context, id *string) (*bool, error) {
 }
 
 func DeleteSectionFixedQuestions(ctx context.Context, id *string) (*bool, error) {
-	session, err := cassandra.GetCassSession("qbankz")
+	session, err := global.CassPool.GetSession(ctx, "qbankz")
 	if err != nil {
 		return nil, err
 	}
@@ -382,7 +382,7 @@ func DeleteSectionFixedQuestions(ctx context.Context, id *string) (*bool, error)
 }
 
 func DeleteExam(ctx context.Context, id *string) (*bool, error) {
-	session, err := cassandra.GetCassSession("qbankz")
+	session, err := global.CassPool.GetSession(ctx, "qbankz")
 	if err != nil {
 		return nil, err
 	}
@@ -402,7 +402,7 @@ func DeleteExam(ctx context.Context, id *string) (*bool, error) {
 }
 
 func DeleteExamSchedule(ctx context.Context, id *string) (*bool, error) {
-	session, err := cassandra.GetCassSession("qbankz")
+	session, err := global.CassPool.GetSession(ctx, "qbankz")
 	if err != nil {
 		return nil, err
 	}
@@ -422,7 +422,7 @@ func DeleteExamSchedule(ctx context.Context, id *string) (*bool, error) {
 }
 
 func DeleteExamInstruction(ctx context.Context, id *string) (*bool, error) {
-	session, err := cassandra.GetCassSession("qbankz")
+	session, err := global.CassPool.GetSession(ctx, "qbankz")
 	if err != nil {
 		return nil, err
 	}
@@ -442,7 +442,7 @@ func DeleteExamInstruction(ctx context.Context, id *string) (*bool, error) {
 }
 
 func DeleteExamCohort(ctx context.Context, id *string) (*bool, error) {
-	session, err := cassandra.GetCassSession("qbankz")
+	session, err := global.CassPool.GetSession(ctx, "qbankz")
 	if err != nil {
 		return nil, err
 	}
@@ -462,7 +462,7 @@ func DeleteExamCohort(ctx context.Context, id *string) (*bool, error) {
 }
 
 func DeleteExamConfiguration(ctx context.Context, id *string) (*bool, error) {
-	session, err := cassandra.GetCassSession("qbankz")
+	session, err := global.CassPool.GetSession(ctx, "qbankz")
 	if err != nil {
 		return nil, err
 	}
@@ -482,7 +482,7 @@ func DeleteExamConfiguration(ctx context.Context, id *string) (*bool, error) {
 }
 
 func DeleteCourseCohort(ctx context.Context, id *string) (*bool, error) {
-	session, err := cassandra.GetCassSession("coursez")
+	session, err := global.CassPool.GetSession(ctx, "coursez")
 	if err != nil {
 		return nil, err
 	}
@@ -508,7 +508,7 @@ func DeleteTopicSubtitle(ctx context.Context, courseID string, topicID string, f
 	if err != nil {
 		return &resp, err
 	}
-	session, err := cassandra.GetCassSession("coursez")
+	session, err := global.CassPool.GetSession(ctx, "coursez")
 	if err != nil {
 		log.Println("Got error while getting session: ", err)
 		return nil, err

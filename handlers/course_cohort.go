@@ -10,7 +10,7 @@ import (
 	"github.com/scylladb/gocqlx/v2"
 	log "github.com/sirupsen/logrus"
 	"github.com/zicops/contracts/coursez"
-	"github.com/zicops/zicops-cass-pool/cassandra"
+	"github.com/zicops/zicops-course-creator/global"
 	"github.com/zicops/zicops-course-creator/graph/model"
 	"github.com/zicops/zicops-course-creator/helpers"
 )
@@ -22,7 +22,7 @@ func AddCourseCohort(ctx context.Context, input *model.CourseCohortInput) (*mode
 		return nil, err
 	}
 	email_creator := claims["email"].(string)
-	session, err := cassandra.GetCassSession("coursez")
+	session, err := global.CassPool.GetSession(ctx, "coursez")
 	if err != nil {
 		return nil, err
 	}
@@ -80,7 +80,7 @@ func UpdateCourseCohort(ctx context.Context, input *model.CourseCohortInput) (*m
 	if input.ID == nil {
 		return nil, fmt.Errorf("course cohort id is required")
 	}
-	session, err := cassandra.GetCassSession("coursez")
+	session, err := global.CassPool.GetSession(ctx, "coursez")
 	if err != nil {
 		return nil, err
 	}

@@ -14,7 +14,7 @@ import (
 	"github.com/google/uuid"
 	log "github.com/sirupsen/logrus"
 	"github.com/zicops/contracts/coursez"
-	"github.com/zicops/zicops-cass-pool/cassandra"
+	"github.com/zicops/zicops-course-creator/global"
 	"github.com/zicops/zicops-course-creator/graph/model"
 	"github.com/zicops/zicops-course-creator/helpers"
 	"github.com/zicops/zicops-course-creator/lib/db/bucket"
@@ -23,7 +23,7 @@ import (
 
 func AddCategory(ctx context.Context, category []*string) (*bool, error) {
 	log.Infof("AddCategory called")
-	session, err := cassandra.GetCassSession("coursez")
+	session, err := global.CassPool.GetSession(ctx, "coursez")
 	if err != nil {
 		return nil, err
 	}
@@ -47,7 +47,7 @@ func AddCategory(ctx context.Context, category []*string) (*bool, error) {
 
 func AddSubCategory(ctx context.Context, category []*string) (*bool, error) {
 	log.Infof("AddSubCategory called")
-	session, err := cassandra.GetCassSession("coursez")
+	session, err := global.CassPool.GetSession(ctx, "coursez")
 	if err != nil {
 		return nil, err
 	}
@@ -71,7 +71,7 @@ func AddSubCategory(ctx context.Context, category []*string) (*bool, error) {
 
 func AddCategorySubMap(ctx context.Context, category *string, subCategory []*string) (*bool, error) {
 	log.Infof("AddCategorySubMap called")
-	session, err := cassandra.GetCassSession("coursez")
+	session, err := global.CassPool.GetSession(ctx, "coursez")
 	if err != nil {
 		return nil, err
 	}
@@ -103,7 +103,7 @@ func AddCatMain(ctx context.Context, input []*model.CatMainInput) ([]*model.CatM
 		return nil, err
 	}
 	email_creator := claims["email"].(string)
-	session, err := cassandra.GetCassSession("coursez")
+	session, err := global.CassPool.GetSession(ctx, "coursez")
 	if err != nil {
 		return nil, err
 	}
@@ -214,7 +214,7 @@ func AddSubCatMain(ctx context.Context, input []*model.SubCatMainInput) ([]*mode
 	}
 	email_creator := claims["email"].(string)
 	log.Infof("AddSubCatMain called")
-	session, err := cassandra.GetCassSession("coursez")
+	session, err := global.CassPool.GetSession(ctx, "coursez")
 	if err != nil {
 		return nil, err
 	}
@@ -331,7 +331,7 @@ func UpdateCatMain(ctx context.Context, input *model.CatMainInput) (*model.CatMa
 	if err != nil {
 		return nil, err
 	}
-	session, err := cassandra.GetCassSession("coursez")
+	session, err := global.CassPool.GetSession(ctx, "coursez")
 	if err != nil {
 		return nil, err
 	}
@@ -443,7 +443,7 @@ func UpdateSubCatMain(ctx context.Context, input *model.SubCatMainInput) (*model
 	if err != nil {
 		return nil, err
 	}
-	session, err := cassandra.GetCassSession("coursez")
+	session, err := global.CassPool.GetSession(ctx, "coursez")
 	if err != nil {
 		return nil, err
 	}

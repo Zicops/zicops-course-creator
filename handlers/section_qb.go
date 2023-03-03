@@ -10,7 +10,7 @@ import (
 	"github.com/scylladb/gocqlx/v2"
 	log "github.com/sirupsen/logrus"
 	"github.com/zicops/contracts/qbankz"
-	"github.com/zicops/zicops-cass-pool/cassandra"
+	"github.com/zicops/zicops-course-creator/global"
 	"github.com/zicops/zicops-course-creator/graph/model"
 	"github.com/zicops/zicops-course-creator/helpers"
 )
@@ -18,7 +18,7 @@ import (
 func QuestionSectionMap(ctx context.Context, input *model.MapSectionToBankInput) (*model.SectionQBMapping, error) {
 	log.Info("QuestionSectionMap called")
 
-	session, err := cassandra.GetCassSession("qbankz")
+	session, err := global.CassPool.GetSession(ctx, "qbankz")
 	if err != nil {
 		return nil, err
 	}
@@ -75,7 +75,7 @@ func QuestionSectionMapUpdate(ctx context.Context, input *model.MapSectionToBank
 	if input.ID == nil {
 		return nil, fmt.Errorf("section id not found")
 	}
-	session, err := cassandra.GetCassSession("qbankz")
+	session, err := global.CassPool.GetSession(ctx, "qbankz")
 	if err != nil {
 		return nil, err
 	}
@@ -153,7 +153,7 @@ func QuestionSectionMapUpdate(ctx context.Context, input *model.MapSectionToBank
 func QuestionFixed(ctx context.Context, input *model.SectionFixedQuestionsInput) (*model.SectionFixedQuestions, error) {
 	log.Info("QuestionFixed called")
 
-	session, err := cassandra.GetCassSession("qbankz")
+	session, err := global.CassPool.GetSession(ctx, "qbankz")
 	if err != nil {
 		return nil, err
 	}
@@ -200,7 +200,7 @@ func QuestionFixedUpdate(ctx context.Context, input *model.SectionFixedQuestions
 	if input.ID == nil {
 		return nil, fmt.Errorf("id not found")
 	}
-	session, err := cassandra.GetCassSession("qbankz")
+	session, err := global.CassPool.GetSession(ctx, "qbankz")
 	if err != nil {
 		return nil, err
 	}

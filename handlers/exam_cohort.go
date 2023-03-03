@@ -10,7 +10,7 @@ import (
 	"github.com/scylladb/gocqlx/v2"
 	log "github.com/sirupsen/logrus"
 	"github.com/zicops/contracts/qbankz"
-	"github.com/zicops/zicops-cass-pool/cassandra"
+	"github.com/zicops/zicops-course-creator/global"
 	"github.com/zicops/zicops-course-creator/graph/model"
 	"github.com/zicops/zicops-course-creator/helpers"
 )
@@ -18,7 +18,7 @@ import (
 func AddExamCohort(ctx context.Context, input *model.ExamCohortInput) (*model.ExamCohort, error) {
 	log.Info("ExamInstructionsCreate called")
 
-	session, err := cassandra.GetCassSession("qbankz")
+	session, err := global.CassPool.GetSession(ctx, "qbankz")
 	if err != nil {
 		return nil, err
 	}
@@ -63,7 +63,7 @@ func UpdateExamCohort(ctx context.Context, input *model.ExamCohortInput) (*model
 	if input.ID == nil {
 		return nil, fmt.Errorf("exam schedule id not found")
 	}
-	session, err := cassandra.GetCassSession("qbankz")
+	session, err := global.CassPool.GetSession(ctx, "qbankz")
 	if err != nil {
 		return nil, err
 	}

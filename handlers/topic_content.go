@@ -19,8 +19,8 @@ import (
 	"github.com/scylladb/gocqlx/v2"
 	log "github.com/sirupsen/logrus"
 	"github.com/zicops/contracts/coursez"
-	"github.com/zicops/zicops-cass-pool/cassandra"
 	"github.com/zicops/zicops-course-creator/constants"
+	"github.com/zicops/zicops-course-creator/global"
 	"github.com/zicops/zicops-course-creator/graph/model"
 	"github.com/zicops/zicops-course-creator/helpers"
 	"github.com/zicops/zicops-course-creator/lib/db/bucket"
@@ -32,7 +32,7 @@ import (
 func TopicContentCreate(ctx context.Context, topicID string, courseID string, moduleID *string, topicConent *model.TopicContentInput) (*model.TopicContent, error) {
 	log.Info("TopicContentCreate called")
 
-	session, err := cassandra.GetCassSession("coursez")
+	session, err := global.CassPool.GetSession(ctx, "coursez")
 	if err != nil {
 		return nil, err
 	}
@@ -150,12 +150,12 @@ func GetTopicContentCountByTopicID(ctx context.Context, topicID string, lspID st
 func TopicExamCreate(ctx context.Context, topicID string, courseID string, exam *model.TopicExamInput) (*model.TopicExam, error) {
 	log.Info("TopicExamCreate called")
 
-	session, err := cassandra.GetCassSession("coursez")
+	session, err := global.CassPool.GetSession(ctx, "coursez")
 	if err != nil {
 		return nil, err
 	}
 	CassSession := session
-	sessionQbankz, err := cassandra.GetCassSession("qbankz")
+	sessionQbankz, err := global.CassPool.GetSession(ctx, "qbankz")
 	if err != nil {
 		return nil, err
 	}
@@ -204,7 +204,7 @@ func TopicExamCreate(ctx context.Context, topicID string, courseID string, exam 
 
 func UploadTopicVideo(ctx context.Context, file model.TopicVideo) (*model.UploadResult, error) {
 	log.Info("UploadTopicVideo called")
-	session, err := cassandra.GetCassSession("coursez")
+	session, err := global.CassPool.GetSession(ctx, "coursez")
 	if err != nil {
 		return nil, err
 	}
@@ -314,7 +314,7 @@ func UpdateTopicContent(ctx context.Context, topicConent *model.TopicContentInpu
 	if *contentID == "" {
 		return nil, fmt.Errorf("ContentID is required")
 	}
-	session, err := cassandra.GetCassSession("coursez")
+	session, err := global.CassPool.GetSession(ctx, "coursez")
 	if err != nil {
 		return nil, err
 	}
@@ -411,7 +411,7 @@ func UpdateTopicExam(ctx context.Context, exam *model.TopicExamInput) (*model.To
 	if *tExamId == "" {
 		return nil, fmt.Errorf("TopicExamId is required")
 	}
-	session, err := cassandra.GetCassSession("coursez")
+	session, err := global.CassPool.GetSession(ctx, "coursez")
 	if err != nil {
 		return nil, err
 	}
@@ -433,7 +433,7 @@ func UpdateTopicExam(ctx context.Context, exam *model.TopicExamInput) (*model.To
 	}
 	if exam.ExamID != nil && *exam.ExamID != cassandraTopicContent.ExamId {
 		// get exam
-		sessionQbankz, err := cassandra.GetCassSession("qbankz")
+		sessionQbankz, err := global.CassPool.GetSession(ctx, "qbankz")
 		if err != nil {
 			return nil, err
 		}
@@ -475,7 +475,7 @@ func UpdateTopicExam(ctx context.Context, exam *model.TopicExamInput) (*model.To
 
 func UploadTopicStaticContent(ctx context.Context, file *model.StaticContent) (*model.UploadResult, error) {
 	log.Info("UploadTopicStaticContent called")
-	session, err := cassandra.GetCassSession("coursez")
+	session, err := global.CassPool.GetSession(ctx, "coursez")
 	if err != nil {
 		return nil, err
 	}

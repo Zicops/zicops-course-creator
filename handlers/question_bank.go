@@ -16,7 +16,7 @@ import (
 	"github.com/scylladb/gocqlx/v2"
 	log "github.com/sirupsen/logrus"
 	"github.com/zicops/contracts/qbankz"
-	"github.com/zicops/zicops-cass-pool/cassandra"
+	"github.com/zicops/zicops-course-creator/global"
 	"github.com/zicops/zicops-course-creator/graph/model"
 	"github.com/zicops/zicops-course-creator/helpers"
 	"github.com/zicops/zicops-course-creator/lib/db/bucket"
@@ -26,7 +26,7 @@ import (
 func QuestionBankCreate(ctx context.Context, input *model.QuestionBankInput) (*model.QuestionBank, error) {
 	log.Info("QuestionBankCreate called")
 
-	session, err := cassandra.GetCassSession("qbankz")
+	session, err := global.CassPool.GetSession(ctx, "qbankz")
 	if err != nil {
 		return nil, err
 	}
@@ -87,7 +87,7 @@ func QuestionBankUpdate(ctx context.Context, input *model.QuestionBankInput) (*m
 	if input.ID == nil {
 		return nil, fmt.Errorf("provide question bank id")
 	}
-	session, err := cassandra.GetCassSession("qbankz")
+	session, err := global.CassPool.GetSession(ctx, "qbankz")
 	if err != nil {
 		return nil, err
 	}
@@ -170,7 +170,7 @@ func AddQuestionBankQuestion(ctx context.Context, input *model.QuestionBankQuest
 	if input.QbmID == nil {
 		return nil, fmt.Errorf("question bank main id not found")
 	}
-	session, err := cassandra.GetCassSession("qbankz")
+	session, err := global.CassPool.GetSession(ctx, "qbankz")
 	if err != nil {
 		return nil, err
 	}
@@ -261,7 +261,7 @@ func BulkAddQuestionBankQuestions(ctx context.Context, qbID string, qfile graphq
 	if qbID == "" {
 		return false, fmt.Errorf("question bank main id not found")
 	}
-	session, err := cassandra.GetCassSession("qbankz")
+	session, err := global.CassPool.GetSession(ctx, "qbankz")
 	if err != nil {
 		return false, err
 	}
@@ -448,7 +448,7 @@ func UpdateQuestionBankQuestion(ctx context.Context, input *model.QuestionBankQu
 	if input.QbmID == nil {
 		return nil, fmt.Errorf("question bank main id not found")
 	}
-	session, err := cassandra.GetCassSession("qbankz")
+	session, err := global.CassPool.GetSession(ctx, "qbankz")
 	if err != nil {
 		return nil, err
 	}
