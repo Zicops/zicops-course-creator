@@ -122,8 +122,8 @@ func graphqlHandler() gin.HandlerFunc {
 		})
 		var mb int64 = 1 << 20
 		srv.AddTransport(transport.MultipartForm{
-			MaxMemory:     500 * mb,
-			MaxUploadSize: 500 * mb,
+			MaxMemory:     1000 * mb,
+			MaxUploadSize: 1000 * mb,
 		})
 		lspIdInt := c.Request.Header.Get("tenant")
 		ctxValue := c.Value("zclaims").(map[string]interface{})
