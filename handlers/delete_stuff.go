@@ -7,12 +7,14 @@ import (
 	"fmt"
 	"strings"
 
+	"cloud.google.com/go/storage"
 	log "github.com/sirupsen/logrus"
 	"github.com/zicops/contracts/coursez"
 	"github.com/zicops/zicops-course-creator/global"
 	"github.com/zicops/zicops-course-creator/helpers"
 	"github.com/zicops/zicops-course-creator/lib/db/bucket"
 	"github.com/zicops/zicops-course-creator/lib/googleprojectlib"
+	"google.golang.org/api/iterator"
 )
 
 func DeleteCatMain(ctx context.Context, id *string) (*bool, error) {
@@ -526,15 +528,35 @@ func DeleteTopicSubtitle(ctx context.Context, courseID string, topicID string, f
 		return &resp, err
 	}
 	mainBucket := courseID + "/" + topicID + "/subtitles/"
-	fileName = base64.URLEncoding.EncodeToString([]byte(fileName))
-	bucketPath := mainBucket + fileName
-	res := storageC.DeleteObjectsFromBucket(ctx, bucketPath)
 
-	r := true
-	if res == "1" {
-		return &r, nil
+	fileNameEncoded := base64.URLEncoding.EncodeToString([]byte(fileName))
+
+	query := &storage.Query{}
+	//get all the objects in the bucket
+	it := storageC.Client.Bucket(mainBucket).Objects(ctx, query)
+	var res string
+	for {
+		//iterate over them
+		attrs, err := it.Next()
+		if err == iterator.Done {
+			break
+		}
+		//if name matches file name or encoded file name
+		if attrs.Name == fileName || attrs.Name == fileNameEncoded {
+
+			//check out their metadata of language, if that matches then call delete objects from bucket path
+			if attrs.Metadata["language"] == *lang {
+				bucketPath := mainBucket + attrs.Name
+				res = storageC.DeleteObjectsFromBucket(ctx, bucketPath)
+			}
+		}
 	}
-	r = false
+
+	r := false
+	if res != "1" {
+		return nil, errors.New(res)
+	}
+	r = true
 
 	qryStr := fmt.Sprintf(`SELECT * FROM coursez.topic_content WHERE courseid = '%s' AND topicid='%s' ALLOW FILTERING`, courseID, topicID)
 	getTopic := func() (topics []coursez.TopicContent, err error) {
