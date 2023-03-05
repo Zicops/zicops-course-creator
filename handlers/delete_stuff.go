@@ -529,39 +529,41 @@ func DeleteTopicSubtitle(ctx context.Context, courseID string, topicID string, f
 	fileName = base64.URLEncoding.EncodeToString([]byte(fileName))
 	bucketPath := mainBucket + fileName
 	res := storageC.DeleteObjectsFromBucket(ctx, bucketPath)
-
+	anyitemsLeft := storageC.CheckIfBucketHasItems(ctx, mainBucket)
 	r := true
 	if res == "1" {
 		return &r, nil
 	}
 	r = false
 
-	qryStr := fmt.Sprintf(`SELECT * FROM coursez.topic_content WHERE courseid = '%s' AND topicid='%s' ALLOW FILTERING`, courseID, topicID)
-	getTopic := func() (topics []coursez.TopicContent, err error) {
-		q := CassSession.Query(qryStr, nil)
-		defer q.Release()
-		iter := q.Iter()
-		return topics, iter.Select(&topics)
-	}
+	if !anyitemsLeft {
+		qryStr := fmt.Sprintf(`SELECT * FROM coursez.topic_content WHERE courseid = '%s' AND topicid='%s' ALLOW FILTERING`, courseID, topicID)
+		getTopic := func() (topics []coursez.TopicContent, err error) {
+			q := CassSession.Query(qryStr, nil)
+			defer q.Release()
+			iter := q.Iter()
+			return topics, iter.Select(&topics)
+		}
 
-	topics, err := getTopic()
-	if err != nil {
-		return nil, err
-	}
-	if len(topics) == 0 {
-		return nil, nil
-	}
-	topic := topics[0]
+		topics, err := getTopic()
+		if err != nil {
+			return nil, err
+		}
+		if len(topics) == 0 {
+			return nil, nil
+		}
+		topic := topics[0]
 
-	//remove the subtitle bucket
-	if topic.SubtitleFileBucket != "" {
-		topic.SubtitleFileBucket = ""
-	}
-	//update the table
-	upStms, uNames := coursez.TopicContentTable.Update("subtitlefilebucket")
-	updateQuery := CassSession.Query(upStms, uNames).BindStruct(&topic)
-	if err := updateQuery.ExecRelease(); err != nil {
-		return nil, err
+		//remove the subtitle bucket
+		if topic.SubtitleFileBucket != "" {
+			topic.SubtitleFileBucket = ""
+		}
+		//update the table
+		upStms, uNames := coursez.TopicContentTable.Update("subtitlefilebucket")
+		updateQuery := CassSession.Query(upStms, uNames).BindStruct(&topic)
+		if err := updateQuery.ExecRelease(); err != nil {
+			return nil, err
+		}
 	}
 
 	return &r, errors.New(res)

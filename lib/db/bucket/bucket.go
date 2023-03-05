@@ -14,6 +14,7 @@ import (
 	"github.com/zicops/zicops-course-creator/constants"
 	"github.com/zicops/zicops-course-creator/global"
 	"github.com/zicops/zicops-course-creator/helpers"
+	"google.golang.org/api/iterator"
 	"google.golang.org/api/option"
 )
 
@@ -177,4 +178,19 @@ func (sc *Client) DeleteObjectsFromBucket(ctx context.Context, fileName string) 
 	}
 
 	return "1"
+}
+
+func (sc *Client) CheckIfBucketHasItems(ctx context.Context, bucketName string) bool {
+	bkt := sc.Client.Bucket(bucketName)
+	it := bkt.Objects(ctx, nil)
+	for {
+		_, err := it.Next()
+		if err == iterator.Done {
+			return false
+		}
+		if err != nil {
+			return false
+		}
+		return true
+	}
 }
