@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"net/url"
 	"strings"
 
 	log "github.com/sirupsen/logrus"
@@ -517,6 +518,12 @@ func DeleteTopicSubtitle(ctx context.Context, courseID string, topicID string, f
 	if lspId == "" {
 		return &resp, fmt.Errorf("lsp_id is empty")
 	}
+	// convet any url encoded characters to normal characters
+	fileName, err = url.QueryUnescape(fileName)
+	if err != nil {
+		log.Errorf("Failed to delete subtitle to course topic: %v", err.Error())
+		return &resp, err
+	}
 	storageC := bucket.NewStorageHandler()
 	gproject := googleprojectlib.GetGoogleProjectID()
 	err = storageC.InitializeStorageClient(ctx, gproject, lspId)
@@ -584,6 +591,12 @@ func DeleteCourseMedia(ctx context.Context, courseID string, fileName string) (*
 		log.Errorf("Failed to delete subtitle to course topic: %v", err.Error())
 		return &resp, err
 	}
+	fileName, err = url.QueryUnescape(fileName)
+	if err != nil {
+		log.Errorf("Failed to delete subtitle to course topic: %v", err.Error())
+		return &resp, err
+	}
+
 	bucketPath := courseID + "/" + fileName
 	res := storageC.DeleteObjectsFromBucket(ctx, bucketPath)
 
