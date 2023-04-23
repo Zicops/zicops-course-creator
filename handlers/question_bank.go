@@ -204,7 +204,11 @@ func AddQuestionBankQuestion(ctx context.Context, input *model.QuestionBankQuest
 		IsActive:       true,
 	}
 	if input.File != nil {
+		extension := strings.Split(input.File.Filename, ".")
 		bucketPath := "question_banks/" + cassandraQuestionBank.QbmId + "/" + cassandraQuestionBank.ID + "/" + base64.URLEncoding.EncodeToString([]byte(input.File.Filename))
+		if len(extension) > 1 {
+			bucketPath = bucketPath + "." + extension[len(extension)-1]
+		}
 		storageC := bucket.NewStorageHandler()
 		gproject := googleprojectlib.GetGoogleProjectID()
 		err := storageC.InitializeStorageClient(ctx, gproject, lspID)
@@ -502,7 +506,11 @@ func UpdateQuestionBankQuestion(ctx context.Context, input *model.QuestionBankQu
 	}
 	updatedAt := time.Now().Unix()
 	if input.File != nil {
+		extension := strings.Split(input.File.Filename, ".")
 		bucketPath := "question_banks/" + cassandraQuestionBank.QbmId + "/" + cassandraQuestionBank.ID + "/" + base64.URLEncoding.EncodeToString([]byte(input.File.Filename))
+		if len(extension) > 1 {
+			bucketPath = bucketPath + "." + extension[len(extension)-1]
+		}
 		storageC := bucket.NewStorageHandler()
 		gproject := googleprojectlib.GetGoogleProjectID()
 		err := storageC.InitializeStorageClient(ctx, gproject, lspID)

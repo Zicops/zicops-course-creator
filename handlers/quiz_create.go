@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/google/uuid"
@@ -217,7 +218,11 @@ func UploadQuizFile(ctx context.Context, courseID string, quiz model.QuizFile) (
 	if courseID == "" || quiz.QuizID == nil {
 		return nil, fmt.Errorf("course id and  quiz id is required")
 	}
+	extension := strings.Split(quiz.File.Filename, ".")
 	bucketPath := courseID + "/" + *quiz.QuizID + "/" + base64.URLEncoding.EncodeToString([]byte(quiz.File.Filename))
+	if len(extension) > 1 {
+		bucketPath += "." + extension[len(extension)-1]
+	}
 	writer, err := storageC.UploadToGCS(ctx, bucketPath, map[string]string{})
 	if err != nil {
 		log.Errorf("Failed to upload video to course topic: %v", err.Error())

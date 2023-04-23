@@ -6,6 +6,7 @@ import (
 	"encoding/base64"
 	"fmt"
 	"io"
+	"strings"
 	"time"
 
 	"github.com/google/uuid"
@@ -48,7 +49,11 @@ func AddTopicResources(ctx context.Context, courseID string, resource *model.Top
 		if courseID == "" || resource.TopicID == nil {
 			return &isSuccess, nil
 		}
+		extension := strings.Split(resource.File.Filename, ".")
 		bucketPath = courseID + "/" + *resource.TopicID + "/" + base64.URLEncoding.EncodeToString([]byte(resource.File.Filename))
+		if len(extension) > 1 {
+			bucketPath = bucketPath + "." + extension[len(extension)-1]
+		}
 		writer, err := storageC.UploadToGCS(ctx, bucketPath, map[string]string{})
 		if err != nil {
 			log.Errorf("Failed to upload video to course topic: %v", err.Error())

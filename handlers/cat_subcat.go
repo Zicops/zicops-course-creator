@@ -142,7 +142,11 @@ func AddCatMain(ctx context.Context, input []*model.CatMainInput) ([]*model.CatM
 			}
 		}
 		if c.ImageFile != nil {
+			extension := strings.Split(c.ImageFile.Filename, ".")
 			imageBucket = guid + "/catimages/" + base64.URLEncoding.EncodeToString([]byte(strings.ToLower(c.ImageFile.Filename)))
+			if len(extension) > 1 {
+				imageBucket = imageBucket + "." + extension[len(extension)-1]
+			}
 			storageC := bucket.NewStorageHandler()
 			gproject := googleprojectlib.GetGoogleProjectID()
 			err = storageC.InitializeStorageClient(ctx, gproject, "coursez-catimages")
@@ -265,7 +269,11 @@ func AddSubCatMain(ctx context.Context, input []*model.SubCatMainInput) ([]*mode
 				log.Errorf("Failed to upload image to course: %v", err.Error())
 				continue
 			}
+			extension := strings.Split(c.ImageFile.Filename, ".")
 			imageBucket = guid + "/subcatimages/" + base64.URLEncoding.EncodeToString([]byte(c.ImageFile.Filename))
+			if len(extension) > 1 {
+				imageBucket = imageBucket + "." + extension[len(extension)-1]
+			}
 			writer, err := storageC.UploadToGCS(ctx, imageBucket, map[string]string{})
 			if err != nil {
 				log.Errorf("Failed to upload image to course: %v", err.Error())
@@ -387,7 +395,11 @@ func UpdateCatMain(ctx context.Context, input *model.CatMainInput) (*model.CatMa
 				log.Errorf("Failed to upload image to course: %v", err.Error())
 				return nil, err
 			}
+			extension := strings.Split(input.ImageFile.Filename, ".")
 			imageBucket = *input.ID + "/catimages/" + base64.URLEncoding.EncodeToString([]byte(input.ImageFile.Filename))
+			if len(extension) > 1 {
+				imageBucket = imageBucket + "." + extension[len(extension)-1]
+			}
 			writer, err := storageC.UploadToGCS(ctx, imageBucket, map[string]string{})
 			if err != nil {
 				log.Errorf("Failed to upload image to course: %v", err.Error())
@@ -500,7 +512,11 @@ func UpdateSubCatMain(ctx context.Context, input *model.SubCatMainInput) (*model
 				log.Errorf("Failed to upload image to course: %v", err.Error())
 				return nil, err
 			}
+			extension := strings.Split(input.ImageFile.Filename, ".")
 			imageBucket = *input.ID + "/catimages/" + base64.URLEncoding.EncodeToString([]byte(input.ImageFile.Filename))
+			if len(extension) > 1 {
+				imageBucket = imageBucket + "." + extension[len(extension)-1]
+			}
 			writer, err := storageC.UploadToGCS(ctx, imageBucket, map[string]string{})
 			if err != nil {
 				log.Errorf("Failed to upload image to course: %v", err.Error())

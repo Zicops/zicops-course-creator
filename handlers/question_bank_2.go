@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/google/uuid"
@@ -55,7 +56,11 @@ func AddQuestionOptions(ctx context.Context, input *model.QuestionOptionInput) (
 	}
 	getUrl := ""
 	if input.File != nil {
+		extension := strings.Split(input.File.Filename, ".")
 		bucketPath := "question_banks/" + cassandraQuestionBank.QmId + "/" + cassandraQuestionBank.ID + "/" + base64.URLEncoding.EncodeToString([]byte(input.File.Filename))
+		if len(extension) > 1 {
+			bucketPath = bucketPath + "." + extension[len(extension)-1]
+		}
 		storageC := bucket.NewStorageHandler()
 		gproject := googleprojectlib.GetGoogleProjectID()
 		err := storageC.InitializeStorageClient(ctx, gproject, lspID)

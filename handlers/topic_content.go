@@ -273,7 +273,11 @@ func UploadTopicSubtitle(ctx context.Context, files []*model.TopicSubtitle) ([]*
 			language = *file.Language
 		}
 		mainBucket := *file.CourseID + "/" + *file.TopicID + "/subtitles/"
+		extension := strings.Split(file.File.Filename, ".")
 		bucketPath := mainBucket + base64.URLEncoding.EncodeToString([]byte(file.File.Filename))
+		if len(extension) > 1 {
+			bucketPath += "." + extension[len(extension)-1]
+		}
 		writer, err := storageC.UploadToGCS(ctx, bucketPath, map[string]string{"language": language})
 		if err != nil {
 			log.Errorf("Failed to upload subtitle to course topic: %v", err.Error())
@@ -516,8 +520,13 @@ func UploadTopicStaticContent(ctx context.Context, file *model.StaticContent) (*
 		hash.Write([]byte(baseDir))
 		hashBytes := hash.Sum(nil)
 		hashString := hex.EncodeToString(hashBytes)
+		extension := strings.Split(file.File.Filename, ".")
 		bucketPath = lspId + "/" + *file.CourseID + "/" + *file.ContentID + "/" + hashString + "/"
-		w, err := storageC.UploadToGCS(ctx, bucketPath+base64.URLEncoding.EncodeToString([]byte(file.File.Filename)), map[string]string{})
+		bucketPath = bucketPath + base64.URLEncoding.EncodeToString([]byte(file.File.Filename))
+		if len(extension) > 1 {
+			bucketPath = bucketPath + extension[len(extension)-1]
+		}
+		w, err := storageC.UploadToGCS(ctx, bucketPath, map[string]string{})
 		if err != nil {
 			log.Errorf("Failed to upload static content to course topic: %v", err.Error())
 			return &isSuccess, nil
@@ -536,7 +545,7 @@ func UploadTopicStaticContent(ctx context.Context, file *model.StaticContent) (*
 		currentType := strings.ToLower(strings.TrimSpace(file.Type.String()))
 		dataStorage := deploy_static.StorageObjectData{}
 		dataStorage.Bucket = "static-content-private"
-		dataStorage.Name = bucketPath + base64.URLEncoding.EncodeToString([]byte(file.File.Filename))
+		dataStorage.Name = bucketPath
 		dataStorage.ContentID = *file.ContentID
 		outputAmp, err := deploy_static.DeployStatic(ctx, dataStorage)
 		if err != nil {
