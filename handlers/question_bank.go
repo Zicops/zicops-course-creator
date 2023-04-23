@@ -206,7 +206,7 @@ func AddQuestionBankQuestion(ctx context.Context, input *model.QuestionBankQuest
 	if input.File != nil {
 		extension := strings.Split(input.File.Filename, ".")
 		bucketPath := "question_banks/" + cassandraQuestionBank.QbmId + "/" + cassandraQuestionBank.ID + "/" + base64.URLEncoding.EncodeToString([]byte(input.File.Filename))
-		if len(extension) > 1 {
+		if len(extension) >= 1 {
 			bucketPath = bucketPath + "." + extension[len(extension)-1]
 		}
 		storageC := bucket.NewStorageHandler()
@@ -508,7 +508,7 @@ func UpdateQuestionBankQuestion(ctx context.Context, input *model.QuestionBankQu
 	if input.File != nil {
 		extension := strings.Split(input.File.Filename, ".")
 		bucketPath := "question_banks/" + cassandraQuestionBank.QbmId + "/" + cassandraQuestionBank.ID + "/" + base64.URLEncoding.EncodeToString([]byte(input.File.Filename))
-		if len(extension) > 1 {
+		if len(extension) >= 1 {
 			bucketPath = bucketPath + "." + extension[len(extension)-1]
 		}
 		storageC := bucket.NewStorageHandler()

@@ -275,7 +275,7 @@ func UploadTopicSubtitle(ctx context.Context, files []*model.TopicSubtitle) ([]*
 		mainBucket := *file.CourseID + "/" + *file.TopicID + "/subtitles/"
 		extension := strings.Split(file.File.Filename, ".")
 		bucketPath := mainBucket + base64.URLEncoding.EncodeToString([]byte(file.File.Filename))
-		if len(extension) > 1 {
+		if len(extension) >= 1 {
 			bucketPath += "." + extension[len(extension)-1]
 		}
 		writer, err := storageC.UploadToGCS(ctx, bucketPath, map[string]string{"language": language})
@@ -523,7 +523,7 @@ func UploadTopicStaticContent(ctx context.Context, file *model.StaticContent) (*
 		extension := strings.Split(file.File.Filename, ".")
 		bucketPath = lspId + "/" + *file.CourseID + "/" + *file.ContentID + "/" + hashString + "/"
 		bucketPath = bucketPath + base64.URLEncoding.EncodeToString([]byte(file.File.Filename))
-		if len(extension) > 1 {
+		if len(extension) >= 1 {
 			bucketPath = bucketPath + extension[len(extension)-1]
 		}
 		w, err := storageC.UploadToGCS(ctx, bucketPath, map[string]string{})

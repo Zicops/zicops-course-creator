@@ -235,7 +235,7 @@ func UploadCourseImage(ctx context.Context, file model.CourseFile) (*model.Uploa
 	}
 	extension := strings.Split(file.File.Filename, ".")
 	bucketPath := *file.CourseID + "/" + base64.URLEncoding.EncodeToString([]byte(file.File.Filename))
-	if len(extension) > 1 {
+	if len(extension) >= 1 {
 		bucketPath += "." + extension[len(extension)-1]
 	}
 	writer, err := storageC.UploadToGCS(ctx, bucketPath, map[string]string{})
@@ -348,7 +348,7 @@ func UploadCourseTileImage(ctx context.Context, file model.CourseFile) (*model.U
 	}
 	extension := strings.Split(file.File.Filename, ".")
 	bucketPath := *file.CourseID + "/" + base64.URLEncoding.EncodeToString([]byte(file.File.Filename))
-	if len(extension) > 1 {
+	if len(extension) >= 1 {
 		bucketPath += "." + extension[len(extension)-1]
 	}
 	writer, err := storageC.UploadToGCS(ctx, bucketPath, map[string]string{})

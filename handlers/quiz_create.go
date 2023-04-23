@@ -220,7 +220,7 @@ func UploadQuizFile(ctx context.Context, courseID string, quiz model.QuizFile) (
 	}
 	extension := strings.Split(quiz.File.Filename, ".")
 	bucketPath := courseID + "/" + *quiz.QuizID + "/" + base64.URLEncoding.EncodeToString([]byte(quiz.File.Filename))
-	if len(extension) > 1 {
+	if len(extension) >= 1 {
 		bucketPath += "." + extension[len(extension)-1]
 	}
 	writer, err := storageC.UploadToGCS(ctx, bucketPath, map[string]string{})

@@ -51,7 +51,7 @@ func AddTopicResources(ctx context.Context, courseID string, resource *model.Top
 		}
 		extension := strings.Split(resource.File.Filename, ".")
 		bucketPath = courseID + "/" + *resource.TopicID + "/" + base64.URLEncoding.EncodeToString([]byte(resource.File.Filename))
-		if len(extension) > 1 {
+		if len(extension) >= 1 {
 			bucketPath = bucketPath + "." + extension[len(extension)-1]
 		}
 		writer, err := storageC.UploadToGCS(ctx, bucketPath, map[string]string{})
